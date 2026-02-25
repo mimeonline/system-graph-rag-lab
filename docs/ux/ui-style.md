@@ -96,4 +96,4 @@
 2. Informationsarchitektur definiert die feste Inhaltsreihenfolge.
 3. Wireframes definieren die zwei Layoutvarianten mit gleicher Informationslogik.
 4. UI Copy definiert alle sichtbaren Labels und Zustandsformulierungen.
-5. Mock zeigt beide Varianten ohne zusätzliche Features.
+5. Mock zeigt die Hauptansicht in Variante B ohne zusätzliche Features.

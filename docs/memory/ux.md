@@ -17,6 +17,7 @@
 3. Zustände bleiben inline und ersetzen den Antwortinhalt am selben Ort.
 4. Pro Zustand gibt es genau eine klare Aktion.
 5. Desktop bleibt ohne Sticky Primary Action, Mobile nutzt Sticky Footer Bar.
+6. Variante B nutzt rechts nur einen kontextuellen Hilfeblock und verschiebt keine Kerninformation.
 
 ## Open UX Questions
 1. Welche stabilen Felder sind für wichtige Bezüge verbindlich verfügbar.
@@ -37,9 +38,11 @@
 3. Mobile Primary Action ist als Sticky Footer Bar verbindlich im Mock.
 4. States bleiben ausschließlich inline im Antwortbereich.
 5. Retrieval-Details sind nur als optionale zweite Disclosure sichtbar.
+6. UI Copy ist zwischen UX Dokumenten und Mock sprachlich harmonisiert.
+7. Mock zeigt als Referenz die Hauptansicht in Variante B.
 
 ## Next Instructions
 1. Architect-Antwort zu verpflichtenden Feldern für Bezüge und Retrieval-Details einarbeiten.
-2. Dev-Handoff soll Mobile Sticky Bar Spacing und Safe-Area explizit prüfen.
-3. Inline-State-Texte gegen reale Triggerfälle validieren.
-4. Disclosure-Reihenfolge in Implementierung strikt erhalten.
+2. Architect soll die technische Triggerregel für Empty und Error verbindlich definieren.
+3. Architect soll klären, ob eine verlässliche relative Warteangabe für Rate Limit bereitsteht.
+4. Dev-Handoff soll Mobile Sticky Bar Spacing und Safe-Area explizit prüfen.

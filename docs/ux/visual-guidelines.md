@@ -130,4 +130,4 @@
 2. Informationsarchitektur definiert Hierarchie und Ordnungsprinzip.
 3. Wireframes definieren Layoutvariante A und B.
 4. UI Copy definiert die sichtbare Sprache.
-5. Mock zeigt beide Varianten und die Inline Zustandslogik.
+5. Mock zeigt die Hauptansicht in Variante B und die Inline Zustandslogik.

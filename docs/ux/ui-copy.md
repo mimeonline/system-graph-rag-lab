@@ -15,8 +15,8 @@
 4. Primäraktion Mobile Sticky Bar: Antwort anzeigen
 5. Disclosure Herleitung geschlossen: Herleitung anzeigen
 6. Disclosure Herleitung geöffnet: Herleitung ausblenden
-7. Disclosure Retrieval geschlossen: Retrieval Details anzeigen
-8. Disclosure Retrieval geöffnet: Retrieval Details ausblenden
+7. Disclosure Retrieval geschlossen: Retrieval-Details anzeigen
+8. Disclosure Retrieval geöffnet: Retrieval-Details ausblenden
 
 ### Helper Text
 1. Unter Eingabe: Je konkreter die Frage, desto präziser werden Antwort und wichtige Bezüge.
