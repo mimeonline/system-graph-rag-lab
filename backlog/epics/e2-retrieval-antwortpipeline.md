@@ -12,4 +12,5 @@ Für Nutzerfragen einen stabilen Pfad von Kontextbereitstellung bis strukturiert
 ## Abnahmefokus
 1. Kontextpakete sind strukturiert und nachvollziehbar.
 2. Antworten enthalten Hauptantwort und Referenzsektion.
-3. Mindestqualität der Referenzkonzepte ist abgesichert.
+3. Referenzkonzepte werden nach verbindlicher Relevanzregel bewertet.
+4. Pro Eval-Frage gelten mindestens zwei relevante Konzepte unter den ersten drei Referenzkonzepten oder ein klarer Fallback-Hinweis.

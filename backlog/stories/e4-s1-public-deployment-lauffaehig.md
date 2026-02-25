@@ -14,9 +14,10 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-1. Given ein konfiguriertes Repository mit Laufzeitvariablen
-2. When ein Deployment ausgeführt wird
-3. Then ist die Demo öffentlich erreichbar und der Kernfluss funktioniert
+### Szenario 1
+Given ein konfiguriertes Repository mit Laufzeitvariablen
+When ein Deployment ausgeführt wird
+Then ist die Demo öffentlich erreichbar und der Kernfluss funktioniert
 
 ## Test Notes
 Führe einen Smoke-Test auf der Live-URL durch.

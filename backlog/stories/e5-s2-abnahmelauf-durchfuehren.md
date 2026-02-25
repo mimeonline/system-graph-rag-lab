@@ -14,9 +14,10 @@ P1
 <= 1 Tag
 
 ## Akzeptanzkriterien
-1. Given ein öffentliches Deployment und ein Eval-Set
-2. When der Abnahmelauf durchgeführt wird
-3. Then sind Ergebnisse, Abweichungen und Freigabestatus nachvollziehbar dokumentiert
+### Szenario 1
+Given ein öffentliches Deployment, ein Eval-Set mit Erwartungslisten und die verbindliche Relevanzregel
+When der Abnahmelauf durchgeführt wird
+Then sind Ergebnisse je Frage dokumentiert und mindestens vier von fünf Fragen erfüllen das Referenzziel mit zwei relevanten Konzepten unter den ersten drei Referenzkonzepten oder klarem Fallback-Hinweis
 
 ## Test Notes
-Dokumentiere Laufdatum, Prüfumfang und Ergebnis je Prüfkriterium.
+Dokumentiere Laufdatum, Prüfumfang, Ergebnis je Frage und Gesamtstatus gegen die Vier-von-Fünf-Grenze.

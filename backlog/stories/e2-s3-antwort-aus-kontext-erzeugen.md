@@ -13,9 +13,10 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-1. Given ein strukturiertes Kontextpaket
-2. When die Antworterzeugung ausgeführt wird
-3. Then enthält das Ergebnis eine lesbare Hauptantwort und eine Referenzsektion
+### Szenario 1
+Given ein strukturiertes Kontextpaket
+When die Antworterzeugung ausgeführt wird
+Then enthält das Ergebnis eine lesbare Hauptantwort und eine Referenzsektion
 
 ## Test Notes
 Prüfe Antwortformat und Vorhandensein der Referenzsektion.

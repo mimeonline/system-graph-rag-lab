@@ -13,9 +13,10 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-1. Given eine erfolgreich erzeugte Antwort
-2. When die Ausgabe validiert wird
-3. Then enthält sie mindestens drei relevante Referenzkonzepte oder einen klaren Fallback-Hinweis
+### Szenario 1
+Given eine erfolgreich erzeugte Antwort und eine freigegebene Erwartungsliste für die jeweilige Eval-Frage
+When die ersten drei Referenzkonzepte der Antwort geprüft werden
+Then sind mindestens zwei Konzepte in der Erwartungsliste enthalten oder es wird ein klarer Fallback-Hinweis ausgegeben
 
 ## Test Notes
-Führe Positiv- und Negativfälle aus und dokumentiere das Fallback-Verhalten.
+Führe Positiv- und Negativfälle aus und dokumentiere die Trefferquote sowie das Fallback-Verhalten.

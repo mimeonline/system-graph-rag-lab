@@ -10,5 +10,6 @@ Ein verbindliches Eval-Set und einen nachvollziehbaren Abnahmelauf für den MVP 
 
 ## Abnahmefokus
 1. Eval-Set ist messbar definiert.
-2. Abnahmelauf ist dokumentiert.
-3. Folgeaktionen für nächste Iteration sind priorisiert.
+2. Je Eval-Frage liegt eine freigegebene Erwartungsliste mit drei bis sechs Referenzkonzepten vor.
+3. Abnahmelauf prüft die verbindliche Relevanzregel für Referenzkonzepte.
+4. Folgeaktionen für nächste Iteration sind priorisiert.

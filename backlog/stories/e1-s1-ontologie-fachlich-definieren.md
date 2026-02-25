@@ -13,9 +13,10 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-1. Given ein leeres Wissensmodell
-2. When die Ontologie dokumentiert wird
-3. Then sind die Typen Concept, Author, Book, Problem und ihre erlaubten Beziehungen klar beschrieben
+### Szenario 1
+Given ein leeres Wissensmodell
+When die Ontologie dokumentiert wird
+Then sind die Typen Concept, Author, Book, Problem und ihre erlaubten Beziehungen klar beschrieben
 
 ## Test Notes
 Prüfe die Dokumentation auf Vollständigkeit der Typen und Beziehungstabellen.

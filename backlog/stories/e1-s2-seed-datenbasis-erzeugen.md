@@ -13,9 +13,10 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-1. Given eine freigegebene Ontologie
-2. When Seed-Daten erzeugt und validiert werden
-3. Then enthält die Datenbasis 20 bis 30 valide Nodes und 10 bis 20 valide Relationen ohne Schema-Verstoß
+### Szenario 1
+Given eine freigegebene Ontologie
+When Seed-Daten erzeugt und validiert werden
+Then enthält die Datenbasis 20 bis 30 valide Nodes und 10 bis 20 valide Relationen ohne Schema-Verstoß
 
 ## Test Notes
 Zähle Nodes und Relationen und prüfe Schema-Konformität sowie Pflichtfelder.

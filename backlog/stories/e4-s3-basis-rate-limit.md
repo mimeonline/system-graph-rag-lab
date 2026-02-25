@@ -13,9 +13,10 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-1. Given wiederholte Anfragen eines Clients in kurzer Zeit
-2. When das definierte Limit überschritten wird
-3. Then blockiert das System temporär weitere Anfragen mit verständlicher Rückmeldung
+### Szenario 1
+Given wiederholte Anfragen eines Clients in kurzer Zeit
+When das definierte Limit überschritten wird
+Then blockiert das System temporär weitere Anfragen mit verständlicher Rückmeldung
 
 ## Test Notes
 Sende Burst-Requests und bestätige die Reaktion an der Schwelle.

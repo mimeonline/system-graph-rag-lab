@@ -13,9 +13,10 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-1. Given ein separater API-Key im Projektbetrieb
-2. When die Anwendung produktiv läuft
-3. Then bleibt der Schlüssel nicht öffentlich sichtbar und ein Usage-Limit ist aktiv
+### Szenario 1
+Given ein separater API-Key im Projektbetrieb
+When die Anwendung produktiv läuft
+Then bleibt der Schlüssel nicht öffentlich sichtbar und ein Usage-Limit ist aktiv
 
 ## Test Notes
 Prüfe Konfiguration, Repository-Scan und Betriebsgrenzen.

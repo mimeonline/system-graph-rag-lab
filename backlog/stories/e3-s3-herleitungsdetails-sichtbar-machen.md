@@ -1,7 +1,7 @@
 # Story E3-S3 Herleitungsdetails sichtbar machen
 
 ## Ziel
-Die Nachvollziehbarkeit der Antwort für Nutzer erhöhen.
+Die Nachvollziehbarkeit der Antwort für Nutzer über den P0-Kernnachweis hinaus erhöhen.
 
 ## Priorität
 P1
@@ -14,9 +14,10 @@ P1
 <= 1 Tag
 
 ## Akzeptanzkriterien
-1. Given eine erfolgreich beantwortete Frage
-2. When der Nutzer die Detailansicht öffnet
-3. Then sind relevante Herleitungsinformationen verständlich einsehbar
+### Szenario 1
+Given eine erfolgreich beantwortete Frage mit vorhandenem P0-Kernnachweis
+When zusätzliche Herleitungsdetails angezeigt werden
+Then erweitern diese Details die Erklärung, ohne P0-Anzeige oder Erstkontaktfluss zu blockieren
 
 ## Test Notes
-Validiere Verständlichkeit mit kurzer Nutzungsprobe gegen definierte Aufgaben.
+Validiere, dass P0-Ausgabe ohne P1-Details vollständig nutzbar bleibt und dokumentiere den Zusatznutzen der Detailtiefe.

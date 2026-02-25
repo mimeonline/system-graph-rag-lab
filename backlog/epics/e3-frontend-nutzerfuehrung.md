@@ -11,4 +11,5 @@ Den Kernfluss von Frageeingabe bis verständlicher Antwortanzeige im MVP nutzbar
 ## Abnahmefokus
 1. Kernfluss funktioniert für gültige Fragen.
 2. Nicht ideale Zustände sind klar kommuniziert.
-3. Herleitungsdetails sind für Nutzer einsehbar.
+3. P0 enthält den Kernnachweis zur Antwort.
+4. P1-Herleitungsdetails sind separat priorisiert und nicht blockierend für P0.

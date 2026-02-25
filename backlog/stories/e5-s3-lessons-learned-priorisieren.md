@@ -13,9 +13,10 @@ P2
 <= 1 Tag
 
 ## Akzeptanzkriterien
-1. Given eine abgeschlossene MVP-Abnahme
-2. When Lessons Learned erfasst werden
-3. Then liegt eine priorisierte Liste mit klaren Folgeaktionen vor
+### Szenario 1
+Given eine abgeschlossene MVP-Abnahme
+When Lessons Learned erfasst werden
+Then liegt eine priorisierte Liste mit klaren Folgeaktionen vor
 
 ## Test Notes
 Prüfe, dass jede Folgeaktion eine Priorität und einen klaren Zweck enthält.

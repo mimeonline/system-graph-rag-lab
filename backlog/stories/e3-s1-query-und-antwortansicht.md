@@ -13,9 +13,10 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-1. Given ein geladenes Frontend
-2. When eine gültige Frage abgesendet wird
-3. Then werden Hauptantwort und Referenzkonzepte sichtbar dargestellt
+### Szenario 1
+Given ein geladenes Frontend und eine gültige Frage
+When die Frage abgesendet und erfolgreich beantwortet wird
+Then sind Hauptantwort, Referenzkonzepte und ein knapper P0-Kernnachweis sichtbar dargestellt
 
 ## Test Notes
-Prüfe den Kernfluss im Browser mit mindestens zwei Fragen.
+Prüfe den Kernfluss im Browser mit mindestens zwei Fragen und bestätige die Sichtbarkeit aller drei Ausgabeteile.

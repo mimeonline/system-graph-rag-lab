@@ -14,9 +14,10 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-1. Given eine Kandidatenliste
-2. When die Kontextanreicherung ausgeführt wird
-3. Then liegt ein deduplizierter, strukturierter Antwortkontext vor
+### Szenario 1
+Given eine Kandidatenliste
+When die Kontextanreicherung ausgeführt wird
+Then liegt ein deduplizierter, strukturierter Antwortkontext vor
 
 ## Test Notes
 Prüfe, dass keine Duplikate im finalen Kontextpaket enthalten sind.

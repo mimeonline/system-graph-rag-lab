@@ -1,37 +1,38 @@
 # PM Memory
 
 ## Current Product Intent
-Öffentlich erreichbares GraphRAG-MVP für System-Thinking mit klarem Frage zu Antwort Fluss, sichtbaren Referenzkonzepten und überprüfbarer Abnahme ohne Scope-Erweiterung.
+Öffentlich erreichbares GraphRAG-MVP für System-Thinking mit klarem Frage-zu-Antwort-Fluss, sichtbaren Referenzkonzepten und messbarer Abnahme ohne Scope-Erweiterung.
 
 ## Scope Guardrails
 ### In Scope
-1. Public Demo mit strukturierter Antwortdarstellung und nachvollziehbaren Referenzkonzepten.
+1. Public Demo mit strukturierter Hauptantwort, Referenzkonzepten und P0-Kernnachweis.
 2. Wissensbasis im freigegebenen Rahmen von 20 bis 30 Nodes und 10 bis 20 Relationen.
-3. Operative MVP-Schutzmaßnahmen mit Secret-Hygiene, Usage-Limit und Basis-Rate-Limit.
+3. Verbindliche Abnahmeregel für Referenzkonzepte im fünfteiligen Eval-Set.
+4. Operative MVP-Schutzmaßnahmen mit Secret-Hygiene, Usage-Limit und Basis-Rate-Limit.
 
 ### Out of Scope
 1. Neue Epics oder Domänenerweiterung über den freigegebenen Rahmen hinaus.
 2. Konten, Rollenmodell, Multi-Tenant, Personalisierung und Enterprise-Compliance-Ausbau.
 3. PM-seitige Architekturentscheidungen und UX-Detailentscheidungen.
+4. P1-Herleitungsvertiefung als Blocker für P0-Readiness.
 
 ## Offene Annahmen
-1. Der freigegebene Graphumfang reicht für die fünf MVP-Eval-Fragen aus.
-2. Nutzer akzeptieren den Demo-Charakter, wenn Antwort und Herleitung klar strukturiert sind.
-3. Story-Slices mit Aufwand <= 1 Tag reduzieren Planungsrisiko gegenüber breiten Sammelstories.
+1. Die Erwartungslisten mit drei bis sechs Referenzkonzepten je Eval-Frage sind fachlich stabil genug für konsistente Bewertung.
+2. Der P0-Kernnachweis reicht der Zielgruppe für Erstvertrauen vor P1-Vertiefung.
+3. Die Vier-von-Fünf-Abnahmegrenze ist für Public-Demo-Readiness ausreichend robust.
 
 ## Offene Entscheidungen
-1. Welche messbare Regel in der Abnahme ein Referenzkonzept als relevant zählt.
-2. Welche Mindesttiefe für Herleitungsdetails in P0 liegt und welche in P1 bleibt.
-3. Welche P1-Stories bei Zeitdruck vor Public Demo auf P0 hochgezogen werden.
+1. Welche P1-Stories bei Timeline-Risiko vor Public Demo vorgezogen werden.
+2. Ob der Abnahmelauf nach UX-Finalisierung einmalig oder als wiederholter Qualitätsgate betrieben wird.
 
 ## Risiken
 1. Scope-Drift durch spätere Re-Expansion des Graphumfangs ohne PM-Freigabe.
-2. Qualitätsrisiko, falls Referenzkonzepte sichtbar sind, aber fachlich schwach bleiben.
-3. Betriebsrisiko durch öffentliche Nutzungsspitzen trotz Basis-Guardrails.
-4. Abnahmerisiko durch unklare Bewertungsregel für relevante Referenzkonzepte.
+2. Qualitätsrisiko, falls Erwartungslisten pro Eval-Frage zu breit oder zu eng gepflegt werden.
+3. Abnahmerisiko, falls Fallback-Hinweise inkonsistent angewendet und dadurch Ergebnisse verzerrt werden.
+4. Betriebsrisiko durch öffentliche Lastspitzen trotz Basis-Guardrails.
 
 ## Next Instructions
-1. Halte Scope-Konsistenz zwischen Kickoff, PRD, Scope-Dokument, Backlog und Handoff bei jedem PM-Run.
-2. Finalisiere mit QA die messbare Abnahmeregel für relevante Referenzkonzepte.
-3. Übergib UX nur Ergebnisziele, Journeys und offene Fragen ohne Interaktionsmuster.
-4. Prüfe vor Sprint-Start, dass jede Story im Tagesschnitt bleibt und testbare Given, When, Then Kriterien enthält.
+1. Halte Relevanzregel und Vier-von-Fünf-Grenze in allen nachfolgenden Rollenartefakten unverändert.
+2. Lass UX den Erstkontakt strikt nach Priorität 1 bis 5 aus dem PM-Handoff ausarbeiten.
+3. Plane mit QA einen Abnahmelauf, der je Frage Erwartungsliste, Treffer und Fallback separat dokumentiert.
+4. Prüfe vor Umsetzung, dass P0-Stories keinen impliziten P1-Detailumfang enthalten.

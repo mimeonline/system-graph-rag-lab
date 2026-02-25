@@ -13,9 +13,10 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-1. Given eine Nutzerfrage und verfügbare Wissensbasis
-2. When die Kontextsuche ausgeführt wird
-3. Then liefert das System eine deterministische Kandidatenliste mit nachvollziehbarer Struktur
+### Szenario 1
+Given eine Nutzerfrage und verfügbare Wissensbasis
+When die Kontextsuche ausgeführt wird
+Then liefert das System eine deterministische Kandidatenliste mit nachvollziehbarer Struktur
 
 ## Test Notes
 Prüfe Stabilität des Antwortformats über mehrere Testfragen.
