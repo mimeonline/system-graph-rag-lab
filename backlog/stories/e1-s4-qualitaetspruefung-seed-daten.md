@@ -1,7 +1,7 @@
 # Story E1-S4 Qualitätsprüfung für kuratierte Seed-Daten ausführen
 
 ## Status
-qa
+pass
 
 ## Ziel
 Konsistenz, Herkunft und Eindeutigkeit der kuratierten Seed-Daten vor Nutzung absichern.

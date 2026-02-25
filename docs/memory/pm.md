@@ -1,47 +1,37 @@
 # PM Memory
 
 ## Current Product Intent
-Oeffentlich erreichbares GraphRAG-MVP mit klar getrenntem Delivery-Schnitt: E1 liefert lokal belastbare Datenbasis-Verfuegbarkeit als Vorstufe, E4 liefert Public-Plattform-Readiness fuer die Demo-Freigabe.
+1. E1 liefert lokale Datenbasis-Readiness.
+2. E4 liefert Public-Plattform-Readiness.
+3. Nachweise fuer local und public bleiben getrennt.
 
 ## MVP Scope Guardrails In Out
 ### In
-1. E1 fokussiert lokale Datenbasis-Readiness inklusive reproduzierbarem Lese-Smoke-Test im lokalen Zielbetrieb.
-2. E4 fokussiert Public-Plattform-Setup und Public-Betriebsfaehigkeit inkl. Guardrails fuer Secrets, Limits und Logging.
-3. Statusfuehrung bleibt strikt synchron zwischen Story/Epic-Dateien und `backlog/progress.md`.
-4. QA pro Story sowie Security- und DevOps-Gate pro Epic bleiben verpflichtend.
+1. Strikter Workflow `todo -> in_progress -> qa -> pass -> accepted -> blocked`.
+2. Status-Synchronisierung im selben Run zwischen Story-Datei und `backlog/progress.md`.
+3. QA pro Story sowie Security- und DevOps-Gate pro Epic.
 
 ### Out
-1. Keine Vermischung von lokalem E1-Nachweis mit Public-Abnahme in E4.
-2. Keine neuen Epics oder Scope-Erweiterungen ausserhalb E1 bis E5.
-3. Keine PM-seitigen Architektur-, Retrieval- oder UX-Detailentscheidungen.
-4. Keine Story-Freigabe `accepted` ohne vorherigen Status `pass` und explizites PM-OK.
+1. Keine PM-seitige Architektur- oder Implementierungsaenderung.
+2. Keine Freigabe `accepted` ohne vorheriges `pass`.
+3. Keine Scope-Erweiterung ausserhalb genehmigter Storys.
 
 ## Open Assumptions
-1. Die lokale E1-Datenbasis ist ausreichend stabil, um als belastbare Voraussetzung fuer Public-Schritte zu dienen.
-2. Das in E4-S5 dokumentierte Public-Plattform-Setup ist ohne Scope-Erweiterung in E4-S1 bis E4-S4 operationalisierbar.
-3. QA-Evidenz fuer lokale und Public-Nachweise bleibt in den nachfolgenden Story-Runs sauber getrennt dokumentiert.
+1. Lokale E1-Nachweise sind ausreichend belastbar fuer die naechsten Story-Gates.
+2. Public-Nachweise werden in E4 separat erbracht.
+3. QA-Evidenz bleibt reproduzierbar und eindeutig pro Story.
 
 ## Open Decisions
-1. PM-Entscheidung vom 2026-02-25: `E1-S3` ist nach QA-`Pass` und fehlendem Story-Gate-Blocker auf `accepted` freigegeben und in `backlog/progress.md` synchronisiert.
-2. PM-Entscheidung vom 2026-02-25: `E4-S5` ist als Public-Voraussetzungsstory im Backlog fixiert und vor den operativen Public-Storys einzuordnen.
-3. PM-Entscheidung vom 2026-02-25: `E1-S6` ist als verbindliche Folge-Story nach `E1-S3` im Epic E1 gefuehrt und in `backlog/progress.md` mit Status `todo` nachgezogen.
-4. Offen bleibt, in welcher Reihenfolge E4-S1 bis E4-S4 nach Abschluss von E4-S5 zuerst in `in_progress` gesetzt werden.
-5. Offen bleibt die Prozessklaerung der Story-Abhaengigkeit `E1-S3` zu `E1-S5`, waehrend `E1-S3` bereits `accepted` ist und `E1-S5` noch `todo` steht.
+1. Reihenfolge und Begruendung offener Story-Abhaengigkeiten muessen explizit dokumentiert bleiben.
+2. Epic-Abschluss wird erst bei vollstaendigen Pflicht-Gates freigegeben.
+3. PM-Entscheidungen werden in Handoff plus Progress konsistent gespiegelt.
 
 ## Risks to Monitor
-1. Abnahme-Risiko durch Nachweisvermischung zwischen lokalem E1-Zielbetrieb und Public-E4-Zielbetrieb.
-2. Tracking-Risiko bei Status-Divergenz zwischen Story-Dateien, Epic-Dateien und `backlog/progress.md`.
-3. Gate-Risiko pro Epic, solange Security- und DevOps-Nachweise fuer E1 und E4 noch nicht dokumentiert sind.
-4. Sequenzrisiko, falls E4-S5 als Voraussetzung umgangen wird und Public-Storys ohne Plattformgrundlage starten.
-5. Prozessrisiko in E1 durch offene Abhaengigkeitsreihenfolge `E1-S3` und `E1-S5` trotz Story-Abnahme.
-6. Epic-Gate-Risiko fuer E1 bleibt bestehen, solange `E1-S4` und `E1-S5` kein QA-`pass` erreicht haben.
+1. Statusdrift zwischen Story-Datei, QA-Artefakten und `backlog/progress.md`.
+2. Vermischung von lokalem und Public-Nachweis.
+3. Offene Story-Abhaengigkeiten ohne klare Reihenfolgeentscheidung.
 
 ## Next Instructions for PM Agent
-1. Erzwinge die Trennung im Wording und in der Abnahme: E1 lokal, E4 public.
-2. Synchronisiere jede Statusaenderung im selben Run in `backlog/progress.md`.
-3. Setze `accepted` nur nach dokumentiertem QA-`pass` und explizitem PM-OK.
-4. Fuehre E4 nach Start der ersten nicht-`todo`-Story sofort auf Epic-Status `in_progress`.
-5. Markiere Epic-Abschluss nur mit dokumentierten QA-, Security- und DevOps-Gates.
-6. Halte `E1-S6` bis zum Dev-Start auf `todo` und erwarte bei Start den unmittelbaren Wechsel auf `in_progress` samt Progress-Sync.
-7. Klaere vor E1-Epic-Abnahme die Reihenfolge und Begruendung der Abhaengigkeit `E1-S3` zu `E1-S5` verbindlich im Backlog.
-8. Treibe E1 nach `E1-S3 accepted` entlang der offenen QA-Pfade `E1-S5` und `E1-S4`, bevor ein Epic-Abschluss geprueft wird.
+1. Vor jeder Abnahme Story-Status, QA-Verdict und Progress querpruefen.
+2. `accepted` nur setzen, wenn Story bereits `pass` ist.
+3. Risiken und offene Abhaengigkeiten in PM-Handoff knapp und reproduzierbar dokumentieren.

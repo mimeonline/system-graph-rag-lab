@@ -2,19 +2,19 @@
 
 ## Laufmetadaten
 1. Datum: 2026-02-25.
-2. Commit Kurz: `58ff3da`.
-3. Commit Voll: `58ff3da68efd68b504669c4e38ca48958bd6fe42`.
-4. Umgebung: review-story-e1-s3-local.
-5. Ausfuehrender QA Run: RUN_MODE=review.
+2. Commit Kurz: `f0a889a`.
+3. Commit Voll: `f0a889a56792dcd3859b474d4c9f688560bcb2b9`.
+4. Umgebung: review-story-e1-s4-local.
+5. Ausfuehrender QA Run: `RUN_MODE=review`.
 
 ## Ergebnisse je Frage
 | Frage | Ergebnis | Evidenz | Hinweis |
 | --- | --- | --- | --- |
-| Q1 | Fail | nicht ausgefuehrt | Story-Run E1-S3 ohne End-to-End-Eval |
-| Q2 | Fail | nicht ausgefuehrt | Story-Run E1-S3 ohne End-to-End-Eval |
-| Q3 | Fail | nicht ausgefuehrt | Story-Run E1-S3 ohne End-to-End-Eval |
-| Q4 | Fail | nicht ausgefuehrt | Story-Run E1-S3 ohne End-to-End-Eval |
-| Q5 | Fail | nicht ausgefuehrt | Story-Run E1-S3 ohne End-to-End-Eval |
+| Q1 | Fail | nicht ausgefuehrt | Story-Run E1-S4 ohne End-to-End-Eval |
+| Q2 | Fail | nicht ausgefuehrt | Story-Run E1-S4 ohne End-to-End-Eval |
+| Q3 | Fail | nicht ausgefuehrt | Story-Run E1-S4 ohne End-to-End-Eval |
+| Q4 | Fail | nicht ausgefuehrt | Story-Run E1-S4 ohne End-to-End-Eval |
+| Q5 | Fail | nicht ausgefuehrt | Story-Run E1-S4 ohne End-to-End-Eval |
 
 ## Qualitaetsbeobachtungen
 ### Halluzinationen
@@ -25,10 +25,9 @@
 
 ### Latenz
 1. Nicht bewertet fuer Eval-Fragen.
-2. Build- und lokale Testlaeufe sind stabil, aber keine Runtime-Latenzmessung gegen API-Requests.
+2. Story-spezifische Test-, Lint- und Build-Laeufe waren stabil.
 
 ## Zusammenfassung und Empfehlung
-1. Gesamtstatus fuer Eval-Set: Fail.
-2. Story-QA-Gate `E1-S2` ist davon unabhaengig als Pass bewertet.
-3. Story-QA-Gate `E1-S3` ist davon unabhaengig als Pass bewertet.
-4. Empfehlung: Vor Epic-Gate E5 einen vollstaendigen Eval-Lauf mit fuenf Fragen inklusive Referenzpruefung ausfuehren.
+1. Gesamtstatus fuer Eval-Set bleibt: Fail.
+2. Story-QA-Gate `E1-S4` ist davon unabhaengig als Pass bewertet.
+3. Empfehlung: Vor Epic-Gate E1 und spaetestens vor E5-Endabnahme einen vollstaendigen Eval-Lauf mit allen fuenf Fragen ausfuehren.

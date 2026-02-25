@@ -1,36 +1,31 @@
 # Dev Memory
 
 ## Current Implementation Status
-1. Story `E1-S4` ist implementiert und auf `qa` gesetzt.
-2. Neuer Qualitaetslauf `runSeedDatasetQualityCheck` ist in `apps/web/src/features/seed-data/quality-check.ts` umgesetzt.
-3. Der Lauf prueft Quellen, Nodes und Edges auf Ontologiekonformitaet, Duplikate und Herkunftskonsistenz.
-4. Das Pruefprotokoll liefert `checked`, `beanstandet`, `ausgeschlossen`, Issues und einen Split fuer `primary_md` sowie `optional_internet`.
-5. Verifikation ist erfolgreich mit `pnpm --dir apps/web lint`, `pnpm --dir apps/web test`, `pnpm --dir apps/web build`.
+1. Story `E1-S4` ist implementiert und im aktuellen Prozess auf `pass` bewertet.
+2. `runSeedDatasetQualityCheck` in `apps/web/src/features/seed-data/quality-check.ts` prueft Quellen, Nodes und Edges auf Konsistenz.
+3. Das Pruefprotokoll liefert `checked`, `beanstandet`, `ausgeschlossen`, `issues` und `bySourceType`.
+4. Story-spezifischer Test fuer E1-S4 laeuft ueber direkten Vitest-Run reproduzierbar.
 
 ## Active Epics and Stories
-1. Epic `E1 Wissensmodell und Seed-Daten` ist `in_progress`.
-2. Story `E1-S1` ist `accepted`.
-3. Story `E1-S2` ist `accepted`.
-4. Story `E1-S3` ist `accepted`.
-5. Story `E1-S4` ist `qa`.
-6. Story `E1-S5` ist `todo`.
-7. Story `E1-S6` ist `todo`.
+1. Source of truth ist `backlog/progress.md`; Story-Status wird nicht aus Memory abgeleitet.
+2. E1 ist aktiv und enthaelt noch offene Stories (`E1-S5`, `E1-S6`).
+3. PM-Freigaben bleiben strikt nach `pass`.
 
 ## Technical Constraints
 1. API- und Retrieval-Contract aus `docs/spec/**` bleiben unveraendert bindend.
-2. Next.js `16.1.6`, TypeScript `strict=true`, Tailwind CSS und shadcn/ui bleiben verbindlich.
+2. Next.js `16.1.6`, TypeScript `strict=true`.
 3. Dev setzt Story-Status nur auf `in_progress`, `qa` oder `blocked`.
 4. Keine Architekturabweichung ohne akzeptierte ADR.
 
 ## Known Technical Debt
-1. Der Qualitaetslauf erzeugt ein strukturiertes In-Memory-Pruefprotokoll, aber noch keine persistierte Protokolldatei fuer Audit-Zwecke.
-2. `E1-S5` Extraktion und Normalisierung bleibt als vorgelagerter Datenqualitaetsbaustein offen.
-3. Der lokale Integrationsblock fuer Neo4j-Reads bleibt von gesetztem `NEO4J_DATABASE` abhaengig.
+1. Qualitaetsprotokoll ist derzeit nur In-Memory und nicht als persistentes Audit-Artefakt abgelegt.
+2. Lokale Neo4j-Integrationslaeufe haengen von sauber gesetzten Runtime-Variablen ab.
+3. Offene Upstream-Storys (`E1-S5`, `E1-S6`) koennen Folgeeffekte auf spaetere QA-Gates haben.
 
 ## Blocking Issues
-1. Kein akuter Dev-Blocker fuer `E1-S4`.
+1. Kein akuter Dev-Blocker dokumentiert.
 
 ## Next Instructions for Dev Agent
-1. `E1-S5` umsetzen, damit der komplette Quellen-zu-Seed-Fluss vor QA vollständig geschlossen ist.
-2. Danach `E1-S6` fuer reproduzierbaren Seed-Reset und Reseed im lokalen Neo4j-Profil umsetzen.
-3. Optional pruefen, ob Pruefprotokolle aus E1-S4 fuer spaetere Gates als Datei exportiert werden sollen, ohne Contract-Scope zu erweitern.
+1. Vor Story-Start immer Story-Datei plus `backlog/progress.md` lesen und synchron halten.
+2. Story-spezifische Tests mit exaktem Scope-Kommando ausfuehren.
+3. Dev-Handoff und Dev-Memory nur mit verifizierten, langlebigen Informationen aktualisieren.

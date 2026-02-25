@@ -1,31 +1,28 @@
 # QA Memory
 
 ## Quality Focus Areas
-1. Story-Gate Reproduzierbarkeit mit expliziter Command-Evidenz in Matrix und Verdict.
-2. Konsistenz zwischen Story-Akzeptanzkriterien, Runtime-Read und Herkunftsfeldern `sourceType` und `sourceFile`.
-3. Contract-Konformitaet von `POST /api/query` fuer kommende Retrieval- und Runtime-Stories.
-4. Epic-Gate Trennung zwischen Story-QA, Security-Gate und DevOps-Gate.
+1. Reproduzierbare Story-Gates mit Command-Evidenz und Exit Codes.
+2. Konsistenz zwischen Akzeptanzkriterien, Testscope und dokumentiertem Verdict.
+3. Strikte Trennung von Story-Gate und Epic-Gate.
+4. Status-Sync zwischen Story-Datei und `backlog/progress.md` im selben Run.
 
 ## Known Failure Patterns
-1. Story im Status `qa` ohne dokumentierten QA-Ausfuehrungslauf.
-2. Drift zwischen Story-AK und tatsaechlich dokumentierter Testevidenz.
-3. Integrations-Smoke wird stillschweigend `skipped`, wenn `NEO4J_DATABASE` im Laufkontext fehlt.
-4. Spaete Entdeckung von Contract-Abweichungen, wenn Integrationschecks nur lokal und nicht profiluebergreifend laufen.
+1. Story steht auf `qa`, aber es fehlt ein nachvollziehbarer QA-Lauf.
+2. Story-spezifische Kommandos laufen ungewollt die Gesamtsuite und verwischen Scope-Evidenz.
+3. Integrationschecks werden wegen fehlender Runtime-Variablen stillschweigend geskippt.
+4. Drift zwischen QA-Artefakten und Backlog-Status.
 
 ## Eval Status
-1. Bootstrap fuer Rubrik und Report liegt vor.
-2. Review-Run fuer `E1-S1` am 2026-02-25 abgeschlossen mit Story-Gate Pass.
-3. Review-Run fuer `E1-S2` am 2026-02-25 abgeschlossen mit Story-Gate Pass.
-4. Review-Run fuer `E1-S3` am 2026-02-25 validiert, Story und Progress im selben Run auf `pass` synchronisiert.
-5. Eval-Set mit fuenf Fragen bleibt bis zum ersten End-to-End-Lauf auf Fail.
+1. Story-Gates fuer E1 laufen schrittweise und werden getrennt vom Epic-Gate bewertet.
+2. End-to-End-Eval bleibt bis zum expliziten Gesamtlauf offen.
+3. Offene Bugs werden nach Schweregrad als blocking oder non-blocking bewertet.
 
 ## Open Quality Risks
-1. Epic E1 bleibt blockiert, solange `E1-S4`, `E1-S5` und `E1-S6` kein QA-Gate haben.
-2. Story-Abhaengigkeit `E1-S3 -> E1-S5` ist prozessual offen, da `E1-S5` noch `todo` ist.
-3. Paritaet zwischen lokalem Neo4j-Docker-Lauf und Aura-Lauf ist noch unbewertet.
+1. Local- und Public-Laufzeit koennen unterschiedliche Failure-Modes zeigen.
+2. Epic-Abnahme bleibt blockiert, solange offene Story-Gates oder Pflicht-Gates fehlen.
+3. Unklare Testkommandos erhoehen Reproduktionsrisiko.
 
 ## Next Instructions
-1. Naechster QA-Run auf `E1-S5` mit Fokus auf Mengenkriterien, Herkunft und Ausschlussprotokoll.
-2. Danach `E1-S4` auf Duplikatfreiheit, Ontologiekonformitaet und Pruefprotokoll pruefen.
-3. Danach `E1-S6` auf reproduzierbaren Seed-Reset-und-Reseed-Lauf pruefen.
-4. Vor Epic-Abnahme E1 Security- und DevOps-Gate-Status explizit verlinken.
+1. Story-spezifische Tests bevorzugt ueber direkte `vitest run <file>` Kommandos ausfuehren.
+2. Bei `Pass` Story und Progress sofort auf `pass` synchronisieren.
+3. QA-Artefakte knapp halten: Verdict, Matrix, Plan und nur noetige Bugs.

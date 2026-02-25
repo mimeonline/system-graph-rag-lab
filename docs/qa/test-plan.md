@@ -2,44 +2,45 @@
 
 ## Teststrategie
 ### Unit
-1. Verbindlicher Mindestlauf pro Story ist der projektweite Testlauf in `apps/web`.
-2. Fuer `E1-S3` deckt `src/features/seed-data/runtime-read.test.ts` Fehlerszenarien fuer fehlende Neo4j-Runtime-Variablen ab.
-3. Regression fuer bereits freigegebene Storys bleibt mit `pnpm --dir apps/web test` aktiv.
+1. Story-Fokus `E1-S4`: `runSeedDatasetQualityCheck(dataset)` prueft Ontologiekonformitaet, Duplikate und Herkunftskennzeichnung fuer `sources`, `nodes`, `edges`.
+2. Pflichtlauf fuer Story-Gate: `pnpm --dir apps/web exec vitest run src/features/seed-data/quality-check.test.ts`.
+3. Unit-Akzeptanz fuer die Story gilt nur bei gruenem Testlauf mit den drei Story-Tests.
 
 ### Integration
-1. Story `E1-S3` wird ueber echten Neo4j-Zugriff gegen den lokalen Zielbetrieb geprueft.
-2. Pflicht ist ein Runtime-Read mit echten Nodes und Relationen inklusive `sourceType` und `sourceFile`.
-3. Der Integrationslauf wird mit reproduzierbarem Command und Exit-Code dokumentiert.
+1. Regression auf Feature-Ebene: `pnpm --dir apps/web test`.
+2. Ziel ist das Zusammenspiel aus Seed-Datensatz, Ontologie-Constraints und Qualitaetslauf ohne Contract-Drift.
+3. Erwartung fuer Review-Run: Exit Code `0`, keine fehlschlagenden Tests.
 
 ### E2E minimal
-1. Fuer `E1-S3` ist ein lokaler Zielbetriebs-Smoke Pflicht, kein Vercel-Aura-Livecheck.
-2. Vercel und Aura End-to-End bleiben fuer spaetere E4 und E5 Gates verpflichtend.
+1. Build-Readiness als Minimal-E2E fuer Story-Gate: `pnpm --dir apps/web build`.
+2. Statische Qualitaet: `pnpm --dir apps/web lint`.
+3. Vercel und Aura bleiben fuer Epic E4 und E5 ausserhalb des Story-Gates.
 
 ## Testumgebung
 ### local
-1. Lauf in `apps/web` mit Next.js und lokalem Neo4j-Docker `neo4j:5.26.0`.
-2. Ausgefuehrte QA-Checks: `pnpm --dir apps/web lint`, `pnpm --dir apps/web test`, `pnpm --dir apps/web build`.
-3. Neo4j-Read-Smoke: `pnpm --dir apps/web exec vitest run src/features/seed-data/runtime-read.test.ts --testNamePattern "integration with neo4j|reads real nodes"`.
+1. Verbindliche Story-Umgebung fuer diesen Run.
+2. Ausgefuehrte Commands: `pnpm --dir apps/web exec vitest run src/features/seed-data/quality-check.test.ts`, `pnpm --dir apps/web test`, `pnpm --dir apps/web lint`, `pnpm --dir apps/web build`.
+3. Laufdatum: `2026-02-25`.
 
 ### vercel
-1. Fuer den Story-Gate `E1-S3` nicht im Scope.
-2. Public-Profil bleibt Epic-Risiko bis E4-Gates.
+1. Nicht im Scope des Story-Gates `E1-S4`.
+2. Bleibt Epic-Risiko bis E4-Gate.
 
 ### aura
-1. Fuer den Story-Gate `E1-S3` nicht im Scope.
-2. Contract-Paritaet zu Aura bleibt offener Epic-Risikopunkt.
+1. Nicht im Scope des Story-Gates `E1-S4`.
+2. Bleibt Epic-Risiko bis E4-Gate.
 
 ## Testdaten und Seed Voraussetzungen
-1. Lokaler Container `neo4j-local` muss laufen und Port `7687` bereitstellen.
-2. Runtime-Variablen `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD` muessen gesetzt sein.
-3. Der Integrationslauf schreibt Marker-Nodes und Marker-Edges in Neo4j und entfernt sie im Cleanup.
+1. Kein externer Seed oder Datenbank-Setup erforderlich.
+2. Tests nutzen `createSeedDataset()` und erzeugen kontrollierte ungueltige Eintraege fuer Negativfaelle.
+3. Herkunfts-Split `primary_md` und `optional_internet` muss im Report vorhanden sein.
 
 ## Abnahmekriterien
-### Story E1-S3 Szenario
-1. Given: normalisierte Seed-Datenbasis mit Herkunftskennzeichnung, laufende lokale Next.js Runtime und Neo4j-Docker mit gesetzten `NEO4J_*`-Variablen.
-2. When: Runtime-Read der lokal gestarteten Anwendung liest echte Nodes und Relationen direkt aus Neo4j.
-3. Then: Nodes und Relationen werden fehlerfrei gelesen, Herkunftskennzeichnung `primary_md` oder `optional_internet` bleibt abrufbar, und der Lese-Smoke ist reproduzierbar dokumentiert.
+### Story E1-S4 Szenario
+1. Given: normalisierte Seed-Datenbasis und kuratierter Quellenkatalog liegen vor.
+2. When: Qualitaetsregeln werden auf den Datensatz angewendet.
+3. Then: alle verbleibenden Eintraege sind ontologiekonform, keine doppelten IDs oder Relationen bleiben erhalten, Herkunft ist je Eintrag nachverfolgbar, und ein Pruefprotokoll mit `checked`, `beanstandet`, `ausgeschlossen` liegt vor.
 
 ### Gate-Regel
-1. Story-Gate ist Pass, wenn Szenario und alle Pflichtkommandos reproduzierbar bestanden sind.
-2. Story-Gate ist Fail, wenn der Neo4j-Read-Smoke nicht laeuft oder Herkunftsfelder nicht contract-konform geliefert werden.
+1. Story-Gate ist Pass, wenn alle vier Pflicht-Commands mit Exit Code `0` laufen und die Given/When/Then-Bedingungen durch Testevidenz gedeckt sind.
+2. Story-Gate ist Fail, wenn ein Pflicht-Command fehlschlaegt oder eine Then-Bedingung nicht reproduzierbar belegt ist.

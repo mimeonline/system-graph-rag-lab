@@ -1,20 +1,18 @@
 # Dev to Security Handoff
 
-## Kurzer Security-Context der umgesetzten Stories
-1. Story `E1-S4` fuehrt einen Qualitaetslauf fuer kuratierte Seed-Daten ein, der Datenintegritaet vor weiterer Nutzung absichert.
-2. Sicherheitsrelevant ist die konsequente Erkennung und Ausschliessung inkonsistenter oder manipulierter Datenzustaende.
+## Scope
+1. Story `E1-S4` fuehrt einen internen Seed-Qualitaetslauf ein.
+2. Keine neuen oeffentlichen Endpoints und keine API-Contract-Aenderung.
 
-## Welche Eingaben oder Endpoints sicherheitsrelevant beruehrt wurden
-1. Kein oeffentlicher Endpoint wurde geaendert oder neu eingefuehrt.
-2. Betroffen ist die interne Verarbeitung in `apps/web/src/features/seed-data/quality-check.ts`.
-3. Geprueft werden insbesondere Herkunfts- und Referenzfelder sowie Duplikat- und Ontologieverstoesse.
+## Security-relevante Stellen
+1. `apps/web/src/features/seed-data/quality-check.ts` validiert Integritaet und Herkunft.
+2. Beanstandete Eintraege werden ausgeschlossen statt weiterverarbeitet.
 
-## Welche bekannten Sicherheitsgrenzen oder offenen Risiken bestehen
-1. Der Qualitaetslauf ist aktuell ein Runtime-In-Memory-Schritt ohne manipulationssicheres Audit-Log auf externer Ablage.
-2. Integritaet der Seed-Daten im Ursprungssystem bleibt weiterhin von vorgelagerten Erzeugungs- und Importpfaden abhaengig.
-3. Es gibt keine zusaetzliche Signatur- oder Herkunftsverifikation ueber die vorhandenen Metadaten hinaus.
+## Pruefziele fuer Security
+1. Sicherstellen, dass beanstandete Daten in Folgepfaden nicht wieder eingehen.
+2. Sicherstellen, dass `issues` keine sensitiven Details exponieren.
+3. Logging und Fehlerausgaben auf Redaction und Scope pruefen.
 
-## Welche Punkte Security im Epic-Gate gezielt pruefen soll
-1. Pruefen, dass beanstandete Eintraege in allen relevanten Aufrufpfaden wirklich ausgeschlossen bleiben.
-2. Pruefen, dass keine sensiblen Inhalte ueber `issues` oder Logs ungewollt exponiert werden.
-3. Pruefen, ob fuer spaetere Public-Gates ein revisionssicheres externes Pruefprotokoll erforderlich ist.
+## Offene Risiken
+1. Kein extern persistiertes Audit-Protokoll.
+2. Integritaet des Ursprungspfads bleibt vorgelagert.

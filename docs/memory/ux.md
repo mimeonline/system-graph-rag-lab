@@ -1,48 +1,37 @@
 # UX Memory
 
 ## UX Intent
-1. Public MVP wirkt ruhig, hochwertig und selbsterklärend im Erstkontakt.
-2. Hauptantwort bleibt visuell dominant vor Nebeninformationen.
-3. Zustände erscheinen kontextnah inline im Antwortbereich.
-4. Mobile Führung bleibt mit Sticky Primary Action klar und touch sicher.
+1. Erstkontakt bleibt ruhig, klar und selbsterklaerend.
+2. Hauptantwort bleibt visuell dominant.
+3. Bezuege und Herleitung unterstuetzen Nachvollziehbarkeit ohne Ueberladung.
 
 ## Core User Journeys
-1. Frage stellen, inline Loading sehen, Hauptantwort und wichtige Bezüge erfassen.
-2. Antwort plausibilisieren über wichtige Bezüge und optional geöffnete Herleitung.
-3. Bei Empty, Error oder Rate Limit mit genau einer Aktion fortsetzen.
+1. Frage stellen, Antwort lesen, Bezuege erfassen.
+2. Antwort plausibilisieren ueber Bezuege und optionale Herleitung.
+3. Bei Empty/Error/Rate-Limit mit klarer Folgeaktion fortsetzen.
 
 ## Interaction Principles
-1. Feste Hauptreihenfolge: Eingabe, Antwortbereich, wichtige Bezüge, Herleitung.
-2. Progressive Disclosure ist zweistufig: Herleitung, danach Retrieval-Details.
-3. Zustände bleiben inline und ersetzen den Antwortinhalt am selben Ort.
-4. Pro Zustand gibt es genau eine klare Aktion.
-5. Desktop bleibt ohne Sticky Primary Action, Mobile nutzt Sticky Footer Bar.
-6. Variante B nutzt rechts nur einen kontextuellen Hilfeblock und verschiebt keine Kerninformation.
+1. Reihenfolge bleibt stabil: Eingabe, Antwort, Bezuege, Herleitung.
+2. States erscheinen inline im Antwortbereich.
+3. Progressive Disclosure bleibt optional und zweistufig.
+4. Mobile Primary Action bleibt erreichbar ohne Inhaltsverdeckung.
 
 ## Open UX Questions
-1. Welche stabilen Felder sind für wichtige Bezüge verbindlich verfügbar.
-2. Welche minimale Herleitungsstruktur ist im P0 verlässlich lieferbar.
-3. Welche Retrieval-Details in P0 darstellbar sind, ohne technische Überlastung.
-4. Ob für Rate Limit eine belastbare relative Warteangabe bereitgestellt werden kann.
-5. Welche robuste Regel Empty eindeutig von schwacher Antwort trennt.
+1. Welche Bezugsfelder sind stabil verpflichtend verfuegbar.
+2. Welche minimale Herleitungsstruktur ist fuer P0 robust.
+3. Wie wird `empty` technisch eindeutig von schwacher Antwort getrennt.
 
 ## UX Risks
-1. Feldinstabilität bei Bezügen oder Retrieval-Details kann Copy und Disclosure destabilisieren.
-2. Uneinheitliche State Trigger können inkonsistente Inline Zustände erzeugen.
-3. Mobile Sticky Bar kann Inhalt verdecken, falls Safe-Area oder Bottom-Spacing fehlt.
-4. Zu viele Retrieval-Details können den ruhigen Erstkontakt brechen.
+1. Instabile Datenfelder destabilisieren Copy und Layout.
+2. Uneinheitliche State-Trigger erzeugen inkonsistente UX.
+3. Zu viele technische Details brechen den Erstkontakt.
 
 ## Entscheidungen
-1. Header und Footer sind full width mit geringer visueller Höhe.
-2. Content bleibt zentriert mit max width und klarer vertikaler Hierarchie.
-3. Mobile Primary Action ist als Sticky Footer Bar verbindlich im Mock.
-4. States bleiben ausschließlich inline im Antwortbereich.
-5. Retrieval-Details sind nur als optionale zweite Disclosure sichtbar.
-6. UI Copy ist zwischen UX Dokumenten und Mock sprachlich harmonisiert.
-7. Mock zeigt als Referenz die Hauptansicht in Variante B.
+1. States bleiben inline und nicht in dauerhaften Nebenflaechen.
+2. Hauptantwort bleibt vor Nebensignalen priorisiert.
+3. Disclosure nur dort, wo sie Verstaendlichkeit verbessert.
 
 ## Next Instructions
-1. Architect-Antwort zu verpflichtenden Feldern für Bezüge und Retrieval-Details einarbeiten.
-2. Architect soll die technische Triggerregel für Empty und Error verbindlich definieren.
-3. Architect soll klären, ob eine verlässliche relative Warteangabe für Rate Limit bereitsteht.
-4. Dev-Handoff soll Mobile Sticky Bar Spacing und Safe-Area explizit prüfen.
+1. Offene Feldfragen mit Architect abstimmen.
+2. Handoffs auf konkrete Decisions und offene Fragen begrenzen.
+3. UX-Copy entlang derselben State-Definitionen konsistent halten.
