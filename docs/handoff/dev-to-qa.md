@@ -1,53 +1,23 @@
-# Dev to QA Handoff
+# Dev Handoff E1-S1
 
 ## Was ist fertig
-1. `apps/web` ist als Next.js `16.1.6` App mit TypeScript und `strict=true` aufgebaut.
-2. Tailwind ist aktiv, shadcn/ui-Basis ist vorbereitet (`components.json`, `cn` Utility, `Button` Basis).
-3. Atomic-Design-Grundstruktur ist angelegt: `atoms`, `molecules`, `organisms`, `templates`.
-4. API-Skelett für `POST /api/query` ist vorhanden unter `src/app/api/query/route.ts`.
-5. Request-Validierung und Contract-nahes Response-Mapping sind als Bootstrap-Logik implementiert.
-6. Env-Handling ist vorbereitet mit `apps/web/.env.example` und lokaler `apps/web/.env.local`.
-7. Tests und Verifikationsbefehle sind eingerichtet und erfolgreich ausgeführt.
+1. Fachliche Ontologie fuer Story `E1-S1` ist implementiert und dokumentiert unter `apps/web/src/features/ontology/`.
+2. Node-Typen `Concept`, `Author`, `Book`, `Problem` sind als feste Typmenge definiert.
+3. Erlaubte Relationen `WROTE`, `EXPLAINS`, `ADDRESSES`, `RELATES_TO`, `INFLUENCES`, `CONTRASTS_WITH` inklusive Source-Target-Matrix sind umgesetzt.
+4. Validierungs-Helper `isAllowedOntologyRelation` ist vorhanden.
+5. Unit-Tests fuer Vollstaendigkeit und Relationserlaubnis sind vorhanden.
 
-## Welche Stories wurden umgesetzt
-1. Keine fachliche Story umgesetzt.
-2. Dieser Run ist reines `RUN_MODE=bootstrap` Grundgerüst.
+## Wie kann QA testen
+1. In `apps/web` wechseln.
+2. `pnpm test` ausfuehren und auf gruenen Lauf inkl. `src/features/ontology/ontology.test.ts` pruefen.
+3. Optional Gesamtpruefung laufen lassen: `pnpm lint` und `pnpm build`.
+4. Dokumentationssicht pruefen: `apps/web/src/features/ontology/README.md` muss alle vier Node-Typen und alle sechs erlaubten Relationen enthalten.
 
-## Wie QA lokal testen kann
-1. In das Projektverzeichnis wechseln.
-2. `cd apps/web`
-3. `pnpm install --frozen-lockfile` ausführen.
-4. `pnpm lint`
-5. `pnpm test`
-6. `pnpm build`
-7. Optional Laufzeitstart: `pnpm dev` und danach Request ausführen:
-```bash
-curl -s -X POST http://localhost:3000/api/query \
-  -H 'Content-Type: application/json' \
-  -d '{"query":"Wie wirken Feedback Loops auf lokale Optimierung?"}'
-```
-
-## Testdaten oder Seeds
-1. Für den Bootstrap sind keine Seed-Daten erforderlich.
-2. Der Endpoint liefert absichtlich ein `state=empty` Bootstrap-Response.
-
-## Bekannte Einschränkungen
-1. Retrieval-Pipeline gegen Neo4j ist noch nicht implementiert.
-2. OpenAI-Aufruf ist noch nicht implementiert.
-3. Rate-Limit-Adapter ist noch nicht implementiert.
-4. Endpoint dient aktuell als Contract-Skelett und nicht als fachliche Antwortpipeline.
+## Bekannte Einschraenkungen
+1. Die Story liefert nur die fachliche Ontologie-Definition, noch keine Seed-Daten oder Neo4j-Constraints-Ausfuehrung.
+2. Es gibt keinen separaten Runtime-Endpoint fuer Ontologie-Inspektion im Scope dieser Story.
 
 ## Erwartete Failure Modes
-1. Fehlendes `OPENAI_MODEL` liefert `500 INTERNAL_ERROR`.
-2. Ungültiger Request-Body liefert `400 INVALID_REQUEST`.
-3. Fachliche States wie `answer` fehlen bis zu den Story-Implementierungen.
-
-## Verifikationskommandos und Ergebnis
-1. `pnpm lint` erfolgreich.
-2. `pnpm test` erfolgreich, 2 Testdateien und 5 Tests bestanden.
-3. `pnpm typecheck` erfolgreich.
-4. `pnpm build` erfolgreich, Route `/api/query` gebaut.
-
-## Blocker
-1. Keine Docker-Setup-Artefakte für lokales Neo4j im Dev-Schreibbereich vorhanden.
-2. Falls Docker-Artefakte unter nicht erlaubten Pfaden ergänzt werden müssen, ist Architect oder DevOps-Handover erforderlich.
+1. Bei unvollstaendiger Ontologie-Definition schlagen `ontology.test.ts` Assertions fehl.
+2. Bei versehentlicher Aenderung erlaubter Relationsrichtungen schlaegt der Testfall fuer erlaubte versus unerlaubte Relationen fehl.
+3. Bei TypeScript-Fehlern im Ontologie-Modul scheitert `pnpm build` im Type-Check-Schritt.

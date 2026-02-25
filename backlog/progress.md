@@ -21,7 +21,7 @@
 ## Story Übersicht
 | Story-Datei | Titel | Status | Letztes Update |
 | --- | --- | --- | --- |
-| `e1-s1-ontologie-fachlich-definieren.md` | E1-S1 Ontologie fachlich definieren | `todo` | 2026-02-25 |
+| `e1-s1-ontologie-fachlich-definieren.md` | E1-S1 Ontologie fachlich definieren | `qa` | 2026-02-25 |
 | `e1-s2-seed-datenbasis-erzeugen.md` | E1-S2 Seed-Datenbasis im MVP-Rahmen erzeugen | `todo` | 2026-02-25 |
 | `e1-s3-datenbasis-verfuegbar-machen.md` | E1-S3 Datenbasis im Zielbetrieb verfügbar machen | `todo` | 2026-02-25 |
 | `e1-s4-qualitaetspruefung-seed-daten.md` | E1-S4 Qualitätsprüfung für Seed-Daten ausführen | `todo` | 2026-02-25 |
