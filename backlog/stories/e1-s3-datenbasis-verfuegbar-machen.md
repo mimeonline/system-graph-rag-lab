@@ -1,7 +1,7 @@
 # Story E1-S3 Normalisierte Datenbasis im Zielbetrieb verfügbar machen
 
 ## Status
-qa
+accepted
 
 ## Ziel
 Die normalisierte Seed-Datenbasis im lokalen Zielbetrieb mit Next.js Runtime und Neo4j Docker über echte Neo4j-Lesezugriffe abrufbar bereitstellen.

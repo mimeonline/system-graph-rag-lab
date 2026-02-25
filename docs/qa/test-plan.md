@@ -2,43 +2,44 @@
 
 ## Teststrategie
 ### Unit
-1. Verbindlicher Mindestlauf pro Story ist ein story-naher Testlauf plus Projektregression in `apps/web`.
-2. Fuer `E1-S2` ist der Pflichtlauf `pnpm --dir apps/web test -- src/features/seed-data/seed-data.test.ts`.
-3. Zusaetzlicher Regressionslauf fuer `E1-S2` ist `pnpm --dir apps/web test`.
+1. Verbindlicher Mindestlauf pro Story ist der projektweite Testlauf in `apps/web`.
+2. Fuer `E1-S3` deckt `src/features/seed-data/runtime-read.test.ts` Fehlerszenarien fuer fehlende Neo4j-Runtime-Variablen ab.
+3. Regression fuer bereits freigegebene Storys bleibt mit `pnpm --dir apps/web test` aktiv.
 
 ### Integration
-1. Story-Artefakte werden gegen Akzeptanzkriterien und Dev-Handoff geprueft.
-2. Fuer `E1-S2` werden Quellenkatalog, Herkunftstypen, `internalSource` und `publicReference` in `seed-data.ts` und `README.md` abgeglichen.
-3. Konsistenzcheck erfolgt gegen Ontologie-Regeln aus `docs/architecture/data-model.md`.
+1. Story `E1-S3` wird ueber echten Neo4j-Zugriff gegen den lokalen Zielbetrieb geprueft.
+2. Pflicht ist ein Runtime-Read mit echten Nodes und Relationen inklusive `sourceType` und `sourceFile`.
+3. Der Integrationslauf wird mit reproduzierbarem Command und Exit-Code dokumentiert.
 
 ### E2E minimal
-1. Fuer `E1-S2` ist kein Runtime-E2E gegen Vercel oder Aura gate-kritisch.
-2. E2E bleibt fuer `E1-S3` und spaetere Retrieval-Stories verpflichtend.
+1. Fuer `E1-S3` ist ein lokaler Zielbetriebs-Smoke Pflicht, kein Vercel-Aura-Livecheck.
+2. Vercel und Aura End-to-End bleiben fuer spaetere E4 und E5 Gates verpflichtend.
 
 ## Testumgebung
 ### local
-1. Ausfuehrung in `apps/web` mit lokalem Node- und Package-Setup.
-2. Ausgefuehrte QA-Checks fuer `E1-S2`: `pnpm --dir apps/web test -- src/features/seed-data/seed-data.test.ts`, `pnpm --dir apps/web lint`, `pnpm --dir apps/web test`, `pnpm --dir apps/web build`.
+1. Lauf in `apps/web` mit Next.js und lokalem Neo4j-Docker `neo4j:5.26.0`.
+2. Ausgefuehrte QA-Checks: `pnpm --dir apps/web lint`, `pnpm --dir apps/web test`, `pnpm --dir apps/web build`.
+3. Neo4j-Read-Smoke: `pnpm --dir apps/web exec vitest run src/features/seed-data/runtime-read.test.ts --testNamePattern "integration with neo4j|reads real nodes"`.
 
 ### vercel
-1. Fuer `E1-S2` nicht erforderlich, da Story keine Public-Runtime-Abfrage im AK fordert.
-2. Verbindlich ab `E1-S3`.
+1. Fuer den Story-Gate `E1-S3` nicht im Scope.
+2. Public-Profil bleibt Epic-Risiko bis E4-Gates.
 
 ### aura
-1. Fuer `E1-S2` nicht erforderlich, da Story auf kuratierte Quellenbasis im Code abzielt.
-2. Verbindlich ab `E1-S3` und `E1-S4`.
+1. Fuer den Story-Gate `E1-S3` nicht im Scope.
+2. Contract-Paritaet zu Aura bleibt offener Epic-Risikopunkt.
 
 ## Testdaten und Seed Voraussetzungen
-1. Keine externen Seeds erforderlich.
-2. Seed-Daten liegen deterministisch in `apps/web/src/features/seed-data/seed-data.ts`.
-3. Erwartete Herkunftstypen sind nur `primary_md` und `optional_internet`.
+1. Lokaler Container `neo4j-local` muss laufen und Port `7687` bereitstellen.
+2. Runtime-Variablen `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD` muessen gesetzt sein.
+3. Der Integrationslauf schreibt Marker-Nodes und Marker-Edges in Neo4j und entfernt sie im Cleanup.
 
 ## Abnahmekriterien
-### Story E1-S2 Szenario
-1. Given: eine freigegebene Ontologie und bereitgestellte MD-Quellen.
-2. When: die Quellen fuer die Seed-Datenbasis gesichtet und kuratiert werden.
-3. Then: der Quellenkatalog enthaelt relevante bereitgestellte MD-Quellen, dokumentiert je Quelle `primary_md` oder `optional_internet` und markiert optionale Internet-Quellen nur als dokumentierte Lueckenergaenzung.
+### Story E1-S3 Szenario
+1. Given: normalisierte Seed-Datenbasis mit Herkunftskennzeichnung, laufende lokale Next.js Runtime und Neo4j-Docker mit gesetzten `NEO4J_*`-Variablen.
+2. When: Runtime-Read der lokal gestarteten Anwendung liest echte Nodes und Relationen direkt aus Neo4j.
+3. Then: Nodes und Relationen werden fehlerfrei gelesen, Herkunftskennzeichnung `primary_md` oder `optional_internet` bleibt abrufbar, und der Lese-Smoke ist reproduzierbar dokumentiert.
 
 ### Gate-Regel
-1. Story-Gate ist Pass, wenn Szenario, Pflichtkommandos und Dokumentationsabgleich reproduzierbar bestanden sind.
-2. Story-Gate ist Fail, wenn ein Akzeptanzkriterium, ein Pflichtkommando oder die Herkunftskennzeichnung nicht reproduzierbar belegt ist.
+1. Story-Gate ist Pass, wenn Szenario und alle Pflichtkommandos reproduzierbar bestanden sind.
+2. Story-Gate ist Fail, wenn der Neo4j-Read-Smoke nicht laeuft oder Herkunftsfelder nicht contract-konform geliefert werden.

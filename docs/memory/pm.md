@@ -22,16 +22,19 @@ Oeffentlich erreichbares GraphRAG-MVP mit klar getrenntem Delivery-Schnitt: E1 l
 3. QA-Evidenz fuer lokale und Public-Nachweise bleibt in den nachfolgenden Story-Runs sauber getrennt dokumentiert.
 
 ## Open Decisions
-1. PM-Entscheidung vom 2026-02-25: `E1-S3` bleibt auf `qa` bis QA-`pass` mit lokalem Lese-Smoke-Test-Evidenzpaket vorliegt.
+1. PM-Entscheidung vom 2026-02-25: `E1-S3` ist nach QA-`Pass` und fehlendem Story-Gate-Blocker auf `accepted` freigegeben und in `backlog/progress.md` synchronisiert.
 2. PM-Entscheidung vom 2026-02-25: `E4-S5` ist als Public-Voraussetzungsstory im Backlog fixiert und vor den operativen Public-Storys einzuordnen.
 3. PM-Entscheidung vom 2026-02-25: `E1-S6` ist als verbindliche Folge-Story nach `E1-S3` im Epic E1 gefuehrt und in `backlog/progress.md` mit Status `todo` nachgezogen.
 4. Offen bleibt, in welcher Reihenfolge E4-S1 bis E4-S4 nach Abschluss von E4-S5 zuerst in `in_progress` gesetzt werden.
+5. Offen bleibt die Prozessklaerung der Story-Abhaengigkeit `E1-S3` zu `E1-S5`, waehrend `E1-S3` bereits `accepted` ist und `E1-S5` noch `todo` steht.
 
 ## Risks to Monitor
 1. Abnahme-Risiko durch Nachweisvermischung zwischen lokalem E1-Zielbetrieb und Public-E4-Zielbetrieb.
 2. Tracking-Risiko bei Status-Divergenz zwischen Story-Dateien, Epic-Dateien und `backlog/progress.md`.
 3. Gate-Risiko pro Epic, solange Security- und DevOps-Nachweise fuer E1 und E4 noch nicht dokumentiert sind.
 4. Sequenzrisiko, falls E4-S5 als Voraussetzung umgangen wird und Public-Storys ohne Plattformgrundlage starten.
+5. Prozessrisiko in E1 durch offene Abhaengigkeitsreihenfolge `E1-S3` und `E1-S5` trotz Story-Abnahme.
+6. Epic-Gate-Risiko fuer E1 bleibt bestehen, solange `E1-S4` und `E1-S5` kein QA-`pass` erreicht haben.
 
 ## Next Instructions for PM Agent
 1. Erzwinge die Trennung im Wording und in der Abnahme: E1 lokal, E4 public.
@@ -40,3 +43,5 @@ Oeffentlich erreichbares GraphRAG-MVP mit klar getrenntem Delivery-Schnitt: E1 l
 4. Fuehre E4 nach Start der ersten nicht-`todo`-Story sofort auf Epic-Status `in_progress`.
 5. Markiere Epic-Abschluss nur mit dokumentierten QA-, Security- und DevOps-Gates.
 6. Halte `E1-S6` bis zum Dev-Start auf `todo` und erwarte bei Start den unmittelbaren Wechsel auf `in_progress` samt Progress-Sync.
+7. Klaere vor E1-Epic-Abnahme die Reihenfolge und Begruendung der Abhaengigkeit `E1-S3` zu `E1-S5` verbindlich im Backlog.
+8. Treibe E1 nach `E1-S3 accepted` entlang der offenen QA-Pfade `E1-S5` und `E1-S4`, bevor ein Epic-Abschluss geprueft wird.
