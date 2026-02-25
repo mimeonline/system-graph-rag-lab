@@ -6,10 +6,11 @@
 3. Neo4j Aura Container als verwaltete Graph Datenbank.
 4. Vercel KV Container als verteilte Rate Limit Ablage.
 5. Observability Minimal als strukturierte Vercel Runtime Logs.
+6. Dieses C4 Artefakt beschreibt das Laufzeitprofil `public`; das Profil `local` ist in `docs/architecture/deployment-view.md` spezifiziert.
 
 ## Tech Stack und Lauforte
 1. Monorepo Deployable: eine Next.js Anwendung für UI und API Layer.
-2. Web Stack: Next.js `16.1.6` App Router mit React, Tailwind CSS und shadcn/ui.
+2. Web Stack: Next.js `16.1.6` App Router mit React, TypeScript, Tailwind CSS und shadcn/ui.
 3. UI Architekturpattern: Atomic Design.
 4. API Stack: Next.js Route Handler `app/api/query/route.ts` ohne separaten API Service.
 5. Runtime: Vercel Node.js Runtime für den Route Handler.
@@ -17,6 +18,7 @@
 7. LLM Connector: OpenAI API für Embeddings und Antwortgenerierung.
 8. Rate Limit Stack: Vercel KV als zentraler Fixed Window Counter.
 9. Logging Stack: `console` als strukturierte JSON Events in Vercel Runtime Logs.
+10. Secret und Key Konfiguration erfolgt über Runtime Environment Variables, lokal über `.env.local` oder `.env` und public über Vercel Environment Variables.
 
 ## Containerdetails
 ### Web UI
@@ -33,6 +35,7 @@
 6. Formatiert den LLM Kontext deterministisch.
 7. Ruft OpenAI API auf und mapped Ergebnis in Response Schema.
 8. Schreibt minimale Observability Felder in strukturierte Logs.
+9. Liest Secrets und Keys nur aus Environment Variables und nicht aus versionierten Dateien.
 
 ### Neo4j Aura
 1. Hält Node Types `Concept`, `Author`, `Book`, `Problem`.

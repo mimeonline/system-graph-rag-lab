@@ -1,10 +1,21 @@
 # API Definition Public MVP
 
 ## Runtime und API Grenze
-1. API und Web UI laufen im selben Next.js `16.1.6` Projekt auf Vercel.
+1. API und Web UI laufen in derselben Next.js `16.1.6` Anwendung mit TypeScript.
 2. Der API Layer wird als Next.js Route Handler für `POST /api/query` umgesetzt.
 3. Der Handler liegt in `app/api/query/route.ts`.
 4. Es gibt im MVP keinen separaten API Service.
+
+## Laufzeitprofile
+1. Profil `public`: Next.js auf Vercel, Neo4j Aura, Vercel KV.
+2. Profil `local`: Next.js lokal auf `http://localhost:3000`, Neo4j Docker auf localhost, prozesslokaler Rate Limit Store.
+3. Endpoint, Request und Response Schema sind in beiden Profilen identisch.
+
+## Runtime Konfiguration und Secret Handling
+1. Secrets und Keys werden ausschließlich als Environment Variables geladen.
+2. Profil `local` nutzt `.env.local`, optional `.env` als Fallback.
+3. Profil `public` nutzt ausschließlich Vercel Environment Variables.
+4. `.env` und `.env.local` sind nicht versioniert und dürfen keine Repository Artefakte werden.
 
 ## Endpoint
 1. Methode: `POST`
@@ -92,23 +103,24 @@
 1. `400 INVALID_REQUEST`: Request Schema oder Query Regeln verletzt.
 2. `429 RATE_LIMIT`: Ratenlimit überschritten.
 3. `502 LLM_UPSTREAM_ERROR`: Fehler bei OpenAI API Aufruf.
-4. `503 GRAPH_BACKEND_UNAVAILABLE`: Neo4j Aura nicht verfügbar.
+4. `503 GRAPH_BACKEND_UNAVAILABLE`: Neo4j Backend nicht verfügbar.
 5. `504 UPSTREAM_TIMEOUT`: Upstream Antwortzeit überschritten.
 6. `500 INTERNAL_ERROR`: Unerwarteter interner Fehler.
 
 ## Rate Limit Contract
-1. Durchsetzung erfolgt serverless konsistent über einen zentralen Vercel KV Fixed Window Counter pro `clientKey` und Route.
-2. Standardlimit ist 10 Requests pro 60 Sekunden je Client IP.
-3. Bei `429` wird Header `Retry-After` gesetzt.
-4. Bei `429` enthält Body `error.retryAfterSeconds` als ganzzahlige Wartezeit.
-5. `Retry-After` und `error.retryAfterSeconds` müssen denselben ganzzahligen Wert tragen.
-6. Die Wartezeit wird aus der verbleibenden TTL des aktiven Fensters abgeleitet.
-7. Erfolgsresponse enthält in `meta.rateLimit` `limit`, `windowSeconds` und `remaining`.
+1. Profil `public` nutzt einen zentralen Vercel KV Fixed Window Counter pro `clientKey` und Route.
+2. Profil `local` nutzt einen prozesslokalen Fixed Window Counter pro `clientKey` und Route.
+3. Standardlimit ist 10 Requests pro 60 Sekunden je Client IP.
+4. Bei `429` wird Header `Retry-After` gesetzt.
+5. Bei `429` enthält Body `error.retryAfterSeconds` als ganzzahlige Wartezeit.
+6. `Retry-After` und `error.retryAfterSeconds` müssen denselben ganzzahligen Wert tragen.
+7. Die Wartezeit wird aus der verbleibenden TTL des aktiven Fensters abgeleitet.
+8. Erfolgsresponse enthält in `meta.rateLimit` `limit`, `windowSeconds` und `remaining`.
 
 ## Observability Contract Minimal
 1. Quelle ist ausschließlich der Next.js Route Handler.
 2. Pro Request wird genau ein strukturiertes Abschluss Event als JSON geloggt.
-3. Logziel ist Vercel Runtime Logs ohne separates Telemetrie System im MVP.
+3. Logziel ist profilabhängig: Vercel Runtime Logs in `public`, lokaler Log Stream in `local`.
 4. Pflichtfelder im Event sind `requestId`, `route`, `method`, `statusCode`, `latencyMs`, `topK`, `hopDepth`, `retrievedNodeCount`, `contextTokens`, `rateLimitTriggered`, `errorCode`.
 5. `route` ist immer `/api/query`.
 6. `method` ist immer `POST`.
@@ -137,3 +149,10 @@
 2. Empty: `status="ok"` und `answer.main` enthält den Fallback Hinweis bei zu geringer Evidenz.
 3. Error: `status="error"` mit Code außer `RATE_LIMIT`.
 4. Rate Limit: `status="error"` mit Code `RATE_LIMIT`.
+
+## Lokale Betriebsannahmen
+1. Lokale API Basis ist `http://localhost:3000`.
+2. Lokales Graph Backend ist Neo4j Docker auf `bolt://localhost:7687`.
+3. Für End to End Antwortgenerierung bleibt `OPENAI_API_KEY` erforderlich.
+4. Die API darf lokal ohne Vercel KV Credentials startbar sein.
+5. Lokale Secrets und Keys werden aus `.env.local` geladen, optional aus `.env`.

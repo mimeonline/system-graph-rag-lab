@@ -3,6 +3,12 @@
 ## Ziel
 1. Der Contract definiert die feste Retrieval Schnittstelle zwischen API Layer und LLM Kontextbau.
 2. Der Contract ist deterministisch, budgetiert und testbar.
+3. Der Contract gilt identisch für die Laufzeitprofile `public` und `local`.
+
+## Laufzeitprofile
+1. Profil `public` nutzt Neo4j Aura als Graph Backend.
+2. Profil `local` nutzt Neo4j Docker auf localhost als Graph Backend.
+3. Retrieval Parameter, Sortierung, Dedupe und Budgetregeln bleiben in beiden Profilen identisch.
 
 ## Konstante Parameter
 1. `TOP_K = 6`
@@ -106,6 +112,11 @@
 2. Pfadsortierung je Evidenz: `sourceNodeId ASC`, `relationType ASC`, `targetNodeId ASC`.
 3. Floating Scores werden auf 6 Nachkommastellen gerundet.
 4. Gleiches Input Payload muss bei unverändertem Graph identisches Output Ranking liefern.
+
+## Lokale Betriebsannahmen
+1. Local Profil nutzt dieselben Node Types, Relationstypen, Constraints und Vektorindex Vorgaben wie public.
+2. Local Profil gilt nur dann als reproduzierbar, wenn die lokale Datenbasis gegenüber dem Referenzsnapshot nicht driftet.
+3. Unterschiede zwischen Neo4j Aura und Neo4j Docker dürfen den Retrieval Contract nicht verändern.
 
 ## Testkriterien für QA
 1. Gleiches Query Input auf gleichem Graph liefert identische `evidence.rank` Reihenfolge.

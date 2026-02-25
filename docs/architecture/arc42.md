@@ -3,34 +3,57 @@
 ## Kontext und Ziel
 1. Das System liefert für System Thinking Fragen eine strukturierte Antwort mit nachvollziehbaren Referenzkonzepten.
 2. Die Systemgrenze umfasst eine einzelne Next.js Anwendung mit Web UI und API Layer.
-3. Externe Systeme sind OpenAI API für Embeddings und Antwortgenerierung, Neo4j Aura für Graph und Vektorindex sowie Vercel als Laufzeit inklusive Vercel KV für Rate Limits.
-4. Ziel für MVP ist eine öffentlich erreichbare, testbare und kostenkontrollierte End to End Pipeline ohne Scope Erweiterung.
+3. Public Runtime bleibt unverändert auf Vercel mit Neo4j Aura, OpenAI API und Vercel KV.
+4. Local Dev nutzt dieselbe Anwendungsgrenze mit Next.js lokal und Neo4j im Docker Container.
+5. Ziel für MVP bleibt eine öffentlich erreichbare, testbare und kostenkontrollierte End to End Pipeline ohne Scope Erweiterung.
 
 ### Mermaid Kontextdiagramm
 ```mermaid
 flowchart LR
   user[Public User]
+  dev[Dev auf lokaler Maschine]
   system[System GraphRAG Public MVP\nBlackbox]
-  neo4j[Neo4j Aura]
+  neo4jAura[Neo4j Aura]
+  neo4jLocal[Neo4j Docker Local]
   openai[OpenAI API]
   kv[Vercel KV]
+  rlLocal[Local Fixed Window Store]
   logs[Vercel Runtime Logs]
 
-  user -->|Frage stellen| system
+  user -->|Frage stellen public| system
+  dev -->|Frage stellen local| system
   system -->|Antwort mit Bezügen| user
-  system <-->|Graph-Daten lesen| neo4j
-  system <-->|LLM-Dienst nutzen| openai
-  system <-->|Rate-Limit Status prüfen| kv
-  system -->|Technische Laufzeit-Logs| logs
+  system -->|Antwort mit Bezügen| dev
+  system <-->|Graph-Daten public| neo4jAura
+  system <-->|Graph-Daten local| neo4jLocal
+  system <-->|LLM-Dienst| openai
+  system <-->|Rate-Limit public| kv
+  system <-->|Rate-Limit local| rlLocal
+  system -->|Technische Laufzeit-Logs public| logs
 ```
 
 ## Lösungsstrategie
 1. Eine monolithische Laufzeiteinheit auf Next.js reduziert Integrationsaufwand zwischen UI und API.
-2. Tech Stack ist verbindlich auf Next.js `16.1.6`, Tailwind CSS, shadcn/ui und Atomic Design festgelegt.
+2. Tech Stack ist verbindlich auf Next.js `16.1.6` mit TypeScript, Tailwind CSS, shadcn/ui und Atomic Design festgelegt.
 3. Retrieval läuft kontraktbasiert mit festen Parametern `TopK=6`, `HopDepth=1`, `ContextBudget=1400`.
 4. Kontextaufbau ist deterministisch durch feste Sortierung, Dedupe pro `nodeId` und harte Budgetregeln.
 5. Antwortaufbau trennt Hauptantwort, Kernnachweis und Referenzen für klare QA Prüfbarkeit.
 6. Betriebsfähigkeit wird durch minimale Guardrails abgesichert: Rate Limit, strukturierte Logs, standardisierte Fehlercodes.
+7. Runtime Unterschiede zwischen `public` und `local` sind explizit dokumentiert, Contracts bleiben identisch.
+
+## Laufzeitprofile
+### Profil public
+1. Hosting erfolgt auf Vercel.
+2. Graph Backend ist Neo4j Aura.
+3. Rate Limit Store ist Vercel KV.
+4. Observability Ziel ist Vercel Runtime Logs.
+
+### Profil local
+1. Hosting erfolgt lokal mit Next.js Development Runtime auf `http://localhost:3000`.
+2. Graph Backend ist Neo4j Docker auf der lokalen Maschine.
+3. Rate Limit Store ist ein prozesslokaler Fixed Window Store.
+4. Observability erfolgt lokal strukturiert im Development Log Stream.
+5. API Contract, Retrieval Parameter und Fehlercodes sind identisch zum Profil `public`.
 
 ## Bausteinsicht Container Ebene
 ### Web UI
@@ -43,36 +66,41 @@ flowchart LR
 3. Führt Retrieval und LLM Aufruf aus und mappt auf das feste Response Schema.
 4. Schreibt genau ein strukturiertes Abschluss Log Event pro Request.
 
-### Neo4j Aura
-1. Speichert `Concept`, `Author`, `Book`, `Problem` inklusive Relationen.
-2. Liefert Vektor Seeds und Hop Expansion gemäß Retrieval Contract.
+### Graph Backend
+1. Public Profil nutzt Neo4j Aura.
+2. Local Profil nutzt Neo4j Docker mit identischem Datenmodell und Vektorindex Anforderungen.
+3. Beide Profile nutzen Node Types `Concept`, `Author`, `Book`, `Problem` und identische Relationstypen.
 
 ### OpenAI API
 1. Liefert Query Embedding für Seed Suche.
 2. Liefert finale Antwortgenerierung auf Basis des strukturierten Retrieval Kontextes.
 
-### Vercel KV
-1. Erzwingt instanzübergreifend konsistentes Fixed Window Rate Limiting.
-2. Liefert die TTL Grundlage für `Retry-After` und `retryAfterSeconds`.
+### Rate Limit Store
+1. Public Profil nutzt Vercel KV mit zentralem Fixed Window Counter.
+2. Local Profil nutzt prozesslokalen Fixed Window Counter mit denselben Grenzwerten.
+3. Contract Verhalten für `429`, `Retry-After` und `retryAfterSeconds` bleibt identisch.
 
 ### Observability Minimal
-1. Verwendet Vercel Runtime Logs als einziges MVP Beobachtungsziel.
-2. Nutzt feste Pflichtfelder für Betriebssicht und QA Reproduzierbarkeit.
+1. Quelle ist der API Layer.
+2. Pro Request wird genau ein strukturiertes Abschluss Event geschrieben.
+3. Pflichtfelder bleiben in beiden Profilen identisch.
 
 ### Mermaid Containerdiagramm
 ```mermaid
 flowchart LR
   web[Web UI Container]
   api[API Layer Container]
-  neo4j[Neo4j Aura Container]
+  graph[Graph Backend Container]
   openai[OpenAI API]
-  kv[Vercel KV]
+  kv[Vercel KV public]
+  rlLocal[Local Rate Limit Store]
   obs[Observability Minimal]
 
   web -->|POST /api/query| api
   api -->|Embedding und Completion| openai
-  api -->|Seed Retrieval und Hop Expansion| neo4j
-  api -->|Rate-Limit Counter| kv
+  api -->|Seed Retrieval und Hop Expansion| graph
+  api -->|Rate-Limit public| kv
+  api -->|Rate-Limit local| rlLocal
   api -->|Structured Events| obs
   api -->|Response mit answer und references| web
 ```
@@ -80,9 +108,9 @@ flowchart LR
 ## Laufzeitsicht Query zu Retrieval zu Response
 1. Nutzer sendet eine Frage in der Web UI.
 2. Web UI ruft `POST /api/query` auf.
-3. API Layer validiert Input und prüft Rate Limit über Vercel KV.
+3. API Layer validiert Input und prüft Rate Limit über den profilabhängigen Store.
 4. API Layer erzeugt Query Embedding über OpenAI API.
-5. API Layer lädt TopK Seeds aus Neo4j Aura und erweitert mit Hop Depth 1.
+5. API Layer lädt TopK Seeds aus dem profilabhängigen Graph Backend und erweitert mit Hop Depth 1.
 6. API Layer dedupliziert, sortiert stabil und budgetiert den Kontext.
 7. API Layer ruft OpenAI API mit strukturiertem Kontext auf.
 8. API Layer liefert strukturierte Antwort inklusive Referenzen und Metadaten.
@@ -94,18 +122,17 @@ sequenceDiagram
   participant U as User
   participant W as Web UI
   participant A as API Layer
-  participant K as Vercel KV
-  participant N as Neo4j Aura
+  participant R as Rate Limit Store
+  participant N as Graph Backend
   participant O as OpenAI API
-  participant L as Runtime Logs
+  participant L as Log Stream
 
   U->>W: Frage senden
   W->>A: POST /api/query
-  A->>K: Rate Limit prüfen
-  K-->>A: Limit Status
+  A->>R: Rate Limit prüfen
+  R-->>A: Limit Status
   A->>O: Query Embedding anfordern
-  A->>N: TopK Seeds laden
-  A->>N: Hop Expansion ausführen
+  A->>N: TopK Seeds und Hop Expansion laden
   A->>A: Dedupe, stabile Sortierung, Budgetierung
   A->>O: Antwortgenerierung mit Retrieval Kontext
   A->>L: Abschluss Event schreiben
@@ -114,11 +141,12 @@ sequenceDiagram
 ```
 
 ## Verteilungssicht Deployment
-1. Deploy Target ist Vercel für die Next.js Anwendung.
-2. Datenhaltung liegt in Neo4j Aura als verwalteter externer Dienst.
-3. Quellbasis liegt in GitHub; Secrets werden nur als Runtime Environment Variables gesetzt.
-4. Laufzeitmodell ist serverless und stateless pro Request.
-5. Detaillierte Deployment Sicht inklusive Netzgrenzen, Guardrails und Rollback liegt in [Deployment View](./deployment-view.md).
+1. Deploy Target für Public Runtime bleibt Vercel für die Next.js Anwendung.
+2. Local Dev Topologie ist eine getrennte Betriebsvariante ohne Scope Änderung.
+3. Quellbasis liegt in GitHub; Secrets und Keys werden nur als Runtime Environment Variables gesetzt.
+4. Local Development nutzt `.env.local` und optional `.env`; beide Dateien werden nicht versioniert.
+5. Laufzeitmodell bleibt stateless pro Request.
+6. Detaillierte Deployment Sicht inklusive Profiltrennung liegt in [Deployment View](./deployment-view.md).
 
 ## Querschnittliche Konzepte
 ### Determinismus
@@ -128,9 +156,10 @@ sequenceDiagram
 
 ### Rate Limit
 1. Standardregel ist 10 Requests pro 60 Sekunden je Client IP.
-2. Durchsetzung erfolgt serverless konsistent über Vercel KV als Fixed Window Counter.
-3. Bei Limitüberschreitung liefert die API `429 RATE_LIMIT`, `Retry-After` und `retryAfterSeconds` mit identischem Wert.
-4. Erfolgsantworten liefern verbleibendes Kontingent in `meta.rateLimit`.
+2. Public Profil nutzt Vercel KV als Fixed Window Counter.
+3. Local Profil nutzt einen prozesslokalen Fixed Window Counter mit denselben Contractwerten.
+4. Bei Limitüberschreitung liefert die API `429 RATE_LIMIT`, `Retry-After` und `retryAfterSeconds` mit identischem Wert.
+5. Erfolgsantworten liefern verbleibendes Kontingent in `meta.rateLimit`.
 
 ### Observability
 1. Pro Request genau ein strukturiertes Abschluss Event.
@@ -146,11 +175,13 @@ sequenceDiagram
 1. Deployment und Zielplattform sind in [ADR-0001](./adr/adr-0001.md) festgelegt.
 2. Retrieval Parameter, Budget und Sortierung sind in [ADR-0002](./adr/adr-0002.md) festgelegt.
 3. Tech Stack, API Grenze und minimale Observability sind in [ADR-0003](./adr/adr-0003.md) festgelegt.
-4. Serverless konsistentes Rate Limiting ist in [ADR-0004](./adr/adr-0004.md) festgelegt.
-5. Diese Arc42 Übersicht konsolidiert die bestehenden Entscheidungen ohne neue Scope Vorgaben.
+4. Serverless konsistentes Rate Limiting im Public Profil ist in [ADR-0004](./adr/adr-0004.md) festgelegt.
+5. Local Development Topologie mit Profiltrennung ist in [ADR-0005](./adr/adr-0005.md) festgelegt.
+6. Diese Arc42 Übersicht konsolidiert die bestehenden Entscheidungen ohne neue Scope Vorgaben.
 
 ## Risiken und offene Punkte
-1. Ausfall oder erhöhte Latenz von Vercel KV kann API Latenz erhöhen oder zu `500 INTERNAL_ERROR` führen.
-2. Die technische Trennregel zwischen `state=empty` und schwacher Evidenz muss in Dev Implementierung exakt festgelegt werden.
-3. Modellfixierung und `max_tokens` für Antwortgenerierung sind noch nicht als finale Laufzeitkonfiguration abgeschlossen.
-4. Ein verbindliches CI Gate für Konsistenz zwischen `docs/spec/api.md` und `docs/spec/api.openapi.yaml` fehlt noch.
+1. Paritätsabweichungen zwischen Neo4j Docker local und Neo4j Aura public können Retrieval Unterschiede erzeugen.
+2. OpenAI API bleibt externe Abhängigkeit für End to End Antwortgenerierung.
+3. Die technische Trennregel zwischen `state=empty` und schwacher Evidenz muss in Dev Implementierung exakt festgelegt werden.
+4. Modellfixierung und `max_tokens` für Antwortgenerierung sind noch nicht als finale Laufzeitkonfiguration abgeschlossen.
+5. Ein verbindliches CI Gate für Konsistenz zwischen `docs/spec/api.md` und `docs/spec/api.openapi.yaml` fehlt noch.

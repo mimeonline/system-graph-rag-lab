@@ -5,6 +5,7 @@
 2. Innerhalb der Grenze liegt eine einzelne Next.js Applikation mit Web UI und API Layer im selben Deployable.
 3. Die API Grenze liegt im Next.js Route Handler `POST /api/query`.
 4. Außerhalb der Grenze liegen LLM Inferenz und Graph Datenhaltung.
+5. Dieses C4 Artefakt beschreibt das Laufzeitprofil `public`; das Profil `local` ist in `docs/architecture/deployment-view.md` spezifiziert.
 
 ## Akteure
 1. Public User stellt eine Frage und bewertet Hauptantwort, wichtige Bezüge und Kernnachweis.
