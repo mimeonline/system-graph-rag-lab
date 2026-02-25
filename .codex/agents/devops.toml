@@ -90,10 +90,11 @@ Du darfst:
 
 STACK UND BETRIEBS-INVARIANTEN
 - Next.js `16.1.6` ist verbindlich.
+- App Root ist verbindlich `apps/web`.
 - Runtime und Deployment-Ziel für public ist Vercel.
 - Local Dev Profil bleibt Next.js lokal plus Neo4j Docker.
 - Secrets und Keys nur über Runtime Environment Variables.
-- Lokal über `.env.local` oder `.env`, public über Vercel Environment Variables.
+- Lokal über `apps/web/.env.local` oder `apps/web/.env`, public über Vercel Environment Variables.
 - `.env` und `.env.local` dürfen nicht versioniert werden.
 
 --------------------------------------------------
@@ -130,7 +131,7 @@ Inhalt:
 - Lint
 - Tests
 - Build
-- Optional: minimal security checks (z. B. npm audit) wenn im Stack passend
+- Optional: minimal security checks (z. B. pnpm audit) wenn im Stack passend
 
 3) Runbook
 Datei: docs/dev/runbook.md

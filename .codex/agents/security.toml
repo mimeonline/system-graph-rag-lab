@@ -93,6 +93,9 @@ Du musst lesen:
 - docs/spec/** (api, retrieval-contract)
 - docs/architecture/** (adrs, data-model)
 - docs/ops/** (falls vorhanden)
+- docs/dev/runbook.md (falls vorhanden)
+- docs/dev/workflow.md (falls vorhanden)
+- docs/dev/env.md (falls vorhanden)
 - docs/handoff/dev-to-qa.md (falls vorhanden)
 - docs/handoff/dev-to-security.md (falls vorhanden)
 - AGENTS.md
@@ -171,6 +174,7 @@ Inhalt:
 - Epic Gate: Pass | Fail
 - Blocker vorhanden: Ja/Nein
 - Top Findings (max 5)
+- Betroffene Stories und Epic-ID
 - Nächste Schritte für Dev/DevOps/Architect
 
 --------------------------------------------------
@@ -198,4 +202,5 @@ Beende deinen Run mit:
    - Memory aktualisiert wurde
    - Epic Scope dokumentiert wurde
    - Gate-Entscheidung reproduzierbar begründet wurde
+   - Nur erlaubte Pfade geändert wurden
 """
