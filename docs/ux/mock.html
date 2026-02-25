@@ -3,23 +3,24 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>System GraphRAG Demo UX Mock</title>
+  <title>System GraphRAG Public MVP UX Mock</title>
   <style>
     :root {
-      --bg: #f4f6f8;
+      --bg: #f3f6fa;
       --surface: #ffffff;
-      --surface-alt: #f8fafc;
-      --line: #d9e1e8;
-      --text: #14212b;
-      --text-muted: #526372;
-      --brand: #0b5fff;
-      --brand-soft: #e9f0ff;
-      --ok: #116149;
-      --warn: #9a5f00;
-      --danger: #a1232d;
-      --radius: 14px;
-      --shadow: 0 14px 40px rgba(20, 33, 43, 0.08);
-      --font: "IBM Plex Sans", "Avenir Next", "Segoe UI", sans-serif;
+      --line: #d6dfeb;
+      --text: #162436;
+      --muted: #566981;
+      --primary: #1d63e2;
+      --loading: #2e67da;
+      --empty: #966200;
+      --error: #b4232f;
+      --rate: #1d6b51;
+      --max: 980px;
+      --radius: 12px;
+      --header-h: 60px;
+      --footer-h: 52px;
+      --font: "Manrope", "Avenir Next", "Segoe UI", sans-serif;
     }
 
     * { box-sizing: border-box; }
@@ -28,330 +29,368 @@
       margin: 0;
       font-family: var(--font);
       color: var(--text);
-      background:
-        radial-gradient(circle at 10% 0%, #edf2f8 0%, rgba(237, 242, 248, 0) 45%),
-        linear-gradient(180deg, #f7f9fb 0%, #edf2f6 100%);
-      min-height: 100vh;
+      background: var(--bg);
+      line-height: 1.45;
+    }
+
+    .site-header {
+      width: 100%;
+      height: var(--header-h);
+      border-bottom: 1px solid var(--line);
+      background: #f8fbff;
+      display: flex;
+      align-items: center;
     }
 
     .shell {
-      width: min(1180px, 100% - 2.5rem);
-      margin: 2.25rem auto 3rem;
-      display: grid;
-      gap: 1rem;
-      grid-template-columns: 1fr 320px;
-      align-items: start;
+      width: min(var(--max), 100% - 2rem);
+      margin: 0 auto;
     }
 
-    .panel {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-    }
-
-    .main {
-      padding: 1.3rem;
-      display: grid;
-      gap: 1rem;
-    }
-
-    .meta {
+    .header-row {
       display: flex;
       justify-content: space-between;
-      align-items: start;
+      align-items: center;
       gap: 1rem;
-      padding-bottom: 0.95rem;
-      border-bottom: 1px solid var(--line);
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .brand {
+      font-weight: 700;
+      color: var(--text);
+      letter-spacing: 0.01em;
+    }
+
+    main {
+      width: min(var(--max), 100% - 2rem);
+      margin: 1.1rem auto 1.4rem;
+      display: grid;
+      gap: 0.9rem;
+    }
+
+    .hero {
+      padding: 0.4rem 0 0.2rem;
     }
 
     h1 {
       margin: 0;
       font-size: 1.35rem;
-      letter-spacing: 0.01em;
+      line-height: 1.2;
     }
 
     .subline {
-      margin: 0.38rem 0 0;
-      color: var(--text-muted);
+      margin: 0.45rem 0 0;
+      color: var(--muted);
       font-size: 0.95rem;
-      max-width: 58ch;
-    }
-
-    .badge {
-      white-space: nowrap;
-      background: var(--brand-soft);
-      color: #0a3e9e;
-      border: 1px solid #bfd2ff;
-      border-radius: 999px;
-      padding: 0.35rem 0.75rem;
-      font-size: 0.78rem;
-      font-weight: 600;
+      max-width: 72ch;
     }
 
     .card {
-      background: var(--surface-alt);
       border: 1px solid var(--line);
-      border-radius: 12px;
-      padding: 0.95rem;
+      border-radius: var(--radius);
+      background: var(--surface);
+      padding: 0.9rem;
     }
 
     .label {
-      margin: 0 0 0.5rem;
-      font-size: 0.78rem;
+      margin: 0 0 0.52rem;
+      font-size: 0.77rem;
+      letter-spacing: 0.06em;
       text-transform: uppercase;
-      letter-spacing: 0.08em;
-      color: var(--text-muted);
+      color: var(--muted);
       font-weight: 700;
-    }
-
-    .question-row {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 0.65rem;
-      align-items: center;
     }
 
     textarea {
       width: 100%;
       min-height: 96px;
-      border: 1px solid #c7d3de;
+      border: 1px solid #c4d0df;
       border-radius: 10px;
-      padding: 0.78rem;
+      padding: 0.75rem;
       font: inherit;
       color: var(--text);
-      background: #fff;
       resize: vertical;
+      background: #fcfdff;
     }
 
-    textarea:focus-visible {
-      outline: 3px solid #8eb3ff;
-      outline-offset: 1px;
-      border-color: #0b5fff;
+    .input-actions {
+      margin-top: 0.65rem;
+      display: flex;
+      justify-content: flex-end;
     }
 
-    button {
+    .btn-primary {
       border: 0;
       border-radius: 10px;
-      background: var(--brand);
+      background: var(--primary);
       color: #fff;
-      font-weight: 600;
-      padding: 0.72rem 1rem;
+      font: inherit;
+      font-weight: 700;
+      padding: 0.65rem 1rem;
+      min-width: 170px;
       cursor: default;
-      min-width: 180px;
-    }
-
-    button:focus-visible,
-    summary:focus-visible {
-      outline: 3px solid #8eb3ff;
-      outline-offset: 2px;
     }
 
     .helper {
       margin: 0.5rem 0 0;
-      color: var(--text-muted);
-      font-size: 0.85rem;
+      font-size: 0.84rem;
+      color: var(--muted);
     }
 
     .answer {
-      line-height: 1.5;
-      font-size: 0.98rem;
       margin: 0;
+      font-size: 0.97rem;
     }
 
-    .concept-list {
+    .refs {
+      list-style: none;
       margin: 0;
       padding: 0;
-      list-style: none;
       display: grid;
-      gap: 0.55rem;
+      gap: 0.5rem;
     }
 
-    .concept-item {
-      background: #fff;
-      border: 1px solid #ced8e2;
+    .ref-item {
+      border: 1px solid var(--line);
       border-radius: 10px;
-      padding: 0.6rem 0.7rem;
-      display: grid;
-      gap: 0.24rem;
+      padding: 0.52rem 0.6rem;
+      background: #fbfdff;
     }
 
-    .concept-name {
-      font-weight: 600;
-      font-size: 0.93rem;
-    }
-
-    .concept-meta {
-      font-size: 0.84rem;
-      color: var(--text-muted);
-    }
-
-    details {
-      background: #fff;
-      border: 1px solid #c8d4df;
-      border-radius: 10px;
-      padding: 0.6rem 0.7rem;
-    }
-
-    summary {
-      cursor: default;
-      font-weight: 600;
-      font-size: 0.93rem;
-    }
-
-    .proof {
-      margin: 0.55rem 0 0;
-      padding-left: 1.15rem;
-      color: #273746;
+    .ref-item strong {
+      display: block;
+      margin-bottom: 0.15rem;
       font-size: 0.9rem;
     }
 
-    .states {
-      padding: 1rem;
-      display: grid;
-      gap: 0.7rem;
-      align-content: start;
-      position: sticky;
-      top: 1rem;
+    .ref-item span {
+      font-size: 0.84rem;
+      color: var(--muted);
     }
 
-    h2 {
-      margin: 0;
-      font-size: 1.05rem;
+    details {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #fcfdff;
+      padding: 0.56rem 0.62rem;
+    }
+
+    details + details {
+      margin-top: 0.55rem;
+    }
+
+    summary {
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: default;
+    }
+
+    ol {
+      margin: 0.5rem 0 0;
+      padding-left: 1.1rem;
+      color: #2a3d56;
+      font-size: 0.88rem;
+    }
+
+    .state-list {
+      display: grid;
+      gap: 0.5rem;
+      margin-top: 0.7rem;
     }
 
     .state {
       border: 1px solid var(--line);
       border-left-width: 4px;
       border-radius: 10px;
-      background: #fff;
-      padding: 0.65rem 0.7rem;
-      display: grid;
-      gap: 0.2rem;
+      background: #ffffff;
+      padding: 0.56rem 0.62rem;
     }
 
     .state h3 {
       margin: 0;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
     }
 
     .state p {
-      margin: 0;
+      margin: 0.18rem 0 0;
       font-size: 0.83rem;
-      color: var(--text-muted);
-      line-height: 1.35;
+      color: var(--muted);
     }
 
     .state strong {
+      display: block;
+      margin-top: 0.24rem;
       font-size: 0.8rem;
-      color: #22313e;
+      color: #283b53;
     }
 
-    .loading { border-left-color: var(--brand); }
-    .empty { border-left-color: var(--warn); }
-    .error { border-left-color: var(--danger); }
-    .rate { border-left-color: var(--ok); }
+    .loading { border-left-color: var(--loading); }
+    .empty { border-left-color: var(--empty); }
+    .error { border-left-color: var(--error); }
+    .rate { border-left-color: var(--rate); }
 
-    @media (max-width: 980px) {
+    .site-footer {
+      width: 100%;
+      height: var(--footer-h);
+      border-top: 1px solid var(--line);
+      background: #f8fbff;
+      display: flex;
+      align-items: center;
+      margin-top: 1rem;
+      color: var(--muted);
+      font-size: 0.83rem;
+    }
+
+    .footer-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .mobile-action {
+      display: none;
+    }
+
+    @media (max-width: 780px) {
+      :root {
+        --header-h: 56px;
+      }
+
+      main {
+        width: min(var(--max), 100% - 1rem);
+        margin-top: 0.8rem;
+        padding-bottom: 5.4rem;
+      }
+
       .shell {
-        width: min(760px, 100% - 1.5rem);
-        margin-top: 1.1rem;
-        grid-template-columns: 1fr;
+        width: min(var(--max), 100% - 1rem);
       }
 
-      .states {
-        position: static;
+      h1 {
+        font-size: 1.16rem;
       }
 
-      .question-row {
-        grid-template-columns: 1fr;
+      .subline {
+        font-size: 0.9rem;
       }
 
-      button {
+      .input-actions {
+        display: none;
+      }
+
+      .mobile-action {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 30;
+        display: block;
+        border-top: 1px solid var(--line);
+        background: rgba(248, 251, 255, 0.97);
+        backdrop-filter: blur(4px);
+        padding: 0.62rem 0.7rem calc(0.62rem + env(safe-area-inset-bottom));
+      }
+
+      .mobile-action .btn-primary {
         width: 100%;
+        min-width: 0;
       }
     }
   </style>
 </head>
 <body>
-  <main class="shell">
-    <section class="panel main" aria-label="Hauptansicht">
-      <header class="meta">
-        <div>
-          <h1>System GraphRAG Demo</h1>
-          <p class="subline">Verstehen, wie die Antwort aus dem Graph entsteht, ohne Überforderung im Erstkontakt.</p>
-        </div>
-        <span class="badge">Public MVP · P0 Nachweis</span>
-      </header>
+  <header class="site-header" aria-label="Kopfbereich">
+    <div class="shell header-row">
+      <div class="brand">System GraphRAG Lab</div>
+      <div>Public MVP Demo</div>
+    </div>
+  </header>
 
-      <section class="card" aria-label="Frageeingabe">
-        <p class="label">Frageeingabe</p>
-        <div class="question-row">
-          <textarea aria-label="Deine Systemfrage">Welche Trade offs entstehen bei eventgetriebener Architektur zwischen Entkopplung und operativer Komplexität?</textarea>
-          <button type="button">Frage analysieren</button>
-        </div>
-        <p class="helper">Präzise Frage mit Systemkontext erhöht die Qualität von Antwort und Referenzkonzepten.</p>
-      </section>
-
-      <section class="card" aria-label="Hauptantwort">
-        <p class="label">Hauptantwort</p>
-        <p class="answer">Eventgetriebene Architekturen reduzieren direkte Kopplung zwischen Services, verschieben aber Komplexität in Beobachtbarkeit, Fehlerbehandlung und Konsistenzregeln. Für den MVP-Kontext ist der zentrale Trade off: mehr evolvierbare Schnittstellen gegen höheren Bedarf an operativer Transparenz.</p>
-      </section>
-
-      <section class="card" aria-label="Referenzkonzepte">
-        <p class="label">Referenzkonzepte</p>
-        <ul class="concept-list">
-          <li class="concept-item">
-            <span class="concept-name">Loose Coupling</span>
-            <span class="concept-meta">Direkter Bezug: erklärt den Entkopplungsgewinn im Service-Verbund.</span>
-          </li>
-          <li class="concept-item">
-            <span class="concept-name">Observability</span>
-            <span class="concept-meta">Direkter Bezug: begründet den Mehraufwand für Nachvollziehbarkeit im Betrieb.</span>
-          </li>
-          <li class="concept-item">
-            <span class="concept-name">Eventual Consistency</span>
-            <span class="concept-meta">Direkter Bezug: zeigt die Konsistenzfolgen asynchroner Kommunikation.</span>
-          </li>
-        </ul>
-      </section>
-
-      <section class="card" aria-label="P0 Kernnachweis">
-        <p class="label">P0 Kernnachweis</p>
-        <details open>
-          <summary>Kernnachweis anzeigen</summary>
-          <ol class="proof">
-            <li>Frage priorisiert Trade offs zwischen Entkopplung und Betriebslast.</li>
-            <li>Graph liefert Referenzen zu Kopplung, Beobachtbarkeit und Konsistenz.</li>
-            <li>Antwort leitet daraus den dominanten Zielkonflikt für Architekturentscheidungen ab.</li>
-          </ol>
-        </details>
-      </section>
+  <main>
+    <section class="hero" aria-label="Einführung">
+      <h1>Systemfragen klar beantworten</h1>
+      <p class="subline">Stelle eine Frage und sieh Hauptantwort, wichtige Bezüge und optional die Herleitung in einer ruhigen Ansicht.</p>
     </section>
 
-    <aside class="panel states" aria-label="Zustandsübersicht">
-      <h2>Zustände</h2>
-      <section class="state loading" aria-label="Loading Zustand">
-        <h3>Loading</h3>
-        <p>Antwort wird hergeleitet. Relevante Konzepte werden zusammengeführt.</p>
-        <strong>Aktion: Bitte warten.</strong>
-      </section>
-      <section class="state empty" aria-label="Empty Zustand">
-        <h3>Empty</h3>
-        <p>Keine belastbare Antwort. Für diese Formulierung fehlen passende Konzepte.</p>
-        <strong>Aktion: Frage präzisieren.</strong>
-      </section>
-      <section class="state error" aria-label="Error Zustand">
-        <h3>Error</h3>
-        <p>Anfrage konnte nicht verarbeitet werden. Analyse ist aktuell nicht verfügbar.</p>
-        <strong>Aktion: Erneut versuchen.</strong>
-      </section>
-      <section class="state rate" aria-label="Rate Limit Zustand">
-        <h3>Rate Limit</h3>
-        <p>Zu viele Anfragen in kurzer Zeit. Kurz warten und danach erneut senden.</p>
-        <strong>Aktion: In wenigen Sekunden erneut senden.</strong>
-      </section>
-    </aside>
+    <section class="card" aria-label="Eingabe">
+      <p class="label">Deine Frage</p>
+      <textarea>Welche Zielkonflikte entstehen zwischen Entkopplung und Betriebsaufwand in eventgetriebenen Systemen?</textarea>
+      <div class="input-actions">
+        <button type="button" class="btn-primary">Antwort anzeigen</button>
+      </div>
+      <p class="helper">Je konkreter die Frage, desto präziser werden Antwort und wichtige Bezüge.</p>
+    </section>
+
+    <section class="card" aria-label="Antwortbereich">
+      <p class="label">Antwort</p>
+      <p class="answer">Eventgetriebene Systeme reduzieren direkte Kopplung, erhöhen aber den Bedarf an Beobachtbarkeit, Fehlerbehandlung und Konsistenzregeln. Der Kernkonflikt liegt zwischen flexibler Evolution und höherer Betriebsdisziplin.</p>
+
+      <div class="state-list" aria-label="Inline Zustandsbeispiele">
+        <div class="state loading">
+          <h3>Antwort wird vorbereitet</h3>
+          <p>Relevante Inhalte werden gerade zusammengeführt.</p>
+          <strong>Aktion: Bitte einen Moment warten.</strong>
+        </div>
+        <div class="state empty">
+          <h3>Noch keine passende Antwort</h3>
+          <p>Mit einer konkreteren Frage können wir bessere Bezüge finden.</p>
+          <strong>Aktion: Frage präzisieren.</strong>
+        </div>
+        <div class="state error">
+          <h3>Antwort aktuell nicht verfügbar</h3>
+          <p>Die Anfrage konnte gerade nicht abgeschlossen werden.</p>
+          <strong>Aktion: Erneut versuchen.</strong>
+        </div>
+        <div class="state rate">
+          <h3>Kurz warten</h3>
+          <p>Es wurden gerade viele Anfragen gesendet.</p>
+          <strong>Aktion: In kurzer Zeit erneut senden.</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="card" aria-label="Wichtige Bezüge">
+      <p class="label">Wichtige Bezüge</p>
+      <ul class="refs">
+        <li class="ref-item"><strong>Loose Coupling</strong><span>Beschreibt den Entkopplungsgewinn im Service Verbund.</span></li>
+        <li class="ref-item"><strong>Observability</strong><span>Begründet den Mehraufwand für betriebliche Transparenz.</span></li>
+        <li class="ref-item"><strong>Eventual Consistency</strong><span>Zeigt Folgen asynchroner Kommunikation auf Datenkonsistenz.</span></li>
+      </ul>
+      <p class="helper">Diese Bezüge stützen die Antwort im aktuellen Kontext.</p>
+    </section>
+
+    <section class="card" aria-label="Herleitung und Retrieval Details">
+      <p class="label">So wurde die Antwort hergeleitet</p>
+      <details>
+        <summary>Herleitung anzeigen</summary>
+        <ol>
+          <li>Die Frage priorisiert Zielkonflikte zwischen Entkopplung und Betriebsaufwand.</li>
+          <li>Die Bezüge decken Kopplung, Beobachtbarkeit und Konsistenz ab.</li>
+          <li>Die Antwort verdichtet den dominanten Zielkonflikt im Betriebskontext.</li>
+        </ol>
+      </details>
+      <details>
+        <summary>Retrieval Details anzeigen</summary>
+        <ol>
+          <li>Ausgewählte Bezüge wurden nach Passung zur Frage gewichtet.</li>
+          <li>Die sichtbaren Bezüge repräsentieren den Kernkontext der Antwort.</li>
+        </ol>
+      </details>
+      <p class="helper">Öffne diese Bereiche nur, wenn du den Nachweis vertiefen möchtest.</p>
+    </section>
   </main>
+
+  <footer class="site-footer" aria-label="Fußbereich">
+    <div class="shell footer-row">
+      <div>System GraphRAG Public MVP</div>
+      <div>Ruhige Darstellung mit inline Zuständen</div>
+    </div>
+  </footer>
+
+  <div class="mobile-action" aria-label="Mobile Primäraktion">
+    <button type="button" class="btn-primary">Antwort anzeigen</button>
+  </div>
 </body>
 </html>

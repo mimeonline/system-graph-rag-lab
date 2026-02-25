@@ -1,51 +1,38 @@
 # Wireframes
 
-## Screen Hauptansicht Desktop
+## Hauptansicht Public MVP
 ### Zweck
-1. Erstkontakt von Frage zu Antwort mit nachvollziehbarer Herkunft.
+1. Ruhiger, professioneller Erstkontakt mit klarer Führung von Frage zu Antwort.
 
 ### Layoutstruktur
-1. Zwei Spalten mit breiter Hauptspalte links und Zustandsübersicht rechts.
-2. Linke Spalte folgt der festen Reihenfolge Frageeingabe, Hauptantwort, Referenzkonzepte, P0 Kernnachweis.
+1. Header ist full width, kompakt und visuell zurückhaltend.
+2. Content Area ist zentriert mit fester max width und klarer vertikaler Reihenfolge.
+3. Reihenfolge im Content bleibt verbindlich: Eingabe, Antwortbereich, wichtige Bezüge, Herleitung.
+4. Footer ist full width und schließt die Seite als ruhiger Abschluss.
 
 ### Komponentenrollen
-1. Frageeingabe steuert den Start der Analyse.
-2. Hauptantwort trägt die primäre Information.
-3. Referenzkonzepte stützen die Antwort.
-4. P0 Kernnachweis liefert den knappen Herleitungsbeleg.
-5. Zustandsübersicht zeigt Loading, Empty, Error, Rate Limit mit Aktion.
+1. Header dient nur der Einordnung und trägt keine sekundären Aktionen.
+2. Eingabekarte startet den Hauptfluss.
+3. Antwortbereich zeigt Hauptantwort oder einen Inline Zustand an derselben Stelle.
+4. Wichtige Bezüge stützen die Hauptantwort und bleiben visuell sekundär.
+5. Herleitung ist optional und standardmäßig geschlossen.
+6. Retrieval-Details sind optional und nachgelagert zur Herleitung.
 
 ### Interaktionen
-1. Primäraktion startet Analyse.
-2. Disclosure öffnet oder schließt den Kernnachweis.
-3. Zustandskarten bleiben informativ und nicht interaktiv.
+1. Primäraktion Antwort anzeigen steht auf Desktop direkt in der Eingabekarte.
+2. Primäraktion erscheint auf Mobile als Sticky Footer Bar über volle Breite.
+3. Disclosure 1 öffnet oder schließt die Herleitung.
+4. Disclosure 2 öffnet oder schließt Retrieval-Details als zusätzliche Vertiefung.
 
 ### States
-1. Loading zeigt ruhige Warteführung.
-2. Empty zeigt Hinweis zur Präzisierung.
-3. Error zeigt neutrale Retry Führung.
-4. Rate Limit zeigt kurze Warteführung.
+1. Loading erscheint inline im Antwortbereich mit Warteführung.
+2. Empty erscheint inline im Antwortbereich mit Präzisierungsführung.
+3. Error erscheint inline im Antwortbereich mit Retry Führung.
+4. Rate Limit erscheint inline im Antwortbereich mit kurzer Warteführung.
+5. Es gibt keine permanente Zustands-Seitenleiste.
 
 ### Progressive Disclosure
-1. Hauptantwort ist immer sichtbar vor Detailinformationen.
-2. Nachweis ist reduziert und wird bewusst geöffnet.
-
-## Screen Hauptansicht Mobile
-### Zweck
-1. Erhalt derselben Klarheit auf kleiner Fläche.
-
-### Layoutstruktur
-1. Einspaltiges Stapellayout in derselben Informationsreihenfolge.
-2. Zustandsübersicht steht unter dem Ergebnisbereich.
-
-### Komponentenrollen
-1. Komponenten bleiben identisch zur Desktopansicht.
-
-### Interaktionen
-1. Primäraktion wird volle Breite für klare Touch Bedienung.
-
-### States
-1. Zustände bleiben vollständig sichtbar mit jeweils einer Aktion.
-
-### Progressive Disclosure
-1. Disclosure Verhalten bleibt unverändert.
+1. Stufe 1: Hauptantwort ist direkt sichtbar.
+2. Stufe 2: Wichtige Bezüge sind direkt sichtbar und untergeordnet.
+3. Stufe 3: Herleitung ist optional über Disclosure.
+4. Stufe 4: Retrieval-Details sind optional über zweite Disclosure.

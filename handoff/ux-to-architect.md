@@ -1,49 +1,56 @@
 # UX to Architect Handoff
 
 ## MVP UX Kern
-1. Verbindliche UX Referenzen liegen in `docs/ux/mock.html`, `docs/ux/ui-style.md` und `docs/ux/visual-guidelines.md`.
-2. Primärfluss bleibt unverändert: Frageeingabe, Hauptantwort, Referenzkonzepte, P0 Kernnachweis.
-3. Visual Ziel bleibt ruhig, hochwertig, selbsterklärend und nicht überladen.
-4. Light Theme ist für P0 als verbindlicher Stilrahmen definiert.
+1. Eine ruhige Hauptansicht mit full-width Header, zentrierter Content Area mit max width und full-width Footer.
+2. Verbindliche Reihenfolge im Content: Eingabe, Antwortbereich, wichtige Bezüge, Herleitung.
+3. Primary Action ist auf Mobile als Sticky Footer Bar geführt, auf Desktop regulär in der Eingabekarte.
+4. Loading, Empty, Error und Rate Limit erscheinen ausschließlich inline im Antwortbereich.
+5. Progressive Disclosure ist zweistufig: Herleitung und nachgelagerte Retrieval-Details.
 
 ## Drei Journeys in Kurzform
-1. Erstes Erfolgserlebnis: Frage stellen, Hauptantwort verstehen, Referenzkonzepte sehen.
-2. Plausibilitätsprüfung: Referenzkonzepte prüfen und P0 Kernnachweis öffnen.
-3. Recovery: Empty, Error oder Rate Limit erkennen und mit klarer Aktion fortsetzen.
+1. Erstes Erfolgserlebnis: Frage senden, inline Loading sehen, Hauptantwort und wichtige Bezüge lesen.
+2. Plausibilitätsprüfung: Hauptantwort prüfen, Bezüge prüfen, Herleitung optional öffnen.
+3. Recovery: Inline Zustand erkennen, eine klare Aktion ausführen, neuen Versuch starten.
 
 ## UI States
-1. Loading: Antwort wird hergeleitet, Nutzer wartet.
-2. Empty: Keine belastbare Antwort, Nutzer präzisiert die Frage.
-3. Error: Anfrage konnte nicht verarbeitet werden, Nutzer versucht erneut.
-4. Rate Limit: Kurz pausieren, Nutzer sendet nach kurzer Wartezeit erneut.
+1. Loading: Inline im Antwortbereich mit kurzer Warteführung.
+2. Empty: Inline im Antwortbereich mit Präzisierungsaufforderung.
+3. Error: Inline im Antwortbereich mit Retry Führung.
+4. Rate Limit: Inline im Antwortbereich mit kurzer Warteführung.
 
-## Offene Fragen an Architect je Screen
+## Offene Fragen an Architect
+1. P0: Welche Retrieval-Details sind stabil und nutzerverständlich darstellbar.
+2. P0: Welche Felder für wichtige Bezüge sind verbindlich verfügbar.
+3. P0: Welche minimale Herleitungsstruktur ist verlässlich lieferbar.
+4. P0: Ob für Rate Limit eine belastbare relative Warteangabe bereitgestellt werden kann.
+5. P1: Welche zusätzliche Retrieval-Transparenz später ergänzt werden kann, ohne die ruhige Erstführung zu brechen.
+
+## Offene Fragen je Screen mit Priorität
 ### Screen Hauptansicht P0
-1. Welche minimalen Felder für Referenzkonzepte sind stabil verfügbar.
-2. Welche Felder für den P0 Kernnachweis sind stabil verfügbar.
-3. Ob pro Referenzkonzept ein kurzer Kontextsatz zuverlässig lieferbar ist.
+1. Welche Pflichtfelder dürfen in Retrieval-Details sichtbar werden.
+2. Welche Felder für wichtige Bezüge sind verpflichtend.
 
-### Screen Zustände P0
-1. Welche fachliche Regel entscheidet robust zwischen Empty und schwacher Antwort.
-2. Ob eine konkrete Wartezeit im Rate Limit Zustand sicher und stabil angezeigt werden kann.
+### Screen Antwortzustände P0
+1. Welche technische Regel trennt Empty verbindlich von schwacher Antwort.
+2. Welche Warteangabe bei Rate Limit ist verlässlich.
 
 ### Screen Hauptansicht P1
-1. Ob zusätzliche Nachweisdetails später ohne Bruch der P0 Informationshierarchie integrierbar sind.
+1. Welche zusätzlichen Detailfelder für Retrieval später ohne Layoutbruch möglich sind.
 
 ## UX Constraints
-1. Informationsreihenfolge bleibt strikt erhalten.
-2. Pro Zustand existiert genau eine empfohlene Aktion.
-3. Hauptantwort bleibt visuell und inhaltlich primär.
-4. Accessibility Mindestregeln müssen erfüllbar sein: AA Kontrast, sichtbarer Fokus, vollständige Tastaturbedienung.
-5. Desktop und Mobile behalten denselben semantischen Fluss.
+1. UI bleibt ruhig, polished und nicht überladen.
+2. Hauptantwort bleibt visuell dominanter als Nebeninformationen.
+3. Keine permanente Zustands-Seitenleiste.
+4. Desktop Sticky Action nur bei späterer UX Begründung, aktuell nicht aktiv.
+5. Mobile Sticky Action bleibt dauerhaft als primäre Touch Führung.
 
 ## Annahmen
-1. P0 liefert pro Antwort mindestens einen kompakten Nachweispfad.
-2. Referenzkonzepte können mit kurzen menschenlesbaren Namen dargestellt werden.
-3. Rate Limit wird als eigener Zustand zuverlässig signalisiert.
+1. Hauptansicht bleibt die einzige verpflichtende MVP Sicht.
+2. Zustände werden als separate Signale für den Antwortbereich geliefert.
+3. Retrieval-Details können als kurze, nicht technische Nutzersprache gezeigt werden.
 
 ## Harte Anforderungen
-1. Keine Scope-Erweiterung über die vorhandene Pflichtansicht hinaus.
-2. Keine P1 Vertiefung in der Primäransicht.
-3. UI bleibt ruhig, polished und nicht überladen.
-4. Alle vier Zustände bleiben mit klarer Textaktion darstellbar.
+1. Keine Scope-Erweiterung und keine neuen Features.
+2. Keine Verschiebung der States in eine permanente Nebenfläche.
+3. Keine Aufhebung der festen vertikalen Reihenfolge.
+4. Keine technische Detailtiefe in der UX-Copy über den P0-Nachweis hinaus.

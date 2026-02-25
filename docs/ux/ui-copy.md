@@ -1,40 +1,45 @@
 # UI Copy
 
-## Screen Hauptansicht
+## Hauptansicht
 ### Headlines
-1. Titel: System GraphRAG Demo
-2. Subline: Verstehen, wie die Antwort aus dem Graph entsteht, ohne Überforderung im Erstkontakt.
-3. Bereichstitel: Hauptantwort
-4. Bereichstitel: Referenzkonzepte
-5. Bereichstitel: P0 Kernnachweis
+1. Titel: Systemfragen klar beantworten
+2. Subline: Stelle eine Frage und sieh Hauptantwort, wichtige Bezüge und optional die Herleitung in einer ruhigen Ansicht.
+3. Bereichstitel: Antwort
+4. Bereichstitel: Wichtige Bezüge
+5. Bereichstitel: So wurde die Antwort hergeleitet
 
 ### Labels
-1. Eingabe Label: Frageeingabe
-2. Eingabe Placeholder: Welche Trade offs entstehen bei eventgetriebener Architektur zwischen Entkopplung und operativer Komplexität?
-3. Primärbutton: Frage analysieren
-4. Disclosure Label: Kernnachweis anzeigen
+1. Eingabe Label: Deine Frage
+2. Eingabe Placeholder: Welche Zielkonflikte entstehen zwischen Entkopplung und Betriebsaufwand in eventgetriebenen Systemen?
+3. Primäraktion Desktop: Antwort anzeigen
+4. Primäraktion Mobile Sticky Bar: Antwort anzeigen
+5. Disclosure Herleitung geschlossen: Herleitung anzeigen
+6. Disclosure Herleitung geöffnet: Herleitung ausblenden
+7. Disclosure Retrieval geschlossen: Retrieval Details anzeigen
+8. Disclosure Retrieval geöffnet: Retrieval Details ausblenden
 
 ### Helper Text
-1. Unter Eingabe: Präzise Frage mit Systemkontext erhöht die Qualität von Antwort und Referenzkonzepten.
-2. Unter Referenzbereich: Diese Konzepte stützen die Hauptantwort im aktuellen Antwortkontext.
-3. Unter Nachweisbereich: Drei Schritte zeigen den knappen P0 Pfad von Frage zu Aussage.
+1. Unter Eingabe: Je konkreter die Frage, desto präziser werden Antwort und wichtige Bezüge.
+2. Unter wichtigen Bezügen: Diese Bezüge stützen die Antwort im aktuellen Kontext.
+3. Unter Disclosure: Öffne diese Bereiche nur, wenn du den Nachweis vertiefen möchtest.
 
-### Empty Text
-1. Titel: Keine belastbare Antwort
-2. Text: Für diese Formulierung fehlen passende Konzepte.
+## Inline Zustände im Antwortbereich
+### Loading
+1. Titel: Antwort wird vorbereitet
+2. Text: Relevante Inhalte werden gerade zusammengeführt.
+3. Aktion: Bitte einen Moment warten.
+
+### Empty
+1. Titel: Noch keine passende Antwort
+2. Text: Mit einer konkreteren Frage können wir bessere Bezüge finden.
 3. Aktion: Frage präzisieren.
 
-### Loading Text
-1. Titel: Antwort wird hergeleitet
-2. Text: Relevante Konzepte werden zusammengeführt.
-3. Aktion: Bitte warten.
-
-### Error Text
-1. Titel: Anfrage konnte nicht verarbeitet werden
-2. Text: Die Analyse ist aktuell nicht verfügbar.
+### Error
+1. Titel: Antwort aktuell nicht verfügbar
+2. Text: Die Anfrage konnte gerade nicht abgeschlossen werden.
 3. Aktion: Erneut versuchen.
 
-### Rate Limit Text
-1. Titel: Kurz pausieren
-2. Text: Zu viele Anfragen in kurzer Zeit.
-3. Aktion: In wenigen Sekunden erneut senden.
+### Rate Limit
+1. Titel: Kurz warten
+2. Text: Es wurden gerade viele Anfragen gesendet.
+3. Aktion: In kurzer Zeit erneut senden.

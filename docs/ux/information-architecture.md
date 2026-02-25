@@ -1,25 +1,28 @@
 # Informationsarchitektur
 
 ## Seiten und Views
-1. Public Demo View als einzige Pflichtansicht im MVP.
-2. Hauptbereich Antwort mit eingebetteten Zuständen.
-3. Sekundärbereich Referenzkonzepte.
-4. Detailbereich Kernnachweis als aufklappbarer Abschnitt.
+1. Public Demo besteht aus einer zentralen Hauptansicht.
+2. Zwei Layoutvarianten nutzen dieselbe Inhaltslogik.
+3. Variante A ist einspaltig und maximal reduziert.
+4. Variante B ergänzt eine funktionale rechte Hilfespalte.
 
 ## Informationshierarchie
 ### Primär
-1. Frageeingabe mit klarer Call to Action.
-2. Hauptantwort als erste sichtbare Ergebnisebene.
+1. Eingabe mit klarer Handlungsaufforderung.
+2. Hauptantwort als dominanteste Ergebnisebene.
 
 ### Sekundär
-1. Referenzkonzepte als direkte Stütze der Hauptantwort.
-2. Statushinweise für Loading, Empty, Error, Rate Limit mit nächster Aktion.
+1. Wichtige Bezüge direkt unter der Hauptantwort.
+2. Inline Zustände für Loading, Empty, Error und Rate Limit im Antwortbereich.
+3. In Variante B ein einzelner kontextueller Hilfeblock in der rechten Spalte.
 
 ### Details
-1. Kernnachweis als knapper Herleitungsbeleg.
-2. Ergänzende Hinweise zur Formulierung guter Fragen.
+1. Herleitung als aufklappbarer Bereich unter den Bezügen.
+2. Kurzer Hilfetext unter der Eingabe.
 
 ## Ordnungsprinzip
-1. Von Frage zu Antwort zu Nachweis in fester Reihenfolge.
-2. Nur eine aktive Primäraktion pro Zustand.
-3. Detailtiefe wird erst nach Sichtbarkeit der Hauptantwort geöffnet.
+1. Feste Reihenfolge im Hauptfluss: Eingabe, Antwortbereich, wichtige Bezüge, Herleitung.
+2. Zustände erscheinen nur im Antwortbereich und ersetzen dort temporär den Inhaltsblock.
+3. Progressive Disclosure startet erst nach sichtbarer Hauptantwort.
+4. Pro Zustand wird genau eine empfohlene Aktion angeboten.
+5. Rechte Spalte in Variante B ergänzt Orientierung und ersetzt keine Kerninformation.

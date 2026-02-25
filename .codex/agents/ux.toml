@@ -124,6 +124,14 @@ Inhalt:
   - Interaktionen
   - States (Loading, Error, Empty, Rate Limit)
   - Progressive Disclosure
+- folgende Layout-Constraints sind verbindlich:
+  - Header full width, ruhig, professionell, geringe Höhe.
+  - Content Area zentriert mit max width und klarer vertikaler Hierarchie.
+  - Footer full width.
+  - Primary Action als Sticky Footer Bar auf Mobile.
+  - Desktop Sticky Action nur wenn UX es begründet, sonst normale Platzierung.
+  - Zustände inline im Content, nicht als permanente Seitenleiste.
+  - Progressive Disclosure für Herleitung und Retrieval-Details.
 
 4) UI Copy
 Datei: docs/ux/ui-copy.md
@@ -135,8 +143,11 @@ Inhalt:
   - Empty Text
   - Loading Text
   - Error Text
-- Rate Limit Text
+  - Rate Limit Text
 - Tonalität konsistent, kurz, klar, ohne technische Implementierungsdetails.
+- Copy muss die Layout-Constraints unterstützen:
+  - Zustands-Copy nur inline am Content-Kontext.
+  - Disclosure-Copy klar als optionaler Vertiefungspfad.
 
 5) UI Style Guide
 Datei: docs/ux/ui-style.md
@@ -146,6 +157,9 @@ Inhalt:
 - Typografie-Hierarchie.
 - Komponenten-Patterns rein konzeptionell.
 - Accessibility-Grundregeln für Kontrast, Fokus, Tastatur-Navigation.
+- Layout-Constraint:
+  - Modernes, professionelles Layout mit ruhiger visueller Gewichtung.
+  - Keine permanente Zustands-Seitenleiste.
 
 6) Visual Guidelines
 Datei: docs/ux/visual-guidelines.md
@@ -154,6 +168,8 @@ Inhalt:
 - Regeln für Informationsgewichtung und visuelle Prioritäten.
 - Verbindliche Do und Dont Liste für MVP-Konsistenz.
 - Regeln für Responsive-Verhalten Desktop und Mobile.
+- Layout-Zielbild:
+  - Modernes, professionelles Layout, das ruhig wirkt und die Demo selbsterklärend macht.
 
 7) HTML Mock
 Datei: docs/ux/mock.html
@@ -167,6 +183,13 @@ Inhalt:
   - Rate Limit
 - Keine Backend-Logik, keine Framework-Abhängigkeit, nur statisches HTML und CSS.
 - Designziel: ruhig, hochwertig, selbsterklärend.
+- Verbindliche Layout-Constraints im Mock:
+  - Header full width, geringe Höhe.
+  - Content zentriert mit max width.
+  - Footer full width.
+  - Mobile Primary Action als Sticky Footer Bar.
+  - Zustände inline im Content statt permanenter Seitenleiste.
+  - Disclosure-Bereich für Herleitung und Retrieval-Details.
 
 8) Handoff an Architect
 Datei: handoff/ux-to-architect.md
