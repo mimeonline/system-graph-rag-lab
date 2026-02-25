@@ -90,8 +90,8 @@ Nach jedem Story-Finish durch Dev gilt verbindlich:
 - `backlog/progress.md` wird im selben Run synchron aktualisiert.
 - Dev setzt den Story-Status nach Abschluss der Implementierung auf `qa` oder `blocked`, nicht auf `accepted`.
 - QA liefert ein Gate-Verdict `Pass` oder `Fail` in den QA-Artefakten.
-- PM setzt bei QA-`Pass` zuerst den Story-Status auf `pass`.
-- PM gibt das finale `accepted` erst nach PM-Review frei.
+- QA setzt bei QA-`Pass` den Story-Status auf `pass` und synchronisiert `backlog/progress.md` im selben Run.
+- PM gibt das finale `accepted` erst nach PM-Review auf Basis von `pass` frei.
 - Erst nach PM-OK gilt eine Story als abgeschlossen.
 
 ## Markdown-Regeln

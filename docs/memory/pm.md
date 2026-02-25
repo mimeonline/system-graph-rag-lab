@@ -25,7 +25,7 @@
 ## Open Decisions
 1. Wie streng die PM-Freigabe für optionale Internet-Ergänzungen pro Lücke ausfällt.
 2. In welcher Mindesttiefe Herkunft in der UI sichtbar gemacht wird, ohne Erstkontakt zu überladen.
-3. Ob E1-S2 nach dem neuen Schnitt sofort auf `qa` zurückgeführt werden kann oder bis Datenlauf auf `in_progress` bleibt.
+3. PM-Entscheidung vom 2026-02-25: Story `E1-S2` wurde nach QA-`Pass` final auf `accepted` gesetzt.
 
 ## Risks to Monitor
 1. Qualitätsrisiko durch uneinheitliche Kuration zwischen MD-Quellen und Internet-Ergänzungen.
@@ -40,3 +40,4 @@
 3. Synchronisiere bei jeder Statusänderung in E1 sofort `backlog/progress.md`.
 4. Setze `pass` nur nach dokumentiertem QA-Pass und PM-Review.
 5. Setze `accepted` nur nach vorherigem `pass` und explizitem PM-OK.
+6. Fokus E1-Gates: `E1-S5`, `E1-S3` und `E1-S4` inkl. QA sowie Epic-Gates Security und DevOps als Pflicht vor Epic-Abschluss.

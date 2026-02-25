@@ -1,34 +1,35 @@
-# QA Gate Verdict E1-S1
+# QA Gate Verdict E1-S2
 
 ## Ergebnis
 1. Verdict: Pass.
 2. Gate-Typ: Story QA Gate.
-3. Story-ID: E1-S1.
+3. Story-ID: E1-S2.
 4. Epic-ID: E1.
 5. Bewertungsdatum: 2026-02-25.
 
 ## Szenario-Pruefung Given When Then
-1. Given: ein leeres Wissensmodell.
-2. When: die Ontologie dokumentiert wird.
-3. Then: die Typen `Concept`, `Tool`, `Author`, `Book`, `Problem` und ihre erlaubten Beziehungen sind klar beschrieben.
-4. Ergebnis: Pass durch konsistente Evidenz in `apps/web/src/features/ontology/ontology.ts`, `apps/web/src/features/ontology/README.md` und gruenen Unit-Tests.
+1. Given: eine freigegebene Ontologie und bereitgestellte MD-Quellen.
+2. When: die Quellen fuer die Seed-Datenbasis gesichtet und kuratiert werden.
+3. Then: der Quellenkatalog enthaelt relevante MD-Quellen, dokumentiert je Quelle `primary_md` oder `optional_internet` und markiert optionale Internet-Quellen mit dokumentierter Lueckenbegruendung.
+4. Ergebnis: Pass durch konsistente Evidenz in `apps/web/src/features/seed-data/seed-data.ts`, `apps/web/src/features/seed-data/seed-data.test.ts` und `apps/web/src/features/seed-data/README.md`.
 
 ## Ausgefuehrte QA-Checks
-1. `pnpm test` in `apps/web` mit Ergebnis Pass.
-2. `pnpm lint` in `apps/web` mit Ergebnis Pass.
-3. `pnpm build` in `apps/web` mit Ergebnis Pass.
-4. Dokumentationsabgleich `apps/web/src/features/ontology/README.md` gegen Story-Anforderungen mit Ergebnis Pass.
+1. `pnpm --dir apps/web test -- src/features/seed-data/seed-data.test.ts` mit Exit Code `0`, Pass.
+2. `pnpm --dir apps/web lint` mit Exit Code `0`, Pass.
+3. `pnpm --dir apps/web test` mit Exit Code `0`, Pass.
+4. `pnpm --dir apps/web build` mit Exit Code `0`, Pass.
+5. Artefaktabgleich auf Quellenkatalog und Herkunftsmetadaten in `seed-data.ts` mit Pass.
 
 ## Merge Block Grund und Fix Requests
-1. Kein Merge Block im Scope dieser Story.
-2. Keine Fix Requests fuer E1-S1 offen.
+1. Kein Merge Block fuer Story `E1-S2`.
+2. Keine Fix Requests fuer diese Story offen.
 
 ## Top 3 Risiken
-1. Epic E1 bleibt insgesamt nicht release-bereit, da E1-S2 bis E1-S4 noch `todo` sind.
-2. Daten- und Retrieval-Verhalten ist fuer E1-S1 nicht getestet, da ausserhalb Story-Scope.
-3. End-to-End Eval-Fragen sind fuer diesen Story-Run nicht ausgefuehrt.
+1. Epic E1 bleibt insgesamt nicht release-bereit, da `E1-S3`, `E1-S4` und `E1-S5` noch kein QA-Gate haben.
+2. Runtime-Abrufbarkeit der normalisierten Datenbasis ist fuer `E1-S3` noch unbewertet.
+3. End-to-End-Eval mit fuenf Fragen ist weiterhin offen.
 
 ## Naechste Tests
-1. E1-S2 Datenbasis auf Menge, Schema und Pflichtfelder pruefen.
-2. E1-S3 Graph-Lese-Smoke in local und Zielbetrieb ausfuehren.
-3. E1-S4 Qualitaetslauf auf Duplikate und Ontologie-Konformitaet verifizieren.
+1. E1-S5 auf Mengenkriterien, Herkunftskennzeichnung und Laufprotokoll pruefen.
+2. E1-S3 mit Graph-Lese-Smoke im Zielbetrieb pruefen.
+3. E1-S4 mit Duplikat- und Konsistenzlauf inklusive Prüfprotokoll pruefen.

@@ -164,6 +164,7 @@ Inhalt:
 Datei: docs/dev/workflow.md
 Inhalt:
 - Story Lifecycle: todo -> in_progress -> qa -> pass -> accepted
+- Status Owner: qa wird von Dev gesetzt, pass wird von QA gesetzt, accepted wird von PM gesetzt
 - Rollenverantwortung pro Status
 - Epic Gates und Trigger
 

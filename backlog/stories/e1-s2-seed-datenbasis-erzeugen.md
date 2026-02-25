@@ -1,7 +1,7 @@
 # Story E1-S2 Kuratierte Quellbasis aus bereitgestellten Quellen erfassen
 
 ## Status
-qa
+accepted
 
 ## Ziel
 Eine belastbare Quellbasis aus bereitgestellten MD-Inhalten und optionalen Internet-Ergänzungen kuratieren.

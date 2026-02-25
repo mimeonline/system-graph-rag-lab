@@ -32,20 +32,17 @@ Live Progress Pflicht:
 Leitplanken:
 - Keine Implementierung, keine Architektur- oder Scope-Aenderung.
 - Nur PM-erlaubte Schreibpfade laut .codex/agents/pm.toml.
-- `pass` nur setzen, wenn QA-Verdict fuer die Story auf Pass steht.
+- PM setzt kein `pass`.
 - `accepted` nur setzen, wenn die Story bereits auf `pass` steht.
 
 Aufgabe:
 1. Lies alle relevanten Pflicht-Inputs fuer diese Story.
 2. Pruefe QA-Ergebnis und offene Risiken fuer die Story.
 3. Triff PM-Abnahmeentscheidung.
-4. Bei Freigabe:
-   - setze Story-Status in der Story-Datei zuerst auf `pass`
-   - synchronisiere `backlog/progress.md` im selben Run
-5. Bei finaler PM-Freigabe:
+4. Bei finaler PM-Freigabe:
    - setze Story-Status auf `accepted`
    - synchronisiere `backlog/progress.md` im selben Run
-6. Bei Nicht-Freigabe:
+5. Bei Nicht-Freigabe:
    - setze Story nicht auf `accepted`
    - dokumentiere klare Gruende und naechste Schritte.
 7. Aktualisiere PM-Memory und PM-Handoff falls betroffen.

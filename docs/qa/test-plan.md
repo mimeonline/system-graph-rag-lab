@@ -2,41 +2,43 @@
 
 ## Teststrategie
 ### Unit
-1. Verbindlicher Mindestlauf pro Story ist `pnpm test` im relevanten Projektpfad.
-2. Fokus fuer `E1-S1` liegt auf Vollstaendigkeit der Ontologie-Typen und Relationstabellen.
+1. Verbindlicher Mindestlauf pro Story ist ein story-naher Testlauf plus Projektregression in `apps/web`.
+2. Fuer `E1-S2` ist der Pflichtlauf `pnpm --dir apps/web test -- src/features/seed-data/seed-data.test.ts`.
+3. Zusaetzlicher Regressionslauf fuer `E1-S2` ist `pnpm --dir apps/web test`.
 
 ### Integration
-1. Verbindlicher Story-Check gegen Story-Artefakte und Vertragskontext aus `docs/spec/**` und `docs/architecture/**`.
-2. Fuer `E1-S1` wird geprueft, dass dokumentierte Ontologie-Regeln mit der implementierten Definition konsistent sind.
+1. Story-Artefakte werden gegen Akzeptanzkriterien und Dev-Handoff geprueft.
+2. Fuer `E1-S2` werden Quellenkatalog, Herkunftstypen, `internalSource` und `publicReference` in `seed-data.ts` und `README.md` abgeglichen.
+3. Konsistenzcheck erfolgt gegen Ontologie-Regeln aus `docs/architecture/data-model.md`.
 
 ### E2E minimal
-1. E2E ist fuer `E1-S1` nicht gate-kritisch, da Story nur fachliche Ontologie-Definition ohne Runtime-Endpunkt liefert.
-2. E2E bleibt Pflicht fuer spaetere Stories mit Datenzugriff und Antwortpipeline.
+1. Fuer `E1-S2` ist kein Runtime-E2E gegen Vercel oder Aura gate-kritisch.
+2. E2E bleibt fuer `E1-S3` und spaetere Retrieval-Stories verpflichtend.
 
 ## Testumgebung
 ### local
 1. Ausfuehrung in `apps/web` mit lokalem Node- und Package-Setup.
-2. QA-Checks in diesem Run: `pnpm test`, `pnpm lint`, `pnpm build`.
+2. Ausgefuehrte QA-Checks fuer `E1-S2`: `pnpm --dir apps/web test -- src/features/seed-data/seed-data.test.ts`, `pnpm --dir apps/web lint`, `pnpm --dir apps/web test`, `pnpm --dir apps/web build`.
 
 ### vercel
-1. Fuer `E1-S1` nicht erforderlich, da keine Public-Runtime-Funktion geliefert wird.
-2. Wird ab Stories mit Runtime-Verhalten verpflichtend.
+1. Fuer `E1-S2` nicht erforderlich, da Story keine Public-Runtime-Abfrage im AK fordert.
+2. Verbindlich ab `E1-S3`.
 
 ### aura
-1. Fuer `E1-S1` nicht erforderlich, da keine Datenbankinteraktion im Story-Scope liegt.
-2. Wird ab Seed- und Retrieval-Stories verpflichtend.
+1. Fuer `E1-S2` nicht erforderlich, da Story auf kuratierte Quellenbasis im Code abzielt.
+2. Verbindlich ab `E1-S3` und `E1-S4`.
 
 ## Testdaten und Seed Voraussetzungen
-1. Kein Seed-Datensatz erforderlich fuer `E1-S1`.
-2. Erforderlich sind die fuenf Node-Typen `Concept`, `Tool`, `Author`, `Book`, `Problem`.
-3. Erforderlich sind die sechs Relationen `WROTE`, `EXPLAINS`, `ADDRESSES`, `RELATES_TO`, `INFLUENCES`, `CONTRASTS_WITH`.
+1. Keine externen Seeds erforderlich.
+2. Seed-Daten liegen deterministisch in `apps/web/src/features/seed-data/seed-data.ts`.
+3. Erwartete Herkunftstypen sind nur `primary_md` und `optional_internet`.
 
 ## Abnahmekriterien
-### Story E1-S1 Szenario
-1. Given: ein leeres Wissensmodell.
-2. When: die Ontologie dokumentiert wird.
-3. Then: die Typen `Concept`, `Tool`, `Author`, `Book`, `Problem` und ihre erlaubten Beziehungen sind klar beschrieben.
+### Story E1-S2 Szenario
+1. Given: eine freigegebene Ontologie und bereitgestellte MD-Quellen.
+2. When: die Quellen fuer die Seed-Datenbasis gesichtet und kuratiert werden.
+3. Then: der Quellenkatalog enthaelt relevante bereitgestellte MD-Quellen, dokumentiert je Quelle `primary_md` oder `optional_internet` und markiert optionale Internet-Quellen nur als dokumentierte Lueckenergaenzung.
 
 ### Gate-Regel
-1. Story-Gate ist Pass, wenn Szenario, Unit-Checks und Dokumentationsabgleich reproduzierbar bestanden sind.
-2. Story-Gate ist Fail, wenn mindestens ein Akzeptanzkriterium fehlt oder eine Evidenz nicht reproduzierbar ist.
+1. Story-Gate ist Pass, wenn Szenario, Pflichtkommandos und Dokumentationsabgleich reproduzierbar bestanden sind.
+2. Story-Gate ist Fail, wenn ein Akzeptanzkriterium, ein Pflichtkommando oder die Herkunftskennzeichnung nicht reproduzierbar belegt ist.

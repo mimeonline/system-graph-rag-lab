@@ -9,8 +9,8 @@
 1. PM setzt initial `todo`.
 2. Dev setzt bei Start der Umsetzung `in_progress`.
 3. Dev setzt nach Umsetzung und Selbsttest `qa` oder bei Hindernissen `blocked`.
-4. QA verifiziert und liefert ein Ergebnis im QA-Artefakt.
-5. PM setzt bei erfolgreichem QA-Gate den Status `pass`.
+4. QA verifiziert, dokumentiert das Ergebnis und setzt bei erfolgreichem QA-Gate den Status `pass`.
+5. QA synchronisiert im selben Run `backlog/progress.md`.
 6. PM setzt final `accepted` nach PM-Review auf Basis von `pass`.
 
 ## Epic Status Sync

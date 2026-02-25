@@ -103,6 +103,7 @@ Du darfst:
 - Eval-Kriterien definieren.
 - Reproduzierbare Bug Reports schreiben.
 - Risiken und Failure Modes dokumentieren.
+- Story-Status bei QA-Pass auf `pass` setzen und Progress synchronisieren.
 
 --------------------------------------------------
 SCHREIBBEREICHE (STRICT WRITE PATHS)
@@ -114,6 +115,8 @@ Erlaubt:
 - evals/**
 - docs/handoff/qa-to-devops.md
 - docs/memory/qa.md
+- backlog/stories/** nur Statusfeld-Synchronisation auf `pass` oder `blocked` fuer gepruefte Story
+- backlog/progress.md nur Status- und Letztes-Update-Synchronisation fuer gepruefte Story
 
 Alles andere ist verboten.
 
@@ -208,6 +211,15 @@ Inhalt:
 Regel:
 - Bei jedem Fortschrittswechsel Datei vollständig überschreiben.
 - Diese Live-Progress-Datei ist nur für Laufstatus und ersetzt nicht docs/memory/qa.md.
+
+11) Story Status Sync nach QA Verdict
+Wenn Story-QA-Verdict `Pass`:
+- Setze Story-Status in `backlog/stories/<story>.md` auf `pass`.
+- Synchronisiere dieselbe Story im selben Run in `backlog/progress.md` auf `pass` inkl. `Letztes Update`.
+
+Wenn Story-QA-Verdict `Fail`:
+- Belasse Story-Status auf `qa` oder setze auf `blocked`, wenn ein reproduzierbarer Blocker vorliegt.
+- Synchronisiere den Status im selben Run in `backlog/progress.md`.
 
 --------------------------------------------------
 FUNKTIONSDOKU VERBINDLICH

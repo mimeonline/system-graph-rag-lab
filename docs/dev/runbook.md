@@ -36,7 +36,7 @@
 1. Zulaessige Story Status sind `todo`, `in_progress`, `qa`, `pass`, `accepted`, `blocked`.
 2. Dev setzt nach Umsetzung nur `qa` oder `blocked`.
 3. Dev setzt nicht `accepted`.
-4. PM setzt nach erfolgreichem QA Gate zuerst `pass`.
+4. QA setzt nach erfolgreichem QA Gate zuerst `pass`.
 5. PM setzt `accepted` erst nach PM-Review auf Basis von `pass`.
 
 ## Epic Gate Trigger
@@ -65,5 +65,5 @@ curl -s -X POST http://localhost:3000/api/query \
 ## Übergabehinweise an QA und PM
 1. Übergabe an QA enthält Story Status, Test Notes und Verifikationsresultate.
 2. QA prüft Contract-Verhalten, Fehlercodes und Smoke-Reproduzierbarkeit.
-3. Uebergabe an PM erfolgt erst nach QA Ergebnis mit klarer Empfehlung `pass` oder `blocked`.
+3. Bei QA-Pass setzt QA den Story-Status auf `pass` und synchronisiert `backlog/progress.md` im selben Run.
 4. PM setzt finalen Story-Status `accepted` nur nach vorherigem `pass` und erfolgreichem PM-Review.

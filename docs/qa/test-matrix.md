@@ -4,7 +4,8 @@
 | Story | AC-ID | Test-ID | Testfall | Umgebung | Pass | Fail | Evidenz |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | E1-S1 | AC-1 | QA-E1-S1-01 | Ontologie enthaelt exakt die fuenf Node-Typen inklusive `Tool` und erlaubte Relationen | local | x |  | 2026-02-25: `pnpm test` gruen inkl. `src/features/ontology/ontology.test.ts`; `pnpm lint` gruen; `pnpm build` gruen; Doku-Abgleich `apps/web/src/features/ontology/README.md` |
-| E1-S2 | AC-1 | QA-E1-S2-01 | Seed-Count pruefen: Nodes > 100 und Edges > 200 ohne Schema-Verstoss | local,aura |  |  |  |
+| E1-S2 | AC-1 | QA-E1-S2-01 | Quellenkatalog dokumentiert relevante MD-Quellen und je Quelle `sourceType` mit `primary_md` oder `optional_internet` | local | x |  | 2026-02-25: `pnpm --dir apps/web test -- src/features/seed-data/seed-data.test.ts` Pass; `pnpm --dir apps/web lint` Pass; `pnpm --dir apps/web test` Pass; `pnpm --dir apps/web build` Pass; Artefaktabgleich `apps/web/src/features/seed-data/seed-data.ts` und `apps/web/src/features/seed-data/README.md` |
+| E1-S2 | AC-1 | QA-E1-S2-02 | Optionale Internet-Quellen sind als `optional_internet` markiert und enthalten dokumentierte Lueckenbegruendung (`gapNote`) | local | x |  | 2026-02-25: Sichtpruefung `apps/web/src/features/seed-data/seed-data.ts` in `CURATED_SOURCES`, alle `optional_internet` mit `gapNote` |
 | E1-S3 | AC-1 | QA-E1-S3-01 | Graph-Lese-Smoke gegen Zielbetrieb liefert Nodes und Relationen fehlerfrei | local,aura |  |  |  |
 | E1-S4 | AC-1 | QA-E1-S4-01 | Qualitaetslauf entfernt Duplikate und behaelt nur ontologiekonforme Eintraege | local |  |  |  |
 | E2-S1 | AC-1 | QA-E2-S1-01 | Kontextkandidatenliste ist duplikatfrei | local |  |  |  |

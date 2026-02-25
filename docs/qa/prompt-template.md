@@ -28,7 +28,8 @@ Aufgabe:
 3. Führe verfügbare QA-Checks aus, mindestens die im Dev-Handoff genannten Commands.
 4. Dokumentiere Ergebnis in QA-Artefakten.
 5. Setze QA-Gate für die Story auf Pass oder Fail mit Begründung.
-6. Wenn Fail, erfasse Blocker präzise und reproduzierbar.
+6. Wenn Pass, setze Story-Status in der Story-Datei auf `pass` und synchronisiere `backlog/progress.md` im selben Run.
+7. Wenn Fail, erfasse Blocker präzise und reproduzierbar.
 
 Outputformat:
 1. Status
@@ -38,6 +39,10 @@ Outputformat:
 5. Blocker-Liste
 6. Offene Risiken
 7. Self-Check gemäß qa.toml
+
+Post-Condition fuer Orchestrator:
+1. Wenn `QA Verdict Pass`, dann nach Run-Ende automatisch PM-Run starten.
+2. PM setzt danach bei PM-Freigabe Story-Status auf `accepted` in Story-Datei und `backlog/progress.md`.
 ```
 
 ## Platzhalterhilfe

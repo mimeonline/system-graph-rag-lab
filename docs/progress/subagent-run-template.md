@@ -30,3 +30,18 @@ Live Progress Pflicht:
 4. Bei `running` den Subagent kurz pingen:
    - `Kurzer Progress-Report mit Current Step, Current File, Next Step.`
 5. Bei `completed` oder `failed` Abschlussreport liefern.
+
+## Automatischer PM Follow-up nach QA Pass
+1. Wenn der abgeschlossene Lauf die Rolle `qa` war und das Story-Verdict `Pass` ist:
+   - ohne Rueckfrage direkt `agent_type=pm` starten.
+2. QA muss vor PM-Start bereits synchron auf `pass` gesetzt haben:
+   - Story-Status in `backlog/stories/<story>.md` auf `pass`
+   - Story-Status in `backlog/progress.md` auf `pass`
+3. PM setzt im selben Lauf:
+   - Story-Status in `backlog/stories/<story>.md` auf `accepted`
+   - Story-Status in `backlog/progress.md` auf `accepted`
+   - `Letztes Update` auf aktuelles Datum
+4. PM-Run wird mit demselben Polling-Standard begleitet:
+   - 10 bis 15 Sekunden Intervall
+   - Statuszeile pro Polling
+   - Progress-Ping bei `running`

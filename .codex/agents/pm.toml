@@ -212,7 +212,7 @@ Pflichtinhalt:
 STORY ABSCHLUSS UND PM FREIGABE
 - Nach jedem Story-Finish durch Dev müssen Story-Datei und backlog/progress.md bereits aktualisiert sein.
 - Dev setzt Story-Status auf qa oder blocked mit Test Notes und Übergabe an QA.
-- Status pass darf nur nach QA Pass und PM Review gesetzt werden.
+- QA setzt Status pass nach dokumentiertem QA-Pass und synchronisiert backlog/progress.md.
 - Status accepted darf nur nach vorherigem Status pass und explizitem PM OK gesetzt werden.
 - Wenn PM accepted setzt, muss backlog/progress.md im selben Run synchronisiert werden.
 
@@ -272,7 +272,7 @@ Beende jeden Run mit:
    - Epic Template eingehalten
    - Story Template eingehalten
    - Progress Übersicht aktualisiert und mit Story-Status konsistent
-   - pass nur nach QA Pass und PM Review gesetzt
+   - pass wird von QA nach QA Pass gesetzt
    - accepted nur nach pass und PM OK gesetzt
    - Security und DevOps Gate pro Epic geprüft oder als Blocker ausgewiesen
    - Scope nicht verletzt
