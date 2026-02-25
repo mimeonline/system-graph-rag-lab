@@ -97,10 +97,13 @@
 6. `500 INTERNAL_ERROR`: Unerwarteter interner Fehler.
 
 ## Rate Limit Contract
-1. Standardlimit ist 10 Requests pro 60 Sekunden je Client IP.
-2. Bei `429` wird Header `Retry-After` gesetzt.
-3. Bei `429` enthält Body `error.retryAfterSeconds` als ganzzahlige Wartezeit.
-4. Response enthält in `meta.rateLimit` die verbleibende Anfragezahl bei Erfolg.
+1. Durchsetzung erfolgt serverless konsistent über einen zentralen Vercel KV Fixed Window Counter pro `clientKey` und Route.
+2. Standardlimit ist 10 Requests pro 60 Sekunden je Client IP.
+3. Bei `429` wird Header `Retry-After` gesetzt.
+4. Bei `429` enthält Body `error.retryAfterSeconds` als ganzzahlige Wartezeit.
+5. `Retry-After` und `error.retryAfterSeconds` müssen denselben ganzzahligen Wert tragen.
+6. Die Wartezeit wird aus der verbleibenden TTL des aktiven Fensters abgeleitet.
+7. Erfolgsresponse enthält in `meta.rateLimit` `limit`, `windowSeconds` und `remaining`.
 
 ## Observability Contract Minimal
 1. Quelle ist ausschließlich der Next.js Route Handler.

@@ -10,7 +10,7 @@
 7. Graph Expansion nutzt `HopDepth=1` ohne dynamische Tiefe.
 8. Kontextbudget für Retrieval ist hart auf `1400` Tokens begrenzt.
 9. API Fehlerbehandlung ist standardisiert über die definierten Error Codes inklusive `429 RATE_LIMIT`.
-10. Observability erfolgt minimal über strukturierte JSON Events in Vercel Runtime Logs.
+10. Rate Limiting läuft serverless konsistent als Fixed Window Counter auf Vercel KV, Observability bleibt minimal über strukturierte JSON Events in Vercel Runtime Logs.
 
 ## Retrieval Contract Summary
 1. Feste Parameter: `TOP_K=6`, `HOP_DEPTH=1`, `CONTEXT_BUDGET_TOKENS=1400`, `MAX_EVIDENCE_ITEMS=8`.
@@ -24,19 +24,19 @@
 3. Erfolgsresponse liefert `status`, `requestId`, `answer`, `references`, `meta`.
 4. `references` ist auf drei Elemente begrenzt für die Hauptfläche.
 5. Fehlerresponse liefert `status`, `requestId`, `error`, `meta`.
-6. `429 RATE_LIMIT` enthält `Retry-After` Header und `retryAfterSeconds` im Body.
+6. `429 RATE_LIMIT` enthält `Retry-After` Header und `retryAfterSeconds` im Body mit identischem ganzzahligen Wert.
 7. Header `X-Request-Id` muss auf `requestId` gemappt sein.
 8. Observability Pflichtfelder im Abschluss Event sind `requestId`, `route`, `method`, `statusCode`, `latencyMs`, `topK`, `hopDepth`, `retrievedNodeCount`, `contextTokens`, `rateLimitTriggered`, `errorCode`.
 9. Maschinenlesbare API Spezifikation liegt in `docs/spec/api.openapi.yaml` als OpenAPI 3.1 Abbild von `docs/spec/api.md`.
 
 ## Offene Risiken
-1. Serverless taugliches Rate Limiting benötigt persistente Store Entscheidung.
+1. Ausfall oder erhöhte Latenz von Vercel KV kann API Latenz erhöhen oder zu `500 INTERNAL_ERROR` führen.
 2. Token Schätzung via Zeichenheuristik kann vom echten Modellverbrauch leicht abweichen.
 3. Neo4j Aura Latenzspitzen können P95 Antwortzeit erhöhen.
 4. Fehlende Log Disziplin im Handler kann den minimalen Observability Contract verletzen.
 
 ## Offene technische Fragen an Dev
-1. Welcher persistente Store wird für IP Rate Limit genutzt, damit Vercel Instanzen konsistent bleiben.
+1. Welche robuste Regel wird für `clientKey` Parsing aus `x-forwarded-for` und Fallback Headern verwendet.
 2. Welches konkrete OpenAI Modell wird für Antwortgenerierung in P0 fixiert.
 3. Wie wird die Empty Regel technisch umgesetzt, wenn Evidenzqualität unter Mindestniveau liegt.
 4. Wird der Handler explizit auf Node.js Runtime gesetzt, damit Treiber und Retrieval stabil laufen.
@@ -46,4 +46,5 @@
 2. Keine Erweiterung von Endpoint Anzahl oder Service-Landschaft im MVP.
 3. Retrieval Konstanten nur über ADR Änderung anpassbar.
 4. Tests sind Pflicht für Determinismus, Fehlercodes, Rate Limit Verhalten und Logfeld Vollständigkeit.
-5. Keine Secrets im Repository, nur Runtime Environment Variables.
+5. Rate Limit Tests müssen Grenzfall und Contract abdecken: `10` Requests erlaubt, `11.` Request `429`, `Retry-After == retryAfterSeconds`.
+6. Keine Secrets im Repository, nur Runtime Environment Variables.

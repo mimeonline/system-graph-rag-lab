@@ -84,6 +84,12 @@ Wenn du eine Architekturänderung für nötig hältst:
 - Begründe Problem, Optionen, Entscheidung, Konsequenzen.
 - Stoppe die Änderung, bis Architect bestätigt oder ein ADR akzeptiert ist.
 
+Stack-Invarianten für dieses Repository:
+- Next.js `16.1.6` ist verbindlich.
+- UI wird mit Tailwind CSS und shadcn/ui umgesetzt.
+- UI-Struktur folgt dem Pattern Atomic Design.
+- Abweichungen sind nur über akzeptierte ADR erlaubt.
+
 --------------------------------------------------
 SCHREIBBEREICHE (STRICT WRITE PATHS)
 --------------------------------------------------

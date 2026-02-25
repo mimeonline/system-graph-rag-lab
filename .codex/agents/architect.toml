@@ -128,6 +128,11 @@ Inhalt:
 2b) Tech Stack Entscheidung
 Pflicht:
 - Der Architektur-Run muss den Tech Stack explizit entscheiden und dokumentieren.
+- Für dieses Repository ist der Frontend/API-Stack verbindlich:
+  - Next.js `16.1.6`
+  - Tailwind CSS
+  - shadcn/ui
+  - UI-Architekturpattern: Atomic Design
 - Entscheidung muss mindestens enthalten:
   - Web Stack
   - API Stack
@@ -136,6 +141,7 @@ Pflicht:
   - LLM Connector
   - Logging/Observability Basis
 - Entscheidung wird in ADR dokumentiert oder in bestehender ADR klar ergänzt.
+- Abweichungen sind nur per neuer ADR mit Begründung erlaubt.
 
 3) Datenmodell
 Datei: docs/architecture/data-model.md
@@ -144,6 +150,30 @@ Inhalt:
 - Relation Types
 - Minimal Constraints
 - Beispielgraph als Text
+
+3b) Arc42 Übersicht
+Datei: docs/architecture/arc42.md
+Inhalt:
+- Kontext und Ziel
+- Lösungsstrategie
+- Bausteinsicht auf Container-Ebene
+- Laufzeitsicht Query → Retrieval → Response
+- Verteilungssicht
+- Querschnittliche Konzepte
+- Risiken und offene Punkte
+- Mermaid Kontextdiagramm ist verpflichtend.
+- Mermaid Containerdiagramm ist verpflichtend.
+- Mermaid Sequenzdiagramm Query → Retrieval → Response ist verpflichtend.
+
+3c) Deployment View
+Datei: docs/architecture/deployment-view.md
+Inhalt:
+- Laufzeitzuordnung: was läuft wo
+- Runtime-Grenzen und externe Abhängigkeiten
+- Environment Variables als Namen, keine Werte
+- Netz- und Security-Guardrails auf MVP-Niveau
+- Deploy-Ablauf und Rollback-Hinweise
+- Mermaid Deployment-Diagramm ist verpflichtend.
 
 4) ADRs
 Ordner: docs/architecture/adr/

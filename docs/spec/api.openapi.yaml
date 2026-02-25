@@ -68,7 +68,7 @@ paths:
                 type: string
                 format: uuid
             Retry-After:
-              description: Wait time in seconds before retrying.
+              description: Wait time in seconds before retrying. Must equal error.retryAfterSeconds.
               schema:
                 type: integer
                 minimum: 1
@@ -345,6 +345,7 @@ components:
         retryable:
           type: boolean
         retryAfterSeconds:
+          description: Integer wait time in seconds. Must equal Retry-After header.
           type: integer
           minimum: 1
     RateLimitErrorResponse:

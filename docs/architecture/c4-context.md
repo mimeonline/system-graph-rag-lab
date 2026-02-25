@@ -15,6 +15,7 @@
 1. OpenAI API liefert Query Embeddings und Antwortgenerierung.
 2. Neo4j Aura hält den Wissensgraphen und den Vektorindex.
 3. Vercel hostet die Next.js Laufzeit für Web UI und Route Handler.
+4. Vercel KV hält den verteilten Rate Limit Counter.
 
 ## Mermaid Kontextdiagramm
 ```mermaid
@@ -24,12 +25,14 @@ flowchart LR
   api[Next.js Route Handler POST /api/query auf Vercel]
   openai[OpenAI API]
   neo4j[Neo4j Aura]
+  kv[Vercel KV]
   vercel[Vercel Runtime Logs]
 
   user -->|Frage| web
   web -->|POST /api/query| api
   api -->|Retrieval Query| neo4j
   api -->|LLM Anfrage| openai
+  api -->|Rate Limit Counter| kv
   api -->|Strukturierte Antwort| web
   web -->|Antwort und Bezüge| user
   api -->|strukturierte JSON Logs| vercel
@@ -38,7 +41,8 @@ flowchart LR
 ## Kontextfluss
 1. Public User sendet eine Frage an die Web UI.
 2. Web UI sendet die Frage an den Next.js Route Handler `POST /api/query`.
-3. API Layer fragt Neo4j Aura für Seed Retrieval und Graph Expansion ab.
-4. API Layer baut einen budgetierten Kontext und ruft OpenAI API auf.
-5. API Layer liefert strukturierte Antwortdaten zurück an die Web UI.
-6. Route Handler schreibt minimale, strukturierte Telemetrie in Vercel Runtime Logs.
+3. API Layer prüft das Rate Limit über Vercel KV.
+4. API Layer fragt Neo4j Aura für Seed Retrieval und Graph Expansion ab.
+5. API Layer baut einen budgetierten Kontext und ruft OpenAI API auf.
+6. API Layer liefert strukturierte Antwortdaten zurück an die Web UI.
+7. Route Handler schreibt minimale, strukturierte Telemetrie in Vercel Runtime Logs.

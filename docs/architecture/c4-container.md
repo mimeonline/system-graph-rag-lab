@@ -4,7 +4,8 @@
 1. Web UI Container als Next.js Frontend auf Vercel.
 2. API Layer Container als Next.js Route Handler auf Vercel.
 3. Neo4j Aura Container als verwaltete Graph Datenbank.
-4. Observability Minimal als strukturierte Vercel Runtime Logs.
+4. Vercel KV Container als verteilte Rate Limit Ablage.
+5. Observability Minimal als strukturierte Vercel Runtime Logs.
 
 ## Tech Stack und Lauforte
 1. Monorepo Deployable: eine Next.js Anwendung für UI und API Layer.
@@ -12,7 +13,8 @@
 3. API Stack: Next.js Route Handler `app/api/query/route.ts` ohne separaten API Service.
 4. Datenbank Stack: Neo4j Aura mit Vektorindex und Graph Queries.
 5. LLM Stack: OpenAI API für Embeddings und Antwortgenerierung.
-6. Logging Stack: `console` als strukturierte JSON Events in Vercel Runtime Logs.
+6. Rate Limit Stack: Vercel KV als zentraler Fixed Window Counter.
+7. Logging Stack: `console` als strukturierte JSON Events in Vercel Runtime Logs.
 
 ## Containerdetails
 ### Web UI
@@ -35,6 +37,10 @@
 2. Hält Relationskanten laut Datenmodell.
 3. Liefert TopK Seeds über Vektorindex und Nachbarschaften für Hop Expansion.
 
+### Vercel KV
+1. Hält instanzübergreifende Rate Limit Counter pro Zeitfenster.
+2. Unterstützt atomare Counter Operationen für konsistente `429` Entscheidungen.
+
 ### Observability Minimal
 1. Quelle ist der API Layer.
 2. Persistenz erfolgt über Vercel Runtime Log Stream.
@@ -42,9 +48,51 @@
 4. Felder sind `requestId`, `route`, `method`, `statusCode`, `latencyMs`, `topK`, `hopDepth`, `retrievedNodeCount`, `contextTokens`, `rateLimitTriggered`, `errorCode`.
 5. Rohqueries und Secrets dürfen nicht geloggt werden.
 
+## Mermaid Containerdiagramm
+```mermaid
+flowchart LR
+  web[Web UI Container]
+  api[API Layer Container]
+  neo4j[Neo4j Aura Container]
+  openai[OpenAI API]
+  kv[Vercel KV]
+  obs[Observability Minimal]
+
+  web -->|POST /api/query| api
+  api -->|Embedding und Completion| openai
+  api -->|TopK und Hop Expansion| neo4j
+  api -->|Rate-Limit Counter| kv
+  api -->|Structured Events| obs
+  api -->|Response mit answer und references| web
+```
+
+## Mermaid Sequenz Query bis Response
+```mermaid
+sequenceDiagram
+  participant U as User
+  participant W as Web UI
+  participant A as API Layer
+  participant K as Vercel KV
+  participant N as Neo4j Aura
+  participant O as OpenAI API
+  participant L as Runtime Logs
+
+  U->>W: Frage senden
+  W->>A: POST /api/query
+  A->>K: Rate Limit prüfen
+  K-->>A: Limit Status
+  A->>O: Query Embedding anfordern
+  A->>N: TopK Seeds laden und Hop Expansion
+  A->>A: Dedupe, Sortierung, Budgetierung
+  A->>O: Antwort mit Retrieval Kontext anfordern
+  A->>L: Abschluss Event schreiben
+  A-->>W: status, answer, references, meta
+  W-->>U: Hauptantwort und Bezüge anzeigen
+```
+
 ## Datenfluss Query zu Retrieval zu Response
 1. Web UI sendet `POST /api/query` mit Query Text.
-2. API Layer validiert Input und prüft Rate Limit.
+2. API Layer validiert Input und prüft Rate Limit über Vercel KV.
 3. API Layer erzeugt Query Embedding über OpenAI API.
 4. API Layer liest TopK Seeds aus Neo4j Aura.
 5. API Layer erweitert Seeds mit Hop Depth Regeln.

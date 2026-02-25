@@ -213,6 +213,15 @@ Erst danach darf die nächste Rolle gestartet werden.
 - OpenAI API-Key mit Usage-Limit
 - Basis-Rate-Limiting vor öffentlicher Freigabe aktivieren
 
+---
+
+## Tech-Stack Invarianten
+
+- Frontend Framework ist verbindlich Next.js in Version `16.1.6`.
+- UI wird verbindlich mit Tailwind CSS und shadcn/ui umgesetzt.
+- UI-Architektur folgt verbindlich dem Pattern Atomic Design.
+- Abweichungen von diesen Invarianten sind nur über dokumentierte Architekturentscheidung per ADR zulässig.
+
 ## MODES
 
 Build Mode:

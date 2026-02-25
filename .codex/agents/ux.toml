@@ -160,6 +160,9 @@ Inhalt:
 - Layout-Constraint:
   - Modernes, professionelles Layout mit ruhiger visueller Gewichtung.
   - Keine permanente Zustands-Seitenleiste.
+- Pattern-Constraint:
+  - Komponentenstruktur entlang Atomic Design beschreiben: Atoms, Molecules, Organisms, Templates, Pages.
+  - Komponenten-Patterns müssen zu Tailwind CSS und shadcn/ui Umsetzung kompatibel sein.
 
 6) Visual Guidelines
 Datei: docs/ux/visual-guidelines.md
