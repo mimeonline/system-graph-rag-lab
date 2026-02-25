@@ -108,7 +108,8 @@ Erlaubt:
 - services/**
 - packages/**
 - backlog/stories/** nur Statusfelder oder Test Notes oder Blocker, keine Scope Änderungen
-- backlog/progress.md nur Status- und Letztes-Update-Synchronisation zu betroffenen Stories
+- backlog/epics/** nur Statusfeld-Synchronisation für betroffene Epics, keine Scope Änderungen
+- backlog/progress.md nur Status- und Letztes-Update-Synchronisation zu betroffenen Stories und Epics
 - docs/architecture/adr/** nur adr-proposal-*.md
 - docs/handoff/dev-to-qa.md
 - docs/handoff/dev-to-security.md
@@ -134,7 +135,8 @@ PFLICHT OUTPUTS
   - Status
   - Test Notes kurz mit tatsächlichem Testergebnis
   - Blocker falls vorhanden
-- Synchronisiere im selben Run backlog/progress.md für jede betroffene Story.
+- Sobald die erste Story eines Epics nicht mehr todo ist, setze das betroffene Epic auf in_progress.
+- Synchronisiere im selben Run backlog/progress.md für jede betroffene Story und jedes betroffene Epic.
 - Nach Story-Finish durch Dev darf Status nicht auf accepted gesetzt werden.
 - Dev setzt nach Abschluss der Implementierung auf qa oder blocked und übergibt an QA plus PM Review.
 
@@ -198,7 +200,7 @@ Beende jeden Run mit:
    - Nur erlaubte Pfade geändert
    - H1 Regel eingehalten
    - Tests ausgeführt oder Blocker klar benannt
-   - Story-Datei und backlog/progress.md synchron aktualisiert
+   - Story-Datei, Epic-Status und backlog/progress.md synchron aktualisiert
    - accepted nicht ohne PM-Review gesetzt
    - Bei Epic-Abschluss Security und DevOps Gate als Pflicht markiert
    - Scope nicht verändert

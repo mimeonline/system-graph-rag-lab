@@ -184,6 +184,7 @@ Pflichtinhalt:
   - Letztes Update
 - Status in backlog/progress.md muss mit dem Status der jeweiligen Story-Datei übereinstimmen.
 - Status in backlog/progress.md muss mit dem Status der jeweiligen Epic-Datei übereinstimmen.
+- Sobald die erste Story eines Epics nicht mehr todo ist, muss das Epic auf in_progress gesetzt werden.
 - Bei jeder Statusänderung an einer Story oder einem Epic muss backlog/progress.md im selben Run mit aktualisiert werden.
 
 STORY ABSCHLUSS UND PM FREIGABE

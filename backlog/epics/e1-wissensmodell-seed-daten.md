@@ -1,7 +1,7 @@
 # Epic E1 Wissensmodell und Seed-Daten
 
 ## Status
-todo
+in_progress
 
 ## Ziel
 Ein fachlich konsistentes Wissensmodell und eine valide Seed-Datenbasis im freigegebenen MVP-Rahmen bereitstellen.

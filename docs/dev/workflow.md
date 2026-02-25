@@ -3,6 +3,7 @@
 ## Story Lifecycle
 1. Verbindlicher Ablauf ist `todo -> in_progress -> qa -> accepted`.
 2. Status `blocked` ist nur bei klar dokumentiertem Hindernis zulässig.
+3. Sobald die erste Story eines Epics nicht mehr `todo` ist, muss das Epic auf `in_progress` gesetzt werden.
 
 ## Wer setzt welchen Status
 1. PM setzt initial `todo`.
@@ -10,6 +11,11 @@
 3. Dev setzt nach Umsetzung und Selbsttest `qa` oder bei Hindernissen `blocked`.
 4. QA verifiziert und liefert ein Ergebnis im QA-Artefakt.
 5. PM setzt final `accepted` nach erfolgreichem QA-Gate.
+
+## Epic Status Sync
+1. Story-Status ist die führende Quelle für den operativen Start eines Epics.
+2. Wenn eine Story den Status `in_progress`, `qa`, `accepted` oder `blocked` hat, darf das zugehörige Epic nicht `todo` bleiben.
+3. Änderungen an Story- oder Epic-Status werden im selben Run in `backlog/progress.md` synchronisiert.
 
 ## Epic Gates
 1. Nach Abschluss der Stories eines Epics ist ein QA-Gate verpflichtend.

@@ -9,10 +9,14 @@
 | `accepted` | Durch PM final freigegeben |
 | `blocked` | Bearbeitung blockiert |
 
+## Verbindliche Epic-Statuslogik
+1. Ein Epic muss auf `in_progress` gesetzt werden, sobald die erste Story dieses Epics einen Status ungleich `todo` hat.
+2. Wenn eine Story eines Epics den Status `in_progress`, `qa`, `accepted` oder `blocked` hat, darf das Epic nicht `todo` bleiben.
+
 ## Epic Übersicht
 | Epic-Datei | Titel | Status | Letztes Update |
 | --- | --- | --- | --- |
-| `e1-wissensmodell-seed-daten.md` | Epic E1 Wissensmodell und Seed-Daten | `todo` | 2026-02-25 |
+| `e1-wissensmodell-seed-daten.md` | Epic E1 Wissensmodell und Seed-Daten | `in_progress` | 2026-02-25 |
 | `e2-retrieval-antwortpipeline.md` | Epic E2 Retrieval und Antwortpipeline | `todo` | 2026-02-25 |
 | `e3-frontend-nutzerfuehrung.md` | Epic E3 MVP-Frontend und Nutzerführung | `todo` | 2026-02-25 |
 | `e4-deployment-sicherheit-guardrails.md` | Epic E4 Deployment, Sicherheit und Guardrails | `todo` | 2026-02-25 |

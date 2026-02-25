@@ -23,7 +23,8 @@ Aufgabe:
 2. Implementiere minimal-invasiv nur den Story-Scope.
 3. Führe Lint, Tests und Build aus, soweit im Projekt verfügbar.
 4. Aktualisiere Story-Datei und Backlog-Fortschritt gemäß Workflow.
-5. Erzeuge oder aktualisiere das Dev-Handoff und die Dev-Memory-Datei.
+5. Wenn die Story die erste aktive Story ihres Epics ist, setze das Epic im selben Run auf `in_progress` und synchronisiere `backlog/progress.md`.
+6. Erzeuge oder aktualisiere das Dev-Handoff und die Dev-Memory-Datei.
 
 Outputformat:
 1. Status
