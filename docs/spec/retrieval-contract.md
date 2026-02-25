@@ -59,6 +59,11 @@
 6. Trunkiere Summaries auf maximal 280 Zeichen.
 7. Füge Evidenzknoten hinzu, bis `MAX_EVIDENCE_ITEMS` oder `CONTEXT_BUDGET_TOKENS` erreicht ist.
 
+## Erlaubte Relationen für Hop Expansion
+1. Zulässige Relationstypen sind `WROTE`, `EXPLAINS`, `ADDRESSES`, `RELATES_TO`, `INFLUENCES`, `CONTRASTS_WITH`.
+2. Expansion nutzt die im Graph gespeicherte Richtung der Relation.
+3. Kanten außerhalb dieser Liste werden im Retrieval verworfen.
+
 ## Kontextformat für LLM
 ```json
 {

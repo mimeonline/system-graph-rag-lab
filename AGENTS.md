@@ -1,239 +1,117 @@
 # AGENTS
 
 ## Projektziel
-
 Ziel ist der Aufbau eines öffentlich erreichbaren, optisch hochwertigen GraphRAG-MVP im Bereich System Thinking.
 
-Das Projekt dient gleichzeitig als:
-
+Das Projekt dient als:
 - Technischer Showcase
 - Lernplattform für Multi-Agent-Workflows
-- Referenz für Spec-First, iteratives Arbeiten
+- Referenz für spec-first, iteratives Arbeiten
 - Basis für fachlichen Content
 
 Repository-Dateien sind die Quelle der Wahrheit. Chat-Kontext ist nicht bindend.
 
----
-
-## Grundprinzip
-
+## Arbeitsmodell
 Das System arbeitet rollenbasiert mit Subagents.
 
 Der Main-Agent ist ausschließlich:
-
 - Orchestrator
 - Reviewer
 - Gatekeeper
 
-Er darf keine Rollen-Artefakte selbst erzeugen.
+Der Main-Agent erzeugt keine Rollen-Artefakte selbst.
 
----
+## Rollen und Scope
+Rollen im Projekt:
+- PM
+- UX
+- Architect
+- Dev
+- QA
+- DevOps
+- Security
+
+Jede Rolle arbeitet strikt in ihrem Scope und den erlaubten Schreibpfaden aus der jeweiligen `.codex/agents/<rolle>.toml`.
 
 ## Subagent-Pflicht
+Wenn eine Aufgabe einer Rolle zugeordnet ist:
+- Es muss ein Subagent mit passendem `agent_type` gestartet werden.
+- Der Hauptagent darf diese Rollenarbeit nicht selbst ausführen.
 
-Wenn eine Aufgabe einer Rolle zugeordnet ist (pm, ux, architect, dev, qa, devops, security):
-
-- Es muss ein Subagent mit passendem agent_type gestartet werden.
-- Der Hauptagent darf die Aufgabe nicht selbst ausführen.
-- Der Subagent muss:
-  - relevante Eingabedokumente lesen
-  - Artefakte im erlaubten Pfad erzeugen
-  - seine Memory-Datei aktualisieren
-  - ein Handoff-Dokument erstellen
-
-Vor Beginn der Arbeit muss jede Rolle:
-
-- ihre Memory-Datei lesen
-- relevante Punkte explizit berücksichtigen
-
-Ein Rollenlauf gilt als unvollständig ohne:
-
-- Memory-Update
-- Handoff-Datei
-
----
+Ein Rollenlauf ist nur vollständig, wenn:
+- relevante Inputs gelesen wurden
+- Artefakte in erlaubten Pfaden erzeugt oder aktualisiert wurden
+- `docs/memory/<rolle>.md` aktualisiert wurde
+- das Rollen-Handoff aktualisiert wurde
 
 ## Memory-Policy
-
-Jede Rolle besitzt eine persistente Memory-Datei unter:
-
-`docs/memory/<rolle>.md`
-
-Zweck:
-
-- Persistenter Rollen-Kontext unabhängig vom Chat-Verlauf
-- Dokumentation von Annahmen, offenen Entscheidungen und Risiken
-- Vorbereitung für Iterationen
-- Reduktion von Kontextverlust bei Subagent-Ausführung
+Jede Rolle hat eine persistente Memory-Datei unter:
+- `docs/memory/<rolle>.md`
 
 Regeln:
+- Memory ist strategisch, kurz, nicht redundant.
+- Memory ersetzt kein PRD, kein Backlog und keine Specs.
+- Jede Rolle liest ihre Memory-Datei zu Run-Beginn.
+- Jede Rolle aktualisiert ihre Memory-Datei am Run-Ende.
+- Der Orchestrator prüft das Memory-Update als Gate.
 
-- Memory ist kein PRD-Ersatz.
-- Memory ist kein Backlog-Duplikat.
-- Memory enthält nur strategisch relevante Informationen.
-- Jede Rolle aktualisiert ihre Memory-Datei am Ende eines Runs.
-- Der Orchestrator prüft, ob die Memory-Datei aktualisiert wurde.
-
-Memory ist bewusst kurz und strategisch.
-
----
-
-## Repository-Struktur als Source of Truth
-
-Kickoff:
-
-- docs/discovery/feature-kickoff.md
-
-Discovery:
-
-- docs/discovery/**
-
-UX:
-
-- docs/ux/**
-
-Architektur:
-
-- docs/architecture/**
-- docs/spec/**
-
-Backlog:
-
-- backlog/**
-
-QA:
-
-- docs/qa/**
-- evals/**
-
-Betrieb:
-
-- ops/**
-
-Handoffs:
-
-- handoff/<rolle>-to-next.md
-
-Memory:
-
-- docs/memory/<rolle>.md
+## Source of Truth Pfade
+- Kickoff: `docs/discovery/feature-kickoff.md`
+- Discovery: `docs/discovery/**`
+- UX: `docs/ux/**`
+- Architektur: `docs/architecture/**`, `docs/spec/**`
+- Backlog: `backlog/**`
+- QA: `docs/qa/**`, `evals/**`
+- Betrieb: `ops/**`
+- Handoffs: `handoff/**`
+- Memory: `docs/memory/**`
 
 Entscheidungen müssen in Dateien dokumentiert werden.
 
----
-
-## Rollenrahmen (High-Level)
-
-Detaillierte Rollenbeschreibungen befinden sich in den jeweiligen `.toml`-Dateien unter `.codex/roles/`.
-
-Hier nur die Verantwortungsebene:
-
-PM:
-
-- Produktvision
-- Scope
-- Backlog
-- Akzeptanzkriterien
-- Risiken
-- KPIs
-
-UX:
-
-- User Journeys
-- Informationsarchitektur
-- Interaktionskonzept
-- UX-Handoff
-
-Architect:
-
-- Architekturmodell
-- Datenmodell
-- Retrieval-Strategie
-- Nicht-funktionale Anforderungen
-
-Dev:
-
-- Implementierung
-- Tests
-- Story-Status
-
-QA:
-
-- Testpläne
-- Eval-Durchläufe
-- Qualitätsberichte
-
-DevOps:
-
-- Deployment
-- Infrastruktur
-- Guardrails
-- Observability
-
-Security:
-
-- Threat Review
-- Secret Handling
-- Abuse Prevention
-
-Rollen dürfen ihren Scope nicht überschreiten.
-
----
-
 ## Review-Gates
-
 Nach jeder Rollen-Ausführung prüft der Orchestrator:
-
-- Wurden nur erlaubte Pfade genutzt?
-- Existiert das Handoff-Dokument?
+- Wurden nur erlaubte Pfade geändert?
+- Ist das erwartete Handoff vorhanden?
 - Wurde die Memory-Datei aktualisiert?
 - Gibt es Scope-Verletzungen?
 - Gibt es unbeabsichtigte Architektur- oder Scope-Entscheidungen?
 
-Erst danach darf die nächste Rolle gestartet werden.
-
----
+Erst danach startet die nächste Rolle.
 
 ## Markdown-Regeln
-
-- Jede Markdown-Datei darf genau eine H1-Überschrift enthalten.
-- Weitere Struktur nur mit H2/H3.
+- Jede Markdown-Datei hat genau eine H1.
+- Weitere Struktur nur mit H2 und H3.
 - Keine Gedankenstriche als Stilmittel.
-- Listen Obsidian-kompatibel.
-- Klar, testbar, ohne Buzzwords.
+- Inhalte klar, testbar, ohne Buzzwords.
 
----
-
-## Betriebsrahmen für Public MVP
-
+## Betriebsrahmen Public MVP
 - GitHub als öffentliches Repository
 - Deployment über Vercel
 - Neo4j Aura als Graph-Datenbank
+- OpenAI API mit Usage-Limit
 - Keine Secrets im Repository
-- OpenAI API-Key mit Usage-Limit
-- Basis-Rate-Limiting vor öffentlicher Freigabe aktivieren
-
----
+- Basis-Rate-Limiting vor öffentlicher Freigabe aktiv
 
 ## Tech-Stack Invarianten
-
-- Frontend Framework ist verbindlich Next.js in Version `16.1.6`.
+- Next.js ist verbindlich in Version `16.1.6`.
+- API Layer wird in Next.js als Route Handler umgesetzt.
 - UI wird verbindlich mit Tailwind CSS und shadcn/ui umgesetzt.
-- UI-Architektur folgt verbindlich dem Pattern Atomic Design.
-- Abweichungen von diesen Invarianten sind nur über dokumentierte Architekturentscheidung per ADR zulässig.
+- UI-Architektur folgt dem Pattern Atomic Design.
+- Abweichungen sind nur über dokumentierte ADR-Entscheidung zulässig.
 
-## MODES
+## Architektur-Invarianten
+- C4 Kontext und C4 Container müssen Mermaid-Diagramme enthalten.
+- `docs/architecture/arc42.md` ist verpflichtender Architekturüberblick mit Mermaid Kontext-, Container- und Sequenzsicht.
+- `docs/architecture/deployment-view.md` ist verpflichtend inklusive Mermaid Deployment-Diagramm.
+- API-Vertrag liegt in `docs/spec/api.md` und maschinenlesbar in `docs/spec/api.openapi.yaml`.
 
-Build Mode:
+## Modusrahmen
+### Build Mode
+- Direktarbeit mit Main-Agent für schnelle Iteration
+- Fokus auf Momentum
+- Rollenpipeline kann verkürzt sein
 
-- Direktarbeit mit Main Agent.
-- UX/PM dürfen schnell iterieren.
-- Nur Memory aktualisieren.
-- Keine vollständige Rollenpipeline.
-
-Process Mode:
-
-- Strikte Rollen.
-- Subagent Spawn.
-- Handoffs verpflichtend.
-- QA/Security Gate aktiv.
+### Process Mode
+- Strikte Rollenpipeline mit Subagents
+- Handoffs und Memory-Updates verpflichtend
+- QA und Security fungieren als Gate vor Release

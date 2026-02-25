@@ -1,7 +1,7 @@
 # API Definition Public MVP
 
 ## Runtime und API Grenze
-1. API und Web UI laufen im selben Next.js Projekt auf Vercel.
+1. API und Web UI laufen im selben Next.js `16.1.6` Projekt auf Vercel.
 2. Der API Layer wird als Next.js Route Handler für `POST /api/query` umgesetzt.
 3. Der Handler liegt in `app/api/query/route.ts`.
 4. Es gibt im MVP keinen separaten API Service.

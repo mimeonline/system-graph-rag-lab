@@ -4,6 +4,12 @@
 1. Dieses Artefakt beschreibt die Deployment Sicht der bestehenden MVP Architektur.
 2. Das Dokument ergänzt C4 und Arc42 ohne Scope Änderung oder neue Features.
 
+## Tech Stack Bindung
+1. Laufzeiteinheit bleibt eine Next.js `16.1.6` Anwendung mit Web UI und API Layer.
+2. UI Stack bleibt auf Tailwind CSS und shadcn/ui festgelegt.
+3. UI Architekturpattern bleibt Atomic Design.
+4. API Grenze bleibt der Route Handler `POST /api/query` ohne separaten Service.
+
 ## Lauforte und Verantwortungen
 ### Public Client Runtime
 1. Läuft im Browser des Public Users.

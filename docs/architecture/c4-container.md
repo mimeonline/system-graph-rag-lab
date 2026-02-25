@@ -9,12 +9,14 @@
 
 ## Tech Stack und Lauforte
 1. Monorepo Deployable: eine Next.js Anwendung für UI und API Layer.
-2. Frontend Stack: Next.js App Router mit React Rendering in Vercel Runtime.
-3. API Stack: Next.js Route Handler `app/api/query/route.ts` ohne separaten API Service.
-4. Datenbank Stack: Neo4j Aura mit Vektorindex und Graph Queries.
-5. LLM Stack: OpenAI API für Embeddings und Antwortgenerierung.
-6. Rate Limit Stack: Vercel KV als zentraler Fixed Window Counter.
-7. Logging Stack: `console` als strukturierte JSON Events in Vercel Runtime Logs.
+2. Web Stack: Next.js `16.1.6` App Router mit React, Tailwind CSS und shadcn/ui.
+3. UI Architekturpattern: Atomic Design.
+4. API Stack: Next.js Route Handler `app/api/query/route.ts` ohne separaten API Service.
+5. Runtime: Vercel Node.js Runtime für den Route Handler.
+6. Graph Connector: Neo4j Driver gegen Neo4j Aura mit Vektorindex und Graph Queries.
+7. LLM Connector: OpenAI API für Embeddings und Antwortgenerierung.
+8. Rate Limit Stack: Vercel KV als zentraler Fixed Window Counter.
+9. Logging Stack: `console` als strukturierte JSON Events in Vercel Runtime Logs.
 
 ## Containerdetails
 ### Web UI

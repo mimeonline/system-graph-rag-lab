@@ -26,10 +26,11 @@ flowchart LR
 
 ## Lösungsstrategie
 1. Eine monolithische Laufzeiteinheit auf Next.js reduziert Integrationsaufwand zwischen UI und API.
-2. Retrieval läuft kontraktbasiert mit festen Parametern `TopK=6`, `HopDepth=1`, `ContextBudget=1400`.
-3. Kontextaufbau ist deterministisch durch feste Sortierung, Dedupe pro `nodeId` und harte Budgetregeln.
-4. Antwortaufbau trennt Hauptantwort, Kernnachweis und Referenzen für klare QA Prüfbarkeit.
-5. Betriebsfähigkeit wird durch minimale Guardrails abgesichert: Rate Limit, strukturierte Logs, standardisierte Fehlercodes.
+2. Tech Stack ist verbindlich auf Next.js `16.1.6`, Tailwind CSS, shadcn/ui und Atomic Design festgelegt.
+3. Retrieval läuft kontraktbasiert mit festen Parametern `TopK=6`, `HopDepth=1`, `ContextBudget=1400`.
+4. Kontextaufbau ist deterministisch durch feste Sortierung, Dedupe pro `nodeId` und harte Budgetregeln.
+5. Antwortaufbau trennt Hauptantwort, Kernnachweis und Referenzen für klare QA Prüfbarkeit.
+6. Betriebsfähigkeit wird durch minimale Guardrails abgesichert: Rate Limit, strukturierte Logs, standardisierte Fehlercodes.
 
 ## Bausteinsicht Container Ebene
 ### Web UI
@@ -50,6 +51,10 @@ flowchart LR
 1. Liefert Query Embedding für Seed Suche.
 2. Liefert finale Antwortgenerierung auf Basis des strukturierten Retrieval Kontextes.
 
+### Vercel KV
+1. Erzwingt instanzübergreifend konsistentes Fixed Window Rate Limiting.
+2. Liefert die TTL Grundlage für `Retry-After` und `retryAfterSeconds`.
+
 ### Observability Minimal
 1. Verwendet Vercel Runtime Logs als einziges MVP Beobachtungsziel.
 2. Nutzt feste Pflichtfelder für Betriebssicht und QA Reproduzierbarkeit.
@@ -61,11 +66,13 @@ flowchart LR
   api[API Layer Container]
   neo4j[Neo4j Aura Container]
   openai[OpenAI API]
+  kv[Vercel KV]
   obs[Observability Minimal]
 
   web -->|POST /api/query| api
   api -->|Embedding und Completion| openai
   api -->|Seed Retrieval und Hop Expansion| neo4j
+  api -->|Rate-Limit Counter| kv
   api -->|Structured Events| obs
   api -->|Response mit answer und references| web
 ```
@@ -73,7 +80,7 @@ flowchart LR
 ## Laufzeitsicht Query zu Retrieval zu Response
 1. Nutzer sendet eine Frage in der Web UI.
 2. Web UI ruft `POST /api/query` auf.
-3. API Layer validiert Input und prüft Rate Limit.
+3. API Layer validiert Input und prüft Rate Limit über Vercel KV.
 4. API Layer erzeugt Query Embedding über OpenAI API.
 5. API Layer lädt TopK Seeds aus Neo4j Aura und erweitert mit Hop Depth 1.
 6. API Layer dedupliziert, sortiert stabil und budgetiert den Kontext.
@@ -87,13 +94,15 @@ sequenceDiagram
   participant U as User
   participant W as Web UI
   participant A as API Layer
+  participant K as Vercel KV
   participant N as Neo4j Aura
   participant O as OpenAI API
   participant L as Runtime Logs
 
   U->>W: Frage senden
   W->>A: POST /api/query
-  A->>A: Input validieren und Rate Limit prüfen
+  A->>K: Rate Limit prüfen
+  K-->>A: Limit Status
   A->>O: Query Embedding anfordern
   A->>N: TopK Seeds laden
   A->>N: Hop Expansion ausführen
@@ -145,4 +154,3 @@ sequenceDiagram
 2. Die technische Trennregel zwischen `state=empty` und schwacher Evidenz muss in Dev Implementierung exakt festgelegt werden.
 3. Modellfixierung und `max_tokens` für Antwortgenerierung sind noch nicht als finale Laufzeitkonfiguration abgeschlossen.
 4. Ein verbindliches CI Gate für Konsistenz zwischen `docs/spec/api.md` und `docs/spec/api.openapi.yaml` fehlt noch.
-5. `architect.toml` ist im Repository nicht vorhanden, daher erfolgt der Self Check gegen AGENTS und aktuelle Architect Vorgaben.
