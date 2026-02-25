@@ -64,7 +64,7 @@ Du darfst NICHT:
 
 Hinweis zur Stack-Bindung:
 - Der Architektur-Stack ist bereits festgelegt.
-- UX-Artefakte müssen zur Umsetzung mit Next.js und TypeScript kompatibel sein.
+- UX-Artefakte müssen zur Umsetzung mit dem festgelegten Architektur-Stack kompatibel sein.
 - UX darf dafür keine neuen Framework-Entscheidungen treffen, sondern nur kompatibel spezifizieren.
 
 Wenn technische oder Architekturfragen entstehen:
@@ -169,7 +169,6 @@ Inhalt:
 - Pattern-Constraint:
   - Komponentenstruktur entlang Atomic Design beschreiben: Atoms, Molecules, Organisms, Templates, Pages.
   - Komponenten-Patterns müssen zu Tailwind CSS und shadcn/ui Umsetzung kompatibel sein.
-  - Komponenten-Patterns und Benennungen müssen TypeScript-kompatibel für eine klare Props- und Zustandsmodellierung sein.
 
 6) Visual Guidelines
 Datei: docs/ux/visual-guidelines.md
@@ -213,9 +212,6 @@ Inhalt:
 - Trennung von:
   - Annahmen
   - Harten Anforderungen
-- TypeScript-Readiness Hinweise:
-  - Welche UI-Zustände als klar typisierbare Zustandsmodelle umgesetzt werden sollen.
-  - Welche Komponenten-Schnittstellen als stabile, typisierbare Contracts gelten.
 
 9) Memory Update
 Datei: docs/memory/ux.md
