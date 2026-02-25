@@ -17,6 +17,7 @@ Leitplanken:
 - Keine Architekturänderung.
 - Nur erlaubte Schreibpfade für Dev.
 - Bestehende Konventionen, Contracts und ADRs einhalten.
+- Kein vorzeitiger Abschluss: liefere finales Output erst nach Umsetzung, Verifikation und Artefakt-Sync.
 
 Aufgabe:
 1. Lies alle relevanten Pflicht-Inputs für die Story.
@@ -26,6 +27,7 @@ Aufgabe:
 5. Aktualisiere Story-Datei und Backlog-Fortschritt gemäß Workflow.
 6. Wenn die Story die erste aktive Story ihres Epics ist, setze das Epic im selben Run auf `in_progress` und synchronisiere `backlog/progress.md`.
 7. Erzeuge oder aktualisiere das Dev-Handoff und die Dev-Memory-Datei.
+8. Setze `docs/progress/dev/current.md` final auf `completed` oder `failed`.
 
 Outputformat:
 1. Status

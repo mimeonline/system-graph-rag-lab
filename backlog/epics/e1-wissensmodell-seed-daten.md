@@ -31,4 +31,5 @@ Ein fachlich konsistentes Wissensmodell und eine kuratierte Seed-Datenbasis aus 
 2. E1-S2 Kuratierte Quellbasis aus bereitgestellten Quellen erfassen
 3. E1-S5 Quelleninhalte extrahieren und normalisieren
 4. E1-S3 Datenbasis im Zielbetrieb verfügbar machen
-5. E1-S4 Qualitätsprüfung für kuratierte Seed-Daten ausführen
+5. E1-S6 Neo4j lokal Seed Reset und Reseed
+6. E1-S4 Qualitätsprüfung für kuratierte Seed-Daten ausführen

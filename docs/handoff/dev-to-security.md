@@ -1,19 +1,20 @@
 # Dev to Security Handoff
 
 ## Kurzer Security-Context der umgesetzten Stories
-1. Bearbeitet wurde Story `E1-S3` mit Fokus auf Runtime-Lesezugriff fuer die normalisierte Seed-Datenbasis.
-2. Sicherheitsrelevant ist die Integritaet der Herkunftskennzeichnung `sourceType` und `sourceFile` bei Nodes und Relationen.
+1. Story `E1-S3` stellt den Runtime-Read von Seed-Daten auf echten Neo4j-Zugriff um.
+2. Sicherheitsrelevant ist die Verarbeitung von Datenfeldern `sourceType` und `sourceFile` aus Neo4j ohne Contract-Drift.
 
 ## Welche Eingaben oder Endpoints sicherheitsrelevant beruehrt wurden
-1. Es wurde kein neuer extern erreichbarer Endpoint eingefuehrt.
-2. Sicherheitsrelevant ist der interne Runtime-Read-Pfad `readSeedDatasetForRuntime`.
-3. Der Pfad validiert die Seed-Datenbasis vor dem Auslesen und stoppt bei inkonsistenten Daten.
+1. Kein neuer oeffentlicher Endpoint wurde eingefuehrt.
+2. Betroffen ist die interne Funktion `readSeedDatasetForRuntime` mit Neo4j-Zugriff.
+3. Die Funktion nutzt Runtime-Variablen `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`.
 
 ## Welche bekannten Sicherheitsgrenzen oder offenen Risiken bestehen
-1. Der Runtime-Read-Pfad ist aktuell auf die lokal normalisierte Seed-Datenbasis beschraenkt und nicht auf persistente Neo4j-Daten.
-2. Die Absicherung gegen manipulierte externe Datenimporte bleibt fuer spaetere Import- und Persistenzstories offen.
+1. Bei Neo4j-Verbindungsfehlern wird ein Fehler mit Upstream-Meldung propagiert; Security sollte pruefen, ob die Detailtiefe in produktnahen Logs ausreichend begrenzt ist.
+2. Zugriffsschutz auf Neo4j selbst ist weiterhin rein ueber Infrastruktur und Credentials geregelt.
+3. Integritaet der `sourceType` Werte ist im Read abgesichert, aber Manipulationen auf Datenbankebene bleiben ausserhalb des Anwendungscodes moeglich.
 
 ## Welche Punkte Security im Epic-Gate gezielt pruefen soll
-1. Sicherstellen, dass Herkunftskennzeichnungen in allen Datenpfaden unveraendert erhalten bleiben.
-2. Sicherstellen, dass nur die erlaubten Herkunftstypen `primary_md` und `optional_internet` akzeptiert werden.
-3. Bei spaeterer Neo4j-Anbindung pruefen, dass keine sensitiven Inhalte oder Secrets in Fehler- oder Laufzeitlogs landen.
+1. Pruefen, dass keine Secrets oder Credentialwerte in Fehlerlogs oder Testausgaben landen.
+2. Pruefen, dass nur erlaubte `sourceType` Werte verarbeitet werden und Verstosse hart fehlschlagen.
+3. Pruefen, dass Neo4j-Zugriffe nur mit Runtime-Variablen erfolgen und keine Hardcodes existieren.

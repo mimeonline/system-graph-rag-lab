@@ -19,7 +19,7 @@ Live Progress Pflicht:
 
 ## Polling Ablauf fuer Orchestrator
 1. Subagent starten und `agent_id` notieren.
-2. Alle 10 bis 15 Sekunden pollen:
+2. Alle 30 bis 60 Sekunden pollen:
    - `wait` auf `agent_id`
    - `cat docs/progress/<rolle>/current.md`
 3. Im Chat pro Polling reporten:
@@ -27,9 +27,12 @@ Live Progress Pflicht:
    - Current Step
    - Current File
    - Next Step
-4. Bei `running` den Subagent kurz pingen:
+4. Bei `running` nur bei stagnierendem Fortschritt nach mindestens zwei Polls den Subagent kurz pingen:
    - `Kurzer Progress-Report mit Current Step, Current File, Next Step.`
-5. Bei `completed` oder `failed` Abschlussreport liefern.
+5. Bei `completed` oder `failed` Abschlussreport liefern, aber nur wenn:
+   - Progress-Datei finalen Status `completed|failed` zeigt
+   - geänderte Dateien oder Blocker eindeutig benannt sind
+6. Wenn Agent ohne vollständigen Abschlussreport endet, einen kurzen Finalisierungsrun starten.
 
 ## Automatischer PM Follow-up nach QA Pass
 1. Wenn der abgeschlossene Lauf die Rolle `qa` war und das Story-Verdict `Pass` ist:
@@ -42,6 +45,6 @@ Live Progress Pflicht:
    - Story-Status in `backlog/progress.md` auf `accepted`
    - `Letztes Update` auf aktuelles Datum
 4. PM-Run wird mit demselben Polling-Standard begleitet:
-   - 10 bis 15 Sekunden Intervall
+   - 30 bis 60 Sekunden Intervall
    - Statuszeile pro Polling
-   - Progress-Ping bei `running`
+   - Progress-Ping nur bei Stagnation

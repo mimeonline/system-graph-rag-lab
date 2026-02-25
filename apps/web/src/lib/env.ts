@@ -5,6 +5,7 @@ export type QueryRuntimeEnv = {
   openAiApiKey: string | null;
   openAiModel: string | null;
   neo4jUri: string | null;
+  neo4jDatabase: string | null;
   neo4jUsername: string | null;
   neo4jPassword: string | null;
   rateLimitMaxRequests: number;
@@ -36,6 +37,7 @@ export function getQueryRuntimeEnv(): QueryRuntimeEnv {
     openAiApiKey: readOptionalEnv("OPENAI_API_KEY"),
     openAiModel: readOptionalEnv("OPENAI_MODEL"),
     neo4jUri: readOptionalEnv("NEO4J_URI"),
+    neo4jDatabase: readOptionalEnv("NEO4J_DATABASE"),
     neo4jUsername: readOptionalEnv("NEO4J_USERNAME"),
     neo4jPassword: readOptionalEnv("NEO4J_PASSWORD"),
     rateLimitMaxRequests: readOptionalNumberEnv(

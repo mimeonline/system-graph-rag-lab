@@ -10,18 +10,21 @@ Ich möchte bei jedem Subagent-Run laufend Zwischenupdates sehen.
 Verbindlicher Ablauf für jeden Subagent-Run:
 1. Starte den gewünschten Subagent mit meinem Prompt.
 2. Notiere die agent_id.
-3. Führe Polling in 10 bis 15 Sekunden Intervallen aus.
+3. Führe Polling in 30 bis 60 Sekunden Intervallen aus.
 4. Berichte mir nach jedem Polling kurz:
    - Status: running | completed | failed
    - Current Step
    - Current File
    - Next Step
 5. Wenn nach einem Polling noch running:
-   - sende an den Subagent:
+   - sende nur bei Fortschrittsstagnation nach mindestens zwei Polls an den Subagent:
      "Kurzer Progress-Report mit Current Step, Current File, Next Step."
    - poll danach erneut.
 6. Bei completed oder failed:
-   - liefere Abschlussreport mit Ergebnis, geänderten Dateien, Blockern.
+   - liefere Abschlussreport nur dann, wenn:
+     - Statusdatei auf completed oder failed steht
+     - geänderte Dateien benannt sind
+     - Tests oder Blocker dokumentiert sind
 
 Regeln:
 1. Kein stilles Warten ohne Zwischenmeldung.
@@ -43,6 +46,7 @@ Automatischer Follow-up nach QA Pass:
    - `Letztes Update` auf das aktuelle Datum setzen.
 5. Polling fuer PM analog 10 bis 15 Sekunden mit Statuszeile und Progress-Ping.
 6. Bei PM-`completed` Abschlussreport mit geaenderten Dateien und Konsistenzcheck liefern.
+7. Wenn PM vorzeitig ohne Artefakt-Update endet, einen Finalisierungsrun nur fuer die fehlenden Dateien starten.
 ```
 
 ## Nutzung

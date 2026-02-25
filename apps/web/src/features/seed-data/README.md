@@ -27,11 +27,11 @@ Die Daten stammen aus freigegebenen Markdown-Quellen und enthalten Herkunftsmeta
 5. Beispiel: `validateSeedDataset(createSeedDataset())` liefert `valid = true`.
 
 ### `readSeedDatasetForRuntime(options?)`
-1. Zweck: stellt die normalisierte Datenbasis fuer Runtime-Lesezugriffe auf Nodes und Relationen bereit.
-2. Input: optional `options.datasetFactory` fuer Testinjektion.
-3. Output: `RuntimeSeedReadResult` mit `nodes` und `edges` inklusive `sourceType` und `sourceFile`.
-4. Fehlerfall: wirft einen Fehler, wenn die Datenbasis nicht valide ist.
-5. Beispiel: `readSeedDatasetForRuntime().nodes.slice(0, 2)` liefert lesbare Node-Stichprobe mit Herkunft.
+1. Zweck: liest die normalisierte Datenbasis als echten Runtime-Read direkt aus Neo4j.
+2. Input: `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD` plus optional `options.driverFactory` fuer Testinjektion.
+3. Output: `Promise<RuntimeSeedReadResult>` mit `nodes` und `edges` inklusive `sourceType` und `sourceFile`.
+4. Fehlerfall: wirft einen Fehler bei fehlenden Env-Variablen, Neo4j-Verbindungsproblemen oder ungueltigen Datensaetzen.
+5. Beispiel: `const rows = await readSeedDatasetForRuntime(); rows.nodes.slice(0, 2)`.
 
 ## Hinweise
 1. `sourceType` ist je Eintrag auf `primary_md` oder `optional_internet` begrenzt.

@@ -24,7 +24,8 @@ Oeffentlich erreichbares GraphRAG-MVP mit klar getrenntem Delivery-Schnitt: E1 l
 ## Open Decisions
 1. PM-Entscheidung vom 2026-02-25: `E1-S3` bleibt auf `qa` bis QA-`pass` mit lokalem Lese-Smoke-Test-Evidenzpaket vorliegt.
 2. PM-Entscheidung vom 2026-02-25: `E4-S5` ist als Public-Voraussetzungsstory im Backlog fixiert und vor den operativen Public-Storys einzuordnen.
-3. Offen bleibt, in welcher Reihenfolge E4-S1 bis E4-S4 nach Abschluss von E4-S5 zuerst in `in_progress` gesetzt werden.
+3. PM-Entscheidung vom 2026-02-25: `E1-S6` ist als verbindliche Folge-Story nach `E1-S3` im Epic E1 gefuehrt und in `backlog/progress.md` mit Status `todo` nachgezogen.
+4. Offen bleibt, in welcher Reihenfolge E4-S1 bis E4-S4 nach Abschluss von E4-S5 zuerst in `in_progress` gesetzt werden.
 
 ## Risks to Monitor
 1. Abnahme-Risiko durch Nachweisvermischung zwischen lokalem E1-Zielbetrieb und Public-E4-Zielbetrieb.
@@ -38,3 +39,4 @@ Oeffentlich erreichbares GraphRAG-MVP mit klar getrenntem Delivery-Schnitt: E1 l
 3. Setze `accepted` nur nach dokumentiertem QA-`pass` und explizitem PM-OK.
 4. Fuehre E4 nach Start der ersten nicht-`todo`-Story sofort auf Epic-Status `in_progress`.
 5. Markiere Epic-Abschluss nur mit dokumentierten QA-, Security- und DevOps-Gates.
+6. Halte `E1-S6` bis zum Dev-Start auf `todo` und erwarte bei Start den unmittelbaren Wechsel auf `in_progress` samt Progress-Sync.
