@@ -6,20 +6,19 @@
   <title>System GraphRAG Public MVP UX Mock</title>
   <style>
     :root {
-      --bg: #f3f6fa;
+      --bg: #f4f7fb;
       --surface: #ffffff;
-      --line: #d6dfeb;
-      --text: #162436;
-      --muted: #566981;
-      --primary: #1d63e2;
-      --loading: #2e67da;
-      --empty: #966200;
+      --line: #d6deea;
+      --text: #16253a;
+      --muted: #5b6d83;
+      --navy: #0c2345;
+      --primary: #1f66e5;
+      --loading: #245fdf;
+      --empty: #9a6502;
       --error: #b4232f;
-      --rate: #1d6b51;
-      --max: 980px;
+      --rate: #1c6d52;
+      --max: 1180px;
       --radius: 12px;
-      --header-h: 60px;
-      --footer-h: 52px;
       --font: "Manrope", "Avenir Next", "Segoe UI", sans-serif;
     }
 
@@ -27,370 +26,363 @@
 
     body {
       margin: 0;
-      font-family: var(--font);
-      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
       background: var(--bg);
+      color: var(--text);
+      font-family: var(--font);
       line-height: 1.45;
     }
 
     .site-header {
       width: 100%;
-      height: var(--header-h);
-      border-bottom: 1px solid var(--line);
-      background: #f8fbff;
-      display: flex;
-      align-items: center;
+      background: var(--navy);
+      color: #fff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
     }
 
-    .shell {
+    .header-inner {
       width: min(var(--max), 100% - 2rem);
       margin: 0 auto;
-    }
-
-    .header-row {
+      min-height: 64px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 1rem;
-      font-size: 0.88rem;
-      color: var(--muted);
     }
 
     .brand {
+      font-size: 1rem;
       font-weight: 700;
-      color: var(--text);
       letter-spacing: 0.01em;
     }
 
-    main {
+    .header-links {
+      font-size: 0.88rem;
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    .content {
       width: min(var(--max), 100% - 2rem);
-      margin: 1.1rem auto 1.4rem;
+      margin: 1.2rem auto 1.4rem;
       display: grid;
-      gap: 0.9rem;
+      grid-template-columns: minmax(0, 1fr) minmax(300px, 36%);
+      gap: 1.2rem;
+      flex: 1 0 auto;
+      align-items: start;
     }
 
-    .hero {
-      padding: 0.4rem 0 0.2rem;
-    }
-
-    h1 {
-      margin: 0;
-      font-size: 1.35rem;
-      line-height: 1.2;
-    }
-
-    .subline {
-      margin: 0.45rem 0 0;
-      color: var(--muted);
-      font-size: 0.95rem;
-      max-width: 72ch;
-    }
-
-    .card {
+    .panel {
+      background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
-      background: var(--surface);
-      padding: 0.9rem;
+      padding: 1rem;
+    }
+
+    .panel-title {
+      margin: 0;
+      font-size: 1.05rem;
+      font-weight: 700;
+    }
+
+    .section {
+      margin-top: 0.95rem;
+      padding-top: 0.95rem;
+      border-top: 1px solid var(--line);
     }
 
     .label {
-      margin: 0 0 0.52rem;
-      font-size: 0.77rem;
-      letter-spacing: 0.06em;
+      margin: 0 0 0.45rem;
+      font-size: 0.78rem;
       text-transform: uppercase;
+      letter-spacing: 0.08em;
       color: var(--muted);
       font-weight: 700;
     }
 
     textarea {
       width: 100%;
-      min-height: 96px;
-      border: 1px solid #c4d0df;
+      min-height: 92px;
+      border: 1px solid #c3cfdd;
       border-radius: 10px;
-      padding: 0.75rem;
+      padding: 0.72rem;
       font: inherit;
       color: var(--text);
+      background: #fff;
       resize: vertical;
-      background: #fcfdff;
     }
 
-    .input-actions {
-      margin-top: 0.65rem;
+    textarea:focus-visible,
+    button:focus-visible,
+    details summary:focus-visible {
+      outline: 3px solid #93b6ff;
+      outline-offset: 2px;
+    }
+
+    .ask-row {
+      margin-top: 0.62rem;
       display: flex;
       justify-content: flex-end;
     }
 
-    .btn-primary {
+    .btn {
       border: 0;
       border-radius: 10px;
       background: var(--primary);
       color: #fff;
       font: inherit;
       font-weight: 700;
-      padding: 0.65rem 1rem;
-      min-width: 170px;
+      padding: 0.64rem 1rem;
+      min-width: 156px;
       cursor: default;
-    }
-
-    .helper {
-      margin: 0.5rem 0 0;
-      font-size: 0.84rem;
-      color: var(--muted);
     }
 
     .answer {
       margin: 0;
-      font-size: 0.97rem;
+      font-size: 0.98rem;
     }
 
-    .refs {
-      list-style: none;
+    .answer + .answer { margin-top: 0.55rem; }
+
+    .inline-state {
+      margin-top: 0.75rem;
+      border: 1px solid var(--line);
+      border-left-width: 4px;
+      border-radius: 10px;
+      padding: 0.55rem 0.62rem;
+      background: #fff;
+    }
+
+    .inline-state h3 {
       margin: 0;
-      padding: 0;
-      display: grid;
-      gap: 0.5rem;
+      font-size: 0.87rem;
     }
 
-    .ref-item {
+    .inline-state p {
+      margin: 0.18rem 0 0;
+      font-size: 0.83rem;
+      color: var(--muted);
+    }
+
+    .state-loading { border-left-color: var(--loading); }
+    .state-empty { border-left-color: var(--empty); }
+    .state-error { border-left-color: var(--error); }
+    .state-rate { border-left-color: var(--rate); }
+
+    .ref-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.55rem;
+    }
+
+    .ref-card {
       border: 1px solid var(--line);
       border-radius: 10px;
-      padding: 0.52rem 0.6rem;
-      background: #fbfdff;
+      background: #fcfdff;
+      padding: 0.55rem 0.6rem;
     }
 
-    .ref-item strong {
+    .ref-card strong {
       display: block;
-      margin-bottom: 0.15rem;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
+      margin-bottom: 0.16rem;
     }
 
-    .ref-item span {
-      font-size: 0.84rem;
+    .ref-card span {
+      display: block;
+      font-size: 0.82rem;
       color: var(--muted);
     }
 
     details {
       border: 1px solid var(--line);
       border-radius: 10px;
-      background: #fcfdff;
       padding: 0.56rem 0.62rem;
-    }
-
-    details + details {
-      margin-top: 0.55rem;
+      background: #fcfdff;
     }
 
     summary {
-      font-weight: 700;
       font-size: 0.9rem;
+      font-weight: 700;
       cursor: default;
     }
 
-    ol {
+    .detail-list {
       margin: 0.5rem 0 0;
       padding-left: 1.1rem;
-      color: #2a3d56;
-      font-size: 0.88rem;
+      font-size: 0.84rem;
+      color: #2b3f57;
     }
-
-    .state-list {
-      display: grid;
-      gap: 0.5rem;
-      margin-top: 0.7rem;
-    }
-
-    .state {
-      border: 1px solid var(--line);
-      border-left-width: 4px;
-      border-radius: 10px;
-      background: #ffffff;
-      padding: 0.56rem 0.62rem;
-    }
-
-    .state h3 {
-      margin: 0;
-      font-size: 0.88rem;
-    }
-
-    .state p {
-      margin: 0.18rem 0 0;
-      font-size: 0.83rem;
-      color: var(--muted);
-    }
-
-    .state strong {
-      display: block;
-      margin-top: 0.24rem;
-      font-size: 0.8rem;
-      color: #283b53;
-    }
-
-    .loading { border-left-color: var(--loading); }
-    .empty { border-left-color: var(--empty); }
-    .error { border-left-color: var(--error); }
-    .rate { border-left-color: var(--rate); }
 
     .site-footer {
       width: 100%;
-      height: var(--footer-h);
-      border-top: 1px solid var(--line);
-      background: #f8fbff;
-      display: flex;
-      align-items: center;
-      margin-top: 1rem;
-      color: var(--muted);
-      font-size: 0.83rem;
+      background: #0a1f3b;
+      color: rgba(255, 255, 255, 0.86);
+      border-top: 1px solid #12335f;
+      margin-top: auto;
     }
 
-    .footer-row {
+    .footer-inner {
+      width: min(var(--max), 100% - 2rem);
+      margin: 0 auto;
+      min-height: 52px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      justify-content: space-between;
       gap: 1rem;
+      font-size: 0.82rem;
     }
 
     .mobile-action {
       display: none;
     }
 
+    @media (max-width: 920px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      .ref-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @media (max-width: 780px) {
-      :root {
-        --header-h: 56px;
+      .header-inner,
+      .content,
+      .footer-inner {
+        width: min(760px, 100% - 1.2rem);
       }
 
-      main {
-        width: min(var(--max), 100% - 1rem);
-        margin-top: 0.8rem;
-        padding-bottom: 5.4rem;
-      }
-
-      .shell {
-        width: min(var(--max), 100% - 1rem);
-      }
-
-      h1 {
-        font-size: 1.16rem;
-      }
-
-      .subline {
-        font-size: 0.9rem;
-      }
-
-      .input-actions {
-        display: none;
-      }
+      .ask-row { display: none; }
 
       .mobile-action {
-        position: fixed;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        z-index: 30;
         display: block;
+        position: sticky;
+        bottom: 0;
+        width: 100%;
+        z-index: 5;
+        background: rgba(244, 247, 251, 0.96);
         border-top: 1px solid var(--line);
-        background: rgba(248, 251, 255, 0.97);
-        backdrop-filter: blur(4px);
-        padding: 0.62rem 0.7rem calc(0.62rem + env(safe-area-inset-bottom));
+        padding: 0.55rem 0.6rem calc(0.55rem + env(safe-area-inset-bottom));
       }
 
-      .mobile-action .btn-primary {
+      .mobile-action .btn {
         width: 100%;
-        min-width: 0;
+      }
+
+      .footer-inner {
+        min-height: 46px;
+        font-size: 0.78rem;
       }
     }
   </style>
 </head>
 <body>
-  <header class="site-header" aria-label="Kopfbereich">
-    <div class="shell header-row">
-      <div class="brand">System GraphRAG Lab</div>
-      <div>Public MVP Demo</div>
+  <header class="site-header">
+    <div class="header-inner">
+      <div class="brand">System GraphRAG Demo</div>
+      <div class="header-links">GitHub · Info</div>
     </div>
   </header>
 
-  <main>
-    <section class="hero" aria-label="Einführung">
-      <h1>Systemfragen klar beantworten</h1>
-      <p class="subline">Stelle eine Frage und sieh Hauptantwort, wichtige Bezüge und optional die Herleitung in einer ruhigen Ansicht.</p>
+  <main class="content">
+    <section class="panel" aria-label="Panel A Antwort">
+      <h2 class="panel-title">Panel A: Antwort</h2>
+
+      <section class="section" aria-label="Frage">
+        <p class="label">Frage</p>
+        <textarea aria-label="Frage eingeben">Welche Trade offs entstehen bei eventgetriebener Architektur zwischen Entkopplung und operativer Komplexität?</textarea>
+        <div class="ask-row">
+          <button class="btn" type="button">Ask</button>
+        </div>
+      </section>
+
+      <section class="section" aria-label="Antwort">
+        <p class="label">Antwort</p>
+        <p class="answer">Eventgetriebene Architekturen entkoppeln Teams und Services, verlagern aber Komplexität in Beobachtbarkeit, Fehlerbehandlung und Konsistenzregeln.</p>
+        <p class="answer">Für Architekturentscheidungen heißt das: weniger direkte Abhängigkeiten, aber höherer Bedarf an klaren Betriebsstandards.</p>
+        <p class="answer">Der wichtigste Zielkonflikt liegt zwischen Evolvierbarkeit und operativer Steuerbarkeit.</p>
+      </section>
+
+      <section class="section" aria-label="Inline Zustände">
+        <p class="label">Zustände Inline im Antwortbereich</p>
+        <article class="inline-state state-loading" aria-label="Loading Zustand">
+          <h3>Loading</h3>
+          <p>Antwort wird gerade hergeleitet. Relevante Konzepte werden zusammengeführt.</p>
+        </article>
+        <article class="inline-state state-empty" aria-label="Empty Zustand">
+          <h3>Empty</h3>
+          <p>Zu dieser Formulierung konnten keine belastbaren Bezüge gefunden werden. Bitte Frage präzisieren.</p>
+        </article>
+        <article class="inline-state state-error" aria-label="Error Zustand">
+          <h3>Error</h3>
+          <p>Die Anfrage konnte aktuell nicht verarbeitet werden. Bitte erneut versuchen.</p>
+        </article>
+        <article class="inline-state state-rate" aria-label="Rate Limit Zustand">
+          <h3>Rate Limit</h3>
+          <p>Zu viele Anfragen in kurzer Zeit. Bitte kurz warten und dann erneut senden.</p>
+        </article>
+      </section>
     </section>
 
-    <section class="card" aria-label="Eingabe">
-      <p class="label">Deine Frage</p>
-      <textarea>Welche Zielkonflikte entstehen zwischen Entkopplung und Betriebsaufwand in eventgetriebenen Systemen?</textarea>
-      <div class="input-actions">
-        <button type="button" class="btn-primary">Antwort anzeigen</button>
-      </div>
-      <p class="helper">Je konkreter die Frage, desto präziser werden Antwort und wichtige Bezüge.</p>
-    </section>
+    <section class="panel" aria-label="Panel B Kontext">
+      <h2 class="panel-title">Panel B: Kontext</h2>
 
-    <section class="card" aria-label="Antwortbereich">
-      <p class="label">Antwort</p>
-      <p class="answer">Eventgetriebene Systeme reduzieren direkte Kopplung, erhöhen aber den Bedarf an Beobachtbarkeit, Fehlerbehandlung und Konsistenzregeln. Der Kernkonflikt liegt zwischen flexibler Evolution und höherer Betriebsdisziplin.</p>
+      <section class="section" aria-label="Referenzkonzepte">
+        <p class="label">Referenzkonzepte</p>
+        <div class="ref-grid">
+          <article class="ref-card">
+            <strong>Loose Coupling</strong>
+            <span>Erklärt den Entkopplungsgewinn.</span>
+          </article>
+          <article class="ref-card">
+            <strong>Observability</strong>
+            <span>Begründet den Betriebsaufwand.</span>
+          </article>
+          <article class="ref-card">
+            <strong>Eventual Consistency</strong>
+            <span>Zeigt Konsistenzfolgen asynchroner Flüsse.</span>
+          </article>
+          <article class="ref-card">
+            <strong>Operational Overhead</strong>
+            <span>Macht den Steuerungsaufwand sichtbar.</span>
+          </article>
+        </div>
+      </section>
 
-      <div class="state-list" aria-label="Inline Zustandsbeispiele">
-        <div class="state loading">
-          <h3>Antwort wird vorbereitet</h3>
-          <p>Relevante Inhalte werden gerade zusammengeführt.</p>
-          <strong>Aktion: Bitte einen Moment warten.</strong>
-        </div>
-        <div class="state empty">
-          <h3>Noch keine passende Antwort</h3>
-          <p>Mit einer konkreteren Frage können wir bessere Bezüge finden.</p>
-          <strong>Aktion: Frage präzisieren.</strong>
-        </div>
-        <div class="state error">
-          <h3>Antwort aktuell nicht verfügbar</h3>
-          <p>Die Anfrage konnte gerade nicht abgeschlossen werden.</p>
-          <strong>Aktion: Erneut versuchen.</strong>
-        </div>
-        <div class="state rate">
-          <h3>Kurz warten</h3>
-          <p>Es wurden gerade viele Anfragen gesendet.</p>
-          <strong>Aktion: In kurzer Zeit erneut senden.</strong>
-        </div>
-      </div>
-    </section>
-
-    <section class="card" aria-label="Wichtige Bezüge">
-      <p class="label">Wichtige Bezüge</p>
-      <ul class="refs">
-        <li class="ref-item"><strong>Loose Coupling</strong><span>Beschreibt den Entkopplungsgewinn im Service Verbund.</span></li>
-        <li class="ref-item"><strong>Observability</strong><span>Begründet den Mehraufwand für betriebliche Transparenz.</span></li>
-        <li class="ref-item"><strong>Eventual Consistency</strong><span>Zeigt Folgen asynchroner Kommunikation auf Datenkonsistenz.</span></li>
-      </ul>
-      <p class="helper">Diese Bezüge stützen die Antwort im aktuellen Kontext.</p>
-    </section>
-
-    <section class="card" aria-label="Herleitung und Retrieval Details">
-      <p class="label">So wurde die Antwort hergeleitet</p>
-      <details>
-        <summary>Herleitung anzeigen</summary>
-        <ol>
-          <li>Die Frage priorisiert Zielkonflikte zwischen Entkopplung und Betriebsaufwand.</li>
-          <li>Die Bezüge decken Kopplung, Beobachtbarkeit und Konsistenz ab.</li>
-          <li>Die Antwort verdichtet den dominanten Zielkonflikt im Betriebskontext.</li>
-        </ol>
-      </details>
-      <details>
-        <summary>Retrieval Details anzeigen</summary>
-        <ol>
-          <li>Ausgewählte Bezüge wurden nach Passung zur Frage gewichtet.</li>
-          <li>Die sichtbaren Bezüge repräsentieren den Kernkontext der Antwort.</li>
-        </ol>
-      </details>
-      <p class="helper">Öffne diese Bereiche nur, wenn du den Nachweis vertiefen möchtest.</p>
+      <section class="section" aria-label="Herleitung Disclosure">
+        <p class="label">Herleitung</p>
+        <details>
+          <summary>Herleitung anzeigen</summary>
+          <ol class="detail-list">
+            <li>Retrieval Steps: Frage auf Schlüsselkonzepte gemappt.</li>
+            <li>Graph Hops: angrenzende Beziehungen für Kontext priorisiert.</li>
+            <li>Synthese: Antwort aus den stärksten Bezügen verdichtet.</li>
+          </ol>
+        </details>
+        <details>
+          <summary>Retrieval Details anzeigen</summary>
+          <ol class="detail-list">
+            <li>Top-K Kandidaten mit Relevanzprüfung ausgewählt.</li>
+            <li>Duplikate entfernt und Reihenfolge stabilisiert.</li>
+            <li>Nur die wichtigsten Bezüge für Erstkontakt sichtbar gemacht.</li>
+          </ol>
+        </details>
+      </section>
     </section>
   </main>
 
-  <footer class="site-footer" aria-label="Fußbereich">
-    <div class="shell footer-row">
-      <div>System GraphRAG Public MVP</div>
-      <div>Ruhige Darstellung mit inline Zuständen</div>
+  <div class="mobile-action" aria-label="Mobile Primary Action">
+    <button class="btn" type="button">Ask</button>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <span>System GraphRAG Public MVP</span>
+      <span>Ruhiges, professionelles Layout mit klarer Hierarchie</span>
     </div>
   </footer>
-
-  <div class="mobile-action" aria-label="Mobile Primäraktion">
-    <button type="button" class="btn-primary">Antwort anzeigen</button>
-  </div>
 </body>
 </html>
