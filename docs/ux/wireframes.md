@@ -1,33 +1,51 @@
 # Wireframes
 
-## Hauptansicht Layout
-1. Oberer Bereich mit Produkttitel und kurzer Einordnung des Demo-Zwecks.
-2. Zentrale Input-Zone mit einzeiligem Feld, Senden-Button und optionalen Beispielfragen.
-3. Ergebnisbereich direkt unter der Input-Zone, damit der Blickpfad stabil bleibt.
+## Screen Hauptansicht Desktop
+### Zweck
+1. Erstkontakt von Frage zu Antwort mit nachvollziehbarer Herkunft.
 
-## Sektionen und Komponentenrollen
-### Input Zone
-1. Rolle Einstieg und Kontrolle.
-2. Komponenten Fragefeld, Primärbutton, Helper Text.
+### Layoutstruktur
+1. Zwei Spalten mit breiter Hauptspalte links und Zustandsübersicht rechts.
+2. Linke Spalte folgt der festen Reihenfolge Frageeingabe, Hauptantwort, Referenzkonzepte, P0 Kernnachweis.
 
-### Answer Zone
-1. Rolle Hauptinformation.
-2. Komponenten Antworttitel, Antworttext, Kernaussage-Block.
+### Komponentenrollen
+1. Frageeingabe steuert den Start der Analyse.
+2. Hauptantwort trägt die primäre Information.
+3. Referenzkonzepte stützen die Antwort.
+4. P0 Kernnachweis liefert den knappen Herleitungsbeleg.
+5. Zustandsübersicht zeigt Loading, Empty, Error, Rate Limit mit Aktion.
 
-### Evidence Zone
-1. Rolle Transparenz ohne Überladung.
-2. Komponenten Liste der Referenzkonzepte mit kurzem Kontext.
+### Interaktionen
+1. Primäraktion startet Analyse.
+2. Disclosure öffnet oder schließt den Kernnachweis.
+3. Zustandskarten bleiben informativ und nicht interaktiv.
 
-### Proof Zone
-1. Rolle Herleitungsbeleg im P0-Rahmen.
-2. Komponenten einklappbarer Kernnachweis mit knapper Struktur.
+### States
+1. Loading zeigt ruhige Warteführung.
+2. Empty zeigt Hinweis zur Präzisierung.
+3. Error zeigt neutrale Retry Führung.
+4. Rate Limit zeigt kurze Warteführung.
 
-### State Zone
-1. Rolle Rückmeldung bei nicht regulären Zuständen.
-2. Komponenten Loading Text, Empty Hinweis, Error Hinweis, Rate Limit Hinweis.
+### Progressive Disclosure
+1. Hauptantwort ist immer sichtbar vor Detailinformationen.
+2. Nachweis ist reduziert und wird bewusst geöffnet.
 
-## Progressive Disclosure
-1. Stufe 1 zeigt nur Eingabe und Hauptantwort.
-2. Stufe 2 zeigt Referenzkonzepte als kompakten Sekundärblock.
-3. Stufe 3 zeigt Kernnachweis nur nach aktivem Öffnen.
-4. Jeder Zustand bietet genau eine empfohlene nächste Aktion.
+## Screen Hauptansicht Mobile
+### Zweck
+1. Erhalt derselben Klarheit auf kleiner Fläche.
+
+### Layoutstruktur
+1. Einspaltiges Stapellayout in derselben Informationsreihenfolge.
+2. Zustandsübersicht steht unter dem Ergebnisbereich.
+
+### Komponentenrollen
+1. Komponenten bleiben identisch zur Desktopansicht.
+
+### Interaktionen
+1. Primäraktion wird volle Breite für klare Touch Bedienung.
+
+### States
+1. Zustände bleiben vollständig sichtbar mit jeweils einer Aktion.
+
+### Progressive Disclosure
+1. Disclosure Verhalten bleibt unverändert.

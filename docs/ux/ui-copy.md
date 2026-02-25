@@ -1,40 +1,40 @@
 # UI Copy
 
-## Headlines
+## Screen Hauptansicht
+### Headlines
 1. Titel: System GraphRAG Demo
-2. Subline: Verstehen, wie Antworten aus dem Graph begründet werden.
-3. Bereichstitel Antwort: Antwort
-4. Bereichstitel Referenzen: Referenzkonzepte
-5. Bereichstitel Nachweis: Kernnachweis
+2. Subline: Verstehen, wie die Antwort aus dem Graph entsteht, ohne Überforderung im Erstkontakt.
+3. Bereichstitel: Hauptantwort
+4. Bereichstitel: Referenzkonzepte
+5. Bereichstitel: P0 Kernnachweis
 
-## Labels
-1. Fragefeld Label: Deine Systemfrage
-2. Fragefeld Placeholder: Zum Beispiel: Welche Trade offs entstehen zwischen Skalierbarkeit und Kopplung.
+### Labels
+1. Eingabe Label: Frageeingabe
+2. Eingabe Placeholder: Welche Trade offs entstehen bei eventgetriebener Architektur zwischen Entkopplung und operativer Komplexität?
 3. Primärbutton: Frage analysieren
-4. Sekundäraktion bei Ergebnis: Frage präzisieren
-5. Toggle Nachweis: Kernnachweis anzeigen
+4. Disclosure Label: Kernnachweis anzeigen
 
-## Helper Text
-1. Unter Eingabe: Stelle eine präzise Frage mit Kontext zu System, Ziel oder Randbedingungen.
-2. Unter Referenzen: Diese Konzepte wurden zur Beantwortung herangezogen.
-3. Unter Kernnachweis: Kurzer Pfad von Frage über Konzepte zur Aussage.
+### Helper Text
+1. Unter Eingabe: Präzise Frage mit Systemkontext erhöht die Qualität von Antwort und Referenzkonzepten.
+2. Unter Referenzbereich: Diese Konzepte stützen die Hauptantwort im aktuellen Antwortkontext.
+3. Unter Nachweisbereich: Drei Schritte zeigen den knappen P0 Pfad von Frage zu Aussage.
 
-## Loading State
+### Empty Text
+1. Titel: Keine belastbare Antwort
+2. Text: Für diese Formulierung fehlen passende Konzepte.
+3. Aktion: Frage präzisieren.
+
+### Loading Text
 1. Titel: Antwort wird hergeleitet
-2. Text: Relevante Konzepte werden gesucht und für die Antwort zusammengeführt.
-3. Aktion: Bitte einen Moment warten.
+2. Text: Relevante Konzepte werden zusammengeführt.
+3. Aktion: Bitte warten.
 
-## Empty State
-1. Titel: Keine belastbare Antwort gefunden
-2. Text: Für diese Formulierung wurden nicht genug passende Konzepte gefunden.
-3. Aktion: Formuliere die Frage konkreter mit Systemkontext oder Zielkonflikt.
-
-## Error State
+### Error Text
 1. Titel: Anfrage konnte nicht verarbeitet werden
 2. Text: Die Analyse ist aktuell nicht verfügbar.
-3. Aktion: Bitte erneut versuchen.
+3. Aktion: Erneut versuchen.
 
-## Rate Limit State
+### Rate Limit Text
 1. Titel: Kurz pausieren
-2. Text: Zu viele Anfragen in kurzer Zeit. Bitte versuche es in wenigen Sekunden erneut.
-3. Aktion: Erneut senden nach kurzer Wartezeit.
+2. Text: Zu viele Anfragen in kurzer Zeit.
+3. Aktion: In wenigen Sekunden erneut senden.
