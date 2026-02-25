@@ -14,10 +14,17 @@ P1
 <= 1 Tag
 
 ## Akzeptanzkriterien
-### Szenario 1
-Given eine erfolgreich beantwortete Frage mit vorhandenem P0-Kernnachweis
-When zusätzliche Herleitungsdetails angezeigt werden
-Then erweitern diese Details die Erklärung, ohne P0-Anzeige oder Erstkontaktfluss zu blockieren
+### Szenario 1: Kernverhalten
+
+**Given**
+eine erfolgreich beantwortete Frage mit vorhandenem P0-Kernnachweis
+
+**When**
+zusätzliche Herleitungsdetails angezeigt werden
+
+**Then**
+1. Die zusätzlichen Herleitungsdetails erweitern die Erklärung.
+2. Hauptantwort, Referenzkonzepte und P0-Kernnachweis bleiben ohne zusätzliche Interaktion vollständig sichtbar.
 
 ## Test Notes
-Validiere, dass P0-Ausgabe ohne P1-Details vollständig nutzbar bleibt und dokumentiere den Zusatznutzen der Detailtiefe.
+Validiere, dass P0-Ausgabe ohne P1-Details vollständig nutzbar bleibt und dokumentiere den Zusatznutzen in mindestens zwei Beispielanfragen.

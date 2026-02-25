@@ -14,10 +14,17 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-### Szenario 1
-Given ein konfiguriertes Repository mit Laufzeitvariablen
-When ein Deployment ausgeführt wird
-Then ist die Demo öffentlich erreichbar und der Kernfluss funktioniert
+### Szenario 1: Kernverhalten
+
+**Given**
+ein konfiguriertes Repository mit Laufzeitvariablen
+
+**When**
+ein Deployment ausgeführt wird
+
+**Then**
+1. Die Live-URL liefert den Status 200.
+2. Zwei definierte Smoke-Fragen enden ohne Laufzeitfehler mit sichtbarer Hauptantwort.
 
 ## Test Notes
-Führe einen Smoke-Test auf der Live-URL durch.
+Führe einen Smoke-Test auf der Live-URL mit zwei definierten Fragen durch und protokolliere Ergebnis und Laufzeitfehler.

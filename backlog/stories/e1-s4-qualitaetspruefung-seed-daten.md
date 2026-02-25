@@ -13,10 +13,16 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-### Szenario 1
-Given eine erzeugte Seed-Datenbasis
-When Qualitätsregeln ausgeführt werden
-Then bleiben nur ontologiekonforme und nicht duplizierte Einträge bestehen
+### Szenario 1: Kernverhalten
+
+**Given**
+eine erzeugte Seed-Datenbasis
+
+**When**
+Qualitätsregeln ausgeführt werden
+
+**Then**
+1. bleiben nur ontologiekonforme und nicht duplizierte Einträge bestehen
 
 ## Test Notes
 Vergleiche den Datensatz vor und nach dem Qualitätslauf und dokumentiere entfernte Duplikate.

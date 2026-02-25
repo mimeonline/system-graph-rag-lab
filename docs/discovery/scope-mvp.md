@@ -29,6 +29,6 @@
 2. P1 enthält Herleitungsvertiefung, Betriebsqualitätserweiterungen und formale Abnahmedokumentation nach erreichter P0-Stabilität.
 3. P2 enthält Iterationsvorbereitung nach MVP-Abschluss.
 
-## Offene Entscheidungen
-1. Kein offener PM-Entscheidungspunkt zur Relevanzregel oder P0/P1-Grenze im Hardening-Stand.
-2. Priorisierung einzelner P1-Stories bei Zeitdruck bleibt abhängig vom Implementierungsfortschritt.
+## Open Decisions
+1. Welche P1-Stories bei Timeline-Risiko vor Public Demo zurückgestellt oder vorgezogen werden.
+2. Ob der Abnahmelauf nach UX-Finalisierung nur einmalig oder als wiederholter Qualitätsgate geführt wird.

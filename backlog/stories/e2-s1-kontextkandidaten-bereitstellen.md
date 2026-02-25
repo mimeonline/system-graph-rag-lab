@@ -13,10 +13,17 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-### Szenario 1
-Given eine Nutzerfrage und verfügbare Wissensbasis
-When die Kontextsuche ausgeführt wird
-Then liefert das System eine deterministische Kandidatenliste mit nachvollziehbarer Struktur
+### Szenario 1: Kernverhalten
+
+**Given**
+eine Nutzerfrage und verfügbare Wissensbasis
+
+**When**
+die Kontextsuche ausgeführt wird
+
+**Then**
+1. Das System liefert eine Kandidatenliste ohne Duplikate.
+2. Bei drei identischen Testläufen im selben Datenstand bleibt die Reihenfolge der ersten drei Kandidaten identisch.
 
 ## Test Notes
-Prüfe Stabilität des Antwortformats über mehrere Testfragen.
+Prüfe für dieselbe Frage drei Läufe hintereinander auf identische Top-3-Reihenfolge und Duplikatfreiheit.

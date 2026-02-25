@@ -14,10 +14,17 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-### Szenario 1
-Given eine Kandidatenliste
-When die Kontextanreicherung ausgeführt wird
-Then liegt ein deduplizierter, strukturierter Antwortkontext vor
+### Szenario 1: Kernverhalten
+
+**Given**
+eine Kandidatenliste
+
+**When**
+die Kontextanreicherung ausgeführt wird
+
+**Then**
+1. Ein deduplizierter Antwortkontext liegt vor, in dem jedes Konzept höchstens einmal vorkommt.
+2. Jedes Kontextelement ist einem Kandidaten oder einer Erweiterungsquelle zugeordnet.
 
 ## Test Notes
-Prüfe, dass keine Duplikate im finalen Kontextpaket enthalten sind.
+Prüfe Duplikatfreiheit und dokumentiere für jedes Kontextelement die zugeordnete Quelle.

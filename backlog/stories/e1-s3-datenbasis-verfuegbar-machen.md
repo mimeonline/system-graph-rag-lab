@@ -13,10 +13,16 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-### Szenario 1
-Given gültige Zugangsdaten im Runtime-Kontext
-When die Anwendung die Datenbasis abfragt
-Then werden Nodes und Relationen fehlerfrei gelesen
+### Szenario 1: Kernverhalten
+
+**Given**
+gültige Zugangsdaten im Runtime-Kontext
+
+**When**
+die Anwendung die Datenbasis abfragt
+
+**Then**
+1. werden Nodes und Relationen fehlerfrei gelesen
 
 ## Test Notes
 Führe einen Lese-Smoke-Test gegen den Zielbetrieb aus.

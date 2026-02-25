@@ -127,10 +127,16 @@ Jede Story-Datei enthält exakt diese H2-Abschnitte in dieser Reihenfolge:
 Pflicht im Inhalt:
 - Aufwand muss "<= 1 Tag" sein.
 - Unter ## Akzeptanzkriterien mindestens ein Szenario mit:
-  - ### Szenario 1
-  - Given ...
-  - When ...
-  - Then ...
+  - ### Szenario 1: <Titel>
+  - **Given**
+  - <Ausgangslage>
+  - **When**
+  - <Aktion oder Ereignis>
+  - **Then**
+  - 1. <prüfbares Ergebnis 1>
+  - 2. <prüfbares Ergebnis 2 falls nötig>
+- Keine einzeiligen Fließsatz-Given-When-Then-Kriterien.
+- Lange Then-Aussagen müssen in mehrere atomare, prüfbare Listenpunkte zerlegt werden.
 
 Handoff in handoff/pm-to-ux.md enthält:
 - MVP Kern

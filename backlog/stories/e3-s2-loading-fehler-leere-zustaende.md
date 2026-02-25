@@ -13,10 +13,17 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-### Szenario 1
-Given eine laufende Anfrage oder ein Fehlerfall
-When der jeweilige Zustand eintritt
-Then zeigt die Oberfläche einen klaren Status und eine nächste sinnvolle Aktion
+### Szenario 1: Kernverhalten
+
+**Given**
+eine laufende Anfrage oder ein Fehlerfall
+
+**When**
+der jeweilige Zustand eintritt
+
+**Then**
+1. Die Oberfläche zeigt für Loading, Fehler und Leere jeweils einen unterscheidbaren Status-Text.
+2. Für jeden dieser Zustände wird eine klar benannte nächste Aktion angezeigt.
 
 ## Test Notes
-Simuliere Loading, Fehler und leere Ergebnisse jeweils separat.
+Simuliere Loading, Fehler und leere Ergebnisse separat und dokumentiere je Zustand Status-Text und nächste Aktion.

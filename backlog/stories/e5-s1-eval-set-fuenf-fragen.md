@@ -13,10 +13,18 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-### Szenario 1
-Given die MVP-Ziele und den freigegebenen Domänenrahmen
-When das Eval-Set erstellt wird
-Then existieren fünf Fragen mit jeweils einer freigegebenen Erwartungsliste von drei bis sechs Referenzkonzepten und klaren Erfolgskriterien
+### Szenario 1: Kernverhalten
+
+**Given**
+die MVP-Ziele und den freigegebenen Domänenrahmen
+
+**When**
+das Eval-Set erstellt wird
+
+**Then**
+1. Es existieren fünf Fragen.
+2. Zu jeder Frage gibt es eine freigegebene Erwartungsliste von drei bis sechs Referenzkonzepten.
+3. Zu jeder Frage gibt es klare Erfolgskriterien.
 
 ## Test Notes
 Prüfe je Frage auf messbare Erfolgskriterien, eindeutige Erwartungsliste und nachvollziehbare Bewertungslogik.

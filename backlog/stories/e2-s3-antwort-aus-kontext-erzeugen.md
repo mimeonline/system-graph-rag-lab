@@ -13,10 +13,17 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-### Szenario 1
-Given ein strukturiertes Kontextpaket
-When die Antworterzeugung ausgeführt wird
-Then enthält das Ergebnis eine lesbare Hauptantwort und eine Referenzsektion
+### Szenario 1: Kernverhalten
+
+**Given**
+ein strukturiertes Kontextpaket
+
+**When**
+die Antworterzeugung ausgeführt wird
+
+**Then**
+1. Das Ergebnis enthält eine nicht leere Hauptantwort.
+2. Das Ergebnis enthält eine Referenzsektion mit bis zu drei Referenzkonzepten oder einem klaren Fallback-Hinweis.
 
 ## Test Notes
-Prüfe Antwortformat und Vorhandensein der Referenzsektion.
+Prüfe Nicht-Leere der Hauptantwort sowie Referenzsektion inklusive Fallback-Verhalten in Negativfällen.
