@@ -1,28 +1,21 @@
 # Dev to Security Handoff
 
 ## Security Context
-1. Dieser Run liefert nur das technische Bootstrap ohne fachliche Retrieval- oder LLM-Logik.
-2. Sicherheitsrelevant ist aktuell nur das API-Skelett `POST /api/query`.
-3. Env-Handling wurde auf Runtime-Variablen ausgerichtet, ohne Secrets im Repository.
+1. Dieser Run implementiert nur Story `E1-S2` zur lokalen Seed-Datenerzeugung und Validierung.
+2. Keine neuen externen Endpoints oder Runtime-Secrets wurden eingefuehrt.
+3. Sicherheitsrelevanz liegt auf Datenintegritaet und Schema-Konformitaet der Seed-Basis.
 
-## Beruehrte Endpoints und Eingaben
-1. Endpoint: `POST /api/query`.
-2. Eingaben: `query` und optional `clientRequestId`.
-3. Request-Validierung für Typen, Mindest- und Maximalgrenzen ist implementiert.
+## Sicherheitsrelevant beruehrte Eingaben oder Endpoints
+1. Kein neuer HTTP-Endpoint beruehrt.
+2. Sicherheitsrelevante Eingabe ist der interne Seed-Datensatz in `src/features/seed-data/seed-data.ts`.
+3. Validator verarbeitet Node- und Edge-Felder inklusive IDs und Relationstypen.
 
-## Bereits umgesetzte Sicherheitsgrenzen
-1. Fehlendes `OPENAI_MODEL` führt zu kontrolliertem `500 INTERNAL_ERROR` statt impliziter Defaults im Code.
-2. Ungültige Requests führen zu `400 INVALID_REQUEST`.
-3. `.env.example` enthält nur Platzhalterwerte, keine echten Secrets.
-4. `.env.local` bleibt lokal und wird durch `.gitignore` nicht versioniert.
+## Bekannte Sicherheitsgrenzen und offene Risiken
+1. Validator ist in-memory und nicht als Laufzeit-Guard im API-Requestpfad verdrahtet.
+2. Neo4j-Persistenzpfad ist noch nicht implementiert, daher keine DB-seitige Constraint-Durchsetzung in diesem Run.
+3. Rate-Limit und Logging-Guardrails bleiben weiterhin offene Themen ausserhalb dieser Story.
 
-## Bekannte offene Risiken
-1. Rate-Limit-Logik ist noch nicht implementiert.
-2. OpenAI- und Neo4j-Integrationen sind noch nicht implementiert.
-3. Strukturierte Abschlusslogs nach Observability-Contract sind noch nicht umgesetzt.
-
-## Security Gate Fokus
-1. Prüfen, dass keine Secret-Leaks durch neue Dateien oder Historie entstehen.
-2. Prüfen, dass Fehlerpfade keine sensitiven Runtime-Infos oder Rohinputs offenlegen.
-3. Prüfen, dass nach Story-Implementierungen `429` Verhalten plus `Retry-After` contract-konform ist.
-4. Prüfen, dass Logging später ohne Rohquery und ohne Secrets bleibt.
+## Security Gate Fokus fuer Epic
+1. Pruefen, dass Seed-Daten bei Persistierung in spaeteren Stories nur mit denselben Ontologie-Regeln akzeptiert werden.
+2. Pruefen, dass Node-IDs und Relationstypen nicht ungeprueft aus externen Quellen uebernommen werden.
+3. Pruefen, dass bei spaeterem Import keine sensitiven Inhalte in Logs landen.

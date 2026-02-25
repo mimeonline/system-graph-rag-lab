@@ -1,10 +1,10 @@
-# Story E1-S2 Seed-Datenbasis im MVP-Rahmen erzeugen
+# Story E1-S2 Kuratierte Quellbasis aus bereitgestellten Quellen erfassen
 
 ## Status
-todo
+in_progress
 
 ## Ziel
-Eine initiale Datenbasis im freigegebenen Umfang bereitstellen.
+Eine belastbare Quellbasis aus bereitgestellten MD-Inhalten und optionalen Internet-Ergänzungen kuratieren.
 
 ## Priorität
 P0
@@ -16,16 +16,19 @@ P0
 <= 1 Tag
 
 ## Akzeptanzkriterien
-### Szenario 1: Kernverhalten
+### Szenario 1: Kuratierte Quellenbasis ist dokumentiert
 
 **Given**
-eine freigegebene Ontologie
+eine freigegebene Ontologie und bereitgestellte MD-Quellen
 
 **When**
-Seed-Daten erzeugt und validiert werden
+die Quellen für die Seed-Datenbasis gesichtet und kuratiert werden
 
 **Then**
-1. enthält die Datenbasis mehr als 100 valide Nodes und mehr als 200 valide Edges ohne Schema-Verstoß
+1. enthält der Quellenkatalog alle für den MVP relevanten bereitgestellten MD-Quellen.
+2. ist je Quelle der Typ `primary_md` oder `optional_internet` dokumentiert.
+3. sind optionale Internet-Quellen nur für dokumentierte Inhaltslücken ergänzt und als optional markiert.
 
 ## Test Notes
-Zähle Nodes und Edges und prüfe Schema-Konformität sowie Pflichtfelder.
+1. Prüfe stichprobenartig, ob mindestens drei kuratierte Quellen korrekt mit `primary_md` oder `optional_internet` gekennzeichnet sind.
+2. Prüfe, dass jede optionale Internet-Quelle auf eine dokumentierte Inhaltslücke verweist.

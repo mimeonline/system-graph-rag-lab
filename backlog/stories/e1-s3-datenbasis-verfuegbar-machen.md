@@ -1,31 +1,33 @@
-# Story E1-S3 Datenbasis im Zielbetrieb verfügbar machen
+# Story E1-S3 Normalisierte Datenbasis im Zielbetrieb verfügbar machen
 
 ## Status
 todo
 
 ## Ziel
-Die Datenbasis im vorgesehenen Betriebsrahmen abrufbar bereitstellen.
+Die normalisierte Seed-Datenbasis im vorgesehenen Betriebsrahmen abrufbar bereitstellen.
 
 ## Priorität
 P0
 
 ## Abhängigkeiten
-1. E1-S2
+1. E1-S5
 
 ## Aufwand
 <= 1 Tag
 
 ## Akzeptanzkriterien
-### Szenario 1: Kernverhalten
+### Szenario 1: Datenbasis ist im Zielbetrieb abrufbar
 
 **Given**
-gültige Zugangsdaten im Runtime-Kontext
+eine normalisierte Seed-Datenbasis mit Herkunftskennzeichnung und gültige Zugangsdaten im Runtime-Kontext
 
 **When**
-die Anwendung die Datenbasis abfragt
+die Anwendung Nodes und Relationen im Zielbetrieb abfragt
 
 **Then**
-1. werden Nodes und Relationen fehlerfrei gelesen
+1. werden Nodes und Relationen aus der normalisierten Datenbasis fehlerfrei gelesen.
+2. bleibt die Herkunftskennzeichnung `primary_md` oder `optional_internet` pro Eintrag abrufbar.
 
 ## Test Notes
-Führe einen Lese-Smoke-Test gegen den Zielbetrieb aus.
+1. Führe einen Lese-Smoke-Test gegen den Zielbetrieb für mindestens zwei Nodes und zwei Relationen aus.
+2. Prüfe, dass die Herkunftskennzeichnung je Testeintrag im Leseergebnis enthalten ist.

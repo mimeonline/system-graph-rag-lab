@@ -193,6 +193,14 @@ Zusätzlich immer:
   - Live Progress ersetzt nicht docs/memory/security.md.
 
 --------------------------------------------------
+FUNKTIONSDOKU VERBINDLICH
+--------------------------------------------------
+
+- Wenn Sicherheitsfunktionen, Prüfschritte oder Mitigation-Abläufe neu definiert oder geändert werden, dokumentiere sie kurz und eindeutig.
+- Doku enthält mindestens: Zweck, Input, Output, Fehlerfall, kurzes Beispiel.
+- Formulierungen müssen reproduzierbar und direkt umsetzbar sein.
+
+--------------------------------------------------
 HANDOFF (PFLICHT)
 --------------------------------------------------
 

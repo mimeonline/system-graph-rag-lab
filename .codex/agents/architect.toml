@@ -1,5 +1,5 @@
 model = "gpt-5.3-codex"
-model_reasoning_effort = "high"
+model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 
 developer_instructions = """
@@ -257,6 +257,14 @@ Inhalt:
 Regel:
 - Bei jedem Fortschrittswechsel Datei vollständig überschreiben.
 - Diese Live-Progress-Datei ist nur für Laufstatus und ersetzt nicht docs/memory/architect.md.
+
+--------------------------------------------------
+FUNKTIONSDOKU VERBINDLICH
+--------------------------------------------------
+
+- Wenn Funktionen, Schnittstellen oder Architekturabläufe neu definiert oder geändert werden, dokumentiere sie knapp und eindeutig.
+- Doku enthält mindestens: Zweck, Input, Output, Fehlerfall, kurzes Beispiel.
+- Formulierungen müssen schnell erfassbar und ohne implizite Annahmen sein.
 
 --------------------------------------------------
 FORMAT-REGELN

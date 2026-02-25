@@ -255,6 +255,14 @@ Regel:
 - Diese Live-Progress-Datei ist nur für Laufstatus und ersetzt nicht docs/memory/ux.md.
 
 --------------------------------------------------
+FUNKTIONSDOKU VERBINDLICH
+--------------------------------------------------
+
+- Wenn Interaktionsfunktionen, States oder UX-Abläufe neu definiert oder geändert werden, dokumentiere sie kurz und verständlich.
+- Doku enthält mindestens: Zweck, Input, Output, Fehlerfall oder Sonderfall, kurzes Beispiel.
+- Schreibe so, dass die Umsetzung ohne zusätzliche Interpretation möglich ist.
+
+--------------------------------------------------
 FORMAT-REGELN
 --------------------------------------------------
 

@@ -14,6 +14,22 @@ type QueryHandlerResult = {
   headers: Record<string, string>;
 };
 
+/**
+ * Zweck:
+ * Baut ein contract-konformes Fehlerobjekt fuer API-Antworten.
+ *
+ * Input:
+ * - requestId, latencyMs, errorCode, message, retryable
+ *
+ * Output:
+ * - QueryErrorResponse
+ *
+ * Fehlerfall:
+ * - Kein Throw, rein deterministischer Mapper
+ *
+ * Beispiel:
+ * - buildErrorResponse("req-1", 12, "INVALID_REQUEST", "query fehlt", false)
+ */
 function buildErrorResponse(
   requestId: string,
   latencyMs: number,
@@ -35,6 +51,22 @@ function buildErrorResponse(
   };
 }
 
+/**
+ * Zweck:
+ * Liefert eine minimale Success-Antwort im Bootstrap-Zustand ohne Retrieval-Treffer.
+ *
+ * Input:
+ * - requestId, latencyMs sowie Rate-Limit-Parameter aus der Runtime-Konfiguration
+ *
+ * Output:
+ * - QuerySuccessResponse mit `state: "empty"`
+ *
+ * Fehlerfall:
+ * - Kein Throw, rein deterministischer Mapper
+ *
+ * Beispiel:
+ * - buildEmptySuccessResponse("req-1", 20, 30, 60)
+ */
 function buildEmptySuccessResponse(
   requestId: string,
   latencyMs: number,
@@ -66,6 +98,22 @@ function buildEmptySuccessResponse(
   };
 }
 
+/**
+ * Zweck:
+ * Orchestriert den Query-Request-Endpunkt: Parsing, Env-Checks und Response-Mapping.
+ *
+ * Input:
+ * - rawBody: unbekannter Request-Body
+ *
+ * Output:
+ * - Promise<QueryHandlerResult> mit HTTP-Status, Body und Response-Headern
+ *
+ * Fehlerfall:
+ * - Kein Throw nach aussen; fachliche Fehler werden als 4xx/5xx Result zurueckgegeben
+ *
+ * Beispiel:
+ * - await handleQueryRequest({ query: "Was ist ein Hebelpunkt?" })
+ */
 export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandlerResult> {
   const startedAt = Date.now();
   const requestId = randomUUID();

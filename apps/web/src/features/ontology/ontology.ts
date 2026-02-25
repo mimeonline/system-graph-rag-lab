@@ -28,6 +28,24 @@ export const ONTOLOGY_RELATIONS: readonly OntologyRelationDefinition[] = [
   { type: "CONTRASTS_WITH", from: "Concept", to: "Concept" },
 ] as const;
 
+/**
+ * Zweck:
+ * Prueft, ob eine Relation entsprechend der Ontologie fuer Quell- und Zieltyp erlaubt ist.
+ *
+ * Input:
+ * - relationType: Typ der Relation
+ * - from: Quell-Node-Typ
+ * - to: Ziel-Node-Typ
+ *
+ * Output:
+ * - boolean (`true` wenn die Kombination erlaubt ist)
+ *
+ * Fehlerfall:
+ * - Kein Throw, ungueltige Kombination ergibt `false`
+ *
+ * Beispiel:
+ * - isAllowedOntologyRelation("WROTE", "Author", "Book") === true
+ */
 export function isAllowedOntologyRelation(
   relationType: OntologyRelationType,
   from: OntologyNodeType,

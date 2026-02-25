@@ -12,6 +12,23 @@ type ParseFailure = {
 
 export type ParseQueryRequestResult = ParseSuccess | ParseFailure;
 
+/**
+ * Zweck:
+ * Validiert und normalisiert den eingehenden Query-Request gegen den API-Contract.
+ *
+ * Input:
+ * - input: unbekannter Request-Body
+ *
+ * Output:
+ * - ParseQueryRequestResult mit `ok=true` und normalisierten Daten
+ *   oder `ok=false` mit validierbarer Fehlermeldung
+ *
+ * Fehlerfall:
+ * - Kein Throw, alle Validierungsfehler werden als `{ ok: false, message }` zurueckgegeben
+ *
+ * Beispiel:
+ * - parseQueryRequest({ query: "  Was ist ein Feedback Loop?  " })
+ */
 export function parseQueryRequest(input: unknown): ParseQueryRequestResult {
   if (!input || typeof input !== "object") {
     return { ok: false, message: "Request body muss ein Objekt sein." };

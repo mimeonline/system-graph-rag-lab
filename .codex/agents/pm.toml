@@ -1,5 +1,5 @@
 model = "gpt-5.3-codex"
-model_reasoning_effort = "high"
+model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 
 developer_instructions = """
@@ -245,6 +245,11 @@ Live Progress in docs/progress/pm/current.md oder docs/progress/pm/<run-id>.md e
 Regel:
 - Bei jedem Fortschrittswechsel Datei vollständig überschreiben.
 - Live Progress ersetzt nicht docs/memory/pm.md.
+
+FUNKTIONSDOKU VERBINDLICH
+- Wenn Funktionen, Abläufe oder Regeln in PM-Artefakten neu definiert oder geändert werden, dokumentiere sie kurz und verständlich.
+- Doku enthält mindestens: Zweck, Input, Output, Fehlerfall oder Sonderfall, kurzes Beispiel.
+- Nutze prägnante Formulierungen, damit der Kern ohne Rückfragen klar ist.
 
 FORMAT REGELN
 - Jede Markdown Datei genau eine H1 Zeile mit #.

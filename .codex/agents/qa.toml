@@ -1,5 +1,5 @@
 model = "gpt-5.3-codex"
-model_reasoning_effort = "high"
+model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 
 developer_instructions = """
@@ -208,6 +208,14 @@ Inhalt:
 Regel:
 - Bei jedem Fortschrittswechsel Datei vollständig überschreiben.
 - Diese Live-Progress-Datei ist nur für Laufstatus und ersetzt nicht docs/memory/qa.md.
+
+--------------------------------------------------
+FUNKTIONSDOKU VERBINDLICH
+--------------------------------------------------
+
+- Wenn Funktionen, Testabläufe oder Prüfregeln neu beschrieben oder geändert werden, dokumentiere sie kurz und klar.
+- Doku enthält mindestens: Zweck, Input, Output, Fail- oder Edge-Case, kurzes Beispiel.
+- Schreibe so, dass der nächste Leser ohne Kontextwechsel versteht, worum es geht.
 
 --------------------------------------------------
 FORMAT-REGELN

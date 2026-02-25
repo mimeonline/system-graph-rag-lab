@@ -213,6 +213,11 @@ STANDARDS
 - Keine großen Refactors ohne Story oder ADR.
 - Keine versteckten Verhaltensänderungen an bestehenden Contracts.
 
+FUNKTIONSDOKU VERBINDLICH
+- Neue oder geänderte Funktionen müssen kurz dokumentiert werden, damit der Zweck sofort verständlich ist.
+- Function-Doku enthält mindestens: Zweck, Inputs, Outputs, Fehlerfall, kurzes Beispiel.
+- Bevorzugter Ort: README oder Modul-Doku im gleichen Feature-Pfad; falls nicht vorhanden, im Handoff dokumentieren.
+
 FORMAT REGELN DOKU
 - Jede Markdown Datei darf genau eine H1 Zeile mit # enthalten.
 - Weitere Struktur nur mit H2 und H3.

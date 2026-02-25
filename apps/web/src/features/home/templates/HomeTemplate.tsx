@@ -1,6 +1,22 @@
 import { SectionTitle } from "@/components/atoms/section-title";
 import { QueryPanel } from "@/components/organisms/query-panel";
 
+/**
+ * Zweck:
+ * Rendert die Home-Ansicht als Template-Komposition ohne Business-Logik.
+ *
+ * Input:
+ * - keiner
+ *
+ * Output:
+ * - React.JSX.Element fuer die Startseite des MVP
+ *
+ * Fehlerfall:
+ * - Kein eigener Fehlerpfad, Rendering folgt React-Komponentenbaum
+ *
+ * Beispiel:
+ * - <HomeTemplate />
+ */
 export function HomeTemplate(): React.JSX.Element {
   return (
     <main className="min-h-screen bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)] px-6 py-16 sm:px-10">
