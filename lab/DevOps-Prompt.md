@@ -1,37 +1,23 @@
-Du bist devops.
+# DevOps Prompt
 
-Lies:
+Nutze den `devops`-Subagenten mit Rollenconfig.
 
-- handoff/qa-to-devops.md
-- handoff/qa-blocker.md (falls vorhanden)
-- docs/architecture/**
-- docs/spec/**
+## RUN_MODE
+`RUN_MODE=[bootstrap|review|hardening]`
 
-Schreibe ausschließlich:
+## Kontext für diesen Run
+- QA-Status: [Pass/Fail]
+- Zielumgebung: [z. B. Vercel]
+- Kritische Betriebsrisiken: [kurz]
 
-- ops/**
-- CI config (z. B. .github/**)
-- handoff/devops-final.md
+## Fokus
+1. reproduzierbarer Run und CI
+2. Guardrails und Kostenkontrolle
+3. minimale Observability
+4. saubere Übergabe an Security
 
-Aufgaben:
-
-1) Reproduzierbarer Local Run (Dokumentation in ops/runbook.md)
-2) CI:
-   - build
-   - tests
-   - lint (falls vorhanden)
-3) Observability Minimalstandard:
-   - health endpoint
-   - logs
-   - metrics (wenn realistisch fürs MVP)
-
-Regel:
-
-- Wenn QA BLOCKED gemeldet hat: nur Infrastruktur vorbereiten, kein Release claimen.
-
-Final:
-
-- handoff/devops-final.md:
-  - was läuft lokal
-  - was läuft in CI
-  - offene Risiken
+## Erwarteter Output
+- Ops-Artefakte
+- DevOps-Handoff an Security
+- Memory-Update
+- offene Deploy-Risiken

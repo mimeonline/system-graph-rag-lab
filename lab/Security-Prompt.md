@@ -1,18 +1,24 @@
-Starte eine Security-Review der aktuellen Änderungen.
+# Security Prompt
 
-Spawn den security Agenten:
+Nutze den `security`-Subagenten mit Rollenconfig.
 
-- Fokus: OWASP Top 10, AuthN/AuthZ, IDOR, Input Validation, Secrets, Logging, Supply Chain.
-- Ergebnis: docs/security/findings-*.md pro Finding und ggf. docs/security/blocker.md.
+## RUN_MODE
+`RUN_MODE=[bootstrap|review|hardening]`
 
-Parallel dazu:
-Spawn den qa Agenten:
+## Kontext für diesen Run
+- Build/Deploy-Stand: [kurz]
+- Prüffokus: [z. B. API, Secrets, Abuse]
+- Scope: [welche Bereiche jetzt priorisiert]
 
-- Fokus: P0 Akzeptanzkriterien, Integrationstests, Repro-Schritte bei Fehlern.
-- Ergebnis: docs/qa/**und evals/**, ggf. handoff/qa-blocker.md.
+## Fokus
+1. reproduzierbare Findings
+2. klare Severity und Impact
+3. konkrete Mitigation-Empfehlungen
+4. eindeutiges Pass/Fail
 
-Warte auf beide Agenten und liefere anschließend eine konsolidierte Zusammenfassung:
-
-- Blocker (Security/QA)
-- High/Medium Findings
-- empfohlene Next Steps in Reihenfolge
+## Erwarteter Output
+- Security-Report
+- Finding-Dateien
+- Blocker-Datei falls nötig
+- Handoff an Orchestrator
+- Memory-Update

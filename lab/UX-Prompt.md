@@ -1,31 +1,23 @@
-Du bist ux.
+# UX Prompt
 
-Lies:
+Nutze den `ux`-Subagenten mit Rollenconfig.
 
-- docs/discovery/prd-*.md
-- backlog/backlog.md
-- handoff/pm-to-ux.md
+## RUN_MODE
+`RUN_MODE=[bootstrap|review|hardening]`
 
-Schreibe ausschließlich:
+## Kontext für diesen Run
+- PM-Handoff: `handoff/pm-to-ux.md`
+- Zielgruppe: [kurz]
+- Kernziel im Erstkontakt: [kurz]
 
-- docs/ux/**
-- handoff/ux-to-architect.md
-- handoff/ux-to-dev.md
+## Fokus
+1. klare Informationshierarchie
+2. Top 3 Journeys
+3. saubere Zustände: loading, empty, error, rate-limit
+4. ruhige, verständliche UI-Copy
 
-Lieferumfang:
-
-1) IA (Navigation, Seiten, Zuständigkeiten)
-2) User Flows für die P0-Stories
-3) Wireframes als textuelle Layouts:
-   - pro Screen: Bereiche, Komponenten, States
-   - Empty/Loading/Error States
-4) UI Copy: kurze, klare Texte
-
-Handoff an Architect:
-
-- In handoff/ux-to-architect.md:
-  - Screenliste
-  - kritische Datenobjekte aus UX-Sicht (Felder)
-  - Interaktionen, die Backend-Verträge brauchen
-Handoff an Dev:
-- handoff/ux-to-dev.md konsistent aktualisieren.
+## Erwarteter Output
+- UX-Artefakte
+- Handoff an Architect
+- Memory-Update
+- offene Fragen mit Priorität

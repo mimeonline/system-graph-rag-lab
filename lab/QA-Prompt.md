@@ -1,34 +1,23 @@
-Du bist qa.
+# QA Prompt
 
-Lies:
+Nutze den `qa`-Subagenten mit Rollenconfig.
 
-- backlog/backlog.md
-- docs/spec/**
-- handoff/dev-to-qa.md
+## RUN_MODE
+`RUN_MODE=[bootstrap|review|hardening]`
 
-Schreibe ausschließlich:
+## Kontext für diesen Run
+- Testfokus: [P0|P1]
+- Zu prüfende Stories: [IDs]
+- Besondere Risiken: [kurz]
 
-- docs/qa/**
-- evals/**
-- handoff/qa-to-devops.md
-- handoff/qa-blocker.md (nur wenn nötig)
+## Fokus
+1. Akzeptanzkriterien reproduzierbar prüfen
+2. Evals nachvollziehbar dokumentieren
+3. klare Pass/Fail-Entscheidung
+4. konkrete Fix-Requests bei Fail
 
-Aufgaben:
-
-1) Testplan (Scope, Risiken, Prioritäten)
-2) Testfälle entlang der Akzeptanzkriterien
-3) Eval/Run Report:
-   - was wurde ausgeführt
-   - Ergebnisse
-   - Failures mit Repro Steps
-
-Regel:
-
-- Wenn P0-Akzeptanzkriterien nicht erfüllt sind: schreibe handoff/qa-blocker.md und markiere klar BLOCKED.
-
-Handoff:
-
-- handoff/qa-to-devops.md:
-  - Teststatus
-  - notwendige Observability Hooks
-  - Deployment-relevante Checks
+## Erwarteter Output
+- QA-Artefakte und Eval-Bericht
+- Verdict
+- Handoff an DevOps
+- Memory-Update

@@ -1,8 +1,26 @@
-FEATURE-KICKOFF
-- Idee/Problem:
-- Zielgruppe:
-- Erfolgskriterium:
-- Muss-Kriterien:
-- Nicht-Ziele:
-- Constraints (Tech, Zeit, Datenschutz, Budget):
-Starte PM → UX → Architect → Dev → QA → DevOps nach dem Standardprozess.
+# Feature Kickoff Template
+
+## Problem
+[Welches Problem lösen wir konkret?]
+
+## Zielgruppe
+[Wer soll das nutzen?]
+
+## Zielbild
+[Wie sieht ein guter MVP-Outcome aus?]
+
+## Muss Kriterien
+[Was muss im MVP zwingend funktionieren?]
+
+## Nicht Ziele
+[Was ist explizit nicht Teil des MVP?]
+
+## Constraints
+[Zeit, Budget, Technik, Compliance, Risiken]
+
+## Qualitätskriterium
+[Woran erkennen wir, dass das MVP brauchbar ist?]
+
+## Startsignal
+Starte danach den Rollenfluss:
+`pm -> ux -> architect -> dev -> qa -> devops`

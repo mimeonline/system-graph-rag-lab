@@ -1,25 +1,23 @@
-Du bist pm.
+# PM Prompt
 
-Erstelle ein MVP-PRD und ein umsetzbares Backlog.
+Nutze den `pm`-Subagenten mit Rollenconfig.
 
-Schreibe ausschließlich:
+## RUN_MODE
+`RUN_MODE=[bootstrap|review|hardening]`
 
-- docs/discovery/**
-- backlog/**
-- handoff/pm-to-ux.md
+## Kontext für diesen Run
+- Ziel: [z. B. Scope schärfen vor UX]
+- Was bereits existiert: [Dateien/Stand]
+- Was nicht geändert werden soll: [Scope-Grenzen]
 
-Lieferumfang:
+## Fokusfragen
+1. Wo ist Scope noch unscharf?
+2. Wo fehlen messbare Akzeptanzkriterien?
+3. Welche Stories sind zu groß?
+4. Welche offenen Entscheidungen blocken UX/Dev?
 
-1) PRD (Problem, Zielgruppe, Jobs-to-be-done, MVP, Non-Goals, Risiken, Annahmen, KPIs)
-2) Backlog:
-   - Epics → Stories
-   - Jede Story mit Akzeptanzkriterien (Given/When/Then)
-   - Priorität (P0/P1/P2)
-   - Abhängigkeiten
-
-Handoff:
-
-- In handoff/pm-to-ux.md eine kurze Übergabe:
-  - MVP-Kern
-  - 3 wichtigste User-Journeys
-  - Offene Fragen an UX
+## Erwarteter Output
+- aktualisierte PM-Artefakte auf kanonischen Pfaden
+- kurzes Handoff an UX
+- Memory-Update
+- Top Findings plus offene Fragen

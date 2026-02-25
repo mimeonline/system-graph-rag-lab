@@ -1,24 +1,36 @@
-ZIEL
-Wir liefern ein MVP-Ende-zu-Ende durch die Rollen PM → UX → Architect → Dev → QA → DevOps.
+# Startprompt
 
-KONTEXT
+Ich will dieses Feature mit dem Multi-Agent-Flow umsetzen.
 
-- Repo-Root ist vorhanden.
-- Rollen sind in config.toml definiert und nutzen GPT-5.3-Codex.
-- Jeder Agent darf nur in seinen erlaubten Pfaden schreiben.
+## Kontext
+- Kickoff liegt in `docs/discovery/feature-kickoff.md`.
+- Nutze die Rollenconfigs aus `.codex/agents/*.toml`.
+- Repo-Dateien sind Source of Truth.
 
-AUFGABE
+## Auftrag
+1. Starte die Rollen in dieser Reihenfolge:
+   - `pm`
+   - `ux`
+   - `architect`
+   - `dev`
+   - `qa`
+   - `devops`
+2. Setze pro Rolle explizit einen `RUN_MODE`.
+3. Prüfe nach jeder Rolle kurz:
+   - nur erlaubte Pfade geändert
+   - Handoff vorhanden
+   - Memory aktualisiert
+4. Starte die nächste Rolle nur, wenn das Gate passt.
 
-1) Erstelle einen Arbeitsplan mit den 6 Phasen.
-2) Spawne nacheinander die Rollen in dieser Reihenfolge:
-   pm, ux, architect, dev, qa, devops
-3) Jede Rolle soll:
-   - die Inputs lesen
-   - ihre Outputs erzeugen
-   - am Ende ein kurzes Übergabeprotokoll schreiben: "handoff/<rolle>-to-next.md"
-4) Nach DevOps: Konsolidiere Status, offene Punkte, Risiken.
+## Modus-Vorschlag
+- PM: `RUN_MODE=hardening`
+- UX: `RUN_MODE=review`
+- Architect: `RUN_MODE=review`
+- Dev: `RUN_MODE=review`
+- QA: `RUN_MODE=review`
+- DevOps: `RUN_MODE=review`
 
-OUTPUT
-
-- Ein konsolidierter Statusbericht im Chat.
-- Keine Änderungen außerhalb der Rollenpfade.
+## Output im Chat
+- Status pro Rolle
+- wichtigste Findings und Blocker
+- nächste 3 Schritte
