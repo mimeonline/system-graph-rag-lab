@@ -1,7 +1,7 @@
 # Story E1-S4 Qualitätsprüfung für kuratierte Seed-Daten ausführen
 
 ## Status
-todo
+qa
 
 ## Ziel
 Konsistenz, Herkunft und Eindeutigkeit der kuratierten Seed-Daten vor Nutzung absichern.
@@ -32,5 +32,7 @@ Qualitätsregeln ausgeführt werden
 4. liegt ein Prüfprotokoll mit Anzahl geprüfter, beanstandeter und ausgeschlossener Einträge vor.
 
 ## Test Notes
-1. Vergleiche Datensatzstände vor und nach dem Qualitätslauf und dokumentiere ausgeschlossene Einträge.
-2. Prüfe im Prüfprotokoll die getrennte Ausweisung für `primary_md` und `optional_internet`.
+1. `pnpm --dir apps/web test -- src/features/seed-data/quality-check.test.ts` ausgefuehrt, Exit Code `0`, alle `3` Tests bestanden.
+2. Im Test `creates a clean report for the curated dataset` ist das Pruefprotokoll ohne Beanstandungen und Ausschluesse (`issues=[]`, `ausgeschlossen=0`) fuer den kuratierten Datensatz.
+3. Im Test `flags and excludes duplicate ids and duplicate relations` werden doppelte Node-IDs und doppelte Relationen als `beanstandet` markiert und aus dem Ergebnisdatensatz ausgeschlossen.
+4. Im Test `reports source type split for primary_md and optional_internet` ist die getrennte Ausweisung im Pruefprotokoll fuer `primary_md` und `optional_internet` verifiziert.

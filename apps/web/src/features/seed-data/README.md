@@ -26,6 +26,13 @@ Die Daten stammen aus freigegebenen Markdown-Quellen und enthalten Herkunftsmeta
 4. Fehlerfall: kein Throw, alle Befunde werden in `errors` gesammelt.
 5. Beispiel: `validateSeedDataset(createSeedDataset())` liefert `valid = true`.
 
+### `runSeedDatasetQualityCheck(dataset)`
+1. Zweck: fuehrt den Qualitaetslauf aus und erstellt ein Pruefprotokoll mit `checked`, `beanstandet`, `ausgeschlossen`.
+2. Input: `dataset` vom Typ `SeedDataset`.
+3. Output: `SeedQualityCheckResult` mit gefiltertem Datensatz und `report` inkl. Split nach `primary_md` und `optional_internet`.
+4. Fehlerfall: kein Throw, ungueltige Eintraege werden im Report als `issues` dokumentiert und ausgeschlossen.
+5. Beispiel: `runSeedDatasetQualityCheck(createSeedDataset()).report.nodes.checked > 0`.
+
 ### `readSeedDatasetForRuntime(options?)`
 1. Zweck: liest die normalisierte Datenbasis als echten Runtime-Read direkt aus Neo4j.
 2. Input: `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD` plus optional `options.driverFactory` fuer Testinjektion.

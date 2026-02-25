@@ -1,37 +1,38 @@
-# Dev Handoff E1-S3
+# Dev Handoff E1-S4
 
 ## Was ist fertig
-1. Runtime-Read fuer die normalisierte Seed-Datenbasis liest echte Nodes und Relationen direkt aus Neo4j in `apps/web/src/features/seed-data/runtime-read.ts`.
-2. Der Read liefert `sourceType` und `sourceFile` fuer Nodes und Relationen contract-konform.
-3. Fehlerfaelle sind abgesichert fuer fehlende Neo4j-Runtime-Variablen, Verbindungsprobleme und ungueltige Datensaetze.
-4. Feature-Dokumentation fuer `readSeedDatasetForRuntime` ist in `apps/web/src/features/seed-data/README.md` aktualisiert.
+1. Qualitaetspruefung fuer die normalisierte Seed-Datenbasis ist als eigenes Modul umgesetzt in `apps/web/src/features/seed-data/quality-check.ts`.
+2. Der Qualitaetslauf prueft Ontologiekonformitaet, Duplikate und Herkunftsfelder fuer `sources`, `nodes` und `edges`.
+3. Ein Pruefprotokoll wird erzeugt mit `checked`, `beanstandet`, `ausgeschlossen` sowie Split nach `primary_md` und `optional_internet`.
+4. Beanstandete Eintraege werden aus dem Ergebnisdatensatz ausgeschlossen und als Issues dokumentiert.
+5. Feature-Dokumentation wurde in `apps/web/src/features/seed-data/README.md` erweitert.
 
 ## Welche Stories wurden umgesetzt
-1. `E1-S3 Normalisierte Datenbasis im Zielbetrieb verfuegbar machen`
+1. `E1-S4 Qualitaetspruefung fuer kuratierte Seed-Daten ausfuehren`
 
 ## Wie kann QA testen lokal inkl konkrete Startschritte
-1. Sicherstellen, dass Docker-Container `neo4j-local` auf `neo4j:5.26.0` laeuft und `7687` erreichbar ist.
-2. In `apps/web/.env.local` oder Shell die Variablen `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD` setzen.
-3. Lint ausfuehren: `pnpm --dir apps/web lint`.
-4. Gesamte Tests ausfuehren: `pnpm --dir apps/web test`.
+1. In das Repo wechseln und sicherstellen, dass Abhaengigkeiten installiert sind.
+2. Unit-Test fuer den Qualitaetslauf ausfuehren: `pnpm --dir apps/web test -- src/features/seed-data/quality-check.test.ts`.
+3. Gesamte Testsuite ausfuehren: `pnpm --dir apps/web test`.
+4. Lint ausfuehren: `pnpm --dir apps/web lint`.
 5. Build ausfuehren: `pnpm --dir apps/web build`.
-6. Neo4j-Read-Smoke explizit ausfuehren: `pnpm --dir apps/web exec vitest run src/features/seed-data/runtime-read.test.ts --testNamePattern "integration with neo4j|reads real nodes"`.
 
 ## Welche Testdaten oder Seeds noetig sind
-1. Keine manuelle Vorbefuellung noetig.
-2. Der Integrationstest erzeugt eigene Marker-Knoten und -Kanten in Neo4j und loescht diese im Cleanup wieder.
+1. Keine externen Seeds notwendig.
+2. Die Tests verwenden den kuratierten Datensatz aus `createSeedDataset()` und erzeugen zusaetzlich kontrollierte invalide Eintraege im Test.
 
 ## Bekannte Einschraenkungen
-1. Wenn `NEO4J_DATABASE` lokal nicht gesetzt ist, wird der Integrationsblock in `runtime-read.test.ts` automatisch geskippt.
-2. Bei fehlender Neo4j-Erreichbarkeit ist ein gruenes Integrations-Smoke nicht moeglich.
+1. Der Qualitaetslauf schliesst beanstandete Eintraege aus und protokolliert diese, korrigiert aber keine Quelldaten automatisch.
+2. Der Lauf ist aktuell ein In-Memory-Pruefschritt und schreibt kein separates Dateiprotokoll auf Disk.
 
 ## Erwartete Failure Modes
-1. Fehlende Variable fuehrt zu Fehlern wie `Neo4j Runtime-Read hat ungueltiges Feld NEO4J_URI`.
-2. Neo4j nicht erreichbar fuehrt zu `Neo4j Runtime-Read fehlgeschlagen` mit Connectivity-Hinweis.
-3. Unerlaubte `sourceType` Werte in Neo4j-Daten fuehren zu Fehler bei Runtime-Read.
+1. Duplizierte Node-IDs werden als `duplizierte node id` im Report ausgewiesen.
+2. Duplizierte Relationen werden als `duplizierte relation` im Report ausgewiesen.
+3. Unbekannte Quellenverweise werden als `unbekannte Quelle` im Report ausgewiesen.
+4. Relationen mit ungueltigen Node-Bezuegen oder Ontologieverletzungen werden als Beanstandung markiert und ausgeschlossen.
 
 ## Genaue Testkommandos mit erwarteten Ergebnissen
-1. `pnpm --dir apps/web lint` erwartet Exit Code `0` ohne ESLint-Fehler.
-2. `pnpm --dir apps/web test` erwartet Exit Code `0` mit bestandenem Suite-Run.
-3. `pnpm --dir apps/web build` erwartet Exit Code `0` mit erfolgreichem Next.js Build.
-4. `pnpm --dir apps/web exec vitest run src/features/seed-data/runtime-read.test.ts --testNamePattern "integration with neo4j|reads real nodes"` erwartet Exit Code `0` mit erfolgreichem realem Neo4j-Read-Test.
+1. `pnpm --dir apps/web test -- src/features/seed-data/quality-check.test.ts` erwartet Exit Code `0` und `3` bestandene Tests.
+2. `pnpm --dir apps/web test` erwartet Exit Code `0` mit `19` bestanden und `1` skipped.
+3. `pnpm --dir apps/web lint` erwartet Exit Code `0` ohne ESLint-Fehler.
+4. `pnpm --dir apps/web build` erwartet Exit Code `0` mit erfolgreichem Next.js Build.
