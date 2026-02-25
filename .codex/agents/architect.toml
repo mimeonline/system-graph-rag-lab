@@ -112,6 +112,7 @@ Inhalt:
 - Systemgrenze
 - Akteure
 - Externe Systeme (OpenAI API, Neo4j Aura, Vercel)
+- Mermaid Kontextdiagramm ist verpflichtend.
 
 2) C4 Container
 Datei: docs/architecture/c4-container.md
@@ -121,6 +122,20 @@ Inhalt:
 - Neo4j
 - Observability minimal
 - Data flow Query → Retrieval → Response
+- Mermaid Containerdiagramm ist verpflichtend.
+- Mermaid Sequenzdiagramm Query → Retrieval → Response ist verpflichtend.
+
+2b) Tech Stack Entscheidung
+Pflicht:
+- Der Architektur-Run muss den Tech Stack explizit entscheiden und dokumentieren.
+- Entscheidung muss mindestens enthalten:
+  - Web Stack
+  - API Stack
+  - Runtime
+  - Graph Connector
+  - LLM Connector
+  - Logging/Observability Basis
+- Entscheidung wird in ADR dokumentiert oder in bestehender ADR klar ergänzt.
 
 3) Datenmodell
 Datei: docs/architecture/data-model.md

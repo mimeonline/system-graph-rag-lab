@@ -1,0 +1,397 @@
+openapi: 3.1.0
+info:
+  title: System GraphRAG Lab Public MVP API
+  version: 1.0.0
+  description: |
+    Machine readable API contract for the Public MVP query endpoint.
+    Source of truth for behavior remains docs/spec/api.md.
+servers:
+  - url: /
+paths:
+  /api/query:
+    post:
+      tags:
+        - Query
+      summary: Execute GraphRAG query
+      operationId: postQuery
+      description: |
+        Executes retrieval and LLM response generation for a user query.
+        Exactly one structured completion log event is emitted per request.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QueryRequest'
+      responses:
+        '200':
+          description: Successful query response.
+          headers:
+            X-Request-Id:
+              description: Request identifier, identical to response body `requestId`.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuerySuccessResponse'
+        '400':
+          description: Request schema validation failed or query rules were violated.
+          headers:
+            X-Request-Id:
+              description: Request identifier.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryErrorResponse'
+              examples:
+                invalidRequest:
+                  value:
+                    status: error
+                    requestId: 0f9d9f2f-a7f7-4be7-8d5b-7d7ef0f2db3e
+                    error:
+                      code: INVALID_REQUEST
+                      message: Query muss zwischen 5 und 500 Zeichen enthalten.
+                      retryable: false
+                    meta:
+                      latencyMs: 5
+        '429':
+          description: Rate limit exceeded.
+          headers:
+            X-Request-Id:
+              description: Request identifier.
+              schema:
+                type: string
+                format: uuid
+            Retry-After:
+              description: Wait time in seconds before retrying.
+              schema:
+                type: integer
+                minimum: 1
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RateLimitErrorResponse'
+        '502':
+          description: Upstream LLM call failed.
+          headers:
+            X-Request-Id:
+              description: Request identifier.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryErrorResponse'
+              examples:
+                llmUpstreamError:
+                  value:
+                    status: error
+                    requestId: bce56eaf-8e09-4d8f-b44a-9ef1daa56680
+                    error:
+                      code: LLM_UPSTREAM_ERROR
+                      message: Upstream LLM Fehler.
+                      retryable: true
+                    meta:
+                      latencyMs: 412
+        '503':
+          description: Graph backend is unavailable.
+          headers:
+            X-Request-Id:
+              description: Request identifier.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryErrorResponse'
+              examples:
+                graphBackendUnavailable:
+                  value:
+                    status: error
+                    requestId: 55ad9584-e242-489b-8b1c-f2fa83da4473
+                    error:
+                      code: GRAPH_BACKEND_UNAVAILABLE
+                      message: Graph Backend nicht verfuegbar.
+                      retryable: true
+                    meta:
+                      latencyMs: 33
+        '504':
+          description: Upstream request timed out.
+          headers:
+            X-Request-Id:
+              description: Request identifier.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryErrorResponse'
+              examples:
+                upstreamTimeout:
+                  value:
+                    status: error
+                    requestId: c0e47e51-b2b0-4a14-9423-247f02abc51f
+                    error:
+                      code: UPSTREAM_TIMEOUT
+                      message: Upstream Timeout.
+                      retryable: true
+                    meta:
+                      latencyMs: 15000
+        '500':
+          description: Unexpected internal error.
+          headers:
+            X-Request-Id:
+              description: Request identifier.
+              schema:
+                type: string
+                format: uuid
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryErrorResponse'
+              examples:
+                internalError:
+                  value:
+                    status: error
+                    requestId: 9f4a5c6f-e0fd-4920-bf57-9f3f0129d88c
+                    error:
+                      code: INTERNAL_ERROR
+                      message: Interner Fehler.
+                      retryable: false
+                    meta:
+                      latencyMs: 17
+components:
+  schemas:
+    QueryRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - query
+      properties:
+        query:
+          type: string
+          minLength: 5
+          maxLength: 500
+          pattern: '.*\\S.*'
+          description: User query. Whitespace only input is invalid.
+        clientRequestId:
+          type: string
+          maxLength: 64
+          description: Optional client correlation id.
+    QuerySuccessResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - state
+        - requestId
+        - answer
+        - references
+        - meta
+      properties:
+        status:
+          type: string
+          const: ok
+        state:
+          type: string
+          enum:
+            - answer
+            - empty
+        requestId:
+          type: string
+          format: uuid
+        answer:
+          $ref: '#/components/schemas/AnswerObject'
+        references:
+          type: array
+          maxItems: 3
+          items:
+            $ref: '#/components/schemas/ReferenceObject'
+        meta:
+          $ref: '#/components/schemas/SuccessMeta'
+    AnswerObject:
+      type: object
+      additionalProperties: false
+      required:
+        - main
+        - coreRationale
+      properties:
+        main:
+          type: string
+        coreRationale:
+          type: string
+    ReferenceObject:
+      type: object
+      additionalProperties: false
+      required:
+        - nodeId
+        - nodeType
+        - title
+        - score
+        - hop
+      properties:
+        nodeId:
+          type: string
+        nodeType:
+          type: string
+          enum:
+            - Concept
+            - Author
+            - Book
+            - Problem
+        title:
+          type: string
+        score:
+          type: number
+          minimum: 0
+          maximum: 1
+        hop:
+          type: integer
+          minimum: 0
+          maximum: 1
+    SuccessMeta:
+      type: object
+      additionalProperties: false
+      required:
+        - topK
+        - hopDepth
+        - retrievedNodeCount
+        - contextTokens
+        - latencyMs
+        - rateLimit
+      properties:
+        topK:
+          type: integer
+          const: 6
+        hopDepth:
+          type: integer
+          const: 1
+        retrievedNodeCount:
+          type: integer
+          minimum: 0
+        contextTokens:
+          type: integer
+          minimum: 0
+          maximum: 1400
+        latencyMs:
+          type: integer
+          minimum: 0
+        rateLimit:
+          $ref: '#/components/schemas/RateLimitMeta'
+    RateLimitMeta:
+      type: object
+      additionalProperties: false
+      required:
+        - limit
+        - windowSeconds
+        - remaining
+      properties:
+        limit:
+          type: integer
+          const: 10
+        windowSeconds:
+          type: integer
+          const: 60
+        remaining:
+          type: integer
+          minimum: 0
+          maximum: 10
+    QueryErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - requestId
+        - error
+        - meta
+      properties:
+        status:
+          type: string
+          const: error
+        requestId:
+          type: string
+          format: uuid
+        error:
+          $ref: '#/components/schemas/ErrorObject'
+        meta:
+          $ref: '#/components/schemas/ErrorMeta'
+    ErrorObject:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - message
+        - retryable
+      properties:
+        code:
+          type: string
+          enum:
+            - INVALID_REQUEST
+            - RATE_LIMIT
+            - LLM_UPSTREAM_ERROR
+            - GRAPH_BACKEND_UNAVAILABLE
+            - UPSTREAM_TIMEOUT
+            - INTERNAL_ERROR
+        message:
+          type: string
+        retryable:
+          type: boolean
+        retryAfterSeconds:
+          type: integer
+          minimum: 1
+    RateLimitErrorResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - requestId
+        - error
+        - meta
+      properties:
+        status:
+          type: string
+          const: error
+        requestId:
+          type: string
+          format: uuid
+        error:
+          $ref: '#/components/schemas/RateLimitErrorObject'
+        meta:
+          $ref: '#/components/schemas/ErrorMeta'
+    RateLimitErrorObject:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - message
+        - retryable
+        - retryAfterSeconds
+      properties:
+        code:
+          type: string
+          const: RATE_LIMIT
+        message:
+          type: string
+        retryable:
+          type: boolean
+          const: true
+        retryAfterSeconds:
+          type: integer
+          minimum: 1
+    ErrorMeta:
+      type: object
+      additionalProperties: false
+      required:
+        - latencyMs
+      properties:
+        latencyMs:
+          type: integer
+          minimum: 0

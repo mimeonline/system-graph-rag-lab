@@ -1,9 +1,19 @@
 # API Definition Public MVP
 
+## Runtime und API Grenze
+1. API und Web UI laufen im selben Next.js Projekt auf Vercel.
+2. Der API Layer wird als Next.js Route Handler für `POST /api/query` umgesetzt.
+3. Der Handler liegt in `app/api/query/route.ts`.
+4. Es gibt im MVP keinen separaten API Service.
+
 ## Endpoint
 1. Methode: `POST`
 2. Pfad: `/api/query`
 3. Zweck: Führt Retrieval plus LLM Antwortgenerierung für eine Nutzerfrage aus.
+
+## Machine Readable Contract
+1. OpenAPI 3.1 Spezifikation liegt in `docs/spec/api.openapi.yaml`.
+2. Bei Abweichungen bleibt diese Datei die fachliche Source of Truth.
 
 ## Request Schema
 ```json
@@ -58,7 +68,8 @@
 2. `references` enthält höchstens 3 Einträge für die UI Hauptfläche.
 3. `meta.topK`, `meta.hopDepth` und `meta.contextTokens` müssen dem Retrieval Lauf entsprechen.
 4. `state` ist entweder `answer` oder `empty`.
-5. Bei `state=\"empty\"` enthält `references` eine leere Liste.
+5. Bei `state="empty"` enthält `references` eine leere Liste.
+6. Header `X-Request-Id` ist identisch zu `requestId` im Body.
 
 ## Error Schema
 ```json
@@ -91,15 +102,32 @@
 3. Bei `429` enthält Body `error.retryAfterSeconds` als ganzzahlige Wartezeit.
 4. Response enthält in `meta.rateLimit` die verbleibende Anfragezahl bei Erfolg.
 
-## Observability Felder Minimal
-1. `requestId`
-2. `statusCode`
-3. `latencyMs`
-4. `topK`
-5. `hopDepth`
-6. `retrievedNodeCount`
-7. `contextTokens`
-8. `rateLimitTriggered`
+## Observability Contract Minimal
+1. Quelle ist ausschließlich der Next.js Route Handler.
+2. Pro Request wird genau ein strukturiertes Abschluss Event als JSON geloggt.
+3. Logziel ist Vercel Runtime Logs ohne separates Telemetrie System im MVP.
+4. Pflichtfelder im Event sind `requestId`, `route`, `method`, `statusCode`, `latencyMs`, `topK`, `hopDepth`, `retrievedNodeCount`, `contextTokens`, `rateLimitTriggered`, `errorCode`.
+5. `route` ist immer `/api/query`.
+6. `method` ist immer `POST`.
+7. `errorCode` ist `null` bei Erfolg.
+8. Rohquery Inhalte und Secrets werden nicht geloggt.
+
+## Observability Event Schema
+```json
+{
+  "requestId": "uuid",
+  "route": "/api/query",
+  "method": "POST",
+  "statusCode": 200,
+  "latencyMs": 845,
+  "topK": 6,
+  "hopDepth": 1,
+  "retrievedNodeCount": 8,
+  "contextTokens": 1320,
+  "rateLimitTriggered": false,
+  "errorCode": null
+}
+```
 
 ## Mapping UI Zustände
 1. Loading: aktiv zwischen Request Start und finaler Response.
