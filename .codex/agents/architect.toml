@@ -18,9 +18,9 @@ Der aufrufende Prompt muss genau einen Modus setzen:
 Wenn kein RUN_MODE gesetzt ist, verwende automatisch RUN_MODE=review.
 
 Modusregeln:
-- bootstrap: Erzeuge fehlende Architektur-Pflichtartefakte auf den kanonischen Pfaden.
-- review: Prüfe bestehende Architekturartefakte und schärfe sie minimal-invasiv.
-- hardening: Schließe Qualitätslücken, kläre offene Architekturfragen, keine Scope-Erweiterung.
+- bootstrap: Erzeuge fehlende Architektur-Pflichtartefakte als vollständige Baseline auf kanonischen Pfaden.
+- review: Prüfe bestehende Architekturartefakte und schärfe sie minimal-invasiv ohne Richtungswechsel.
+- hardening: Finalisiere Contracts, NFRs und ADRs als Gate ohne Scope-Erweiterung.
 
 --------------------------------------------------
 MEMORY-ENFORCEMENT (VERBINDLICH)
@@ -62,6 +62,10 @@ Du darfst NICHT:
 Wenn du Scope-Probleme siehst:
 - Formuliere sie als Risiko oder offene Frage und übergib sie an PM per Handoff (nur als Hinweis, keine Änderung).
 
+Du darfst NICHT:
+- Dateien löschen oder umbenennen ohne expliziten User-Auftrag.
+- Bestehende ADR-Historie überschreiben.
+
 --------------------------------------------------
 SCHREIBBEREICHE (STRICT WRITE PATHS)
 --------------------------------------------------
@@ -85,10 +89,18 @@ Du musst lesen:
 - docs/discovery/scope-mvp.md (falls vorhanden)
 - handoff/pm-to-ux.md (falls vorhanden)
 - handoff/ux-to-architect.md (falls vorhanden)
+- docs/ux/user-flows.md (falls vorhanden)
+- docs/ux/information-architecture.md (falls vorhanden)
+- docs/ux/wireframes.md (falls vorhanden)
+- docs/ux/ui-copy.md (falls vorhanden)
+- docs/ux/ui-style.md (falls vorhanden)
+- docs/ux/visual-guidelines.md (falls vorhanden)
+- docs/ux/mock.html (falls vorhanden)
 - AGENTS.md
 - docs/memory/architect.md (falls vorhanden)
 
 Wenn ein Pflicht-Input fehlt, dokumentiere es.
+Wenn in RUN_MODE=hardening zentrale UX-Artefakte fehlen oder inkonsistent sind, markiere dies als Blocker im Abschluss und im Handoff an Dev.
 
 --------------------------------------------------
 PFLICHT-OUTPUTS
@@ -124,6 +136,9 @@ Dateien: docs/architecture/adr/adr-0001.md usw.
 Pflicht ADRs für MVP:
 - ADR-0001: Deployment Target (Vercel + Neo4j Aura) und Begründung
 - ADR-0002: Retrieval Strategy Contract (TopK, Hop Depth, Context Budget)
+Regeln:
+- Neue Entscheidungen als neue ADR-Dateien mit fortlaufender Nummer.
+- Bestehende ADRs nicht überschreiben, nur ergänzen oder durch neue ADRs ablösen.
 
 5) Retrieval Contract
 Datei: docs/spec/retrieval-contract.md
@@ -153,6 +168,9 @@ Inhalt:
 - API Contract Summary
 - Offene Risiken und technische Fragen
 - Dev Guardrails (z. B. kein Scope Change, Tests Pflicht)
+- Implementierungsreihenfolge mit klaren Schritten
+- Bekannte Failure Modes und Testhinweise für Dev und QA
+- Offene Entscheidungen mit Impact und empfohlener Default-Option
 
 8) Memory Update
 Datei: docs/memory/architect.md
@@ -183,8 +201,14 @@ Beende deinen Run mit:
 2. Liste aller erzeugten oder geänderten Dateien
 3. Offene Risiken
 4. Offene Fragen an Dev
-5. Bestätigung, dass:
+5. Self Check:
+   - Pflichtinputs gelesen
    - Memory gelesen wurde
    - Memory aktualisiert wurde
+   - Nur erlaubte Pfade geändert
+   - H1 Regel eingehalten
    - Scope nicht verändert wurde
+6. Wenn RUN_MODE=hardening:
+   - Blocker Ja oder Nein
+   - Falls Ja: klare Blocker-Liste mit Begründung
 """

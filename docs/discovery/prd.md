@@ -23,7 +23,7 @@ Standard-LLM-Antworten auf Systemfragen sind oft schwer nachvollziehbar und ihre
 ## MVP Scope
 ### In Scope
 1. Öffentliche Demo mit Ende-zu-Ende-Fluss von Frage zu strukturierter Antwort.
-2. Wissensbasis im freigegebenen Rahmen mit 20 bis 30 Nodes und 10 bis 20 Relationen.
+2. Wissensbasis im freigegebenen Rahmen mit mehr als 100 Nodes und mehr als 200 Edges.
 3. Sichtbare Referenzkonzepte je Antwort mit Mindestziel von drei Konzepten, sofern verfügbar.
 4. Nachvollziehbare Herleitung im P0 als knapper Kernnachweis in der Hauptantwort.
 5. Betriebsrahmen gemäß AGENTS mit Public Deployment, Secret-Hygiene, Usage-Limit und Basis-Rate-Limit.

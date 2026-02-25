@@ -73,8 +73,8 @@ Das MVP ist erfolgreich, wenn:
 
 ### Domäne
 
-- 20–30 Nodes (Concept, Author, Book, Problem)  
-- 10–20 Relationen  
+- >100 Nodes (Concept, Author, Book, Problem)  
+- >200 Edges  
 - Klar definierte Ontologie  
 
 ### Retrieval

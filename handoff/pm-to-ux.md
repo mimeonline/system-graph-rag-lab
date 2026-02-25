@@ -3,7 +3,7 @@
 ## MVP-Kern
 1. Public Demo für Systemfragen mit klarem Frage-zu-Antwort-Fluss.
 2. Antwortdarstellung enthält Hauptantwort und sichtbare Referenzkonzepte.
-3. Scope bleibt auf freigegebenem Domänenrahmen von 20 bis 30 Nodes und 10 bis 20 Relationen.
+3. Scope bleibt auf freigegebenem Domänenrahmen von mehr als 100 Nodes und mehr als 200 Edges.
 4. Abnahme nutzt die verbindliche Referenzregel mit Eval-Erwartungslisten pro Frage.
 5. P0 enthält nur Kernnachweis der Herleitung, P1 enthält Detailvertiefung.
 6. Für Erstkontakt sind die Zustände Loading, Fehler und Leere jeweils klar unterscheidbar mit nächster Aktion.

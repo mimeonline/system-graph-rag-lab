@@ -22,7 +22,7 @@ eine freigegebene Ontologie
 Seed-Daten erzeugt und validiert werden
 
 **Then**
-1. enthält die Datenbasis 20 bis 30 valide Nodes und 10 bis 20 valide Relationen ohne Schema-Verstoß
+1. enthält die Datenbasis mehr als 100 valide Nodes und mehr als 200 valide Edges ohne Schema-Verstoß
 
 ## Test Notes
-Zähle Nodes und Relationen und prüfe Schema-Konformität sowie Pflichtfelder.
+Zähle Nodes und Edges und prüfe Schema-Konformität sowie Pflichtfelder.

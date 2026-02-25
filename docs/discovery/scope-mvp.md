@@ -2,7 +2,7 @@
 
 ## In Scope
 1. Öffentliche Demo für Systemfragen mit klarem Frage-zu-Antwort-Fluss.
-2. Wissensbasis mit 20 bis 30 Nodes und 10 bis 20 Relationen im freigegebenen Rahmen.
+2. Wissensbasis mit mehr als 100 Nodes und mehr als 200 Edges im freigegebenen Rahmen.
 3. Strukturierte Antwortdarstellung mit sichtbaren Referenzkonzepten.
 4. P0-Herleitung als knapper Kernnachweis in der Hauptantwort.
 5. Verbindliche Relevanzprüfung für Referenzkonzepte auf Basis des fünfteiligen Eval-Sets.

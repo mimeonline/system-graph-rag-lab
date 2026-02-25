@@ -6,7 +6,7 @@
 ## MVP Scope Guardrails In Out
 ### In
 1. Public Demo mit strukturierter Hauptantwort, Referenzkonzepten und P0-Kernnachweis.
-2. Wissensbasis im freigegebenen Rahmen von 20 bis 30 Nodes und 10 bis 20 Relationen.
+2. Wissensbasis im freigegebenen Rahmen von mehr als 100 Nodes und mehr als 200 Edges.
 3. Verbindliche Abnahmeregel für Referenzkonzepte im fünfteiligen Eval-Set.
 4. Operative MVP-Schutzmaßnahmen mit Secret-Hygiene, Usage-Limit und Basis-Rate-Limit.
 
