@@ -1,0 +1,16 @@
+# Start: docker compose -f docs/ops/docker-compose.local.yml up -d
+services:
+  neo4j:
+    image: neo4j:5.26.0
+    container_name: neo4j-local
+    restart: unless-stopped
+    ports:
+      - "7474:7474"
+      - "7687:7687"
+    environment:
+      NEO4J_AUTH: ${NEO4J_AUTH:?Set NEO4J_AUTH as username/password}
+    volumes:
+      - neo4j_data:/data
+
+volumes:
+  neo4j_data:
