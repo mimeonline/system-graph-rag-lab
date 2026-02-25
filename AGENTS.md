@@ -113,6 +113,21 @@ Nach jedem Story-Finish durch Dev gilt verbindlich:
 - UI-Architektur folgt dem Pattern Atomic Design.
 - Abweichungen sind nur über dokumentierte ADR-Entscheidung zulässig.
 
+## Next.js Frontend Regeln
+- `apps/web/src/app/**/page.tsx` bleibt orchestration-only.
+- `page.tsx` darf:
+  - `params` und `searchParams` lesen
+  - ein Feature-Template zusammensetzen
+- `page.tsx` darf nicht:
+  - Business-Logik enthalten
+  - umfangreiches Markup enthalten
+- Page-Templates liegen unter `apps/web/src/features/<feature>/templates/*Template.tsx`.
+- UI-Struktur pro Feature folgt Atomic Design unter `apps/web/src/features/<feature>/`:
+  - `templates/`
+  - `organisms/`
+  - `molecules/`
+  - `atoms/` nur falls feature-lokal nötig
+
 ## Architektur-Invarianten
 - C4 Kontext und C4 Container müssen Mermaid-Diagramme enthalten.
 - `docs/architecture/arc42.md` ist verpflichtender Architekturüberblick mit Mermaid Kontext-, Container- und Sequenzsicht.

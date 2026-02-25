@@ -44,9 +44,9 @@
 3. Erst nach diesen Gates ist die Epic Freigabe für den nächsten Schritt belastbar.
 
 ## Verifikation
-1. Lint: `npm run lint`
-2. Tests: `npm run test`
-3. Build: `npm run build`
+1. Lint: `pnpm lint`
+2. Tests: `pnpm test`
+3. Build: `pnpm build`
 4. Smoke Check lokal:
 ```bash
 curl -s -X POST http://localhost:3000/api/query \
@@ -58,7 +58,7 @@ curl -s -X POST http://localhost:3000/api/query \
 1. `NEO4J_URI` nicht erreichbar: Docker Container, Port-Mapping und lokale Firewall prüfen.
 2. `OPENAI_API_KEY` fehlt oder ungültig: lokale Env-Datei und Key-Status prüfen.
 3. `429 RATE_LIMIT`: kurz warten, `Retry-After` beachten und Last reduzieren.
-4. Build Fehler: zuerst `npm ci` erneut ausführen und danach Lint plus Tests wiederholen.
+4. Build Fehler: zuerst `pnpm install --frozen-lockfile` erneut ausführen und danach Lint plus Tests wiederholen.
 5. Unvollständige Antwortdaten: Logs auf `requestId`, `errorCode` und `statusCode` prüfen.
 
 ## Übergabehinweise an QA und PM

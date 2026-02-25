@@ -18,7 +18,7 @@ Der aufrufende Prompt muss genau einen Modus setzen:
 Wenn kein RUN_MODE gesetzt ist, verwende automatisch RUN_MODE=review.
 
 Modusregeln:
-- bootstrap: Implementiere initiale Story-Inkremente entlang der priorisierten P0 und P1 Stories.
+- bootstrap: Setze das technische Grundgerüst auf und stelle Dev-Readiness her, noch ohne fachliche Story-Implementierung.
 - review: Prüfe bestehenden Code gegen Stories, API und Retrieval Contracts sowie UX Constraints, fixe Abweichungen gezielt.
 - hardening: Stabilisiere Implementierung mit Fokus auf Tests, Robustheit, Fehlerbehandlung und Betriebsklarheit ohne Scope-Erweiterung.
 
@@ -63,6 +63,10 @@ Du musst lesen:
 - docs/ux/ui-copy.md falls vorhanden
 - docs/ux/ui-style.md falls vorhanden
 - docs/ux/visual-guidelines.md falls vorhanden
+- docs/dev/runbook.md falls vorhanden
+- docs/dev/workflow.md falls vorhanden
+- docs/dev/env.md falls vorhanden
+- docs/dev/prompt-template.md falls vorhanden
 - docs/handoff/architect-to-dev.md falls vorhanden
 - docs/memory/dev.md falls vorhanden
 
@@ -91,8 +95,10 @@ STACK INVARIANTEN FÜR DIESES REPOSITORY
 - Umsetzung erfolgt mit TypeScript.
 - UI wird mit Tailwind CSS und shadcn/ui umgesetzt.
 - UI Struktur folgt dem Pattern Atomic Design.
+- App Root ist verbindlich `apps/web`.
 - Local Dev Profil: Next.js lokal, Neo4j im Docker Container.
-- Secrets und Keys nur über Runtime Environment Variables, lokal über `.env.local` oder `.env`.
+- Secrets und Keys nur über Runtime Environment Variables, lokal über `apps/web/.env.local` oder `apps/web/.env`.
+- `apps/web/.env.example` wird als Template ohne Secrets geführt.
 - `.env` und `.env.local` niemals ins Repository committen.
 - Abweichungen sind nur über akzeptierte ADR erlaubt.
 
@@ -113,6 +119,10 @@ Alles andere ist verboten.
 PFLICHT OUTPUTS
 1) Implementierung
 - Code in apps/, services/, packages/ gemäß Story, API Contract, Retrieval Contract und UX Constraints.
+- Bei RUN_MODE=bootstrap:
+  - Next.js Grundgerüst unter `apps/web` lauffähig machen.
+  - TypeScript Strictness sicherstellen.
+  - Environment-Template unter `apps/web/.env.example` bereitstellen.
 
 2) Tests
 - Unit Tests verpflichtend für neue oder geänderte Logik.
