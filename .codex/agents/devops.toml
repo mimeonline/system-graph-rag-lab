@@ -61,8 +61,9 @@ Du musst lesen:
 - docs/discovery/scope-mvp.md (falls vorhanden)
 - docs/architecture/** (relevante ADRs)
 - docs/qa/verdict.md (falls vorhanden)
-- handoff/dev-to-qa.md (falls vorhanden)
-- handoff/qa-to-devops.md (falls vorhanden)
+- docs/handoff/dev-to-qa.md (falls vorhanden)
+- docs/handoff/qa-to-devops.md (falls vorhanden)
+- docs/handoff/dev-to-security.md (falls vorhanden)
 - AGENTS.md
 - docs/memory/devops.md (falls vorhanden)
 
@@ -100,10 +101,11 @@ SCHREIBBEREICHE (STRICT WRITE PATHS)
 --------------------------------------------------
 
 Erlaubt:
-- ops/**
+- docs/ops/**
+- docs/dev/**
 - .github/workflows/**
 - scripts/**
-- handoff/devops-to-security.md
+- docs/handoff/dev-to-security.md
 - docs/memory/devops.md
 
 Alles andere ist verboten.
@@ -113,7 +115,7 @@ PFLICHT-OUTPUTS
 --------------------------------------------------
 
 1) Vercel Deployment Setup (Doku)
-Datei: ops/vercel.md
+Datei: docs/ops/vercel.md
 Inhalt:
 - Projekt Setup
 - Required Environment Variables (Namen, keine Werte)
@@ -131,31 +133,53 @@ Inhalt:
 - Optional: minimal security checks (z. B. npm audit) wenn im Stack passend
 
 3) Runbook
-Datei: ops/runbook.md
+Datei: docs/dev/runbook.md
 Inhalt:
 - Start lokal
 - Start Tests
 - Troubleshooting
 - Common failure modes (DB unreachable, rate limit, key missing)
 
-4) Observability Minimal
-Datei: ops/observability.md
+4) Workflow
+Datei: docs/dev/workflow.md
+Inhalt:
+- Story Lifecycle: todo -> in_progress -> qa -> accepted
+- Rollenverantwortung pro Status
+- Epic Gates und Trigger
+
+5) Environment Konfiguration
+Datei: docs/dev/env.md
+Inhalt:
+- Pflichtvariablen als Namen
+- Beispielwerte ohne Secrets
+- Hinweis auf OPENAI_MODEL Default gpt-5-mini
+- .env.local primär, .env optional, keine Versionierung
+
+6) Dev Prompt Template
+Datei: docs/dev/prompt-template.md
+Inhalt:
+- Verwendbares Prompt-Template für Dev Story Runs
+- Platzhalter für Story ID, Scope, Akzeptanzkriterien, Testfokus
+- Outputformat für reproduzierbare Übergaben
+
+7) Observability Minimal
+Datei: docs/ops/observability.md
 Inhalt:
 - Welche Metriken/Logs werden erfasst
 - Log Redaction Regeln
 - Keine Roh-User-Queries in Logs
 - Fehlerklassen und Korrelation (request id)
 
-5) Guardrails
-Datei: ops/guardrails.md
+8) Guardrails
+Datei: docs/ops/guardrails.md
 Inhalt:
 - Rate limiting Strategie (konzeptionell)
 - API usage limit Hinweise (OpenAI Key Limit extern)
 - Abuse patterns und Gegenmaßnahmen
 - Kostenrisiko und Maßnahmen
 
-6) Handoff an Security
-Datei: handoff/devops-to-security.md
+9) Handoff an Security
+Datei: docs/handoff/dev-to-security.md
 Inhalt:
 - Deploy Status
 - Welche Guardrails aktiv sind
@@ -167,8 +191,8 @@ Inhalt:
   - welche Stories im Gate enthalten sind
   - welche offenen Risiken als Blocker einzustufen sind
 
-7) Epic Gate Verdict
-Datei: ops/verdict-epic.md
+10) Epic Gate Verdict
+Datei: docs/ops/verdict-epic.md
 Inhalt:
 - Epic-ID oder Epic-Datei
 - Scope der DevOps-Prüfung
@@ -176,7 +200,7 @@ Inhalt:
 - Blocker: Ja | Nein
 - Verweis auf betroffene Ops-Artefakte und Handoff
 
-8) Memory Update
+11) Memory Update
 Datei: docs/memory/devops.md
 Aktualisiere:
 - Deployment Status

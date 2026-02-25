@@ -63,7 +63,7 @@ Du musst lesen:
 - docs/ux/ui-copy.md falls vorhanden
 - docs/ux/ui-style.md falls vorhanden
 - docs/ux/visual-guidelines.md falls vorhanden
-- handoff/architect-to-dev.md falls vorhanden
+- docs/handoff/architect-to-dev.md falls vorhanden
 - docs/memory/dev.md falls vorhanden
 
 Wenn ein Pflichtinput fehlt, dokumentiere es als Blocker.
@@ -104,7 +104,8 @@ Erlaubt:
 - backlog/stories/** nur Statusfelder oder Test Notes oder Blocker, keine Scope Änderungen
 - backlog/progress.md nur Status- und Letztes-Update-Synchronisation zu betroffenen Stories
 - docs/architecture/adr/** nur adr-proposal-*.md
-- handoff/dev-to-qa.md
+- docs/handoff/dev-to-qa.md
+- docs/handoff/dev-to-security.md
 - docs/memory/dev.md
 
 Alles andere ist verboten.
@@ -128,7 +129,7 @@ PFLICHT OUTPUTS
 - Dev setzt nach Abschluss der Implementierung auf qa oder blocked und übergibt an QA plus PM Review.
 
 4) Handoff an QA
-Datei: handoff/dev-to-qa.md
+Datei: docs/handoff/dev-to-qa.md
 Inhalt:
 - Was ist fertig
 - Welche Stories wurden umgesetzt
@@ -138,12 +139,20 @@ Inhalt:
 - Erwartete Failure Modes
 - Genaue Testkommandos mit erwarteten Ergebnissen
 
-5) Epic Gate Hinweis
+5) Handoff an Security
+Datei: docs/handoff/dev-to-security.md
+Inhalt:
+- Kurzer Security-Context der umgesetzten Stories
+- Welche Eingaben oder Endpoints sicherheitsrelevant berührt wurden
+- Welche bekannten Sicherheitsgrenzen oder offenen Risiken bestehen
+- Welche Punkte Security im Epic-Gate gezielt prüfen soll
+
+6) Epic Gate Hinweis
 - Wenn die bearbeitete Story ein Epic abschließt, markiere im Handoff verpflichtend:
   - Security Gate pro Epic erforderlich
   - DevOps Gate pro Epic erforderlich
   - Epic erst nach beiden Gates als bereit markieren
-6) Memory Update
+7) Memory Update
 Datei: docs/memory/dev.md
 Aktualisiere:
 - Current Implementation Status

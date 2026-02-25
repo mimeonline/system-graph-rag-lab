@@ -1,7 +1,7 @@
 # PM Memory
 
 ## Current Product Intent
-Öffentlich erreichbares GraphRAG-MVP für System-Thinking mit klarem Frage-zu-Antwort-Fluss, sichtbaren Referenzkonzepten und messbarer Abnahme ohne Scope-Erweiterung.
+Öffentlich erreichbares GraphRAG-MVP für System-Thinking mit klarem Frage-zu-Antwort-Fluss, sichtbaren Referenzkonzepten, messbarer Abnahme und verbindlichem Fortschrittstracking auf Story- und Epic-Ebene ohne Scope-Erweiterung.
 
 ## MVP Scope Guardrails In Out
 ### In
@@ -20,19 +20,24 @@
 1. Die Erwartungslisten mit drei bis sechs Referenzkonzepten je Eval-Frage sind fachlich stabil genug für konsistente Bewertung.
 2. Der P0-Kernnachweis reicht der Zielgruppe für Erstvertrauen vor P1-Vertiefung.
 3. Die Vier-von-Fünf-Abnahmegrenze ist für Public-Demo-Readiness ausreichend robust.
+4. Ein initialer Epic-Status `todo` ist bis zum ersten Gate-Nachweis pro Epic korrekt und minimal-invasiv.
 
 ## Open Decisions
 1. Welche P1-Stories bei Timeline-Risiko vor Public Demo vorgezogen werden.
 2. Ob der Abnahmelauf nach UX-Finalisierung einmalig oder als wiederholter Qualitätsgate betrieben wird.
+3. Wie die Pflicht zur Epic-Statusführung in `.codex/agents/pm.toml` umgesetzt wird, da der Pfad außerhalb der aktuellen PM-Write-Guardrails liegt.
 
 ## Risks to Monitor
 1. Scope-Drift durch spätere Re-Expansion des Graphumfangs ohne PM-Freigabe.
 2. Qualitätsrisiko, falls Erwartungslisten pro Eval-Frage zu breit oder zu eng gepflegt werden.
 3. Abnahmerisiko, falls Fallback-Hinweise inkonsistent angewendet und dadurch Ergebnisse verzerrt werden.
 4. Betriebsrisiko durch öffentliche Lastspitzen trotz Basis-Guardrails.
+5. Tracking-Risiko durch mögliche Status-Divergenz zwischen Epic-Dateien und `backlog/progress.md`.
 
 ## Next Instructions for PM Agent
 1. Halte Relevanzregel und Vier-von-Fünf-Grenze in allen nachfolgenden Rollenartefakten unverändert.
 2. Lass UX den Erstkontakt strikt nach Priorität 1 bis 5 aus dem PM-Handoff ausarbeiten.
 3. Plane mit QA einen Abnahmelauf, der je Frage Erwartungsliste, Treffer und Fallback separat dokumentiert.
 4. Prüfe vor Umsetzung, dass P0-Stories keinen impliziten P1-Detailumfang enthalten.
+5. Synchronisiere bei jeder künftigen Epic-Statusänderung die Epic-Tabelle in `backlog/progress.md` im selben Run.
+6. Kläre mit dem Orchestrator einen erlaubten Run zur Aktualisierung von `.codex/agents/pm.toml`, damit Epic-Status dort technisch verpflichtend wird.

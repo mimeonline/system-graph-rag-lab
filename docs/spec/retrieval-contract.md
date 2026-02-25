@@ -56,6 +56,12 @@
 }
 ```
 
+## API State Mapping Regel
+1. `meta.retrievedNodeCount` im API Success Response ist identisch zu `retrieval.selectedCount`.
+2. `state="empty"` ist genau dann erlaubt, wenn `retrieval.selectedCount=0` und `evidence` leer ist.
+3. `state="answer"` ist genau dann erlaubt, wenn `retrieval.selectedCount>=1` und mindestens ein Evidenzknoten vorliegt.
+4. API `references` werden aus der stabil sortierten Evidence Liste abgeleitet und auf maximal 3 Einträge begrenzt.
+
 ## Retrieval Ablauf
 1. Berechne Query Embedding.
 2. Hole TopK Seeds aus Neo4j Vektorindex über `Concept` und `Problem`.
@@ -117,6 +123,8 @@
 1. Local Profil nutzt dieselben Node Types, Relationstypen, Constraints und Vektorindex Vorgaben wie public.
 2. Local Profil gilt nur dann als reproduzierbar, wenn die lokale Datenbasis gegenüber dem Referenzsnapshot nicht driftet.
 3. Unterschiede zwischen Neo4j Aura und Neo4j Docker dürfen den Retrieval Contract nicht verändern.
+4. Local Neo4j Docker Image ist für MVP auf `neo4j:5.26.0` gepinnt.
+5. Ein Versionswechsel des lokalen Neo4j Images ist nur mit ADR Update und erneuter Determinismusprüfung zulässig.
 
 ## Testkriterien für QA
 1. Gleiches Query Input auf gleichem Graph liefert identische `evidence.rank` Reihenfolge.

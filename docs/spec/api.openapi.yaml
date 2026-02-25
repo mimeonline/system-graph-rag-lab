@@ -187,6 +187,10 @@ components:
           maxLength: 64
           description: Optional client correlation id.
     QuerySuccessResponse:
+      oneOf:
+        - $ref: '#/components/schemas/QueryAnswerSuccessResponse'
+        - $ref: '#/components/schemas/QueryEmptySuccessResponse'
+    QueryAnswerSuccessResponse:
       type: object
       additionalProperties: false
       required:
@@ -202,9 +206,7 @@ components:
           const: ok
         state:
           type: string
-          enum:
-            - answer
-            - empty
+          const: answer
         requestId:
           type: string
           format: uuid
@@ -212,11 +214,53 @@ components:
           $ref: '#/components/schemas/AnswerObject'
         references:
           type: array
+          minItems: 1
           maxItems: 3
           items:
             $ref: '#/components/schemas/ReferenceObject'
         meta:
-          $ref: '#/components/schemas/SuccessMeta'
+          allOf:
+            - $ref: '#/components/schemas/SuccessMeta'
+            - type: object
+              properties:
+                retrievedNodeCount:
+                  type: integer
+                  minimum: 1
+    QueryEmptySuccessResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - status
+        - state
+        - requestId
+        - answer
+        - references
+        - meta
+      properties:
+        status:
+          type: string
+          const: ok
+        state:
+          type: string
+          const: empty
+        requestId:
+          type: string
+          format: uuid
+        answer:
+          $ref: '#/components/schemas/AnswerObject'
+        references:
+          type: array
+          maxItems: 0
+          items:
+            $ref: '#/components/schemas/ReferenceObject'
+        meta:
+          allOf:
+            - $ref: '#/components/schemas/SuccessMeta'
+            - type: object
+              properties:
+                retrievedNodeCount:
+                  type: integer
+                  const: 0
     AnswerObject:
       type: object
       additionalProperties: false
@@ -226,8 +270,10 @@ components:
       properties:
         main:
           type: string
+          minLength: 1
         coreRationale:
           type: string
+          minLength: 1
     ReferenceObject:
       type: object
       additionalProperties: false

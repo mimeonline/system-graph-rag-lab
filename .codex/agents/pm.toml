@@ -61,7 +61,7 @@ SCHREIBBEREICH STRICT WRITE PATHS
 Erlaubt:
 - docs/discovery/**
 - backlog/**
-- handoff/pm-to-ux.md
+- docs/handoff/pm-to-ux.md
 - docs/memory/pm.md
 
 Alles andere ist verboten.
@@ -82,7 +82,7 @@ Nutze nur diese Zielpfade:
 3. Epics: backlog/epics/*.md
 4. Stories: backlog/stories/*.md
 5. Progress Übersicht: backlog/progress.md
-6. Handoff: handoff/pm-to-ux.md
+6. Handoff: docs/handoff/pm-to-ux.md
 7. Memory: docs/memory/pm.md
 
 Keine alternativen Sammeldateien neu anlegen.
@@ -115,6 +115,22 @@ Scope in docs/discovery/scope-mvp.md enthält:
 Backlog Struktur:
 - Epics in backlog/epics/*.md
 - Stories in backlog/stories/*.md
+
+EPIC TEMPLATE VERBINDLICH
+Jede Epic-Datei enthält mindestens:
+- ## Status
+- ## Ziel
+- ## Scope
+- ## Abgrenzung
+- ## Stories
+
+Pflicht im Inhalt:
+- ## Status muss genau einen Wert aus dieser Menge enthalten:
+  - todo
+  - in_progress
+  - qa
+  - accepted
+  - blocked
 
 STORY TEMPLATE VERBINDLICH
 Jede Story-Datei enthält exakt diese H2-Abschnitte in dieser Reihenfolge:
@@ -161,8 +177,14 @@ Pflichtinhalt:
   - Titel
   - Status
   - Letztes Update
+- Eine zweite Tabelle mit mindestens:
+  - Epic-Datei oder Epic-ID
+  - Titel
+  - Status
+  - Letztes Update
 - Status in backlog/progress.md muss mit dem Status der jeweiligen Story-Datei übereinstimmen.
-- Bei jeder Statusänderung an einer Story muss backlog/progress.md im selben Run mit aktualisiert werden.
+- Status in backlog/progress.md muss mit dem Status der jeweiligen Epic-Datei übereinstimmen.
+- Bei jeder Statusänderung an einer Story oder einem Epic muss backlog/progress.md im selben Run mit aktualisiert werden.
 
 STORY ABSCHLUSS UND PM FREIGABE
 - Nach jedem Story-Finish durch Dev müssen Story-Datei und backlog/progress.md bereits aktualisiert sein.
@@ -176,7 +198,7 @@ EPIC GATE TAKTUNG
 - PM darf ein Epic erst als abgeschlossen markieren, wenn Security und DevOps Gate für dieses Epic dokumentiert sind.
 - Vor Public Demo oder Release ist ein zusätzlicher vollständiger Gate-Run mit QA, Security und DevOps verpflichtend.
 
-Handoff in handoff/pm-to-ux.md enthält:
+Handoff in docs/handoff/pm-to-ux.md enthält:
 - MVP Kern
 - Harte Prioritätenreihenfolge Erstkontakt
 - Top 3 User Journeys
@@ -208,6 +230,7 @@ Beende jeden Run mit:
    - Memory aktualisiert
    - Nur erlaubte Pfade geändert
    - H1 Regel eingehalten
+   - Epic Template eingehalten
    - Story Template eingehalten
    - Progress Übersicht aktualisiert und mit Story-Status konsistent
    - accepted nur nach PM Review und PM OK gesetzt

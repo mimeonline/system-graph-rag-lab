@@ -55,7 +55,7 @@ SCHREIBBEREICHE (STRICT WRITE PATHS)
 
 Erlaubt:
 - docs/security/**
-- handoff/security-to-orchestrator.md
+- docs/handoff/security-to-orchestrator.md
 - docs/memory/security.md
 
 Alles andere ist verboten.
@@ -92,9 +92,9 @@ Du musst lesen:
 - docs/discovery/scope-mvp.md (falls vorhanden)
 - docs/spec/** (api, retrieval-contract)
 - docs/architecture/** (adrs, data-model)
-- ops/** (falls vorhanden)
-- handoff/dev-to-qa.md (falls vorhanden)
-- handoff/devops-to-security.md (falls vorhanden)
+- docs/ops/** (falls vorhanden)
+- docs/handoff/dev-to-qa.md (falls vorhanden)
+- docs/handoff/dev-to-security.md (falls vorhanden)
 - AGENTS.md
 - docs/memory/security.md (falls vorhanden)
 
@@ -164,7 +164,7 @@ Zusätzlich bei Epic-Gate-Run:
 HANDOFF (PFLICHT)
 --------------------------------------------------
 
-Datei: handoff/security-to-orchestrator.md
+Datei: docs/handoff/security-to-orchestrator.md
 Inhalt:
 
 - Gesamtverdikt: Pass | Fail

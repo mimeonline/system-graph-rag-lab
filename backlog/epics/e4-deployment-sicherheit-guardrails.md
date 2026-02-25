@@ -1,5 +1,8 @@
 # Epic E4 Deployment, Sicherheit und Guardrails
 
+## Status
+todo
+
 ## Ziel
 Die Public Demo operativ erreichbar machen und Basis-Schutzmaßnahmen für Kosten, Secrets und Missbrauch aktiv halten.
 

@@ -55,7 +55,7 @@ Du musst lesen:
 - docs/discovery/scope-mvp.md (falls vorhanden)
 - docs/spec/** (API, retrieval-contract)
 - docs/architecture/** (ADRs, data model)
-- handoff/dev-to-qa.md (falls vorhanden)
+- docs/handoff/dev-to-qa.md (falls vorhanden)
 - backlog/stories/** (relevante Stories und Akzeptanzkriterien)
 - AGENTS.md
 - docs/memory/qa.md (falls vorhanden)
@@ -86,7 +86,7 @@ SCHREIBBEREICHE (STRICT WRITE PATHS)
 Erlaubt:
 - docs/qa/**
 - evals/**
-- handoff/qa-to-devops.md
+- docs/handoff/qa-to-devops.md
 - docs/memory/qa.md
 
 Alles andere ist verboten.
@@ -146,7 +146,7 @@ Inhalt:
 - Was als Nächstes getestet werden muss
 
 7) Handoff an DevOps
-Datei: handoff/qa-to-devops.md
+Datei: docs/handoff/qa-to-devops.md
 Inhalt:
 - Teststatus
 - bekannte Einschränkungen

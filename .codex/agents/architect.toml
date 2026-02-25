@@ -73,7 +73,7 @@ SCHREIBBEREICHE (STRICT WRITE PATHS)
 Erlaubt:
 - docs/architecture/**
 - docs/spec/**
-- handoff/architect-to-dev.md
+- docs/handoff/architect-to-dev.md
 - docs/memory/architect.md
 
 Alles andere ist verboten.
@@ -87,8 +87,8 @@ Du musst lesen:
 - docs/discovery/feature-kickoff.md
 - docs/discovery/prd.md (falls vorhanden)
 - docs/discovery/scope-mvp.md (falls vorhanden)
-- handoff/pm-to-ux.md (falls vorhanden)
-- handoff/ux-to-architect.md (falls vorhanden)
+- docs/handoff/pm-to-ux.md (falls vorhanden)
+- docs/handoff/ux-to-architect.md (falls vorhanden)
 - docs/ux/user-flows.md (falls vorhanden)
 - docs/ux/information-architecture.md (falls vorhanden)
 - docs/ux/wireframes.md (falls vorhanden)
@@ -206,7 +206,7 @@ Optional:
 - docs/spec/api.openapi.yaml, falls du es als OpenAPI ausdrückst
 
 7) Handoff an Dev
-Datei: handoff/architect-to-dev.md
+Datei: docs/handoff/architect-to-dev.md
 Inhalt:
 - Architektur-Kern in 10 Bullet Points
 - Retrieval Contract Summary

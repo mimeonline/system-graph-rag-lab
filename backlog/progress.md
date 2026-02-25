@@ -9,7 +9,16 @@
 | `accepted` | Durch PM final freigegeben |
 | `blocked` | Bearbeitung blockiert |
 
-## Übersicht
+## Epic Übersicht
+| Epic-Datei | Titel | Status | Letztes Update |
+| --- | --- | --- | --- |
+| `e1-wissensmodell-seed-daten.md` | Epic E1 Wissensmodell und Seed-Daten | `todo` | 2026-02-25 |
+| `e2-retrieval-antwortpipeline.md` | Epic E2 Retrieval und Antwortpipeline | `todo` | 2026-02-25 |
+| `e3-frontend-nutzerfuehrung.md` | Epic E3 MVP-Frontend und Nutzerführung | `todo` | 2026-02-25 |
+| `e4-deployment-sicherheit-guardrails.md` | Epic E4 Deployment, Sicherheit und Guardrails | `todo` | 2026-02-25 |
+| `e5-qualitaetssicherung-abnahme.md` | Epic E5 Qualitätssicherung und MVP-Abnahme | `todo` | 2026-02-25 |
+
+## Story Übersicht
 | Story-Datei | Titel | Status | Letztes Update |
 | --- | --- | --- | --- |
 | `e1-s1-ontologie-fachlich-definieren.md` | E1-S1 Ontologie fachlich definieren | `todo` | 2026-02-25 |

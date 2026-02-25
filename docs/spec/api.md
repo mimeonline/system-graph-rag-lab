@@ -16,6 +16,16 @@
 2. Profil `local` nutzt `.env.local`, optional `.env` als Fallback.
 3. Profil `public` nutzt ausschließlich Vercel Environment Variables.
 4. `.env` und `.env.local` sind nicht versioniert und dürfen keine Repository Artefakte werden.
+5. `OPENAI_MODEL` ist in beiden Profilen eine Pflichtvariable.
+6. Der MVP Defaultwert für `OPENAI_MODEL` ist `gpt-5-mini` und wird in der Environment Konfiguration gesetzt.
+7. Modellnamen dürfen im Anwendungscode nicht hartkodiert sein; der OpenAI Aufruf nutzt ausschließlich `process.env.OPENAI_MODEL`.
+8. Fehlt `OPENAI_MODEL` oder ist die Variable leer, muss die API mit `500 INTERNAL_ERROR` fehlschlagen.
+
+## TypeScript Strictness Default
+1. Für das MVP ist `tsconfig` mit `strict=true` verbindlich.
+2. Globale oder partielle Abschwächungen von `strict` sind im MVP nicht zulässig.
+3. Route Handler, Retrieval Module und gemeinsame API Typen müssen unter `strict=true` kompilieren.
+4. Verifikation erfolgt über einen erfolgreichen TypeScript Check ohne Emit.
 
 ## Endpoint
 1. Methode: `POST`
@@ -79,8 +89,10 @@
 2. `references` enthält höchstens 3 Einträge für die UI Hauptfläche.
 3. `meta.topK`, `meta.hopDepth` und `meta.contextTokens` müssen dem Retrieval Lauf entsprechen.
 4. `state` ist entweder `answer` oder `empty`.
-5. Bei `state="empty"` enthält `references` eine leere Liste.
-6. Header `X-Request-Id` ist identisch zu `requestId` im Body.
+5. `state="empty"` gilt genau dann, wenn `meta.retrievedNodeCount=0` und `references=[]`.
+6. `state="answer"` gilt genau dann, wenn `meta.retrievedNodeCount>=1` und `references` zwischen 1 und 3 Elemente enthält.
+7. `answer.main` und `answer.coreRationale` sind in beiden States nicht leer.
+8. Header `X-Request-Id` ist identisch zu `requestId` im Body.
 
 ## Error Schema
 ```json
@@ -146,9 +158,11 @@
 
 ## Mapping UI Zustände
 1. Loading: aktiv zwischen Request Start und finaler Response.
-2. Empty: `status="ok"` und `answer.main` enthält den Fallback Hinweis bei zu geringer Evidenz.
-3. Error: `status="error"` mit Code außer `RATE_LIMIT`.
-4. Rate Limit: `status="error"` mit Code `RATE_LIMIT`.
+2. Answer: `status="ok"` und `state="answer"`.
+3. Empty: `status="ok"` und `state="empty"`.
+4. Schwache Evidenz bleibt `Answer`, solange `meta.retrievedNodeCount>=1`.
+5. Error: `status="error"` mit Code außer `RATE_LIMIT`.
+6. Rate Limit: `status="error"` mit Code `RATE_LIMIT`.
 
 ## Lokale Betriebsannahmen
 1. Lokale API Basis ist `http://localhost:3000`.
@@ -156,3 +170,5 @@
 3. Für End to End Antwortgenerierung bleibt `OPENAI_API_KEY` erforderlich.
 4. Die API darf lokal ohne Vercel KV Credentials startbar sein.
 5. Lokale Secrets und Keys werden aus `.env.local` geladen, optional aus `.env`.
+6. Lokaler Default für `OPENAI_MODEL` ist `gpt-5-mini` über `.env.local` oder `.env`.
+7. Local Neo4j Docker Image wird auf `neo4j:5.26.0` gepinnt.

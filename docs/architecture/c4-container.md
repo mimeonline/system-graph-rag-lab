@@ -19,6 +19,8 @@
 8. Rate Limit Stack: Vercel KV als zentraler Fixed Window Counter.
 9. Logging Stack: `console` als strukturierte JSON Events in Vercel Runtime Logs.
 10. Secret und Key Konfiguration erfolgt über Runtime Environment Variables, lokal über `.env.local` oder `.env` und public über Vercel Environment Variables.
+11. TypeScript Compiler läuft im MVP verbindlich mit `strict=true`.
+12. OpenAI Modellauswahl kommt ausschließlich aus `OPENAI_MODEL` mit Environment Default `gpt-5-mini`.
 
 ## Containerdetails
 ### Web UI
@@ -36,6 +38,8 @@
 7. Ruft OpenAI API auf und mapped Ergebnis in Response Schema.
 8. Schreibt minimale Observability Felder in strukturierte Logs.
 9. Liest Secrets und Keys nur aus Environment Variables und nicht aus versionierten Dateien.
+10. Verwendet kein hartkodiertes OpenAI Modell im Code.
+11. Setzt `state="empty"` nur bei `retrievedNodeCount=0` und leerer Referenzliste.
 
 ### Neo4j Aura
 1. Hält Node Types `Concept`, `Author`, `Book`, `Problem`.

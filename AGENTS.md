@@ -62,8 +62,8 @@ Regeln:
 - Architektur: `docs/architecture/**`, `docs/spec/**`
 - Backlog: `backlog/**`
 - QA: `docs/qa/**`, `evals/**`
-- Betrieb: `ops/**`
-- Handoffs: `handoff/**`
+- Betrieb: `docs/ops/**`
+- Handoffs: `docs/handoff/**`
 - Memory: `docs/memory/**`
 
 Entscheidungen müssen in Dateien dokumentiert werden.

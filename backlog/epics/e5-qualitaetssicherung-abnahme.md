@@ -1,5 +1,8 @@
 # Epic E5 Qualitätssicherung und MVP-Abnahme
 
+## Status
+todo
+
 ## Ziel
 Ein verbindliches Eval-Set und einen nachvollziehbaren Abnahmelauf für den MVP sicherstellen.
 

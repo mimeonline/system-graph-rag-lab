@@ -23,6 +23,7 @@
 2. UI Stack bleibt auf Tailwind CSS und shadcn/ui festgelegt.
 3. UI Architekturpattern bleibt Atomic Design.
 4. API Grenze bleibt der Route Handler `POST /api/query` ohne separaten Service.
+5. TypeScript Compiler Strictness bleibt verbindlich auf `strict=true`.
 
 ## Lauforte und Verantwortungen
 ### Public Client Runtime
@@ -72,6 +73,8 @@
 6. `RATE_LIMIT_MAX_REQUESTS`
 7. `RATE_LIMIT_WINDOW_SECONDS`
 8. `RATE_LIMIT_IP_SALT`
+9. Defaultwert für `OPENAI_MODEL` ist `gpt-5-mini` und wird in Environment Konfiguration gesetzt.
+10. Im Anwendungscode ist kein hartkodierter Modellname zulässig.
 
 ### Public Profil zusätzliche Variablen
 1. `KV_REST_API_URL`
@@ -84,6 +87,8 @@
 4. `RATE_LIMIT_MAX_REQUESTS` und `RATE_LIMIT_WINDOW_SECONDS` bleiben auf denselben Werten wie public.
 5. Variablen werden lokal aus `.env.local` geladen, optional aus `.env` als Fallback.
 6. `.env` und `.env.local` werden nicht versioniert und nicht im Repository geteilt.
+7. `OPENAI_MODEL` wird lokal explizit gesetzt und auf `gpt-5-mini` vorbelegt.
+8. `NEO4J_DOCKER_IMAGE` wird lokal auf `neo4j:5.26.0` gepinnt.
 
 ## Deterministische Reproduzierbarkeit local
 1. Portbelegung ist fest: Next.js `3000`, Neo4j HTTP `7474`, Neo4j Bolt `7687`.
@@ -91,6 +96,7 @@
 3. Lokale Graphdatenbasis folgt identischem Datenmodell wie `docs/architecture/data-model.md`.
 4. Lokale Rate Limit Grenzen sind identisch zu public: `10` pro `60` Sekunden.
 5. Abweichungen vom Local Profil müssen als ADR oder Handoff Update dokumentiert werden.
+6. Für lokale Starts ist ausschließlich das gepinnte Image `neo4j:5.26.0` zulässig.
 
 ## Netz und Security Guardrails MVP
 1. Transport erfolgt über TLS im Public Profil.
@@ -110,7 +116,7 @@
 4. Nach Deploy wird ein Smoke Test über `POST /api/query` gegen die Public URL ausgeführt.
 
 ### Local Startablauf
-1. Lokalen Neo4j Docker Container starten und Erreichbarkeit auf Port `7687` prüfen.
+1. Neo4j Docker Image `neo4j:5.26.0` verwenden und Container starten, danach Erreichbarkeit auf Port `7687` prüfen.
 2. Local Environment Profil über `.env.local` setzen, optional mit `.env` als Fallback.
 3. Next.js lokal starten und Erreichbarkeit von `http://localhost:3000` prüfen.
 4. Smoke Test über `POST /api/query` gegen localhost ausführen.

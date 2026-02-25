@@ -35,11 +35,13 @@ flowchart LR
 ## Lösungsstrategie
 1. Eine monolithische Laufzeiteinheit auf Next.js reduziert Integrationsaufwand zwischen UI und API.
 2. Tech Stack ist verbindlich auf Next.js `16.1.6` mit TypeScript, Tailwind CSS, shadcn/ui und Atomic Design festgelegt.
-3. Retrieval läuft kontraktbasiert mit festen Parametern `TopK=6`, `HopDepth=1`, `ContextBudget=1400`.
-4. Kontextaufbau ist deterministisch durch feste Sortierung, Dedupe pro `nodeId` und harte Budgetregeln.
-5. Antwortaufbau trennt Hauptantwort, Kernnachweis und Referenzen für klare QA Prüfbarkeit.
-6. Betriebsfähigkeit wird durch minimale Guardrails abgesichert: Rate Limit, strukturierte Logs, standardisierte Fehlercodes.
-7. Runtime Unterschiede zwischen `public` und `local` sind explizit dokumentiert, Contracts bleiben identisch.
+3. TypeScript läuft verbindlich mit `strict=true` als MVP Default.
+4. Retrieval läuft kontraktbasiert mit festen Parametern `TopK=6`, `HopDepth=1`, `ContextBudget=1400`.
+5. Kontextaufbau ist deterministisch durch feste Sortierung, Dedupe pro `nodeId` und harte Budgetregeln.
+6. Antwortaufbau trennt Hauptantwort, Kernnachweis und Referenzen für klare QA Prüfbarkeit.
+7. Betriebsfähigkeit wird durch minimale Guardrails abgesichert: Rate Limit, strukturierte Logs, standardisierte Fehlercodes.
+8. Runtime Unterschiede zwischen `public` und `local` sind explizit dokumentiert, Contracts bleiben identisch.
+9. OpenAI Modellwahl ist Environment gesteuert mit Default `gpt-5-mini` ohne Modell Hardcode im Code.
 
 ## Laufzeitprofile
 ### Profil public
@@ -171,6 +173,11 @@ sequenceDiagram
 2. Fehlerantworten folgen einem einheitlichen Schema mit `requestId`, `error.code`, `error.message`, `retryable`.
 3. `requestId` wird zusätzlich im Header `X-Request-Id` gespiegelt.
 
+### API State Mapping
+1. `state=empty` gilt nur bei `retrievedNodeCount=0` und leerer Referenzliste.
+2. `state=answer` gilt bei `retrievedNodeCount>=1` und mindestens einer Referenz.
+3. Schwache Evidenz wird nicht als `empty` gemappt.
+
 ## Architekturentscheidungen mit ADR Referenzen
 1. Deployment und Zielplattform sind in [ADR-0001](./adr/adr-0001.md) festgelegt.
 2. Retrieval Parameter, Budget und Sortierung sind in [ADR-0002](./adr/adr-0002.md) festgelegt.
@@ -182,6 +189,4 @@ sequenceDiagram
 ## Risiken und offene Punkte
 1. Paritätsabweichungen zwischen Neo4j Docker local und Neo4j Aura public können Retrieval Unterschiede erzeugen.
 2. OpenAI API bleibt externe Abhängigkeit für End to End Antwortgenerierung.
-3. Die technische Trennregel zwischen `state=empty` und schwacher Evidenz muss in Dev Implementierung exakt festgelegt werden.
-4. Modellfixierung und `max_tokens` für Antwortgenerierung sind noch nicht als finale Laufzeitkonfiguration abgeschlossen.
-5. Ein verbindliches CI Gate für Konsistenz zwischen `docs/spec/api.md` und `docs/spec/api.openapi.yaml` fehlt noch.
+3. Ein verbindliches CI Gate für Konsistenz zwischen `docs/spec/api.md` und `docs/spec/api.openapi.yaml` fehlt noch.

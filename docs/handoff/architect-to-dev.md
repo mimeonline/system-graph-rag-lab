@@ -1,6 +1,6 @@
 # Architect to Dev Handoff Public MVP
 
-## Architektur Kern in 12 Punkten
+## Architektur Kern in 10 Punkten
 1. Public Runtime bleibt unverändert auf Vercel plus Neo4j Aura plus Vercel KV.
 2. Local Dev ist ein eigenes Laufzeitprofil mit Next.js lokal und Neo4j Docker.
 3. API Grenze bleibt in beiden Profilen identisch auf `POST /api/query` als Next.js Route Handler.
@@ -8,11 +8,9 @@
 5. Retrieval Contract bleibt strikt deterministisch und profilunabhängig.
 6. Seed Retrieval nutzt `TopK=6` über Vektorindex auf `Concept` und `Problem`.
 7. Graph Expansion nutzt `HopDepth=1` und nur erlaubte Relationstypen.
-8. Kontextbudget ist hart auf `1400` Tokens begrenzt.
-9. Fehlercodes, Header Contract und Observability Pflichtfelder bleiben in beiden Profilen identisch.
-10. Rate Limit Store ist profilabhängig, Contractverhalten bleibt identisch: `public` Vercel KV, `local` prozesslokaler Fixed Window Store.
-11. Next.js Implementierung ist verbindlich TypeScript, inklusive API Route Handler.
-12. Secrets und Keys liegen nur in Runtime Environment Variables, lokal aus `.env.local` oder `.env`, public aus Vercel Environment Variables.
+8. Kontextbudget ist hart auf `1400` Tokens begrenzt und Empty Mapping ist strikt über `retrievedNodeCount` geregelt.
+9. Next.js Implementierung ist verbindlich TypeScript mit `strict=true` als Default.
+10. OpenAI Modell wird nur über `OPENAI_MODEL` konfiguriert, Default `gpt-5-mini`, ohne Hardcode im Code.
 
 ## Trennung Local Dev und Public Runtime
 1. Public Runtime ist das alleinige Produktionsziel.
@@ -25,16 +23,19 @@
 2. Reihenfolge ist deterministisch: `score DESC`, `hop ASC`, `nodeType ASC`, `nodeId ASC`.
 3. Tokenbudget erzwingt Truncate und bei Bedarf Drop der niedrigsten Ränge.
 4. Gleicher Input und gleicher Graph müssen identisches Evidence Ranking liefern.
+5. API Mapping ist fix: `state=empty` nur bei `selectedCount=0`, sonst `state=answer`.
 
 ## API Contract Summary
 1. Route ist `POST /api/query` im selben Deploy wie die Web UI.
 2. Request Pflichtfeld ist `query`, Länge 5 bis 500 Zeichen.
 3. Erfolgsresponse liefert `status`, `requestId`, `answer`, `references`, `meta`.
-4. `references` ist auf drei Elemente für die Hauptfläche begrenzt.
-5. Fehlerresponse liefert `status`, `requestId`, `error`, `meta`.
-6. `429 RATE_LIMIT` enthält `Retry-After` Header und `retryAfterSeconds` im Body mit identischem ganzzahligen Wert.
-7. Header `X-Request-Id` muss auf `requestId` gemappt sein.
-8. Observability Pflichtfelder im Abschluss Event sind `requestId`, `route`, `method`, `statusCode`, `latencyMs`, `topK`, `hopDepth`, `retrievedNodeCount`, `contextTokens`, `rateLimitTriggered`, `errorCode`.
+4. `state=empty` ist nur erlaubt bei `meta.retrievedNodeCount=0` und `references=[]`.
+5. `state=answer` ist nur erlaubt bei `meta.retrievedNodeCount>=1` und `references` zwischen 1 und 3.
+6. Fehlerresponse liefert `status`, `requestId`, `error`, `meta`.
+7. `429 RATE_LIMIT` enthält `Retry-After` Header und `retryAfterSeconds` im Body mit identischem ganzzahligen Wert.
+8. Header `X-Request-Id` muss auf `requestId` gemappt sein.
+9. Observability Pflichtfelder im Abschluss Event sind `requestId`, `route`, `method`, `statusCode`, `latencyMs`, `topK`, `hopDepth`, `retrievedNodeCount`, `contextTokens`, `rateLimitTriggered`, `errorCode`.
+10. `OPENAI_MODEL` ist Pflichtvariable mit Environment Default `gpt-5-mini`.
 
 ## Deterministischer Local Dev Setup Contract
 1. Local URL ist fix `http://localhost:3000`.
@@ -48,6 +49,8 @@
 9. Abschlussbedingung local: Contractkonforme Response plus genau ein strukturiertes Abschluss Event pro Request.
 10. Local Config wird über `.env.local` gesetzt, optional `.env` als Fallback.
 11. `.env` und `.env.local` werden nicht versioniert.
+12. Local Neo4j Docker Image ist fest auf `neo4j:5.26.0` gepinnt.
+13. Image Tag `latest` ist unzulässig.
 
 ## Implementierungsreihenfolge
 1. Laufzeitprofil Schalter für `public` und `local` mit identischer API Oberfläche umsetzen.
@@ -66,7 +69,7 @@
 6. Beide Profile: Observability Test muss genau ein Abschluss Event je Request und vollständige Pflichtfelder verifizieren.
 
 ## Offene Risiken und technische Fragen
-1. Lokale und öffentliche Neo4j Laufzeit können bei ungepatchten Versionsunterschieden Retrieval Drift erzeugen.
+1. Trotz Pinning kann zwischen Neo4j Docker `5.26.0` local und Aura Runtime weiterhin Retrieval Drift auftreten.
 2. OpenAI API bleibt externe Abhängigkeit für End to End Antwortpfad.
 3. Welche konkrete lokale Datenbefüllung als Referenzsnapshot für deterministische QA Replays genutzt wird.
 4. Wie der Laufzeitprofil Schalter technisch so umgesetzt wird, dass Fehlkonfigurationen früh und eindeutig fehlschlagen.
@@ -78,5 +81,7 @@
 4. Tests sind Pflicht für Determinismus, Fehlercodes, Rate Limit Verhalten und Logfeld Vollständigkeit in beiden Profilen.
 5. Keine Secrets oder Keys im Repository, nur Runtime Environment Variables.
 6. TypeScript ist für Next.js Implementierung verbindlich.
-7. Local Secrets und Keys nur über `.env.local` oder `.env`, niemals als committed Datei.
-8. Public Runtime Ziel bleibt Vercel plus Neo4j Aura.
+7. TypeScript `strict=true` darf nicht deaktiviert werden.
+8. Local Secrets und Keys nur über `.env.local` oder `.env`, niemals als committed Datei.
+9. Public Runtime Ziel bleibt Vercel plus Neo4j Aura.
+10. Kein OpenAI Modellname im Code hardcodieren.
