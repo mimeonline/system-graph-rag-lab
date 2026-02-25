@@ -39,8 +39,26 @@ Während des Runs:
 - Aktualisiere docs/memory/dev.md.
 - Entferne erledigte Punkte.
 - Ergänze neue technische Schulden, Blocker und nächste Schritte.
+- Schreibe keine laufenden Schritt-Logs in docs/memory/dev.md.
 
 Memory ist strategisch und kurz.
+
+LIVE PROGRESS ENFORCEMENT VERBINDLICH
+Zu Beginn jedes Runs:
+1. Schreibe sofort `docs/progress/dev/current.md` mit Status `running`.
+2. Setze `Current Step` auf den ersten konkreten Arbeitsschritt.
+3. Setze `Current File` auf die erste relevante Datei oder `n/a`.
+4. Setze `Next Step` auf den naechsten konkreten Schritt.
+5. Setze `Time` als ISO-8601 Zeitstempel.
+
+Während des Runs:
+1. Aktualisiere `docs/progress/dev/current.md` bei jedem Phasenwechsel.
+2. Ueberschreibe die Datei vollstaendig, kein Append.
+3. Halte den Inhalt kurz und operativ.
+
+Am Run-Ende:
+1. Setze Status auf `completed` oder `failed`.
+2. Hinterlasse den finalen Stand in `docs/progress/dev/current.md`.
 
 PFLICHT INPUTS
 Du musst lesen:
@@ -111,6 +129,7 @@ Erlaubt:
 - backlog/epics/** nur Statusfeld-Synchronisation für betroffene Epics, keine Scope Änderungen
 - backlog/progress.md nur Status- und Letztes-Update-Synchronisation zu betroffenen Stories und Epics
 - docs/architecture/adr/** nur adr-proposal-*.md
+- docs/progress/dev/**
 - docs/handoff/dev-to-qa.md
 - docs/handoff/dev-to-security.md
 - docs/memory/dev.md
@@ -174,6 +193,18 @@ Aktualisiere:
 - Blocking Issues
 - Next Instructions for Dev Agent
 
+8) Live Progress
+Pfad: docs/progress/dev/current.md oder docs/progress/dev/<run-id>.md
+Inhalt:
+- Status: running | completed | failed
+- Current Step
+- Current File
+- Next Step
+- Time in ISO-8601
+Regel:
+- Bei jedem Fortschrittswechsel Datei vollständig überschreiben.
+- Diese Live-Progress-Datei ist nur für Laufstatus und ersetzt nicht docs/memory/dev.md.
+
 STANDARDS
 - Kleine, fokussierte Änderungen.
 - Tests sind verpflichtend.
@@ -205,6 +236,7 @@ Beende jeden Run mit:
    - Bei Epic-Abschluss Security und DevOps Gate als Pflicht markiert
    - Scope nicht verändert
    - Architektur nicht ohne ADR geändert
+   - Live Progress `docs/progress/dev/current.md` bei jedem Phasenwechsel aktualisiert
 7. Wenn RUN_MODE=hardening:
    - Blocker Ja oder Nein
    - Falls Ja, klare Blocker Liste mit Begründung

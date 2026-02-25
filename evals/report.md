@@ -1,31 +1,31 @@
-# Eval Report MVP Bootstrap Template
+# Eval Report MVP
 
 ## Laufmetadaten
-1. Datum: 2026-02-25
-2. Commit Kurz: `614c4f6`
-3. Commit Voll: `614c4f61f5918896acffb5f0e7695a1b2e54e7c2`
-4. Umgebung: bootstrap-template
-5. Ausfuehrender QA Run: RUN_MODE=bootstrap
+1. Datum: 2026-02-25.
+2. Commit Kurz: `27da9e5`.
+3. Commit Voll: `27da9e591e911775d21b943db2b7706305804dd6`.
+4. Umgebung: review-story-e1-s1-local.
+5. Ausfuehrender QA Run: RUN_MODE=review.
 
 ## Ergebnisse je Frage
 | Frage | Ergebnis | Evidenz | Hinweis |
 | --- | --- | --- | --- |
-| Q1 | Fail | offen | Bootstrap-Template, noch kein Ausfuehrungslauf |
-| Q2 | Fail | offen | Bootstrap-Template, noch kein Ausfuehrungslauf |
-| Q3 | Fail | offen | Bootstrap-Template, noch kein Ausfuehrungslauf |
-| Q4 | Fail | offen | Bootstrap-Template, noch kein Ausfuehrungslauf |
-| Q5 | Fail | offen | Bootstrap-Template, noch kein Ausfuehrungslauf |
+| Q1 | Fail | nicht ausgefuehrt | Story-Run E1-S1 ohne End-to-End-Eval |
+| Q2 | Fail | nicht ausgefuehrt | Story-Run E1-S1 ohne End-to-End-Eval |
+| Q3 | Fail | nicht ausgefuehrt | Story-Run E1-S1 ohne End-to-End-Eval |
+| Q4 | Fail | nicht ausgefuehrt | Story-Run E1-S1 ohne End-to-End-Eval |
+| Q5 | Fail | nicht ausgefuehrt | Story-Run E1-S1 ohne End-to-End-Eval |
 
 ## Qualitaetsbeobachtungen
 ### Halluzinationen
-1. Nicht bewertet im Bootstrap, da kein End-to-End Eval-Lauf ausgefuehrt wurde.
+1. Nicht bewertet, da kein End-to-End-Eval-Requestlauf ausgefuehrt wurde.
 
 ### Fehlende Referenzen
-1. Nicht bewertet im Bootstrap, da kein End-to-End Eval-Lauf ausgefuehrt wurde.
+1. Nicht bewertet, da keine Antwortlaeufe fuer Eval-Fragen ausgefuehrt wurden.
 
 ### Latenz
-1. Nicht bewertet im Bootstrap, da kein End-to-End Eval-Lauf ausgefuehrt wurde.
+1. Nicht bewertet, da keine Eval-Fragen gegen Runtime ausgefuehrt wurden.
 
 ## Zusammenfassung und Empfehlung
-1. Gesamtstatus: Fail.
-2. Empfehlung: Erst nach Story-Gate fuer aktive Story und einem reproduzierbaren Eval-Lauf neu bewerten.
+1. Gesamtstatus fuer Eval-Set: Fail.
+2. Empfehlung: Vor Epic-Gate E5 einen vollstaendigen Eval-Lauf mit fuenf Fragen ausfuehren und je Frage Evidenz dokumentieren.

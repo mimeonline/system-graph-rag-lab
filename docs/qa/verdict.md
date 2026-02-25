@@ -1,22 +1,34 @@
-# QA Gate Verdict Bootstrap
+# QA Gate Verdict E1-S1
 
 ## Ergebnis
-1. Verdict: Fail.
+1. Verdict: Pass.
 2. Gate-Typ: Story QA Gate.
-3. Bewertungsdatum: 2026-02-25.
+3. Story-ID: E1-S1.
+4. Epic-ID: E1.
+5. Bewertungsdatum: 2026-02-25.
+
+## Szenario-Pruefung Given When Then
+1. Given: ein leeres Wissensmodell.
+2. When: die Ontologie dokumentiert wird.
+3. Then: die Typen `Concept`, `Author`, `Book`, `Problem` und ihre erlaubten Beziehungen sind klar beschrieben.
+4. Ergebnis: Pass durch konsistente Evidenz in `apps/web/src/features/ontology/ontology.ts`, `apps/web/src/features/ontology/README.md` und gruenen Unit-Tests.
+
+## Ausgefuehrte QA-Checks
+1. `pnpm test` in `apps/web` mit Ergebnis Pass.
+2. `pnpm lint` in `apps/web` mit Ergebnis Pass.
+3. `pnpm build` in `apps/web` mit Ergebnis Pass.
+4. Dokumentationsabgleich `apps/web/src/features/ontology/README.md` gegen Story-Anforderungen mit Ergebnis Pass.
 
 ## Merge Block Grund und Fix Requests
-1. Merge Block Grund: Aktuell liegt kein reproduzierbarer QA-Ausfuehrungslauf fuer die Story im Status `qa` vor.
-2. Fix Request 1: Fuer `E1-S1` Testausfuehrung dokumentieren mit Befehlen, Ergebnis und Evidenzpfad.
-3. Fix Request 2: `docs/qa/test-matrix.md` fuer `E1-S1` mit Pass oder Fail markieren.
-4. Fix Request 3: Bei Fail einen Bug-Report mit Repro-Schritten und Expected-versus-Actual erstellen oder aktualisieren.
+1. Kein Merge Block im Scope dieser Story.
+2. Keine Fix Requests fuer E1-S1 offen.
 
 ## Top 3 Risiken
-1. Story-Status `qa` ohne pruefbare Evidenz unterlaeuft den Gate-Mechanismus.
-2. Contract-Drift zwischen Spec und Implementierung bleibt ohne Integrationstest unentdeckt.
-3. Fehlende Early-Warnung fuer Rate-Limit und Error-Code Verhalten kann spaeter Epic-Gates blockieren.
+1. Epic E1 bleibt insgesamt nicht release-bereit, da E1-S2 bis E1-S4 noch `todo` sind.
+2. Daten- und Retrieval-Verhalten ist fuer E1-S1 nicht getestet, da ausserhalb Story-Scope.
+3. End-to-End Eval-Fragen sind fuer diesen Story-Run nicht ausgefuehrt.
 
 ## Naechste Tests
-1. Story-Gate Testlauf fuer `E1-S1` in local inklusive Unit-Lauf und Dokumentationsabgleich.
-2. API Contract Smoke fuer `POST /api/query` mit gueltigem und ungueltigem Request.
-3. Vorbereitung des ersten reproduzierbaren Eval-Laufs gemaess `evals/rubric.md`.
+1. E1-S2 Datenbasis auf Menge, Schema und Pflichtfelder pruefen.
+2. E1-S3 Graph-Lese-Smoke in local und Zielbetrieb ausfuehren.
+3. E1-S4 Qualitaetslauf auf Duplikate und Ontologie-Konformitaet verifizieren.

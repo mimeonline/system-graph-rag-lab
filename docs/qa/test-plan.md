@@ -1,59 +1,42 @@
-# QA Test Plan MVP Bootstrap
-
-## Ziel und Scope
-1. Dieses Dokument definiert die initiale QA-Strategie fuer den MVP-Start.
-2. Scope umfasst die Stories E1 bis E5, API Contract, Retrieval Contract und Betriebs-Guardrails.
-3. Scope umfasst keine Feature-Implementierung und keine Architekturentscheidung.
+# QA Test Plan MVP
 
 ## Teststrategie
-### Unit Tests
-1. Ziel ist schnelle Pruefung von Modulen mit deterministischem Verhalten.
-2. Fokus liegt auf Ontologie-Regeln, Schema-Validierung, Sortierung, Dedupe und Fehlercode-Mapping.
-3. Minimaler Pflichtlauf pro Story ist `pnpm test` im jeweiligen Projektpfad.
+### Unit
+1. Verbindlicher Mindestlauf pro Story ist `pnpm test` im relevanten Projektpfad.
+2. Fokus fuer `E1-S1` liegt auf Vollstaendigkeit der Ontologie-Typen und Relationstabellen.
 
-### Integration Tests
-1. Ziel ist Contract-Treue zwischen Route Handler, Retrieval und Runtime-Konfiguration.
-2. Fokus liegt auf `POST /api/query` Request-Regeln, Success-State-Mapping, Error-Codes und Header-Konsistenz.
-3. Pflichtfaelle enthalten `400`, `429`, `500`, sowie `state=answer` und `state=empty`.
+### Integration
+1. Verbindlicher Story-Check gegen Story-Artefakte und Vertragskontext aus `docs/spec/**` und `docs/architecture/**`.
+2. Fuer `E1-S1` wird geprueft, dass dokumentierte Ontologie-Regeln mit der implementierten Definition konsistent sind.
 
-### E2E Tests Minimal
-1. Ziel ist reproduzierbare End-to-End-Pruefung ueber UI bis API.
-2. Fokus liegt auf Kernfluss, sichtbarer Hauptantwort, Referenzkonzepten, Kernnachweis und Statuszustaenden.
-3. Pflichtlauf enthaelt mindestens zwei Smoke-Fragen lokal und auf Public URL nach Deployment.
+### E2E minimal
+1. E2E ist fuer `E1-S1` nicht gate-kritisch, da Story nur fachliche Ontologie-Definition ohne Runtime-Endpunkt liefert.
+2. E2E bleibt Pflicht fuer spaetere Stories mit Datenzugriff und Antwortpipeline.
 
 ## Testumgebung
-### Local
-1. Next.js lokal auf `http://localhost:3000`.
-2. Neo4j lokal auf `bolt://localhost:7687` mit Docker Image `neo4j:5.26.0`.
-3. Local Rate-Limit Store aktiv mit denselben Grenzwerten wie public.
+### local
+1. Ausfuehrung in `apps/web` mit lokalem Node- und Package-Setup.
+2. QA-Checks in diesem Run: `pnpm test`, `pnpm lint`, `pnpm build`.
 
-### Public Vercel
-1. Runtime auf Vercel mit produktionsnaher Konfiguration.
-2. API-Aufrufe gegen Live-URL fuer Smoke und Fehlerpfade.
-3. Fokus auf Erreichbarkeit, Contract-Treue, Guardrails und Laufzeitverhalten.
+### vercel
+1. Fuer `E1-S1` nicht erforderlich, da keine Public-Runtime-Funktion geliefert wird.
+2. Wird ab Stories mit Runtime-Verhalten verpflichtend.
 
-### Neo4j Aura
-1. Public Graph Backend fuer produktive Retrieval-Pfade.
-2. Stichproben fuer Erreichbarkeit und konsistente Retrieval-Metadaten.
-3. Vertragsrelevante Kennzahlen sind `topK=6`, `hopDepth=1`, `contextTokens<=1400`.
+### aura
+1. Fuer `E1-S1` nicht erforderlich, da keine Datenbankinteraktion im Story-Scope liegt.
+2. Wird ab Seed- und Retrieval-Stories verpflichtend.
 
 ## Testdaten und Seed Voraussetzungen
-1. Ontologie muss die Typen `Concept`, `Author`, `Book`, `Problem` vollstaendig abbilden.
-2. Erlaubte Relationen muessen auf sechs Typen begrenzt sein.
-3. Seed-Datenziel ist mehr als 100 valide Nodes und mehr als 200 valide Edges.
-4. Eval-Sets nutzen fuenf feste Fragen mit erwarteten Referenzkonzepten je Frage.
-5. Fuer Reproduzierbarkeit muessen Datenstand, Runtime-Profil und Commit-Referenz dokumentiert werden.
-
-## Durchfuehrung und Evidenz
-1. Jede Story-Pruefung erzeugt Testeintraege in `docs/qa/test-matrix.md`.
-2. Jedes Fehlverhalten erzeugt einen reproduzierbaren Report in `docs/qa/bugs/bug-xxxx.md`.
-3. Story-Gate wird in `docs/qa/verdict.md` dokumentiert.
-4. Epic-Gate wird in `docs/qa/verdict-epic.md` dokumentiert.
-5. Abnahmelauf wird in `evals/report.md` dokumentiert.
+1. Kein Seed-Datensatz erforderlich fuer `E1-S1`.
+2. Erforderlich sind die vier Node-Typen `Concept`, `Author`, `Book`, `Problem`.
+3. Erforderlich sind die sechs Relationen `WROTE`, `EXPLAINS`, `ADDRESSES`, `RELATES_TO`, `INFLUENCES`, `CONTRASTS_WITH`.
 
 ## Abnahmekriterien
-1. Story-Gate Pass erfordert, dass alle Akzeptanzkriterien der Story reproduzierbar als Pass dokumentiert sind.
-2. Story-Gate Fail gilt, wenn mindestens ein Akzeptanzkriterium fehlt, nicht reproduzierbar ist oder failt.
-3. Epic-Gate Pass erfordert Story-Gates, Security-Gate und DevOps-Gate ohne offene Blocker.
-4. Eval-Gesamtpass erfordert mindestens 4 von 5 Fragen mit Pass gemaess Rubrik.
-5. Bei Eval-Faellen mit verfuegbaren Referenzen gilt als Mindestziel: mindestens 2 relevante Konzepte unter den ersten 3 Referenzen oder klarer Fallback-Hinweis.
+### Story E1-S1 Szenario
+1. Given: ein leeres Wissensmodell.
+2. When: die Ontologie dokumentiert wird.
+3. Then: die Typen `Concept`, `Author`, `Book`, `Problem` und ihre erlaubten Beziehungen sind klar beschrieben.
+
+### Gate-Regel
+1. Story-Gate ist Pass, wenn Szenario, Unit-Checks und Dokumentationsabgleich reproduzierbar bestanden sind.
+2. Story-Gate ist Fail, wenn mindestens ein Akzeptanzkriterium fehlt oder eine Evidenz nicht reproduzierbar ist.

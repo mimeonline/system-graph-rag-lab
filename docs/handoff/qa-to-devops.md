@@ -1,24 +1,21 @@
-# QA to DevOps Handoff Bootstrap
+# QA to DevOps Handoff E1-S1 Review
 
 ## Teststatus
-1. QA-Bootstrap-Artefakte wurden erstellt.
-2. Story-Gate steht aktuell auf Fail, da kein ausgefuehrter Story-QA-Lauf dokumentiert ist.
-3. Epic-Gates stehen auf Fail im Bootstrap-Status.
-4. Eval-Bericht liegt als Template mit initialem Fail-Status vor.
+1. Story `E1-S1` QA-Gate ist Pass.
+2. Ausgefuehrte Commands in `apps/web`: `pnpm test`, `pnpm lint`, `pnpm build`, jeweils Pass.
+3. Epic `E1` bleibt insgesamt auf QA-Gate Fail, da nur `E1-S1` geprueft wurde.
 
 ## Bekannte Einschraenkungen
-1. Keine End-to-End-Messwerte fuer Latenz aus local oder public Lauf vorhanden.
-2. Keine verifizierten Rate-Limit-Messreihen im Bootstrap-Lauf vorhanden.
-3. Kein abgeschlossenes Security-Gate fuer ein Epic verknuepfbar.
+1. Keine E2E- oder Runtime-Lastmessung in diesem Story-Run.
+2. Keine Neo4j Aura oder Vercel Smoke-Checks im Scope von `E1-S1`.
+3. Eval-Set mit fuenf Fragen wurde in diesem Lauf nicht ausgefuehrt.
 
 ## Monitoring Hinweise
-1. Beobachte in Runtime-Logs fruehzeitig `RATE_LIMIT`, `LLM_UPSTREAM_ERROR`, `GRAPH_BACKEND_UNAVAILABLE`, `UPSTREAM_TIMEOUT`.
-2. Pruefe Konsistenz zwischen `Retry-After` Header und `error.retryAfterSeconds` bei 429.
-3. Pruefe `state` Mapping auf Contract-Treue gegen `retrievedNodeCount`.
-4. Ergaenze Alerting fuer signifikante Zunahme von 5xx Fehlern.
+1. Fuer kommende Stories frueh auf `INVALID_REQUEST`, `RATE_LIMIT`, `LLM_UPSTREAM_ERROR`, `GRAPH_BACKEND_UNAVAILABLE`, `UPSTREAM_TIMEOUT` monitoren.
+2. Bei Rate-Limit-Pruefungen Konsistenz zwischen `Retry-After` und `error.retryAfterSeconds` sicherstellen.
+3. Structured Logs weiter auf minimale Pflichtfelder ohne Rohquery und ohne Secrets pruefen.
 
 ## Guardrails Hinweise
-1. Rate-Limit Messaging muss fuer Nutzer verstaendlich und reproduzierbar sein.
-2. Secrets duerfen weder in Logs noch in Build-Ausgaben erscheinen.
-3. Usage-Limit des produktiven OpenAI-Keys muss vor Public-Demo aktiv und nachweisbar bleiben.
-4. Local und public muessen denselben API und Retrieval Contract einhalten.
+1. Rate-Limit Messaging muss fuer Nutzer klar und reproduzierbar bleiben.
+2. Keine Secrets in Logs, Build-Ausgaben oder Handoffs.
+3. Local und public muessen denselben API- und Retrieval-Contract einhalten.

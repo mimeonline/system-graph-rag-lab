@@ -1,37 +1,29 @@
 # QA Memory
 
 ## Quality Focus Areas
-1. Story-Gate Reproduzierbarkeit mit eindeutiger Evidenz in Matrix und Verdict.
-2. Contract-Konformitaet fuer `POST /api/query` inklusive Error-Codes, Header und State-Mapping.
-3. Retrieval-Determinismus mit stabiler Top-3 Reihenfolge bei konstantem Datenstand.
-4. Referenzqualitaet gemaess Relevanzregel fuer die ersten drei Referenzen.
-5. Guardrails fuer Rate-Limit, Secret-Hygiene und Logging-Minimum.
-
-## Active Test Suites
-1. QA-E1 bis QA-E5 Testfall-IDs in `docs/qa/test-matrix.md` als Bootstrap-Vorlage.
+1. Story-Gate Reproduzierbarkeit mit expliziter Command-Evidenz in Matrix und Verdict.
+2. Konsistenz zwischen Story-Akzeptanzkriterien, Code-Artefakten und Dokumentation.
+3. Contract-Konformitaet von `POST /api/query` fuer spaetere Story-Runs inklusive Fehlerpfaden.
+4. Epic-Gate Trennung zwischen Story-QA, Security-Gate und DevOps-Gate.
 
 ## Known Failure Patterns
 1. Story im Status `qa` ohne dokumentierten QA-Ausfuehrungslauf.
 2. Drift zwischen Story-AK und tatsaechlich dokumentierter Testevidenz.
-3. API Contract-Drift bei Fehlerpfaden, insbesondere 429 Header-Body-Inkonsistenz.
-4. Unklare Referenzqualitaet ohne freigegebene Erwartungslisten pro Eval-Frage.
-5. Log-Events mit Risiko auf zu breite Felder statt minimalem Contract.
+3. Spaete Entdeckung von Contract-Abweichungen, wenn Integrationstests nicht frueh ausgefuehrt werden.
 
 ## Eval Status
-1. Bootstrap abgeschlossen am 2026-02-25.
-2. Rubrik mit 5 Fragen angelegt in `evals/rubric.md`.
-3. Eval-Report als Template angelegt in `evals/report.md`.
-4. Gesamtstatus aktuell Fail bis erster reproduzierbarer Eval-Lauf dokumentiert ist.
+1. Bootstrap fuer Rubrik und Report liegt vor.
+2. Review-Run fuer `E1-S1` am 2026-02-25 abgeschlossen.
+3. Story-Gate `E1-S1` ist Pass mit dokumentierter Evidenz.
+4. Eval-Set mit fuenf Fragen bleibt bis zum ersten End-to-End-Lauf auf Fail.
 
 ## Open Quality Risks
-1. Fehlende Story-Ausfuehrungsevidenz blockiert belastbare QA-Gate-Freigaben.
-2. Public-Runtime Guardrails koennen ohne Lasttests spaet auffallen.
-3. Neo4j local versus aura kann Retrieval-Reihenfolgen abweichend machen.
-4. Erwartungslisten fuer Referenzrelevanz sind fuer echte Abnahme noch nicht freigegeben.
+1. Epic E1 bleibt blockiert, solange `E1-S2` bis `E1-S4` kein QA-Gate haben.
+2. Datenqualitaet und Retrieval-Determinismus sind noch unbewertet, da ausserhalb `E1-S1`.
+3. Public-Runtime-Verhalten und Rate-Limit-Konformitaet sind fuer dieses Epic noch offen.
 
-## Next Instructions for QA Agent
-1. Bei naechstem Run zuerst Story mit Status `qa` testen und Matrix markieren.
-2. Danach `docs/qa/verdict.md` mit konkretem Story-Ergebnis aktualisieren.
-3. Bei jedem Fail sofort Bug-Report anlegen oder aktualisieren.
-4. Vor Epic-Gate Security- und DevOps-Gate-Status explizit verlinken.
-5. Nach erstem Eval-Lauf `evals/report.md` mit Messwerten und Beobachtungen fortschreiben.
+## Next Instructions
+1. Naechster QA-Run auf `E1-S2` mit Fokus auf Datenmenge, Schema-Konformitaet und Reproduzierbarkeit.
+2. Danach `E1-S3` auf Datenzugriff im Zielbetrieb pruefen.
+3. Danach `E1-S4` auf Duplikatbereinigung und Ontologie-Konformitaet pruefen.
+4. Vor Epic-Abnahme E1 Security- und DevOps-Gate-Status explizit verlinken.

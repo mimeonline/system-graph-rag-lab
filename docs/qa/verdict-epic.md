@@ -1,19 +1,24 @@
-# Epic QA Gate Verdict Bootstrap Template
+# Epic QA Gate Verdict E1
 
-## Scope der Epic QA Pruefung
-1. Geprueft werden Epic-Readiness, Story-Gate-Abdeckung, offene Blocker und Verweise auf Bugs sowie Eval-Bericht.
-2. Dieser Bootstrap-Lauf ist ein Template und kein abgeschlossener Epic-Abnahmelauf.
+## Epic Referenz
+1. Epic-ID: E1.
+2. Epic-Datei: `backlog/epics/e1-wissensmodell-seed-daten.md`.
 
-## Epic Ergebnisse
-| Epic | Scope | Verdict | Blocker | Referenzen |
-| --- | --- | --- | --- | --- |
-| E1 `e1-wissensmodell-seed-daten.md` | Story-Gates E1-S1 bis E1-S4 | Fail | Ja | `docs/qa/verdict.md`, `docs/qa/bugs/bug-0001.md` |
-| E2 `e2-retrieval-antwortpipeline.md` | Story-Gates E2-S1 bis E2-S4 | Fail | Ja | `docs/qa/test-matrix.md`, `evals/report.md` |
-| E3 `e3-frontend-nutzerfuehrung.md` | Story-Gates E3-S1 bis E3-S3 | Fail | Ja | `docs/qa/test-matrix.md` |
-| E4 `e4-deployment-sicherheit-guardrails.md` | Story-Gates E4-S1 bis E4-S4 | Fail | Ja | `docs/qa/test-matrix.md` |
-| E5 `e5-qualitaetssicherung-abnahme.md` | Story-Gates E5-S1 bis E5-S3 | Fail | Ja | `evals/rubric.md`, `evals/report.md` |
+## Scope der QA-Pruefung
+1. Geprueft wurde der Story-Gate-Stand fuer `E1-S1` im Modus `RUN_MODE=review`.
+2. Geprueft wurden Story-Akzeptanzkriterien, Dev-Handoff-Commands und QA-Artefakte.
+3. Nicht im Scope dieses Runs waren die Stories `E1-S2`, `E1-S3`, `E1-S4`.
 
-## Blocker Kriterien
-1. Epic kann nur passieren, wenn alle enthaltenen Stories ein dokumentiertes Story-QA-Pass haben.
-2. Epic kann nur passieren, wenn Security-Gate und DevOps-Gate ohne offene Blocker dokumentiert sind.
-3. Epic kann nur passieren, wenn offene kritische Bugs des Epics geschlossen sind.
+## Ergebnis
+1. Verdict: Fail.
+2. Blocker: Ja.
+
+## Blockergruende
+1. Epic-Abnahme ist blockiert, da nur `E1-S1` geprueft wurde und die verbleibenden E1-Stories noch nicht im QA-Gate sind.
+2. Security-Gate und DevOps-Gate fuer Epic E1 sind noch nicht als abgeschlossen dokumentiert.
+
+## Referenzen auf Bugs und Reports
+1. Story-Gate Ergebnis siehe `docs/qa/verdict.md`.
+2. Matrix-Evidenz siehe `docs/qa/test-matrix.md`.
+3. Eval-Kontext siehe Abschnitt `Ergebnisse je Frage` in `evals/report.md`.
+4. Historischer QA-Evidenz-Bug siehe `docs/qa/bugs/bug-0001.md` mit Status resolved.

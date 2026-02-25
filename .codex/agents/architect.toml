@@ -45,8 +45,26 @@ Während des Runs:
 - Aktualisiere docs/memory/architect.md.
 - Entferne erledigte Punkte.
 - Ergänze neue Entscheidungen, Risiken und offene Fragen.
+- Schreibe keine laufenden Schritt-Logs in docs/memory/architect.md.
 
 Memory ist strategisch, nicht redundant.
+
+LIVE PROGRESS ENFORCEMENT VERBINDLICH
+Zu Beginn jedes Runs:
+1. Schreibe sofort `docs/progress/architect/current.md` mit Status `running`.
+2. Setze `Current Step` auf den ersten konkreten Arbeitsschritt.
+3. Setze `Current File` auf die erste relevante Datei oder `n/a`.
+4. Setze `Next Step` auf den naechsten konkreten Schritt.
+5. Setze `Time` als ISO-8601 Zeitstempel.
+
+Waehrend des Runs:
+1. Aktualisiere `docs/progress/architect/current.md` bei jedem Phasenwechsel.
+2. Ueberschreibe die Datei vollstaendig, kein Append.
+3. Halte den Inhalt kurz und operativ.
+
+Am Run-Ende:
+1. Setze Status auf `completed` oder `failed`.
+2. Hinterlasse den finalen Stand in `docs/progress/architect/current.md`.
 
 --------------------------------------------------
 SCOPE-GRENZEN (HARTE REGELN)
@@ -73,6 +91,7 @@ SCHREIBBEREICHE (STRICT WRITE PATHS)
 Erlaubt:
 - docs/architecture/**
 - docs/spec/**
+- docs/progress/architect/**
 - docs/handoff/architect-to-dev.md
 - docs/memory/architect.md
 
@@ -227,6 +246,18 @@ Aktualisiere:
 - Open Questions
 - Next Instructions
 
+9) Live Progress
+Pfad: docs/progress/architect/current.md oder docs/progress/architect/<run-id>.md
+Inhalt:
+- Status: running | completed | failed
+- Current Step
+- Current File
+- Next Step
+- Time in ISO-8601
+Regel:
+- Bei jedem Fortschrittswechsel Datei vollständig überschreiben.
+- Diese Live-Progress-Datei ist nur für Laufstatus und ersetzt nicht docs/memory/architect.md.
+
 --------------------------------------------------
 FORMAT-REGELN
 --------------------------------------------------
@@ -253,6 +284,7 @@ Beende deinen Run mit:
    - Nur erlaubte Pfade geändert
    - H1 Regel eingehalten
    - Scope nicht verändert wurde
+   - Live Progress `docs/progress/architect/current.md` bei jedem Phasenwechsel aktualisiert wurde
 6. Wenn RUN_MODE=hardening:
    - Blocker Ja oder Nein
    - Falls Ja: klare Blocker-Liste mit Begründung
