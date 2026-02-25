@@ -88,6 +88,7 @@ Zusätzliche Gate-Taktung:
 Nach jedem Story-Finish durch Dev gilt verbindlich:
 - `backlog/stories/<story>.md` wird aktualisiert mit Status und Test Notes.
 - `backlog/progress.md` wird im selben Run synchron aktualisiert.
+- Dev setzt zu Run-Beginn als ersten operativen Schritt den Story-Status auf `in_progress` und synchronisiert sofort `backlog/progress.md`.
 - Dev setzt den Story-Status nach Abschluss der Implementierung auf `qa` oder `blocked`, nicht auf `accepted`.
 - QA liefert ein Gate-Verdict `Pass` oder `Fail` in den QA-Artefakten.
 - QA setzt bei QA-`Pass` den Story-Status auf `pass` und synchronisiert `backlog/progress.md` im selben Run.

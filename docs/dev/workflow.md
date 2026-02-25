@@ -7,11 +7,12 @@
 
 ## Wer setzt welchen Status
 1. PM setzt initial `todo`.
-2. Dev setzt bei Start der Umsetzung `in_progress`.
-3. Dev setzt nach Umsetzung und Selbsttest `qa` oder bei Hindernissen `blocked`.
-4. QA verifiziert, dokumentiert das Ergebnis und setzt bei erfolgreichem QA-Gate den Status `pass`.
-5. QA synchronisiert im selben Run `backlog/progress.md`.
-6. PM setzt final `accepted` nach PM-Review auf Basis von `pass`.
+2. Dev setzt bei Start der Umsetzung als ersten operativen Schritt `in_progress`.
+3. Dev synchronisiert `backlog/progress.md` unmittelbar nach dem Wechsel auf `in_progress`.
+4. Dev setzt nach Umsetzung und Selbsttest `qa` oder bei Hindernissen `blocked`.
+5. QA verifiziert, dokumentiert das Ergebnis und setzt bei erfolgreichem QA-Gate den Status `pass`.
+6. QA synchronisiert im selben Run `backlog/progress.md`.
+7. PM setzt final `accepted` nach PM-Review auf Basis von `pass`.
 
 ## Epic Status Sync
 1. Story-Status ist die führende Quelle für den operativen Start eines Epics.

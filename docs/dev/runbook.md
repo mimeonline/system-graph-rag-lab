@@ -34,10 +34,12 @@
 
 ## Story Workflow und Status
 1. Zulaessige Story Status sind `todo`, `in_progress`, `qa`, `pass`, `accepted`, `blocked`.
-2. Dev setzt nach Umsetzung nur `qa` oder `blocked`.
-3. Dev setzt nicht `accepted`.
-4. QA setzt nach erfolgreichem QA Gate zuerst `pass`.
-5. PM setzt `accepted` erst nach PM-Review auf Basis von `pass`.
+2. Dev setzt zu Run-Beginn als ersten operativen Schritt den Story-Status auf `in_progress`.
+3. Dev synchronisiert direkt danach `backlog/progress.md`.
+4. Dev setzt nach Umsetzung nur `qa` oder `blocked`.
+5. Dev setzt nicht `accepted`.
+6. QA setzt nach erfolgreichem QA Gate zuerst `pass`.
+7. PM setzt `accepted` erst nach PM-Review auf Basis von `pass`.
 
 ## Epic Gate Trigger
 1. Alle Stories eines Epics muessen mindestens Status `pass` haben.

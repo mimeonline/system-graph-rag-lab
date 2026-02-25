@@ -2,10 +2,10 @@
 ## Status
 completed
 ## Current Step
-Struktursync nach Seed-Data-Erweiterung abgeschlossen
+Run abgeschlossen und Artefakte synchronisiert
 ## Current File
-docs/handoff/dev-to-qa.md
+docs/progress/dev/current.md
 ## Next Step
-QA prueft aktualisierte E1-S2-Artefakte und liefert Gate-Verdict
+n/a
 ## Time
-2026-02-25T21:49:00Z
+2026-02-25T21:47:20Z

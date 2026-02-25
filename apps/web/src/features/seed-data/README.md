@@ -26,6 +26,13 @@ Die Daten stammen aus freigegebenen Markdown-Quellen und enthalten Herkunftsmeta
 4. Fehlerfall: kein Throw, alle Befunde werden in `errors` gesammelt.
 5. Beispiel: `validateSeedDataset(createSeedDataset())` liefert `valid = true`.
 
+### `readSeedDatasetForRuntime(options?)`
+1. Zweck: stellt die normalisierte Datenbasis fuer Runtime-Lesezugriffe auf Nodes und Relationen bereit.
+2. Input: optional `options.datasetFactory` fuer Testinjektion.
+3. Output: `RuntimeSeedReadResult` mit `nodes` und `edges` inklusive `sourceType` und `sourceFile`.
+4. Fehlerfall: wirft einen Fehler, wenn die Datenbasis nicht valide ist.
+5. Beispiel: `readSeedDatasetForRuntime().nodes.slice(0, 2)` liefert lesbare Node-Stichprobe mit Herkunft.
+
 ## Hinweise
 1. `sourceType` ist je Eintrag auf `primary_md` oder `optional_internet` begrenzt.
 2. `sourceFile` muss auf einen Eintrag im kuratierten Quellenkatalog verweisen.

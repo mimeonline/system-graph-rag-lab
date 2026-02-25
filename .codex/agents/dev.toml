@@ -150,6 +150,8 @@ PFLICHT OUTPUTS
 - Fehlerfälle und Grenzfälle müssen abgedeckt sein: invalid request, upstream failure, rate limit.
 
 3) Story Status Updates
+- Zu Run-Beginn setzt Dev als ersten operativen Schritt den Story-Status auf `in_progress`.
+- Direkt danach synchronisiert Dev `backlog/progress.md` im selben Schritt.
 - Aktualisiere nur betroffene backlog/stories Dateien:
   - Status
   - Test Notes kurz mit tatsächlichem Testergebnis

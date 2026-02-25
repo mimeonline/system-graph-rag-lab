@@ -20,11 +20,12 @@ Leitplanken:
 
 Aufgabe:
 1. Lies alle relevanten Pflicht-Inputs für die Story.
-2. Implementiere minimal-invasiv nur den Story-Scope.
-3. Führe Lint, Tests und Build aus, soweit im Projekt verfügbar.
-4. Aktualisiere Story-Datei und Backlog-Fortschritt gemäß Workflow.
-5. Wenn die Story die erste aktive Story ihres Epics ist, setze das Epic im selben Run auf `in_progress` und synchronisiere `backlog/progress.md`.
-6. Erzeuge oder aktualisiere das Dev-Handoff und die Dev-Memory-Datei.
+2. Setze als ersten operativen Schritt den Story-Status auf `in_progress` und synchronisiere sofort `backlog/progress.md`.
+3. Implementiere minimal-invasiv nur den Story-Scope.
+4. Führe Lint, Tests und Build aus, soweit im Projekt verfügbar.
+5. Aktualisiere Story-Datei und Backlog-Fortschritt gemäß Workflow.
+6. Wenn die Story die erste aktive Story ihres Epics ist, setze das Epic im selben Run auf `in_progress` und synchronisiere `backlog/progress.md`.
+7. Erzeuge oder aktualisiere das Dev-Handoff und die Dev-Memory-Datei.
 
 Outputformat:
 1. Status

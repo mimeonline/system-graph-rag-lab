@@ -26,6 +26,7 @@
 1. Wie streng die PM-Freigabe für optionale Internet-Ergänzungen pro Lücke ausfällt.
 2. In welcher Mindesttiefe Herkunft in der UI sichtbar gemacht wird, ohne Erstkontakt zu überladen.
 3. PM-Entscheidung vom 2026-02-25: Story `E1-S2` wurde nach QA-`Pass` final auf `accepted` gesetzt.
+4. PM-Entscheidung vom 2026-02-25: Story `E1-S3` ist `nicht accepted`, da kein Story-QA-`Pass` vorliegt und der Status weiterhin `todo` ist.
 
 ## Risks to Monitor
 1. Qualitätsrisiko durch uneinheitliche Kuration zwischen MD-Quellen und Internet-Ergänzungen.
@@ -33,6 +34,7 @@
 3. Nachverfolgbarkeitsrisiko, wenn Herkunftskennzeichnung in späteren Storys verloren geht.
 4. Gate-Risiko für Epic E1, solange Security- und DevOps-Gates pro Epic noch ausstehen.
 5. Tracking-Risiko bei Status-Divergenz zwischen Story-Dateien, Epic und `backlog/progress.md`.
+6. Abnahmerisiko für `E1-S3`, solange kein QA-Evidenzpaket für den Zielbetriebs-Lese-Smoke-Test dokumentiert ist.
 
 ## Next Instructions for PM Agent
 1. Halte E1-Datenfluss verbindlich: S2 Kuration, S5 Extraktion und Normalisierung, S3 Verfügbarkeit, S4 Qualitätsprüfung.
@@ -41,3 +43,4 @@
 4. Setze `pass` nur nach dokumentiertem QA-Pass und PM-Review.
 5. Setze `accepted` nur nach vorherigem `pass` und explizitem PM-OK.
 6. Fokus E1-Gates: `E1-S5`, `E1-S3` und `E1-S4` inkl. QA sowie Epic-Gates Security und DevOps als Pflicht vor Epic-Abschluss.
+7. `E1-S3` erst zur PM-Abnahme vorlegen, wenn Story-Status `pass` ist und QA-Evidenz den Lese-Smoke-Test mit Herkunftskennzeichnung im Zielbetrieb dokumentiert.

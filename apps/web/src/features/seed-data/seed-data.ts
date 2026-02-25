@@ -97,6 +97,23 @@ type RawSeedEdge = {
 const PRIMARY_MD: SeedSourceType = "primary_md";
 const OPTIONAL_INTERNET: SeedSourceType = "optional_internet";
 
+/**
+ * Zweck:
+ * Leitet aus einer internen Quelle eine oeffentlich referenzierbare Literaturangabe ab.
+ *
+ * Input:
+ * - sourceFile: Pfad oder URL der kuratierten Quelle
+ * - sourceType: Herkunftstyp der Quelle
+ *
+ * Output:
+ * - PublicReference mit stabilen Pflichtfeldern fuer Zitierbarkeit
+ *
+ * Fehlerfall:
+ * - Kein Throw; unbekannte Quellen fallen auf einen generischen Buchverweis zurueck
+ *
+ * Beispiel:
+ * - createPublicReference("https://example.org", "optional_internet").kind === "web"
+ */
 function createPublicReference(sourceFile: string, sourceType: SeedSourceType): PublicReference {
   if (sourceType === "optional_internet") {
     return {
@@ -2110,6 +2127,22 @@ const EDGES: RawSeedEdge[] = [
 
 const ALLOWED_SOURCE_TYPES: SeedSourceType[] = ["primary_md", "optional_internet"];
 
+/**
+ * Zweck:
+ * Prueft, ob ein String ein zulaessiger SeedSourceType ist.
+ *
+ * Input:
+ * - sourceType: beliebiger String
+ *
+ * Output:
+ * - Type Guard auf SeedSourceType
+ *
+ * Fehlerfall:
+ * - Kein Throw; liefert false bei ungueltigem Wert
+ *
+ * Beispiel:
+ * - isValidSourceType("primary_md") === true
+ */
 function isValidSourceType(sourceType: string): sourceType is SeedSourceType {
   return ALLOWED_SOURCE_TYPES.includes(sourceType as SeedSourceType);
 }

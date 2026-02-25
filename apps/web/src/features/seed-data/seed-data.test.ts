@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { describe, expect, it } from "vitest";
 import {
   createCuratedSourceCatalog,
@@ -212,5 +213,26 @@ describe("seed dataset validation", () => {
     expect(validation.errors).toContain(
       "Edge INFLUENCES:concept:1:concept:1 referenziert unbekannte Quelle primary_md:missing.md.",
     );
+  });
+});
+
+describe("seed data function documentation", () => {
+  it("requires JSDoc blocks for all functions in seed-data.ts", () => {
+    const source = readFileSync(new URL("./seed-data.ts", import.meta.url), "utf8");
+    const functionNames = [
+      "createPublicReference",
+      "isValidSourceType",
+      "createCuratedSourceCatalog",
+      "createSeedDataset",
+      "validateSeedDataset",
+    ];
+
+    for (const functionName of functionNames) {
+      const jsdocRegex = new RegExp(
+        String.raw`/\*\*[\s\S]*?\*/\s*(?:export\s+)?function\s+${functionName}\s*\(`,
+        "m",
+      );
+      expect(source).toMatch(jsdocRegex);
+    }
   });
 });

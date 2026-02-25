@@ -1,22 +1,19 @@
 # Dev to Security Handoff
 
 ## Kurzer Security-Context der umgesetzten Stories
-1. Bearbeitet wurde Story `E1-S2` mit Fokus auf kuratierte Quellenbasis fuer Seed-Daten.
-2. Sicherheitsrelevant ist die Integritaet der Herkunftsmetadaten (`sourceType`, `sourceFile`, `internalSource`, `publicReference`) in der Seed-Basis.
-3. Es wurden keine neuen extern erreichbaren Endpoints eingefuehrt.
+1. Bearbeitet wurde Story `E1-S3` mit Fokus auf Runtime-Lesezugriff fuer die normalisierte Seed-Datenbasis.
+2. Sicherheitsrelevant ist die Integritaet der Herkunftskennzeichnung `sourceType` und `sourceFile` bei Nodes und Relationen.
 
 ## Welche Eingaben oder Endpoints sicherheitsrelevant beruehrt wurden
-1. Kein neuer Endpoint.
-2. Sicherheitsrelevante Eingabe ist der interne Quellenkatalog in `apps/web/src/features/seed-data/seed-data.ts`.
-3. Der Validator verarbeitet Source-Referenzen fuer `sources`, `nodes` und `edges`.
+1. Es wurde kein neuer extern erreichbarer Endpoint eingefuehrt.
+2. Sicherheitsrelevant ist der interne Runtime-Read-Pfad `readSeedDatasetForRuntime`.
+3. Der Pfad validiert die Seed-Datenbasis vor dem Auslesen und stoppt bei inkonsistenten Daten.
 
 ## Welche bekannten Sicherheitsgrenzen oder offenen Risiken bestehen
-1. Herkunftsdaten sind statisch kuratiert und noch nicht gegen manipulierte Runtime-Imports gehaertet.
-2. DB-seitige Constraint-Durchsetzung bei spaeterem Persistieren ist nicht Teil dieser Story.
-3. `optional_internet` wird verwendet, aber es gibt in dieser Story noch keinen dedizierten Review-Workflow fuer externe URL-Qualitaet und Link-Rot.
+1. Der Runtime-Read-Pfad ist aktuell auf die lokal normalisierte Seed-Datenbasis beschraenkt und nicht auf persistente Neo4j-Daten.
+2. Die Absicherung gegen manipulierte externe Datenimporte bleibt fuer spaetere Import- und Persistenzstories offen.
 
 ## Welche Punkte Security im Epic-Gate gezielt pruefen soll
-1. Bei E1-S5 und E1-S3 sicherstellen, dass Herkunftsfelder beim Import nicht verloren gehen.
-2. Pruefen, dass nur erlaubte `sourceType` Werte akzeptiert werden und unknown-source Eintraege blockiert werden.
-3. Pruefen, dass spaetere Import- oder API-Pfade keine Rohquellen mit sensitiven Inhalten loggen.
-4. Pruefen, dass optionale Internet-Quellen nur mit dokumentierter Inhaltsluecke und nachvollziehbarer Referenz aufgenommen werden.
+1. Sicherstellen, dass Herkunftskennzeichnungen in allen Datenpfaden unveraendert erhalten bleiben.
+2. Sicherstellen, dass nur die erlaubten Herkunftstypen `primary_md` und `optional_internet` akzeptiert werden.
+3. Bei spaeterer Neo4j-Anbindung pruefen, dass keine sensitiven Inhalte oder Secrets in Fehler- oder Laufzeitlogs landen.

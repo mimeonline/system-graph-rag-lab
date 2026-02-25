@@ -1,7 +1,7 @@
 # Story E1-S3 Normalisierte Datenbasis im Zielbetrieb verfügbar machen
 
 ## Status
-todo
+qa
 
 ## Ziel
 Die normalisierte Seed-Datenbasis im vorgesehenen Betriebsrahmen abrufbar bereitstellen.
@@ -29,5 +29,6 @@ die Anwendung Nodes und Relationen im Zielbetrieb abfragt
 2. bleibt die Herkunftskennzeichnung `primary_md` oder `optional_internet` pro Eintrag abrufbar.
 
 ## Test Notes
-1. Führe einen Lese-Smoke-Test gegen den Zielbetrieb für mindestens zwei Nodes und zwei Relationen aus.
-2. Prüfe, dass die Herkunftskennzeichnung je Testeintrag im Leseergebnis enthalten ist.
+1. `pnpm --dir apps/web test -- src/features/seed-data/runtime-read.test.ts` erfolgreich am 2026-02-25, inklusive Lese-Smoke-Test mit mindestens zwei Nodes und zwei Relationen.
+2. Im Smoke-Test sind fuer die gepruefte Node- und Relationsstichprobe `sourceType` und `sourceFile` enthalten; `sourceType` ist je Eintrag `primary_md` oder `optional_internet`.
+3. Regression erfolgreich mit `pnpm --dir apps/web test`, `pnpm --dir apps/web lint` und `pnpm --dir apps/web build`.
