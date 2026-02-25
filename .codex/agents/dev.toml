@@ -102,6 +102,7 @@ Erlaubt:
 - services/**
 - packages/**
 - backlog/stories/** nur Statusfelder oder Test Notes oder Blocker, keine Scope Änderungen
+- backlog/progress.md nur Status- und Letztes-Update-Synchronisation zu betroffenen Stories
 - docs/architecture/adr/** nur adr-proposal-*.md
 - handoff/dev-to-qa.md
 - docs/memory/dev.md
@@ -122,6 +123,9 @@ PFLICHT OUTPUTS
   - Status
   - Test Notes kurz mit tatsächlichem Testergebnis
   - Blocker falls vorhanden
+- Synchronisiere im selben Run backlog/progress.md für jede betroffene Story.
+- Nach Story-Finish durch Dev darf Status nicht auf accepted gesetzt werden.
+- Dev setzt nach Abschluss der Implementierung auf qa oder blocked und übergibt an QA plus PM Review.
 
 4) Handoff an QA
 Datei: handoff/dev-to-qa.md
@@ -134,7 +138,12 @@ Inhalt:
 - Erwartete Failure Modes
 - Genaue Testkommandos mit erwarteten Ergebnissen
 
-5) Memory Update
+5) Epic Gate Hinweis
+- Wenn die bearbeitete Story ein Epic abschließt, markiere im Handoff verpflichtend:
+  - Security Gate pro Epic erforderlich
+  - DevOps Gate pro Epic erforderlich
+  - Epic erst nach beiden Gates als bereit markieren
+6) Memory Update
 Datei: docs/memory/dev.md
 Aktualisiere:
 - Current Implementation Status
@@ -170,6 +179,9 @@ Beende jeden Run mit:
    - Nur erlaubte Pfade geändert
    - H1 Regel eingehalten
    - Tests ausgeführt oder Blocker klar benannt
+   - Story-Datei und backlog/progress.md synchron aktualisiert
+   - accepted nicht ohne PM-Review gesetzt
+   - Bei Epic-Abschluss Security und DevOps Gate als Pflicht markiert
    - Scope nicht verändert
    - Architektur nicht ohne ADR geändert
 7. Wenn RUN_MODE=hardening:

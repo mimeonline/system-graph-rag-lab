@@ -1,5 +1,8 @@
 # Story E2-S3 Antwort aus strukturiertem Kontext erzeugen
 
+## Status
+todo
+
 ## Ziel
 Aus vorbereitetem Kontext eine strukturierte Antwort erzeugen.
 

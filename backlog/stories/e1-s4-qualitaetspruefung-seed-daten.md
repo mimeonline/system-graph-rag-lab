@@ -1,5 +1,8 @@
 # Story E1-S4 Qualitätsprüfung für Seed-Daten ausführen
 
+## Status
+todo
+
 ## Ziel
 Konsistenz und Eindeutigkeit der Seed-Daten vor Nutzung absichern.
 

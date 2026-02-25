@@ -1,5 +1,8 @@
 # Story E2-S2 Kontext für Antwort konsistent erweitern
 
+## Status
+todo
+
 ## Ziel
 Primärkandidaten um relevante Kontextelemente für die Antwortvorbereitung ergänzen.
 

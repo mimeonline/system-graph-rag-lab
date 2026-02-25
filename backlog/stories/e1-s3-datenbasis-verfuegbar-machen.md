@@ -1,5 +1,8 @@
 # Story E1-S3 Datenbasis im Zielbetrieb verfügbar machen
 
+## Status
+todo
+
 ## Ziel
 Die Datenbasis im vorgesehenen Betriebsrahmen abrufbar bereitstellen.
 

@@ -1,5 +1,8 @@
 # Story E1-S2 Seed-Datenbasis im MVP-Rahmen erzeugen
 
+## Status
+todo
+
 ## Ziel
 Eine initiale Datenbasis im freigegebenen Umfang bereitstellen.
 

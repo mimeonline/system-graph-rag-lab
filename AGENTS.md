@@ -78,6 +78,20 @@ Nach jeder Rollen-Ausführung prüft der Orchestrator:
 
 Erst danach startet die nächste Rolle.
 
+Zusätzliche Gate-Taktung:
+- QA nach jeder Story.
+- Security pro Epic verpflichtend.
+- DevOps pro Epic verpflichtend.
+- Vor Public Demo oder Release zusätzlich vollständiger Gate-Run mit QA, Security und DevOps.
+
+## Story-Fortschritt und PM-Freigabe
+Nach jedem Story-Finish durch Dev gilt verbindlich:
+- `backlog/stories/<story>.md` wird aktualisiert mit Status und Test Notes.
+- `backlog/progress.md` wird im selben Run synchron aktualisiert.
+- Dev setzt den Story-Status nach Abschluss der Implementierung auf `qa` oder `blocked`, nicht auf `accepted`.
+- PM prüft nach Dev und QA die Story und gibt das finale `accepted` frei.
+- Erst nach PM-OK gilt eine Story als abgeschlossen.
+
 ## Markdown-Regeln
 - Jede Markdown-Datei hat genau eine H1.
 - Weitere Struktur nur mit H2 und H3.
@@ -114,4 +128,5 @@ Erst danach startet die nächste Rolle.
 ### Process Mode
 - Strikte Rollenpipeline mit Subagents
 - Handoffs und Memory-Updates verpflichtend
-- QA und Security fungieren als Gate vor Release
+- QA nach jeder Story als Qualitätsgate
+- Security und DevOps pro Epic als Betriebs- und Risikogate

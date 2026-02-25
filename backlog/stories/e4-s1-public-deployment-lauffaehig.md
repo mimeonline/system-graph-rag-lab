@@ -1,5 +1,8 @@
 # Story E4-S1 Public Deployment lauffähig machen
 
+## Status
+todo
+
 ## Ziel
 Die Demo im vorgesehenen Betriebsrahmen öffentlich erreichbar bereitstellen.
 

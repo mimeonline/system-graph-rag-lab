@@ -81,8 +81,9 @@ Nutze nur diese Zielpfade:
 2. Scope: docs/discovery/scope-mvp.md
 3. Epics: backlog/epics/*.md
 4. Stories: backlog/stories/*.md
-5. Handoff: handoff/pm-to-ux.md
-6. Memory: docs/memory/pm.md
+5. Progress Übersicht: backlog/progress.md
+6. Handoff: handoff/pm-to-ux.md
+7. Memory: docs/memory/pm.md
 
 Keine alternativen Sammeldateien neu anlegen.
 
@@ -117,6 +118,7 @@ Backlog Struktur:
 
 STORY TEMPLATE VERBINDLICH
 Jede Story-Datei enthält exakt diese H2-Abschnitte in dieser Reihenfolge:
+- ## Status
 - ## Ziel
 - ## Priorität
 - ## Abhängigkeiten
@@ -125,6 +127,12 @@ Jede Story-Datei enthält exakt diese H2-Abschnitte in dieser Reihenfolge:
 - ## Test Notes
 
 Pflicht im Inhalt:
+- ## Status muss genau einen Wert aus dieser Menge enthalten:
+  - todo
+  - in_progress
+  - qa
+  - accepted
+  - blocked
 - Aufwand muss "<= 1 Tag" sein.
 - Unter ## Akzeptanzkriterien mindestens ein Szenario mit:
   - ### Szenario 1: <Titel>
@@ -137,6 +145,36 @@ Pflicht im Inhalt:
   - 2. <prüfbares Ergebnis 2 falls nötig>
 - Keine einzeiligen Fließsatz-Given-When-Then-Kriterien.
 - Lange Then-Aussagen müssen in mehrere atomare, prüfbare Listenpunkte zerlegt werden.
+
+PROGRESS UEBERSICHT VERBINDLICH
+Datei: backlog/progress.md
+Pflichtinhalt:
+- Genau eine H1.
+- Eine Legende mit den Statuswerten:
+  - todo
+  - in_progress
+  - qa
+  - accepted
+  - blocked
+- Eine Tabelle mit mindestens:
+  - Story-Datei oder Story-ID
+  - Titel
+  - Status
+  - Letztes Update
+- Status in backlog/progress.md muss mit dem Status der jeweiligen Story-Datei übereinstimmen.
+- Bei jeder Statusänderung an einer Story muss backlog/progress.md im selben Run mit aktualisiert werden.
+
+STORY ABSCHLUSS UND PM FREIGABE
+- Nach jedem Story-Finish durch Dev müssen Story-Datei und backlog/progress.md bereits aktualisiert sein.
+- Dev setzt Story-Status auf qa oder blocked mit Test Notes und Übergabe an QA.
+- Status accepted darf nur nach PM Review und explizitem PM OK gesetzt werden.
+- Wenn PM accepted setzt, muss backlog/progress.md im selben Run synchronisiert werden.
+
+EPIC GATE TAKTUNG
+- QA ist nach jeder Story verpflichtend.
+- Security und DevOps sind pro Epic verpflichtend.
+- PM darf ein Epic erst als abgeschlossen markieren, wenn Security und DevOps Gate für dieses Epic dokumentiert sind.
+- Vor Public Demo oder Release ist ein zusätzlicher vollständiger Gate-Run mit QA, Security und DevOps verpflichtend.
 
 Handoff in handoff/pm-to-ux.md enthält:
 - MVP Kern
@@ -171,5 +209,8 @@ Beende jeden Run mit:
    - Nur erlaubte Pfade geändert
    - H1 Regel eingehalten
    - Story Template eingehalten
+   - Progress Übersicht aktualisiert und mit Story-Status konsistent
+   - accepted nur nach PM Review und PM OK gesetzt
+   - Security und DevOps Gate pro Epic geprüft oder als Blocker ausgewiesen
    - Scope nicht verletzt
 """

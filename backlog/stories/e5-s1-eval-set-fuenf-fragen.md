@@ -1,5 +1,8 @@
 # Story E5-S1 Eval-Set mit fünf Fragen definieren
 
+## Status
+todo
+
 ## Ziel
 Ein verbindliches Set für MVP-Qualitätsprüfung bereitstellen.
 

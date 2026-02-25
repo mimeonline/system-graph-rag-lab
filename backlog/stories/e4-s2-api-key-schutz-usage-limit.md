@@ -1,5 +1,8 @@
 # Story E4-S2 API-Key-Schutz und Usage-Limit verifizieren
 
+## Status
+todo
+
 ## Ziel
 Kostenrisiko und Secret-Risiko im MVP-Betrieb begrenzen.
 

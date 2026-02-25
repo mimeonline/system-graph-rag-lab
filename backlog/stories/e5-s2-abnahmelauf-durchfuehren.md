@@ -1,5 +1,8 @@
 # Story E5-S2 End-to-End-Abnahmelauf durchführen
 
+## Status
+todo
+
 ## Ziel
 MVP-Abnahmestatus über Kernkriterien transparent dokumentieren.
 

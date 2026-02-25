@@ -1,5 +1,8 @@
 # Story E5-S3 Lessons Learned priorisieren
 
+## Status
+todo
+
 ## Ziel
 Verbesserungen für die nächste Iteration geordnet vorbereiten.
 

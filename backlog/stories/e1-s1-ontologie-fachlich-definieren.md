@@ -1,5 +1,8 @@
 # Story E1-S1 Ontologie fachlich definieren
 
+## Status
+todo
+
 ## Ziel
 Ein fachlich konsistentes Modell für die MVP-Domäne bereitstellen.
 

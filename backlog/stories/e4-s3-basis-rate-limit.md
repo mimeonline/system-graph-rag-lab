@@ -1,5 +1,8 @@
 # Story E4-S3 Basis-Rate-Limit aktivieren
 
+## Status
+todo
+
 ## Ziel
 Missbrauchsschutz für den Public-Endpunkt aktiv halten.
 

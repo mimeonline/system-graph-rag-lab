@@ -1,5 +1,8 @@
 # Story E2-S1 Kontextkandidaten pro Frage bereitstellen
 
+## Status
+todo
+
 ## Ziel
 Zu einer Nutzerfrage belastbare Kontextkandidaten in definierter Struktur liefern.
 

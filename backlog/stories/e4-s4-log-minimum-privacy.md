@@ -1,5 +1,8 @@
 # Story E4-S4 Log-Minimum und Privacy-Regeln prüfen
 
+## Status
+todo
+
 ## Ziel
 Nur notwendige Betriebsdaten ohne sensible Inhalte protokollieren.
 
