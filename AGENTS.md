@@ -212,3 +212,19 @@ Erst danach darf die nächste Rolle gestartet werden.
 - Keine Secrets im Repository
 - OpenAI API-Key mit Usage-Limit
 - Basis-Rate-Limiting vor öffentlicher Freigabe aktivieren
+
+## MODES
+
+Build Mode:
+
+- Direktarbeit mit Main Agent.
+- UX/PM dürfen schnell iterieren.
+- Nur Memory aktualisieren.
+- Keine vollständige Rollenpipeline.
+
+Process Mode:
+
+- Strikte Rollen.
+- Subagent Spawn.
+- Handoffs verpflichtend.
+- QA/Security Gate aktiv.
