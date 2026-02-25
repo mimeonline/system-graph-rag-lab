@@ -6,7 +6,7 @@
 3. API Grenze bleibt in beiden Profilen identisch auf `POST /api/query` als Next.js Route Handler.
 4. Es gibt im MVP keinen separaten API Service.
 5. Retrieval Contract bleibt strikt deterministisch und profilunabhängig.
-6. Seed Retrieval nutzt `TopK=6` über Vektorindex auf `Concept` und `Problem`.
+6. Seed Retrieval nutzt `TopK=6` über Vektorindex auf `Concept`, `Tool` und `Problem`.
 7. Graph Expansion nutzt `HopDepth=1` und nur erlaubte Relationstypen.
 8. Kontextbudget ist hart auf `1400` Tokens begrenzt und Empty Mapping ist strikt über `retrievedNodeCount` geregelt.
 9. Next.js Implementierung ist verbindlich TypeScript mit `strict=true` als Default.

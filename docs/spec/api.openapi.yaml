@@ -290,6 +290,7 @@ components:
           type: string
           enum:
             - Concept
+            - Tool
             - Author
             - Book
             - Problem

@@ -9,7 +9,7 @@ export type QueryRequest = {
 
 export type QueryReference = {
   nodeId: string;
-  nodeType: "Concept" | "Author" | "Book" | "Problem";
+  nodeType: "Concept" | "Tool" | "Author" | "Book" | "Problem";
   title: string;
   score: number;
   hop: number;

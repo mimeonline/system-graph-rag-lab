@@ -17,7 +17,7 @@
 5. ADR-0005 fixiert Local Dev Topologie mit Next.js lokal, Neo4j Docker Pinning `neo4j:5.26.0` und profilabhängigem Rate Limit Store bei identischem Contractverhalten.
 
 ## Retrieval Strategy Snapshot
-1. TopK: 6 Seeds aus Vektorindex auf `Concept` und `Problem`.
+1. TopK: 6 Seeds aus Vektorindex auf `Concept`, `Tool` und `Problem`.
 2. Hop Depth: 1 Hop Expansion über `WROTE`, `EXPLAINS`, `ADDRESSES`, `RELATES_TO`, `INFLUENCES`, `CONTRASTS_WITH`.
 3. Context Budget Strategy: harte Grenze 1400 Tokens, Dedupe vor Budgetierung, Truncate vor Drop.
 4. Evidence Limit bleibt bei maximal 8 Knoten mit stabiler Sortierung.

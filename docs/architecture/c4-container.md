@@ -42,7 +42,7 @@
 11. Setzt `state="empty"` nur bei `retrievedNodeCount=0` und leerer Referenzliste.
 
 ### Neo4j Aura
-1. Hält Node Types `Concept`, `Author`, `Book`, `Problem`.
+1. Hält Node Types `Concept`, `Tool`, `Author`, `Book`, `Problem`.
 2. Hält Relationskanten laut Datenmodell.
 3. Liefert TopK Seeds über Vektorindex und Nachbarschaften für Hop Expansion.
 

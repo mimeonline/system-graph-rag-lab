@@ -3,7 +3,7 @@
 ## Mapping Stories zu Akzeptanzkriterien und Tests
 | Story | AC-ID | Test-ID | Testfall | Umgebung | Pass | Fail | Evidenz |
 | --- | --- | --- | --- | --- | --- | --- | --- |
-| E1-S1 | AC-1 | QA-E1-S1-01 | Ontologie enthaelt exakt die vier Node-Typen und erlaubte Relationen | local | x |  | 2026-02-25: `pnpm test` gruen inkl. `src/features/ontology/ontology.test.ts`; `pnpm lint` gruen; `pnpm build` gruen; Doku-Abgleich `apps/web/src/features/ontology/README.md` |
+| E1-S1 | AC-1 | QA-E1-S1-01 | Ontologie enthaelt exakt die fuenf Node-Typen inklusive `Tool` und erlaubte Relationen | local | x |  | 2026-02-25: `pnpm test` gruen inkl. `src/features/ontology/ontology.test.ts`; `pnpm lint` gruen; `pnpm build` gruen; Doku-Abgleich `apps/web/src/features/ontology/README.md` |
 | E1-S2 | AC-1 | QA-E1-S2-01 | Seed-Count pruefen: Nodes > 100 und Edges > 200 ohne Schema-Verstoss | local,aura |  |  |  |
 | E1-S3 | AC-1 | QA-E1-S3-01 | Graph-Lese-Smoke gegen Zielbetrieb liefert Nodes und Relationen fehlerfrei | local,aura |  |  |  |
 | E1-S4 | AC-1 | QA-E1-S4-01 | Qualitaetslauf entfernt Duplikate und behaelt nur ontologiekonforme Eintraege | local |  |  |  |

@@ -71,7 +71,7 @@ flowchart LR
 ### Graph Backend
 1. Public Profil nutzt Neo4j Aura.
 2. Local Profil nutzt Neo4j Docker mit identischem Datenmodell und Vektorindex Anforderungen.
-3. Beide Profile nutzen Node Types `Concept`, `Author`, `Book`, `Problem` und identische Relationstypen.
+3. Beide Profile nutzen Node Types `Concept`, `Tool`, `Author`, `Book`, `Problem` und identische Relationstypen.
 
 ### OpenAI API
 1. Liefert Query Embedding für Seed Suche.

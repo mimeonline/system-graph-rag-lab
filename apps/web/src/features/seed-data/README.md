@@ -1,31 +1,34 @@
 # Seed Data Feature
 
 ## Zweck
-Dieses Feature erzeugt und validiert eine Seed-Datenbasis fuer das Wissensmodell.
-Der aktuelle Stand nutzt einen deterministischen Datensatz als technische Basis.
+Dieses Feature erstellt und validiert eine kuratierte Seed-Datenbasis fuer das Wissensmodell.
+Die Daten stammen aus freigegebenen Markdown-Quellen und enthalten Herkunftsmetadaten pro Eintrag.
 
 ## Funktionen
-### `buildEmbedding(seed)`
-1. Zweck: erzeugt ein kleines Embedding mit vier numerischen Werten.
-2. Input: `seed` als Zahl.
-3. Output: `number[]` mit vier Eintraegen.
-4. Fehlerfall: kein Throw, bei ungeeigneten Inputs sinkt nur die Datenqualitaet.
-5. Beispiel: `buildEmbedding(1)` ergibt `[0.01, 0.04, 0.07, 0.1]`.
+### `createCuratedSourceCatalog()`
+1. Zweck: liefert den kuratierten Quellenkatalog fuer die Seed-Datenbasis.
+2. Input: keiner.
+3. Output: `CuratedSourceEntry[]` mit `sourceType`, `sourceFile`, `internalSource` und `publicReference`.
+4. Fehlerfall: kein Throw, ungueltige Quellen werden in `validateSeedDataset` gemeldet.
+5. Beispiel: `createCuratedSourceCatalog()[0].sourceType` ist `primary_md`.
 
 ### `createSeedDataset()`
-1. Zweck: erzeugt den Seed-Datensatz mit Nodes und Edges im Ontologie-Rahmen.
+1. Zweck: erzeugt ein deterministisches Seed-Dataset aus kuratierten Quellen.
 2. Input: keiner.
-3. Output: `SeedDataset`.
-4. Fehlerfall: kein Throw, fachliche Fehler werden erst in der Validierung erkannt.
-5. Beispiel: Ergebnis hat aktuell 130 Nodes und 315 Edges.
+3. Output: `SeedDataset` mit `sources`, `nodes` und `edges`.
+4. Fehlerfall: kein Throw, fachliche Fehler werden in der Validierung erkannt.
+5. Beispiel: Ergebnis enthaelt kuratierte Quellen und ontologiekonforme Knoten/Kanten.
 
 ### `validateSeedDataset(dataset)`
-1. Zweck: prueft Pflichtfelder, Eindeutigkeit, Referenzen und Ontologie-Regeln.
+1. Zweck: prueft Quellenkatalog, Pflichtfelder, Eindeutigkeit, Referenzen und Ontologie-Regeln.
 2. Input: `dataset` vom Typ `SeedDataset`.
 3. Output: `SeedValidationResult` mit `valid` und `errors`.
-4. Fehlerfall: kein Throw, alle Fehler werden in `errors` gesammelt.
+4. Fehlerfall: kein Throw, alle Befunde werden in `errors` gesammelt.
 5. Beispiel: `validateSeedDataset(createSeedDataset())` liefert `valid = true`.
 
 ## Hinweise
-1. Nächster Schritt laut Story-Schnitt ist die Umstellung von synthetischen auf kuratierte Quellen.
-2. Die vorhandene Validierungslogik soll dabei wiederverwendet und um Herkunftschecks erweitert werden.
+1. `sourceType` ist je Eintrag auf `primary_md` oder `optional_internet` begrenzt.
+2. `sourceFile` muss auf einen Eintrag im kuratierten Quellenkatalog verweisen.
+3. `internalSource` ist fuer interne Nachvollziehbarkeit und wird nicht automatisch oeffentlich angezeigt.
+4. `publicReference` enthaelt oeffentlich belastbare Literatur- oder Web-Referenzen.
+5. Der MVP-Katalog umfasst neben Grundkonzepten auch konkrete `tool:*` Nodes vom Typ `Tool` sowie einzelne `system_traps`, `leverage_points`, `CAST`, `Second-Order Thinking`, `CATWOE`, `Network Analysis`, `Mental Models` und `System Archetypes`.

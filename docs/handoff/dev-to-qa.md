@@ -1,35 +1,39 @@
 # Dev Handoff E1-S2
 
 ## Was ist fertig
-1. Story `E1-S2` ist technisch umgesetzt und auf `qa` gesetzt.
-2. Seed-Datengenerator liefert eine deterministische MVP-Datenbasis mit 130 Nodes und 315 Edges.
-3. Seed-Validator prüft Pflichtfelder, eindeutige IDs, bekannte Knotenreferenzen und erlaubte Relationsrichtungen laut Ontologie.
-4. Unit- und Integrationsnahe Tests fuer gueltige sowie ungueltige Datensaetze sind vorhanden.
+1. Story `E1-S2` wurde auf `qa` gesetzt.
+2. `apps/web/src/features/seed-data/seed-data.ts` nutzt jetzt einen kuratierten Quellenkatalog aus freigegebenen MD-Quellen statt rein synthetischer Platzhalterdaten.
+3. Pro Eintrag sind Herkunftsfelder `sourceType` und `sourceFile` sowie das erweiterte Quellenmodell `internalSource` und `publicReference` umgesetzt.
+4. Die Validierung prueft zusaetzlich Quellenkatalog, gueltige Herkunftstypen, Referenzintegritaet und Konsistenz zwischen Top-Level-Quelle und `internalSource` fuer Sources, Nodes und Edges.
+5. Inhaltliche Abdeckung wurde ausgebaut: einzelne `system_traps`, `leverage_points` und mehrere `tool_*` Konzepte sind als eigene Nodes und Relationen enthalten.
+6. Feature-Doku fuer die geaenderten Funktionen wurde in `apps/web/src/features/seed-data/README.md` aktualisiert.
 
 ## Welche Stories wurden umgesetzt
-1. `E1-S2 Seed-Datenbasis im MVP-Rahmen erzeugen`
+1. `E1-S2 Kuratierte Quellbasis aus bereitgestellten Quellen erfassen`
 
 ## Wie kann QA lokal testen
 1. In `apps/web` wechseln.
-2. `pnpm install` ausfuehren, falls Dependencies fehlen.
-3. `pnpm test` ausfuehren und auf gruenen Lauf achten.
-4. Optional Vollpruefung mit `pnpm lint` und `pnpm build` ausfuehren.
+2. Optional `pnpm install` ausfuehren.
+3. `pnpm lint` ausfuehren.
+4. `pnpm test` ausfuehren.
+5. `pnpm build` ausfuehren.
+6. Fuer inhaltliche Stichprobe `apps/web/src/features/seed-data/seed-data.ts` oeffnen und mehrere `sourceType` plus `sourceFile` Eintraege pruefen.
 
 ## Welche Testdaten oder Seeds noetig sind
 1. Keine externen Seeds noetig.
-2. Tests nutzen den internen Generator in `src/features/seed-data/seed-data.ts`.
+2. Seed-Daten sind im kuratierten Katalog in `seed-data.ts` hinterlegt und deterministisch.
 
 ## Bekannte Einschraenkungen
-1. Story deckt nur Erzeugung und Validierung der Datenbasis ab.
-2. Persistierung in Neo4j ist nicht Teil von `E1-S2` und folgt in `E1-S3`.
+1. Umfangreiche, vollstaendige Extraktion aller Inhalte aus den Quellen bleibt Scope von `E1-S5`.
+2. Internet-Quellen sind optional und aktuell nur punktuell fuer dokumentierte Ergaenzungen enthalten.
+3. Die kuratierte Seed-Basis ist bewusst MVP-fokussiert und nicht als vollstaendige Ontologie zu verstehen.
 
 ## Erwartete Failure Modes
-1. Fehlendes Pflichtfeld `summary`, `title` oder `name` fuehrt zu Validation-Fehlern.
-2. Fehlendes `embedding` bei `Concept` oder `Problem` fuehrt zu Validation-Fehlern.
-3. Nicht erlaubte Relationsrichtung fuehrt zu Ontologie-Verstoss im Validation-Report.
-4. Doppelte Node-IDs oder doppelte Kanten fuehren zu Validation-Fehlern.
+1. Fehlender oder ungueltiger `sourceType` fuehrt zu Validierungsfehlern.
+2. Fehlendes `sourceFile` fuehrt zu Validierungsfehlern.
+3. Node- oder Edge-Referenz auf nicht katalogisierte Quelle fuehrt zu Validierungsfehlern.
+4. Ontologieverletzungen bei Kantenrichtung fuehren zu Validierungsfehlern.
 
 ## Testkommandos mit erwarteten Ergebnissen
-1. `pnpm lint` in `apps/web`: Exit Code `0` ohne ESLint-Fehler.
-2. `pnpm test` in `apps/web`: Exit Code `0`, alle Testdateien gruen, inklusive `src/features/seed-data/seed-data.test.ts`.
-3. `pnpm build` in `apps/web`: Exit Code `0`, Next.js Build erfolgreich.
+1. `pnpm --dir apps/web test -- src/features/seed-data/seed-data.test.ts`: Exit Code `0`, 6 gruene Tests in `seed-data.test.ts`.
+2. Optionaler Regression-Check: `pnpm --dir apps/web test`: Exit Code `0`.

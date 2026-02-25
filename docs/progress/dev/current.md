@@ -1,11 +1,11 @@
-# Dev Progress
+# Dev Live Progress
 ## Status
 completed
 ## Current Step
-Run abgeschlossen und Artefakte fuer QA und Security uebergeben
+Struktursync nach Seed-Data-Erweiterung abgeschlossen
 ## Current File
-docs/progress/dev/current.md
+docs/handoff/dev-to-qa.md
 ## Next Step
-QA-Gate fuer Story E1-S2 abwarten
+QA prueft aktualisierte E1-S2-Artefakte und liefert Gate-Verdict
 ## Time
-2026-02-25T19:39:19Z
+2026-02-25T21:49:00Z

@@ -64,7 +64,7 @@
 
 ## Retrieval Ablauf
 1. Berechne Query Embedding.
-2. Hole TopK Seeds aus Neo4j Vektorindex über `Concept` und `Problem`.
+2. Hole TopK Seeds aus Neo4j Vektorindex über `Concept`, `Tool` und `Problem`.
 3. Erweitere jeden Seed mit Hop Depth 1 über erlaubte Relationen.
 4. Führe Dedupe auf Knotenebene über `nodeId` aus.
 5. Sortiere Kandidaten stabil nach festem Sortierschlüssel.

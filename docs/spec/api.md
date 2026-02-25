@@ -87,12 +87,13 @@
 ## Response Regeln bei Erfolg
 1. `references` ist stabil sortiert nach Retrieval Contract.
 2. `references` enthält höchstens 3 Einträge für die UI Hauptfläche.
-3. `meta.topK`, `meta.hopDepth` und `meta.contextTokens` müssen dem Retrieval Lauf entsprechen.
-4. `state` ist entweder `answer` oder `empty`.
-5. `state="empty"` gilt genau dann, wenn `meta.retrievedNodeCount=0` und `references=[]`.
-6. `state="answer"` gilt genau dann, wenn `meta.retrievedNodeCount>=1` und `references` zwischen 1 und 3 Elemente enthält.
-7. `answer.main` und `answer.coreRationale` sind in beiden States nicht leer.
-8. Header `X-Request-Id` ist identisch zu `requestId` im Body.
+3. `references[].nodeType` ist einer aus `Concept`, `Tool`, `Author`, `Book`, `Problem`.
+4. `meta.topK`, `meta.hopDepth` und `meta.contextTokens` müssen dem Retrieval Lauf entsprechen.
+5. `state` ist entweder `answer` oder `empty`.
+6. `state="empty"` gilt genau dann, wenn `meta.retrievedNodeCount=0` und `references=[]`.
+7. `state="answer"` gilt genau dann, wenn `meta.retrievedNodeCount>=1` und `references` zwischen 1 und 3 Elemente enthält.
+8. `answer.main` und `answer.coreRationale` sind in beiden States nicht leer.
+9. Header `X-Request-Id` ist identisch zu `requestId` im Body.
 
 ## Error Schema
 ```json

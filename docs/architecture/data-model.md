@@ -5,6 +5,10 @@
 1. Zweck: Kernkonzepte aus System Thinking.
 2. Pflichtfelder: `id`, `title`, `summary`, `embedding`.
 
+### Tool
+1. Zweck: Methoden und Werkzeuge zur Analyse oder Intervention im Systemkontext.
+2. Pflichtfelder: `id`, `title`, `summary`, `embedding`.
+
 ### Author
 1. Zweck: Autor als Quellenanker.
 2. Pflichtfelder: `id`, `name`, `summary`.
@@ -20,22 +24,32 @@
 ## Relation Types
 1. `(:Author)-[:WROTE]->(:Book)`
 2. `(:Book)-[:EXPLAINS]->(:Concept)`
-3. `(:Book)-[:ADDRESSES]->(:Problem)`
-4. `(:Problem)-[:RELATES_TO]->(:Concept)`
-5. `(:Concept)-[:INFLUENCES]->(:Concept)`
-6. `(:Concept)-[:CONTRASTS_WITH]->(:Concept)`
+3. `(:Book)-[:EXPLAINS]->(:Tool)`
+4. `(:Book)-[:ADDRESSES]->(:Problem)`
+5. `(:Problem)-[:RELATES_TO]->(:Concept)`
+6. `(:Concept)-[:INFLUENCES]->(:Concept)`
+7. `(:Concept)-[:INFLUENCES]->(:Tool)`
+8. `(:Tool)-[:INFLUENCES]->(:Concept)`
+9. `(:Tool)-[:INFLUENCES]->(:Tool)`
+10. `(:Concept)-[:CONTRASTS_WITH]->(:Concept)`
+11. `(:Concept)-[:CONTRASTS_WITH]->(:Tool)`
+12. `(:Tool)-[:CONTRASTS_WITH]->(:Concept)`
+13. `(:Tool)-[:CONTRASTS_WITH]->(:Tool)`
 
 ## Minimale Constraints
 1. Pro Node Type gilt `id` als eindeutig.
 2. `summary` ist für alle Node Types Pflicht.
-3. `title` ist Pflicht für `Concept`, `Book`, `Problem`.
+3. `title` ist Pflicht für `Concept`, `Tool`, `Book`, `Problem`.
 4. `name` ist Pflicht für `Author`.
-5. Vektorindex ist Pflicht für `Concept.embedding` und `Problem.embedding`.
+5. Vektorindex ist Pflicht für `Concept.embedding`, `Tool.embedding` und `Problem.embedding`.
 
 ## Constraint Skizze in Cypher
 ```cypher
 CREATE CONSTRAINT concept_id_unique IF NOT EXISTS
 FOR (n:Concept) REQUIRE n.id IS UNIQUE;
+
+CREATE CONSTRAINT tool_id_unique IF NOT EXISTS
+FOR (n:Tool) REQUIRE n.id IS UNIQUE;
 
 CREATE CONSTRAINT author_id_unique IF NOT EXISTS
 FOR (n:Author) REQUIRE n.id IS UNIQUE;
@@ -49,8 +63,9 @@ FOR (n:Problem) REQUIRE n.id IS UNIQUE;
 
 ## Vektorindex Vorgabe
 1. Für `Concept.embedding` muss ein Neo4j Vector Index vorhanden sein.
-2. Für `Problem.embedding` muss ein Neo4j Vector Index vorhanden sein.
-3. Indexname und exakte DDL werden in der Dev Implementierung auf Neo4j Aura Version abgestimmt.
+2. Für `Tool.embedding` muss ein Neo4j Vector Index vorhanden sein.
+3. Für `Problem.embedding` muss ein Neo4j Vector Index vorhanden sein.
+4. Indexname und exakte DDL werden in der Dev Implementierung auf Neo4j Aura Version abgestimmt.
 
 ## Beispielgraph als Text
 1. `(a:Author {id:"author:donella_meadows", name:"Donella Meadows"})`

@@ -1,39 +1,36 @@
 # Dev Memory
 
 ## Current Implementation Status
-1. Story `E1-S2` wurde durch PM auf kuratierte Quellbasis geschärft und steht auf `in_progress`.
-2. Aktuelle Implementierung in `apps/web/src/features/seed-data/seed-data.ts` ist weiterhin synthetisch und muss auf kuratierte Quellen umgestellt werden.
-3. Der bisherige Datensatz ist deterministisch mit 130 Nodes und 315 Edges und dient als technische Basis.
-4. Seed-Validierung gegen Ontologie-Regeln, Pflichtfelder, Duplikate und Referenzintegritaet ist umgesetzt und kann fuer kuratierte Daten wiederverwendet werden.
-5. Letzter Lauf fuer den bestehenden Stand: `pnpm lint`, `pnpm test` und `pnpm build` in `apps/web` gruen.
+1. Story `E1-S2` ist umgesetzt und auf `qa` gesetzt.
+2. Seed-Daten in `apps/web/src/features/seed-data/seed-data.ts` sind auf kuratierte Quellenbasis umgestellt.
+3. Herkunft ist pro Eintrag ueber `sourceType` und `sourceFile` sowie `internalSource` und `publicReference` in `sources`, `nodes` und `edges` erfasst.
+4. Validierung deckt Quellenkatalog, gueltige Herkunftstypen, Quellenreferenzintegritaet und Feldkonsistenz zwischen Top-Level-Quelle und `internalSource` ab.
+5. Inhaltliche Seed-Abdeckung fuer E1-S2 umfasst jetzt auch konkrete Tool-Konzepte sowie einzelne `system_traps` und `leverage_points`.
+6. Verifikation fuer diesen Stand ist gruen mit `pnpm --dir apps/web test -- src/features/seed-data/seed-data.test.ts`.
 
 ## Active Epics and Stories
 1. Epic `E1 Wissensmodell und Seed-Daten` steht auf `in_progress`.
 2. Story `E1-S1` ist `accepted`.
-3. Story `E1-S2` ist `in_progress` (kuratierte Quellenbasis).
-4. Story `E1-S5` ist `todo` (Extraktion und Normalisierung).
-5. Story `E1-S3` ist `todo` (Zielbetrieb verfuegbar machen).
-6. Story `E1-S4` ist `todo` (Qualitaetspruefung).
+3. Story `E1-S2` ist `qa`.
+4. Story `E1-S5` ist `todo` und naechster inhaltlicher Umsetzungsschritt.
+5. Stories `E1-S3` und `E1-S4` bleiben `todo`.
 
 ## Technical Constraints
-1. Kein Scope-Change und keine Architekturabweichung ohne ADR.
-2. API- und Retrieval-Vertraege aus `docs/spec/**` bleiben bindend.
+1. Kein Scope- oder Architekturwechsel ohne akzeptierte ADR.
+2. API- und Retrieval-Contracts aus `docs/spec/**` bleiben unveraendert bindend.
 3. Next.js `16.1.6`, TypeScript `strict=true`, Tailwind CSS und shadcn/ui bleiben verbindlich.
-4. Dev schreibt nur in erlaubte Pfade und setzt Story-Status nie direkt auf `accepted`.
+4. Dev setzt Story-Status nach Umsetzung nur auf `qa` oder `blocked`.
 
 ## Known Technical Debt
-1. Seed-Daten sind noch nicht aus kuratierten Quellen extrahiert und normalisiert.
-2. Herkunftskennzeichnung pro Eintrag (`primary_md` oder `optional_internet`) ist noch nicht technisch umgesetzt.
-3. Persistierung in Neo4j ist noch nicht umgesetzt.
-4. API bleibt fuer Retrieval und LLM weiterhin im Bootstrap-Zustand.
-5. Laufzeit-Guardrails fuer Rate-Limit und strukturierte Observability sind noch unvollstaendig.
+1. E1-S5 Extraktion und Ontologie-Normalisierung aus den kuratierten Quellen ist noch offen.
+2. Optionale `optional_internet` Quellenlogik ist eingefuehrt, braucht aber fuer den Betrieb einen klaren Qualitaets- und Aktualisierungsprozess.
+3. Persistierung der normalisierten Seed-Daten in Neo4j ist noch offen.
 
 ## Blocking Issues
-1. `E1-S3` ist durch Abhaengigkeit auf `E1-S5` blockiert.
-2. Verbindlicher Primärquellenkatalog fuer `E1-S2` muss bereitgestellt und eingefroren werden.
+1. Keine akuten Blocker fuer `E1-S2`.
+2. Fuer `E1-S5` wird ein klarer Laufprozess fuer dokumentierte Inhaltsluecken bei `optional_internet` benoetigt.
 
 ## Next Instructions for Dev Agent
-1. `E1-S2` abschliessen: kuratierte Quellenbasis inkl. `primary_md` und optionaler `optional_internet`-Ergaenzung dokumentieren.
-2. `E1-S5` umsetzen: Quelleninhalte extrahieren, normalisieren und mit Herkunftsmetadaten versehen.
-3. Bestehende Validatorlogik auf kuratierte Datensaetze anwenden und um Herkunftschecks erweitern.
-4. Danach `E1-S3` starten und die normalisierte Datenbasis im Zielbetrieb verfuegbar machen.
+1. `E1-S5` umsetzen: kuratierte Quelleninhalte extrahieren und ontologiekonform normalisieren.
+2. Herkunftsmetadaten aus `E1-S2` in den Normalisierungspfad uebernehmen und hart validieren.
+3. Danach `E1-S3` starten und die normalisierte Datenbasis im Zielbetrieb verfuegbar machen.

@@ -25,7 +25,7 @@ ein leeres Wissensmodell
 die Ontologie dokumentiert wird
 
 **Then**
-1. sind die Typen Concept, Author, Book, Problem klar beschrieben.
+1. sind die Typen Concept, Tool, Author, Book, Problem klar beschrieben.
 2. sind erlaubte Beziehungen zwischen den Typen eindeutig dokumentiert.
 
 ## Test Notes

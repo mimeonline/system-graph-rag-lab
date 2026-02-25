@@ -28,14 +28,14 @@
 
 ## Testdaten und Seed Voraussetzungen
 1. Kein Seed-Datensatz erforderlich fuer `E1-S1`.
-2. Erforderlich sind die vier Node-Typen `Concept`, `Author`, `Book`, `Problem`.
+2. Erforderlich sind die fuenf Node-Typen `Concept`, `Tool`, `Author`, `Book`, `Problem`.
 3. Erforderlich sind die sechs Relationen `WROTE`, `EXPLAINS`, `ADDRESSES`, `RELATES_TO`, `INFLUENCES`, `CONTRASTS_WITH`.
 
 ## Abnahmekriterien
 ### Story E1-S1 Szenario
 1. Given: ein leeres Wissensmodell.
 2. When: die Ontologie dokumentiert wird.
-3. Then: die Typen `Concept`, `Author`, `Book`, `Problem` und ihre erlaubten Beziehungen sind klar beschrieben.
+3. Then: die Typen `Concept`, `Tool`, `Author`, `Book`, `Problem` und ihre erlaubten Beziehungen sind klar beschrieben.
 
 ### Gate-Regel
 1. Story-Gate ist Pass, wenn Szenario, Unit-Checks und Dokumentationsabgleich reproduzierbar bestanden sind.

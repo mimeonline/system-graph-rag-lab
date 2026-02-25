@@ -10,7 +10,7 @@
 ## Szenario-Pruefung Given When Then
 1. Given: ein leeres Wissensmodell.
 2. When: die Ontologie dokumentiert wird.
-3. Then: die Typen `Concept`, `Author`, `Book`, `Problem` und ihre erlaubten Beziehungen sind klar beschrieben.
+3. Then: die Typen `Concept`, `Tool`, `Author`, `Book`, `Problem` und ihre erlaubten Beziehungen sind klar beschrieben.
 4. Ergebnis: Pass durch konsistente Evidenz in `apps/web/src/features/ontology/ontology.ts`, `apps/web/src/features/ontology/README.md` und gruenen Unit-Tests.
 
 ## Ausgefuehrte QA-Checks

@@ -8,17 +8,24 @@ import {
 
 describe("ontology definition", () => {
   it("contains the required ontology node types", () => {
-    expect(ONTOLOGY_NODE_TYPES).toEqual(["Concept", "Author", "Book", "Problem"]);
+    expect(ONTOLOGY_NODE_TYPES).toEqual(["Concept", "Tool", "Author", "Book", "Problem"]);
   });
 
   it("contains the complete set of allowed relation definitions", () => {
     expect(ONTOLOGY_RELATIONS).toEqual([
       { type: "WROTE", from: "Author", to: "Book" },
       { type: "EXPLAINS", from: "Book", to: "Concept" },
+      { type: "EXPLAINS", from: "Book", to: "Tool" },
       { type: "ADDRESSES", from: "Book", to: "Problem" },
       { type: "RELATES_TO", from: "Problem", to: "Concept" },
       { type: "INFLUENCES", from: "Concept", to: "Concept" },
+      { type: "INFLUENCES", from: "Concept", to: "Tool" },
+      { type: "INFLUENCES", from: "Tool", to: "Concept" },
+      { type: "INFLUENCES", from: "Tool", to: "Tool" },
       { type: "CONTRASTS_WITH", from: "Concept", to: "Concept" },
+      { type: "CONTRASTS_WITH", from: "Concept", to: "Tool" },
+      { type: "CONTRASTS_WITH", from: "Tool", to: "Concept" },
+      { type: "CONTRASTS_WITH", from: "Tool", to: "Tool" },
     ]);
     expect(ONTOLOGY_RELATION_TYPES).toEqual([
       "WROTE",

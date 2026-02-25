@@ -73,7 +73,7 @@ Das MVP ist erfolgreich, wenn:
 
 ### Domäne
 
-- >100 Nodes (Concept, Author, Book, Problem)  
+- >100 Nodes (Concept, Tool, Author, Book, Problem)  
 - >200 Edges  
 - Klar definierte Ontologie  
 

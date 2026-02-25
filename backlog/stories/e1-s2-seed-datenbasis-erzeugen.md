@@ -1,7 +1,7 @@
 # Story E1-S2 Kuratierte Quellbasis aus bereitgestellten Quellen erfassen
 
 ## Status
-in_progress
+qa
 
 ## Ziel
 Eine belastbare Quellbasis aus bereitgestellten MD-Inhalten und optionalen Internet-Ergänzungen kuratieren.
@@ -30,5 +30,6 @@ die Quellen für die Seed-Datenbasis gesichtet und kuratiert werden
 3. sind optionale Internet-Quellen nur für dokumentierte Inhaltslücken ergänzt und als optional markiert.
 
 ## Test Notes
-1. Prüfe stichprobenartig, ob mindestens drei kuratierte Quellen korrekt mit `primary_md` oder `optional_internet` gekennzeichnet sind.
-2. Prüfe, dass jede optionale Internet-Quelle auf eine dokumentierte Inhaltslücke verweist.
+1. `pnpm --dir apps/web test -- src/features/seed-data/seed-data.test.ts` erfolgreich am 2026-02-25, inklusive Validierung von Quellenkatalog, Referenzintegritaet und Ontologie-Regeln.
+2. Stichprobe im kuratierten Katalog: Eintraege mit `sourceType=primary_md` und `sourceType=optional_internet` sind vorhanden und pro Eintrag mit `internalSource` sowie `publicReference` erfasst.
+3. Inhaltliche Abdeckung wurde erweitert: konkrete Tool-Konzepte sowie einzelne `system_traps` und `leverage_points` sind als eigene Nodes mit Quellenbezug in der Seed-Basis enthalten.

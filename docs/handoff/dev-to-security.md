@@ -1,21 +1,22 @@
 # Dev to Security Handoff
 
-## Security Context
-1. Dieser Run implementiert nur Story `E1-S2` zur lokalen Seed-Datenerzeugung und Validierung.
-2. Keine neuen externen Endpoints oder Runtime-Secrets wurden eingefuehrt.
-3. Sicherheitsrelevanz liegt auf Datenintegritaet und Schema-Konformitaet der Seed-Basis.
+## Kurzer Security-Context der umgesetzten Stories
+1. Bearbeitet wurde Story `E1-S2` mit Fokus auf kuratierte Quellenbasis fuer Seed-Daten.
+2. Sicherheitsrelevant ist die Integritaet der Herkunftsmetadaten (`sourceType`, `sourceFile`, `internalSource`, `publicReference`) in der Seed-Basis.
+3. Es wurden keine neuen extern erreichbaren Endpoints eingefuehrt.
 
-## Sicherheitsrelevant beruehrte Eingaben oder Endpoints
-1. Kein neuer HTTP-Endpoint beruehrt.
-2. Sicherheitsrelevante Eingabe ist der interne Seed-Datensatz in `src/features/seed-data/seed-data.ts`.
-3. Validator verarbeitet Node- und Edge-Felder inklusive IDs und Relationstypen.
+## Welche Eingaben oder Endpoints sicherheitsrelevant beruehrt wurden
+1. Kein neuer Endpoint.
+2. Sicherheitsrelevante Eingabe ist der interne Quellenkatalog in `apps/web/src/features/seed-data/seed-data.ts`.
+3. Der Validator verarbeitet Source-Referenzen fuer `sources`, `nodes` und `edges`.
 
-## Bekannte Sicherheitsgrenzen und offene Risiken
-1. Validator ist in-memory und nicht als Laufzeit-Guard im API-Requestpfad verdrahtet.
-2. Neo4j-Persistenzpfad ist noch nicht implementiert, daher keine DB-seitige Constraint-Durchsetzung in diesem Run.
-3. Rate-Limit und Logging-Guardrails bleiben weiterhin offene Themen ausserhalb dieser Story.
+## Welche bekannten Sicherheitsgrenzen oder offenen Risiken bestehen
+1. Herkunftsdaten sind statisch kuratiert und noch nicht gegen manipulierte Runtime-Imports gehaertet.
+2. DB-seitige Constraint-Durchsetzung bei spaeterem Persistieren ist nicht Teil dieser Story.
+3. `optional_internet` wird verwendet, aber es gibt in dieser Story noch keinen dedizierten Review-Workflow fuer externe URL-Qualitaet und Link-Rot.
 
-## Security Gate Fokus fuer Epic
-1. Pruefen, dass Seed-Daten bei Persistierung in spaeteren Stories nur mit denselben Ontologie-Regeln akzeptiert werden.
-2. Pruefen, dass Node-IDs und Relationstypen nicht ungeprueft aus externen Quellen uebernommen werden.
-3. Pruefen, dass bei spaeterem Import keine sensitiven Inhalte in Logs landen.
+## Welche Punkte Security im Epic-Gate gezielt pruefen soll
+1. Bei E1-S5 und E1-S3 sicherstellen, dass Herkunftsfelder beim Import nicht verloren gehen.
+2. Pruefen, dass nur erlaubte `sourceType` Werte akzeptiert werden und unknown-source Eintraege blockiert werden.
+3. Pruefen, dass spaetere Import- oder API-Pfade keine Rohquellen mit sensitiven Inhalten loggen.
+4. Pruefen, dass optionale Internet-Quellen nur mit dokumentierter Inhaltsluecke und nachvollziehbarer Referenz aufgenommen werden.
