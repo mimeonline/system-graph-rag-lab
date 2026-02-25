@@ -6,12 +6,13 @@
 | `todo` | Noch nicht gestartet |
 | `in_progress` | Aktive Bearbeitung läuft |
 | `qa` | Entwicklung abgeschlossen, wartet auf QA |
+| `pass` | QA erfolgreich, bereit für PM-Freigabe |
 | `accepted` | Durch PM final freigegeben |
 | `blocked` | Bearbeitung blockiert |
 
 ## Verbindliche Epic-Statuslogik
 1. Ein Epic muss auf `in_progress` gesetzt werden, sobald die erste Story dieses Epics einen Status ungleich `todo` hat.
-2. Wenn eine Story eines Epics den Status `in_progress`, `qa`, `accepted` oder `blocked` hat, darf das Epic nicht `todo` bleiben.
+2. Wenn eine Story eines Epics den Status `in_progress`, `qa`, `pass`, `accepted` oder `blocked` hat, darf das Epic nicht `todo` bleiben.
 
 ## Epic Übersicht
 | Epic-Datei | Titel | Status | Letztes Update |
@@ -25,7 +26,7 @@
 ## Story Übersicht
 | Story-Datei | Titel | Status | Letztes Update |
 | --- | --- | --- | --- |
-| `e1-s1-ontologie-fachlich-definieren.md` | E1-S1 Ontologie fachlich definieren | `qa` | 2026-02-25 |
+| `e1-s1-ontologie-fachlich-definieren.md` | E1-S1 Ontologie fachlich definieren | `pass` | 2026-02-25 |
 | `e1-s2-seed-datenbasis-erzeugen.md` | E1-S2 Seed-Datenbasis im MVP-Rahmen erzeugen | `todo` | 2026-02-25 |
 | `e1-s3-datenbasis-verfuegbar-machen.md` | E1-S3 Datenbasis im Zielbetrieb verfügbar machen | `todo` | 2026-02-25 |
 | `e1-s4-qualitaetspruefung-seed-daten.md` | E1-S4 Qualitätsprüfung für Seed-Daten ausführen | `todo` | 2026-02-25 |

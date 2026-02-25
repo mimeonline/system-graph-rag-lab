@@ -163,7 +163,7 @@ Inhalt:
 4) Workflow
 Datei: docs/dev/workflow.md
 Inhalt:
-- Story Lifecycle: todo -> in_progress -> qa -> accepted
+- Story Lifecycle: todo -> in_progress -> qa -> pass -> accepted
 - Rollenverantwortung pro Status
 - Epic Gates und Trigger
 

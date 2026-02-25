@@ -33,13 +33,14 @@
 5. `NEO4J_PASSWORD`
 
 ## Story Workflow und Status
-1. Zulässige Story Status sind `todo`, `in_progress`, `qa`, `accepted`, `blocked`.
+1. Zulaessige Story Status sind `todo`, `in_progress`, `qa`, `pass`, `accepted`, `blocked`.
 2. Dev setzt nach Umsetzung nur `qa` oder `blocked`.
 3. Dev setzt nicht `accepted`.
-4. PM setzt `accepted` erst nach erfolgreichem QA Gate.
+4. PM setzt nach erfolgreichem QA Gate zuerst `pass`.
+5. PM setzt `accepted` erst nach PM-Review auf Basis von `pass`.
 
 ## Epic Gate Trigger
-1. Alle Stories eines Epics müssen mindestens Status `qa` haben.
+1. Alle Stories eines Epics muessen mindestens Status `pass` haben.
 2. Danach sind Security Gate und DevOps Gate verpflichtend.
 3. Erst nach diesen Gates ist die Epic Freigabe für den nächsten Schritt belastbar.
 
@@ -64,5 +65,5 @@ curl -s -X POST http://localhost:3000/api/query \
 ## Übergabehinweise an QA und PM
 1. Übergabe an QA enthält Story Status, Test Notes und Verifikationsresultate.
 2. QA prüft Contract-Verhalten, Fehlercodes und Smoke-Reproduzierbarkeit.
-3. Übergabe an PM erfolgt erst nach QA Ergebnis mit klarer Empfehlung `accepted` oder `blocked`.
-4. PM setzt finalen Story-Status `accepted` nur nach erfolgreicher QA Prüfung.
+3. Uebergabe an PM erfolgt erst nach QA Ergebnis mit klarer Empfehlung `pass` oder `blocked`.
+4. PM setzt finalen Story-Status `accepted` nur nach vorherigem `pass` und erfolgreichem PM-Review.

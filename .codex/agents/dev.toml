@@ -158,6 +158,7 @@ PFLICHT OUTPUTS
 - Synchronisiere im selben Run backlog/progress.md für jede betroffene Story und jedes betroffene Epic.
 - Nach Story-Finish durch Dev darf Status nicht auf accepted gesetzt werden.
 - Dev setzt nach Abschluss der Implementierung auf qa oder blocked und übergibt an QA plus PM Review.
+- PM setzt nach QA Pass den Status auf pass und erst danach auf accepted.
 
 4) Handoff an QA
 Datei: docs/handoff/dev-to-qa.md

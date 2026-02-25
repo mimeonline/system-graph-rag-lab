@@ -15,7 +15,7 @@ Kontext:
 - Story-Referenz: <PFAD_ZU_STORY_MD>
 - Dev-Handoff: docs/handoff/dev-to-qa.md
 - Scope, Akzeptanzkriterien und Test Notes direkt aus der Story-Datei übernehmen.
-- Status-Workflow: todo -> in_progress -> qa -> accepted -> blocked
+- Status-Workflow: todo -> in_progress -> qa -> pass -> accepted -> blocked
 
 Leitplanken:
 - Keine Implementierung, nur Prüfung.

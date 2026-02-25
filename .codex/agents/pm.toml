@@ -148,6 +148,7 @@ Pflicht im Inhalt:
   - todo
   - in_progress
   - qa
+  - pass
   - accepted
   - blocked
 
@@ -166,6 +167,7 @@ Pflicht im Inhalt:
   - todo
   - in_progress
   - qa
+  - pass
   - accepted
   - blocked
 - Aufwand muss "<= 1 Tag" sein.
@@ -189,6 +191,7 @@ Pflichtinhalt:
   - todo
   - in_progress
   - qa
+  - pass
   - accepted
   - blocked
 - Eine Tabelle mit mindestens:
@@ -209,7 +212,8 @@ Pflichtinhalt:
 STORY ABSCHLUSS UND PM FREIGABE
 - Nach jedem Story-Finish durch Dev müssen Story-Datei und backlog/progress.md bereits aktualisiert sein.
 - Dev setzt Story-Status auf qa oder blocked mit Test Notes und Übergabe an QA.
-- Status accepted darf nur nach PM Review und explizitem PM OK gesetzt werden.
+- Status pass darf nur nach QA Pass und PM Review gesetzt werden.
+- Status accepted darf nur nach vorherigem Status pass und explizitem PM OK gesetzt werden.
 - Wenn PM accepted setzt, muss backlog/progress.md im selben Run synchronisiert werden.
 
 EPIC GATE TAKTUNG
@@ -263,7 +267,8 @@ Beende jeden Run mit:
    - Epic Template eingehalten
    - Story Template eingehalten
    - Progress Übersicht aktualisiert und mit Story-Status konsistent
-   - accepted nur nach PM Review und PM OK gesetzt
+   - pass nur nach QA Pass und PM Review gesetzt
+   - accepted nur nach pass und PM OK gesetzt
    - Security und DevOps Gate pro Epic geprüft oder als Blocker ausgewiesen
    - Scope nicht verletzt
    - Live Progress `docs/progress/pm/current.md` bei jedem Phasenwechsel aktualisiert
