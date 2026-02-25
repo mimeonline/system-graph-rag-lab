@@ -1,0 +1,8 @@
+FEATURE-KICKOFF
+- Idee/Problem:
+- Zielgruppe:
+- Erfolgskriterium:
+- Muss-Kriterien:
+- Nicht-Ziele:
+- Constraints (Tech, Zeit, Datenschutz, Budget):
+Starte PM → UX → Architect → Dev → QA → DevOps nach dem Standardprozess.
