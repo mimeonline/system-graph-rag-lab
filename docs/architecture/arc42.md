@@ -42,6 +42,7 @@ flowchart LR
 7. Betriebsfähigkeit wird durch minimale Guardrails abgesichert: Rate Limit, strukturierte Logs, standardisierte Fehlercodes.
 8. Runtime Unterschiede zwischen `public` und `local` sind explizit dokumentiert, Contracts bleiben identisch.
 9. OpenAI Modellwahl ist Environment gesteuert mit Default `gpt-5-mini` ohne Modell Hardcode im Code.
+10. Umsetzungsfokus liegt aktuell auf E1 im Profil `local`; Public Runtime bleibt Zielbild für spätere E4 Stories.
 
 ## Laufzeitprofile
 ### Profil public
@@ -56,6 +57,7 @@ flowchart LR
 3. Rate Limit Store ist ein prozesslokaler Fixed Window Store.
 4. Observability erfolgt lokal strukturiert im Development Log Stream.
 5. API Contract, Retrieval Parameter und Fehlercodes sind identisch zum Profil `public`.
+6. E1 Implementierung und frühe QA Gates fokussieren dieses Profil.
 
 ## Bausteinsicht Container Ebene
 ### Web UI
@@ -184,7 +186,8 @@ sequenceDiagram
 3. Tech Stack, API Grenze und minimale Observability sind in [ADR-0003](./adr/adr-0003.md) festgelegt.
 4. Serverless konsistentes Rate Limiting im Public Profil ist in [ADR-0004](./adr/adr-0004.md) festgelegt.
 5. Local Development Topologie mit Profiltrennung ist in [ADR-0005](./adr/adr-0005.md) festgelegt.
-6. Diese Arc42 Übersicht konsolidiert die bestehenden Entscheidungen ohne neue Scope Vorgaben.
+6. Umsetzungsfokus E1 local bei unverändertem E4 Public Zielbild ist in [ADR-0006](./adr/adr-0006.md) festgelegt.
+7. Diese Arc42 Übersicht konsolidiert die bestehenden Entscheidungen ohne neue Scope Vorgaben.
 
 ## Risiken und offene Punkte
 1. Paritätsabweichungen zwischen Neo4j Docker local und Neo4j Aura public können Retrieval Unterschiede erzeugen.

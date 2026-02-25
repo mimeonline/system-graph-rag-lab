@@ -10,6 +10,8 @@
 1. Profil `public`: Next.js auf Vercel, Neo4j Aura, Vercel KV.
 2. Profil `local`: Next.js lokal auf `http://localhost:3000`, Neo4j Docker auf localhost, prozesslokaler Rate Limit Store.
 3. Endpoint, Request und Response Schema sind in beiden Profilen identisch.
+4. Aktueller Umsetzungsfokus liegt in E1 auf dem Profil `local`.
+5. Das Profil `public` bleibt unverändertes Zielbild für spätere E4 Stories.
 
 ## Runtime Konfiguration und Secret Handling
 1. Secrets und Keys werden ausschließlich als Environment Variables geladen.

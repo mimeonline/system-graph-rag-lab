@@ -4,6 +4,7 @@
 1. Dieses Artefakt beschreibt die Deployment Sicht der bestehenden MVP Architektur.
 2. Public Runtime Ziel bleibt unverändert: Vercel plus Neo4j Aura.
 3. Local Dev Topologie wird als getrenntes Laufzeitprofil dokumentiert, ohne Scope Änderung oder neue Produktfeatures.
+4. Aktueller Umsetzungsfokus liegt in E1 auf dem Profil `local`; das Profil `public` bleibt Zielbild für spätere E4 Stories.
 
 ## Laufzeitprofile
 ### Profil public
@@ -11,12 +12,14 @@
 2. Graph Backend ist Neo4j Aura.
 3. Rate Limit Store ist Vercel KV.
 4. Ziel ist öffentlich erreichbare Demo Laufzeit.
+5. Dieses Profil bleibt in E1 unverändert und wird in E4 fokussiert umgesetzt.
 
 ### Profil local
 1. Hosting und Runtime liegen lokal auf der Dev Maschine mit Next.js.
 2. Graph Backend ist Neo4j im Docker Container.
 3. Rate Limit Store ist ein prozesslokaler Fixed Window Store.
 4. Ziel ist reproduzierbare lokale Entwicklung ohne Abhängigkeit von Vercel Runtime und Neo4j Aura.
+5. Dieses Profil ist für die aktuelle E1 Umsetzung führend.
 
 ## Tech Stack Bindung
 1. Laufzeiteinheit bleibt eine Next.js `16.1.6` Anwendung mit TypeScript, Web UI und API Layer.

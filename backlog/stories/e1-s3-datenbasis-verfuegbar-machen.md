@@ -4,7 +4,7 @@
 qa
 
 ## Ziel
-Die normalisierte Seed-Datenbasis im vorgesehenen Betriebsrahmen abrufbar bereitstellen.
+Die normalisierte Seed-Datenbasis im lokalen Zielbetrieb mit Next.js lokal und Neo4j Docker abrufbar bereitstellen.
 
 ## Priorität
 P0
@@ -19,16 +19,17 @@ P0
 ### Szenario 1: Datenbasis ist im Zielbetrieb abrufbar
 
 **Given**
-eine normalisierte Seed-Datenbasis mit Herkunftskennzeichnung und gültige Zugangsdaten im Runtime-Kontext
+eine normalisierte Seed-Datenbasis mit Herkunftskennzeichnung sowie lokal gesetzte Runtime-Variablen für Next.js und Neo4j Docker
 
 **When**
-die Anwendung Nodes und Relationen im Zielbetrieb abfragt
+die lokal gestartete Anwendung Nodes und Relationen aus Neo4j Docker abfragt
 
 **Then**
 1. werden Nodes und Relationen aus der normalisierten Datenbasis fehlerfrei gelesen.
 2. bleibt die Herkunftskennzeichnung `primary_md` oder `optional_internet` pro Eintrag abrufbar.
+3. ist der Lese-Smoke-Test im lokalen Zielbetrieb reproduzierbar dokumentiert.
 
 ## Test Notes
-1. `pnpm --dir apps/web test -- src/features/seed-data/runtime-read.test.ts` erfolgreich am 2026-02-25, inklusive Lese-Smoke-Test mit mindestens zwei Nodes und zwei Relationen.
-2. Im Smoke-Test sind fuer die gepruefte Node- und Relationsstichprobe `sourceType` und `sourceFile` enthalten; `sourceType` ist je Eintrag `primary_md` oder `optional_internet`.
-3. Regression erfolgreich mit `pnpm --dir apps/web test`, `pnpm --dir apps/web lint` und `pnpm --dir apps/web build`.
+1. Lokaler Nachweis ueber `pnpm --dir apps/web test -- src/features/seed-data/runtime-read.test.ts` mit laufendem Neo4j Docker und lokalem Next.js Runtime-Kontext.
+2. Der Lese-Smoke-Test prueft mindestens zwei Nodes und zwei Relationen inklusive `sourceType` und `sourceFile`; `sourceType` ist je Eintrag `primary_md` oder `optional_internet`.
+3. Lokale Regression im selben Zielbetrieb ueber `pnpm --dir apps/web test`, `pnpm --dir apps/web lint` und `pnpm --dir apps/web build`.

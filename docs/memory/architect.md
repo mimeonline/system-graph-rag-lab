@@ -8,6 +8,7 @@
 5. OpenAI Modellwahl bleibt environment-basiert mit Default `gpt-5-mini`; kein Modell-Hardcode im Code.
 6. Secrets und Keys werden in `local` über `.env.local` oder `.env` geführt und in `public` über Vercel Environment Variables.
 7. Architekturartefakte bleiben synchron zwischen ADR, Arc42, Deployment View, API Spec und Retrieval Contract.
+8. Aktueller Umsetzungsfokus bleibt E1 auf `local`; Public Runtime bleibt Zielbild für spätere E4 Stories.
 
 ## Key Decisions (Summary of ADRs)
 1. ADR-0001 fixiert Public Deployment auf Vercel plus Neo4j Aura.
@@ -15,6 +16,7 @@
 3. ADR-0003 fixiert Tech Stack auf Next.js `16.1.6` mit TypeScript `strict=true`, Route Handler, Tailwind CSS, shadcn/ui, Atomic Design und minimaler Observability.
 4. ADR-0004 fixiert serverless konsistentes Rate Limiting im Public Profil auf Vercel KV.
 5. ADR-0005 fixiert Local Dev Topologie mit Next.js lokal, Neo4j Docker Pinning `neo4j:5.26.0` und profilabhängigem Rate Limit Store bei identischem Contractverhalten.
+6. ADR-0006 fixiert die Umsetzungsreihenfolge: E1 local-first ohne Änderung des Public Zielbilds für E4.
 
 ## Retrieval Strategy Snapshot
 1. TopK: 6 Seeds aus Vektorindex auf `Concept`, `Tool` und `Problem`.
@@ -37,6 +39,7 @@
 2. Welches CI Gate OpenAPI Konsistenzprüfung gegen `docs/spec/api.md` verbindlich absichert.
 3. Ob ein verpflichtendes `.env.example` als nicht geheimes Variablen Template im Repo geführt werden soll.
 4. Ob ein fixer `OPENAI_MAX_OUTPUT_TOKENS` Wert für P0 zusätzlich als Runtime Variable dokumentiert werden muss.
+5. Welche minimalen E4-Gates für Public Runtime vor dem ersten Public Smoke-Test verbindlich sind.
 
 ## Next Instructions for Architect Agent
 1. Bei Änderungen an Laufzeitprofilen zuerst ADR aktualisieren, danach Arc42, Deployment View, API und Retrieval Spec synchronisieren.
@@ -44,3 +47,4 @@
 3. Bei Rate Limit Änderungen Public und Local Profiltrennung explizit dokumentieren.
 4. Vor Dev Übergabe stets prüfen, dass Public Ziel unverändert bleibt und Local Setup inklusive Neo4j Pinning deterministisch reproduzierbar beschrieben ist.
 5. Vor Dev Übergabe stets prüfen, dass TypeScript Strictness, `OPENAI_MODEL` Default und `.env` oder `.env.local` Secret-Regel in allen Architekturartefakten konsistent sind.
+6. Bei lokalen Fokusentscheidungen immer explizit E1 local und E4 public in Handoff und Deployment View kennzeichnen.

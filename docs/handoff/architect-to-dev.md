@@ -17,6 +17,8 @@
 2. Local Dev dient reproduzierbarer Entwicklung ohne Vercel Runtime und ohne Neo4j Aura.
 3. Unterschiede sind nur bei Laufzeitorten und Betriebsadaptern erlaubt.
 4. Unterschiede in API Schema, Retrieval Parametern oder Fehlercodes sind nicht erlaubt.
+5. Aktueller Implementierungsfokus in E1 ist verbindlich `local`.
+6. Public Runtime Umsetzung wird für E4 Stories vorbereitet, aber in E1 nicht vorgezogen.
 
 ## Retrieval Contract Summary
 1. Feste Parameter: `TOP_K=6`, `HOP_DEPTH=1`, `CONTEXT_BUDGET_TOKENS=1400`, `MAX_EVIDENCE_ITEMS=8`.
@@ -53,12 +55,14 @@
 13. Image Tag `latest` ist unzulässig.
 
 ## Implementierungsreihenfolge
-1. Laufzeitprofil Schalter für `public` und `local` mit identischer API Oberfläche umsetzen.
-2. Local Neo4j Anbindung auf `bolt://localhost:7687` und public Aura Anbindung profilgebunden verdrahten.
-3. Rate Limit Adapter profilabhängig verdrahten: Vercel KV für `public`, prozesslokal für `local`.
-4. Retrieval Pipeline gemäß Contract umsetzen: Embedding, TopK, Hop Expansion, Dedupe, Sortierung, Budgetierung.
-5. Response Mapping und Error Mapping contractkonform finalisieren.
-6. Observability Abschluss Event mit Pflichtfeldern in beiden Profilen prüfen.
+1. E1 Startregel umsetzen: `local` vollständig lauffähig herstellen, `public` Zielbild unverändert lassen.
+2. Laufzeitprofil Schalter für `public` und `local` mit identischer API Oberfläche umsetzen.
+3. Local Neo4j Anbindung auf `bolt://localhost:7687` und public Aura Anbindung profilgebunden verdrahten.
+4. Rate Limit Adapter profilabhängig verdrahten: Vercel KV für `public`, prozesslokal für `local`.
+5. Retrieval Pipeline gemäß Contract umsetzen: Embedding, TopK, Hop Expansion, Dedupe, Sortierung, Budgetierung.
+6. Response Mapping und Error Mapping contractkonform finalisieren.
+7. Observability Abschluss Event mit Pflichtfeldern in beiden Profilen prüfen.
+8. Public runtime-spezifische Verifikation als E4 Folgearbeit einplanen, ohne E1 Scope zu erweitern.
 
 ## Bekannte Failure Modes und Testhinweise
 1. Public Profil: Vercel KV Ausfall oder hohe Latenz kann `500 INTERNAL_ERROR` auslösen.

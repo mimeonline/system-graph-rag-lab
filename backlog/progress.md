@@ -42,6 +42,7 @@
 | `e3-s1-query-und-antwortansicht.md` | E3-S1 Query-Eingabe und Antwortansicht bereitstellen | ⚪ `todo` | 2026-02-25 |
 | `e3-s2-loading-fehler-leere-zustaende.md` | E3-S2 Zustände für Loading, Fehler und Leere bereitstellen | ⚪ `todo` | 2026-02-25 |
 | `e3-s3-herleitungsdetails-sichtbar-machen.md` | E3-S3 Herleitungsdetails sichtbar machen | ⚪ `todo` | 2026-02-25 |
+| `e4-s5-public-plattform-setup.md` | E4-S5 Public Plattform Setup vorbereiten | ⚪ `todo` | 2026-02-25 |
 | `e4-s1-public-deployment-lauffaehig.md` | E4-S1 Public Deployment lauffähig machen | ⚪ `todo` | 2026-02-25 |
 | `e4-s2-api-key-schutz-usage-limit.md` | E4-S2 API-Key-Schutz und Usage-Limit verifizieren | ⚪ `todo` | 2026-02-25 |
 | `e4-s3-basis-rate-limit.md` | E4-S3 Basis-Rate-Limit aktivieren | ⚪ `todo` | 2026-02-25 |
