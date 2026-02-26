@@ -73,6 +73,7 @@
 3. Output: Genau eine ausgefuehrte Testdatei, reproduzierbar `5 passed` und `1 skipped`.
 4. Fail oder Edge-Case: `pnpm --dir apps/web test -- src/features/seed-data/local-seed-reset.test.ts` ist nicht zulassig fuer Scope-Evidenz, da der Lauf weiterhin die Gesamtsuite startet.
 5. Beispiel: `pnpm --dir apps/web exec vitest run src/features/seed-data/local-seed-reset.test.ts`.
+
 ### Story E2-S3 Antwort aus strukturiertem Kontext
 1. Validierung, dass `answer.main` nicht leer bleibt und `answer.coreRationale` den Kontext nachvollziehbar zusammenfasst.
 2. Sicherstellung, dass `references.length <= 3` und bei leerem Referenzset ein klarer Fallback-Text erscheint.
@@ -86,3 +87,9 @@
 2. Story-spezifischer Testlauf: `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts` (vier Tests, inklusive Match- und Fallback-Szenarien).
 3. Zusatzcheck: manuelle `POST /api/query`-Beispielanfrage (Q1 oder eine Frage ohne passende Konzepte) dokumentieren und prüfen, dass im ersten Fall der Hinweis ausbleibt und im zweiten Fall der `Hinweis: ...`-Fallback erscheint.
 4. Abnahme erwartet: mindestens zwei erwartete Konzepte unter den ersten drei Referenzen oder ein deutlich formulierter Fallback-Hinweis mit Bezug auf die erwarteten Konzepte.
+
+### Story E3-S1 Query-Eingabe und Antwortansicht
+1. Automatisierter View-Model-Check: `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` – validiert `buildQueryViewModel`, Statusstrom und die Fragmentierung von Hauptantwort, Referenzen (maximal drei) und `coreRationale`.
+2. Manuelle UI-Flow-Pruefung: Dev-Server (`pnpm --dir apps/web dev`) starten, mindestens zwei Fragen (Default + eine komplexe eigene Frage) absenden und nach jeder Antwort die Sektionen `Hauptantwort`, `Referenzkonzepte` (≤3 Items) und `Knapper P0-Kernnachweis` prüfen.
+3. Beobachtung: Der Submit-Button darf währen des Ladens inaktiv sein und die Statusanzeige muss von `loading` auf `success` wechseln, bevor neue Queries möglich sind.
+4. Abnahme: Hauptantwort, Referenzliste und Kernnachweis bleiben nach je zwei Queries sichtbar dokumentiert; Screenshot/Notizen festhalten.

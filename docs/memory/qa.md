@@ -32,6 +32,7 @@
 5. Kontext-Attribution in `context.elements` braucht enge Nachverfolgung, falls sich Source-IDs oder Source-Filestructure aendern.
 6. Referenz-Fallback-Text und Referenzlimit müssen bei künftigen Antwort-Anpassungen nachziehen, sonst drohen Inkonsistenzen.
 7. Erwartungsliste gegen Referenzen muss bei neuen Eval-Fragen erweitert werden, sonst greift der Hinweis fälschlicherweise.
+8. Sichtbarkeit/Single-Page-Rendering von Hauptantwort, Referenzen und `coreRationale` hängt an `QueryPanel`-Markup; Template-Änderungen verlangen neue QA-Checks.
 
 ## Next Instructions
 1. PM-Sync fuer Epic E1 in `backlog/progress.md` auf Basis des QA-Epic-Pass durchfuehren.
@@ -40,3 +41,5 @@
 4. PM-Abnahme fuer E2-S1 auf Basis von `docs/handoff/qa-to-pm.md` durchfuehren.
 5. Story E2-S4 Referenzkonzepte absichern und Fallback-Regeln gegen `/api/query`-Contract prüfen.
 6. Neue QA-Läufe für E2-S4 auslösen, sobald `reference-expectations.ts` oder API-Responses angepasst werden.
+7. E3-S2 (Loading/Fehler/Leere) QA-Run planen, danach E3-S3 (Herleitungsdetails) angehen.
+8. Nach Abschluss aller E3-Stories QA-Epic-Gate inkl. Security/DevOps koordinieren und `docs/qa/verdict-epic.md` ggf. ergänzen.

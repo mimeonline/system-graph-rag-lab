@@ -69,3 +69,18 @@
 1. Bei neuen Eval-Fragen die `reference-expectations.ts`-Tabelle um erwartete Konzepte erweitern und Story neu testen.
 2. Fallback-Hinweis muss bei Änderungen an `buildStructuredAnswer` oder `evaluateExpectationMatch` erneut überprüft werden.
 3. Beobachte, ob Referenz-Reihenfolge durch Retrieval-Änderungen die deterministischen Matches beeinflusst.
+
+## E3-S1 Query-Eingabe und Antwortansicht bereitstellen
+### Teststatus
+1. Story-Gate E3-S1 ist auf `pass` gesetzt.
+2. Automatisierter Check: `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` (3 tests, Exit Code 0) – validiert `buildQueryViewModel`, Statusfeedback und Aggregation von Antwort, Referenzen und Kernnachweis.
+3. Manueller UI-Check: Dev-Server (`pnpm --dir apps/web dev`) starten, mindestens zwei Fragen absenden, Hauptantwort, Referenzen (max. 3) und `Knapper P0-Kernnachweis` für jede Antwort sichtbar dokumentieren.
+
+### Bekannte Einschränkungen
+1. Loading-, Fehler- und Leerezustände werden in E3-S2 behandelt; dieser Story-Run fokussiert nur den erfolgreichen Kernfluss.
+2. Referenzliste bleibt auf drei Items begrenzt; zusätzliche Referenzen erweitern momentan weder UI noch Tests.
+
+### Monitoring Hinweise
+1. Bei API-Format- oder Referenzlimit-Anpassungen `buildQueryViewModel` und den manual QA-Flow erneut prüfen.
+2. Beobachte, ob `coreRationale`-Inhalte bei neuen Fragen weiterhin den `Knappe P0-Kernnachweis` tragen.
+3. E3-S2/E3-S3 müssen vor Epic-Abnahme durch PM ebenfalls geprüft werden, damit E3-Epic-Gate dokumentiert werden kann.

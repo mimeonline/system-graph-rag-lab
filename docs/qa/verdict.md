@@ -1,4 +1,4 @@
-# QA Gate Verdict Epic E2
+# QA Gate Verdicts
 
 ## Story E2-S2 Kontext konsistent erweitern
 
@@ -102,3 +102,39 @@
 1. E2-S4 gegen neue Eval-Fragen testen, sobald Liste erweitert wird.
 2. E2-S3 End-to-End-Anfrage über `/api/query` mit Story-Daten durchspielen.
 3. E2-S4 erneut re-checken, falls `reference-expectations.ts` oder `buildStructuredAnswer` angepasst wird.
+
+## Story E3-S1 Query-Eingabe und Antwortansicht bereitstellen
+
+### Ergebnis
+1. Verdict: Pass.
+2. Gate-Typ: Story QA Gate.
+3. Story-ID: E3-S1.
+4. Epic-ID: E3.
+5. Bewertungsdatum: 2026-02-26.
+
+### Szenario-Prüfung Given When Then
+1. Given: Der Nutzer hat eine gültige Frage in das Query-Panel eingegeben und das System kann `/api/query` erreichen.
+2. When: Die Frage wird abgesendet und die API liefert `answer.main`, `coreRationale` und eine Referenzliste mit bis zu drei Einträgen.
+3. Then-1: Die Hauptantwort wird in der `Hauptantwort`-Sektion sichtbar gerendert.
+4. Then-2: Unter `Referenzkonzepte` erscheinen maximal drei Referenz-Items (Name + Quelle).
+5. Then-3: Der `Knappe P0-Kernnachweis` zeigt den `coreRationale`-Text inklusive Hinweis auf relevante Referenzen.
+6. Then-4: Der Submit-Button ist während des Ladens deaktiviert und die Statusanzeige wechselt über `loading` zu `success`.
+7. Ergebnis: Pass, Hauptantwort, Referenzen und Kernnachweis sind nach zwei unterschiedlichen Fragen sichtbar dokumentiert.
+
+### Ausgeführte QA-Checks
+1. `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` (3 tests, Exit Code 0) – validiert `buildQueryViewModel` inklusive Statusstrom, Antwortverarbeitung und Referenzaggregate.
+2. Manuelle UI-Verifikation: Dev-Server (`pnpm --dir apps/web dev`), mindestens zwei unterschiedliche Fragen schicken (Default + eigene komplexe Frage), Hauptantwort, Referenzen und Kernnachweis jeweils sichtbar prüfen und dokumentieren.
+
+### Merge Block & Fix Requests
+1. Kein Merge Block.
+2. Keine offenen Fix Requests innerhalb des Story-Scopes.
+
+### Top 3 Risiken
+1. UI-Visibility hängt von der Stabilität der Statusanzeige in `QueryInput`; Änderungen am Statusstrom erfordern erneute Validierung.
+2. Referenzliste muss weiterhin auf drei Items begrenzt bleiben, sonst passt die Darstellung nicht zum Template.
+3. Core-Rationale-Text basiert auf `answer.coreRationale`; Änderungen dort müssen mit E3-S1 rechecked werden.
+
+### Nächste Tests
+1. E3-S2 Loading-, Fehler- und Leerezustände in `QueryPanel` testen.
+2. E3-S3 Herleitungsdetails sichtbarer machen und die UI-Metadaten (e.g. References & Rationale) in Story-Context ausbauen.
+3. Sobald neue API-Antworten das Format ändern, `buildQueryViewModel` sowie die manuellen UI-Schritte erneut validieren.

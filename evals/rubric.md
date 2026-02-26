@@ -39,3 +39,4 @@
 1. Wenn mindestens drei geeignete Konzepte verfuegbar sind, muss die Expected-Reference-Liste mindestens drei Eintraege enthalten.
 2. Wenn weniger als drei geeignete Konzepte verfuegbar sind, muss ein klarer Fallback-Hinweis dokumentiert werden.
 3. Erwartungslisten muessen vor dem Abnahmelauf freigegeben und versioniert sein.
+4. Für Story-E3-Checks sicherstellen, dass neben Referenzen auch der `coreRationale`-Text sichtbar bleibt und die UI-Sektion „Hauptantwort / Referenzkonzepte / Knapper P0-Kernnachweis“ reproduzierbar darstellbar ist.

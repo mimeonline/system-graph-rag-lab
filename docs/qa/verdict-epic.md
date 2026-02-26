@@ -1,4 +1,4 @@
-# Epic QA Gate Verdict E1
+# Epic QA Gate Verdicts
 
 ## Epic Referenz
 1. Epic-ID: E1.
@@ -44,3 +44,46 @@
 3. DevOps-Gate: `docs/ops/verdict-epic.md`.
 4. Eval-Status-Kontext: `evals/report.md`.
 5. Relevanter QA-Bugkontext: `docs/qa/bugs/bug-0003.md`.
+
+## Epic Referenz E3 (Teilcheck)
+1. Epic-ID: E3.
+2. Epic-Datei: `backlog/epics/e3-frontend-nutzerfuehrung.md`.
+3. Recheck-Datum: 2026-02-26.
+4. RUN_MODE: review.
+
+## Scope der QA-Pruefung
+1. Story-Gate E3-S1 und die zugehörigen UI-Fluss-Komponenten (`QueryPanel`, `QueryInput` und `buildQueryViewModel`).
+2. Sichtbarkeit von Hauptantwort, Referenzkonzepten und `coreRationale`.
+3. Keine Security-, DevOps- oder Eval-Gates in diesem Story-Run.
+
+## Recheck Ergebnis je Gate
+### Story und QA Gate
+1. E3-S1 steht auf `pass`.
+2. Story-QA-Gate dokumentiert in `docs/qa/verdict.md` (E3-S1 Section).
+3. Ergebnis: Pass (Story-Level). Das Epic bleibt insgesamt `in_progress`, da E3-S2/E3-S3 noch ausstehen.
+
+### Security Gate
+1. Nicht ausgeführt in diesem Run (Scope: Story-Only).
+2. Ergebnis: Nicht angewendet.
+
+### DevOps Gate
+1. Nicht ausgeführt in diesem Run (Scope: Story-Only).
+2. Ergebnis: Nicht angewendet.
+
+### Eval Gate Hinweis
+1. Eval-Set (E5) bleibt `Fail/ausstehend`.
+2. Kein direkter Bezug zu Eval-Gates in diesem Story-Run.
+
+## Ergebnis
+1. Story QA Verdict: Pass.
+2. Epic Gate: Pending (E3-S2/E3-S3 in `todo`).
+
+## Top 3 Risiken
+1. Sichtbarkeit der Hauptantwort/Referenzliste/Core-Rationale bleibt an das bestehende Query-Panel-Template gebunden; jede Template-Änderung erfordert erneute QA-Verifikation.
+2. API-Response-Formatänderungen würden `buildQueryViewModel` betreffen; Änderungen dort benötigen Recheck.
+3. Weitere E3-Stories (E3-S2/E3-S3) müssen vor Epic-Abnahme durch QA und PM und einen zusätzlichen Epic-Gate-Run validiert werden.
+
+## Verweise auf Dokumentation und Reports für E3
+1. Story-QA-Gate: `docs/qa/verdict.md`.
+2. QA-Testmatrix: `docs/qa/test-matrix.md`.
+3. QA-Testplan: `docs/qa/test-plan.md`.
