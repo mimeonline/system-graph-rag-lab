@@ -18,13 +18,17 @@
 4. DevOps-Gate E1: Pass.
 5. E5-Eval Q1 bis Q5 bleibt offen, ist aber kein Blocker fuer E1 gemaess Recheck-Regel.
 6. QA Epic Verdict E1: Pass.
+7. Story-Gate E2-S1 am 2026-02-26 auf Pass gesetzt.
+8. Evidenz fuer E2-S1: retrieval- und route-Tests sowie lint/test/build sind reproduzierbar gruen.
 
 ## Open Quality Risks
 1. Public-Betriebsparitaet bleibt bis zu E4-Gates unvollstaendig abgesichert.
 2. Eval-Ergebnislage fuer Q1 bis Q5 bleibt fuer E5-Abnahme offen.
 3. Epic-Progress kann ohne PM-Sync von QA-Verdikten abweichen.
+4. E2-Retrieval ist aktuell keyword-basiert und kann semantische Randfaelle schlechter priorisieren.
 
 ## Next Instructions
 1. PM-Sync fuer Epic E1 in `backlog/progress.md` auf Basis des QA-Epic-Pass durchfuehren.
 2. E5-S2 Eval-Lauf fuer Q1 bis Q5 separat ausfuehren und `evals/report.md` aktualisieren.
 3. Nach E5-Eval einen eigenstaendigen QA-Recheck fuer E5 starten.
+4. PM-Abnahme fuer E2-S1 auf Basis von `docs/handoff/qa-to-pm.md` durchfuehren.
