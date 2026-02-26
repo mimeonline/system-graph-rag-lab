@@ -1,16 +1,24 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { POST } from "@/app/api/query/route";
 import { MAX_REFERENCES_IN_RESPONSE } from "@/features/query/answer";
 
 const originalOpenAiModel = process.env.OPENAI_MODEL;
+const originalOpenAiApiKey = process.env.OPENAI_API_KEY;
 
 afterEach(() => {
+  vi.restoreAllMocks();
+
   if (originalOpenAiModel === undefined) {
     delete process.env.OPENAI_MODEL;
-    return;
+  } else {
+    process.env.OPENAI_MODEL = originalOpenAiModel;
   }
 
-  process.env.OPENAI_MODEL = originalOpenAiModel;
+  if (originalOpenAiApiKey === undefined) {
+    delete process.env.OPENAI_API_KEY;
+  } else {
+    process.env.OPENAI_API_KEY = originalOpenAiApiKey;
+  }
 });
 
 describe("POST /api/query", () => {
@@ -38,6 +46,22 @@ describe("POST /api/query", () => {
 
   it("returns contract shaped empty success in bootstrap mode", async () => {
     process.env.OPENAI_MODEL = "gpt-5-mini";
+    process.env.OPENAI_API_KEY = "test-key";
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: true,
+      json: async () => ({
+        choices: [
+          {
+            message: {
+              content: JSON.stringify({
+                main: "Test Main",
+                coreRationale: "Test Rationale",
+              }),
+            },
+          },
+        ],
+      }),
+    }));
 
     const response = await POST(
       new Request("http://localhost:3000/api/query", {
@@ -73,5 +97,29 @@ describe("POST /api/query", () => {
     expect(body.answer.main.length).toBeGreaterThan(0);
     expect(body.answer.coreRationale.length).toBeGreaterThan(0);
     expect(body.references.length).toBeLessThanOrEqual(MAX_REFERENCES_IN_RESPONSE);
+  });
+
+  it("maps OpenAI failures to LLM_UPSTREAM_ERROR", async () => {
+    process.env.OPENAI_MODEL = "gpt-5-mini";
+    process.env.OPENAI_API_KEY = "test-key";
+    vi.stubGlobal("fetch", vi.fn().mockResolvedValue({
+      ok: false,
+      status: 502,
+      json: async () => ({}),
+    }));
+
+    const response = await POST(
+      new Request("http://localhost:3000/api/query", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query: "Was ist ein Hebelpunkt?" }),
+      }),
+    );
+
+    const body = (await response.json()) as { status: string; error: { code: string } };
+
+    expect(response.status).toBe(502);
+    expect(body.status).toBe("error");
+    expect(body.error.code).toBe("LLM_UPSTREAM_ERROR");
   });
 });

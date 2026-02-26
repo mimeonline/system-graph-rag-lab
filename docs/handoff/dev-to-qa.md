@@ -154,3 +154,25 @@
 3. Zweite Beispielanfrage absenden (z. B. „Wie beeinflussen Feedback Loops lokale Optimierungen?“) und prüfen, dass neue Kontexte ebenfalls unter Herleitungsdetails auftauchen.
 ### Genaue Testkommandos mit erwarteten Ergebnissen
 1. `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` → Exit Code `0`, verifiziert die ViewModel-Erweiterung und die korrekte Limitierung auf drei Referenzen/Derivations.
+
+## E4-S1 OpenAI Real Integration für Query API
+### Was ist fertig
+1. Die serverseitige Query-Pipeline ruft nun die OpenAI Chat Completions API via `fetch` auf und verwendet die bestehende Retrieval-Context-Pipeline als Prompt-Grundlage.
+2. OpenAI-Antworten werden auf `main` und `coreRationale` normalisiert, Fehler vom Upstream werden contract-konform als `LLM_UPSTREAM_ERROR` oder `INTERNAL_ERROR` gemappt.
+3. Tests mocken `fetch`, damit sowohl Erfolg als auch Fehler deterministisch reproduzierbar sind.
+
+### Wie kann QA testen lokal inkl konkrete Startschritte
+1. In `apps/web/.env.local` oder der Shell `OPENAI_MODEL` (z. B. `gpt-5-mini`) und `OPENAI_API_KEY` setzen; Schlüssel darf nicht in Logs oder Repo landen.
+2. Optional: `pnpm --dir apps/web dev` starten und eine `POST http://localhost:3000/api/query` Anfrage absenden; die Antwort muss `status: "ok"` liefern, solange OpenAI-Reaktion erfolgreich ist.
+3. Automatisiert: `pnpm --dir apps/web test -- src/app/api/query/route.test.ts` mit Exit Code `0`.
+
+### Bekannte Einschränkungen & Testdaten
+1. Der Live-Call erfordert Netzwerk und validen OpenAI-Key; ohne diesen liefert die API `INTERNAL_ERROR` oder `LLM_UPSTREAM_ERROR`.
+2. Die Tests selbst simulieren OpenAI-Responses über `vitest`-Mocks; echte Call-Details bleiben geheim.
+
+### Erwartete Failure Modes
+1. Fehlender oder leerer `OPENAI_API_KEY` führt zu `500 INTERNAL_ERROR` und ist per Contract abgedeckt.
+2. OpenAI meldet nicht-2xx → `502 LLM_UPSTREAM_ERROR` plus passende Fehlermeldung im Body.
+
+### Genaue Testkommandos mit erwarteten Ergebnissen
+1. `pnpm --dir apps/web test -- src/app/api/query/route.test.ts` Exit Code `0`.

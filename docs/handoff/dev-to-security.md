@@ -155,3 +155,21 @@
 1. Observability-Signale (`referenceCount`, `contextCandidateCount`, `referenceFallbackUsed`) sind in Logs und API-Responses nachweisbar.
 2. Guardrails sorgen fuer deterministische Referenzlisten und validierte Rate-Limit-Verhalten, auch wenn keine Referenzen veröffentlicht werden.
 3. Security- und DevOps-Gates haben jeweils `Pass` fuer E2 dokumentiert, es existieren keine neuen Blocker.
+
+## E4-S1 OpenAI Real Integration für Query API
+### Security Context
+1. Die Query-API führt nun serverseitig einen HTTPS-Call zur OpenAI Chat Completions API durch. Secrets (`OPENAI_API_KEY`) bleiben ausschließlich in Environment-Variablen und werden weder geloggt noch an den Client weitergegeben.
+2. Die Pipeline nutzt die bereits vorhandenen Retrieval-Referenzen und Kontextsummaries als Prompt-Grundlage; es wurden keine neuen externen Quellen oder Secrets eingeführt.
+3. Upstream-Fehler werden als `LLM_UPSTREAM_ERROR` oder `INTERNAL_ERROR` reportet, sodass Fehlermeldungen minimal und contract-konform bleiben.
+
+### Sicherheitsrelevante Eingaben und Endpoints
+1. Der einzige Endpoint bleibt `POST /api/query`; der OpenAI-Call ist ein interner Server-to-Server-Request.
+2. Sicherheitsrelevantes Feld: `OPENAI_API_KEY`. Der API-Key wird ausschließlich im Authorization-Header verwendet und niemals ausgegeben oder geloggt.
+
+### Bekannte Sicherheitsgrenzen und Risiken
+1. Der OpenAI-Key darf nur in lokalem `.env.local` oder in Vercel-Umgebungen liegen; es gibt derzeit keine Key-Rotation oder zusätzliche Secret-Exfiltration.
+2. Das Error-Mapping verhindert Detail-Exfiltration: nur der Code und eine generische Nachricht erscheinen in den API-Resp., während der Schlüssel verborgen bleibt.
+
+### Gezielte Security-Pruefpunkte
+1. Prüfen, dass `OPENAI_API_KEY` nicht in Logs oder Responses auftaucht und ausschließlich im Request-Header genutzt wird.
+2. Validieren, dass `POST /api/query` bei non-2xx von OpenAI mit `502 LLM_UPSTREAM_ERROR` antwortet und keine sensiblen Details preisgibt.
