@@ -1,9 +1,9 @@
 # Security Blocker E1
 
 ## Blockierende Findings
-1. `finding-e1-local-reset-missing-runtime-guard.md` ist blockierend, weil der destruktive Reset ohne Local-Only-Guard gegen nicht-lokale Datenbanken ausgefuehrt werden kann.
+1. Keine offenen blockierenden Findings.
 
 ## Begruendung
-1. Severity ist High.
-2. Die Ausnutzung ist im MVP-Kontext mit Fehlkonfiguration reproduzierbar.
-3. Impact ist unmittelbarer Datenverlust in der Zieldatenbank.
+1. Das ehemalige High-Finding `finding-e1-local-reset-missing-runtime-guard.md` ist mitigiert.
+2. Das ehemalige Medium-Finding `finding-e1-local-reset-overbroad-delete-scope.md` ist mitigiert.
+3. Es gibt keine offenen Critical oder High Findings mit exploitierbarem MVP-Impact im Scope E1.

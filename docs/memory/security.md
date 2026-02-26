@@ -1,30 +1,31 @@
 # Security Memory
 
 ## Threat Model Snapshot
-1. Hauptgefahr in E1 ist destruktiver Fehlbetrieb bei lokalen Seed-Reset-Ablaeufen mit falschem Zielsystem.
-2. Datenintegritaet bleibt kritisch, weil Label-basierter Reset auch Nicht-Seed-Daten treffen kann.
-3. Public Abuse-Risiken bleiben fuer spaetere E4-Haertung relevant.
+1. Hauptbedrohung in E1 war destruktiver Fehlbetrieb des lokalen Seed-Resets gegen nicht-lokale Neo4j Ziele.
+2. Diese Bedrohung ist durch Local-Host-Guard plus explizites Opt-In mitigiert.
+3. Der Reset bleibt lokal fuer Seed-IDs destruktiv und erzeugt Restrisiko bei ID-Kollisionen.
 
 ## Secret Handling Status
-1. Keine produktiven Secrets im Repository gefunden.
-2. `apps/web/.env.local` ist versioniert, derzeit mit Platzhaltern, bleibt aber ein Fehlbedienungsrisiko.
-3. Error-Ausgaben enthalten aktuell keine explizite Secret-Redaction-Logik.
+1. Keine harten Secrets in den geprueften E1-Artefakten gefunden.
+2. `apps/web/.env.local` ist lokal vorhanden und im Recheck nicht als tracked Datei gefunden.
+3. Secret-Hygiene bleibt abhaengig von konsequenter Env-Nutzung ohne Repo-Commit.
 
 ## Abuse Prevention Measures
-1. Input-Validierung fuer `POST /api/query` ist vorhanden.
-2. Contract-konformes aktives Rate-Limit ist im aktuellen E1-Stand noch nicht umgesetzt.
-3. Destruktive Seed-Operationen haben derzeit keinen Local-Only-Guard.
+1. Destruktive Seed-Operation ist auf lokale Hosts `localhost`, `127.0.0.1`, `::1` begrenzt.
+2. Explizites Opt-In `ALLOW_DESTRUCTIVE_SEED_RESET=true` ist verpflichtend.
+3. Guard-Fail verhindert Driver-Initialisierung und damit Delete-Ausfuehrung.
 
 ## Security Findings Summary
-1. High: Fehlender Runtime-Guard fuer destruktiven Seed-Reset gegen nicht-lokale Neo4j-Ziele.
-2. Medium: Overbroad Delete-Scope beim Seed-Reset ohne Seed-Besitzmarker.
+1. Mitigated: E1 Local Reset Missing Runtime Guard.
+2. Mitigated: E1 Local Reset Overbroad Delete Scope.
+3. E1 hat im aktuellen Recheck keine offenen Critical oder High Findings.
 
 ## Open Security Risks
-1. Datenverlustrisiko bei Fehlkonfiguration von `NEO4J_URI` im Reset-Workflow.
-2. Kollaterales Loeschen lokaler Nicht-Seed-Daten beim Reseed.
-3. Public Abuse- und Header-Haertung bleibt offen bis E4-Gate.
+1. Lokale Daten mit kollidierenden Seed-IDs koennen weiterhin vom Reset betroffen sein.
+2. Public Runtime Hardening zu Rate-Limit, Headern und Abuse-Schutz bleibt in E4 zu gate'n.
+3. Vollstaendige Dependency- und Supply-Chain-Pruefung ist in diesem Recheck nicht enthalten.
 
 ## Next Instructions for Security Agent
-1. Im naechsten Security-Run den Fix-Status fuer Local-Guard und Delete-Scope erneut verifizieren.
-2. Vor Public-Demo den Rate-Limit- und Header-Status gegen E4-Artefakte hart gate'n.
-3. Weiterhin Secret-Hygiene inklusive Versionierungsstatus von Env-Dateien pruefen.
+1. Beim naechsten Epic-Gate fuer E4 Public-Hardening strikt gegen API- und Ops-Vertrag pruefen.
+2. Bei Aenderungen am Seed-Reset erneut verifizieren, dass Guard und ID-scope Delete unveraendert aktiv bleiben.
+3. Vor Public Demo einen finalen Security-Gesamtlauf mit QA und DevOps durchfuehren.
