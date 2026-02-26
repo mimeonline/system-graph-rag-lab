@@ -1,7 +1,7 @@
 # Story E1-S6 Neo4j lokal Seed Reset und Reseed
 
 ## Status
-pass
+accepted
 
 ## Ziel
 Ein reproduzierbarer lokaler Seed-Reset-und-Reseed-Ablauf fuer Neo4j Docker ist verfuegbar, damit die Datenbasis fuer Next.js Runtime-Reads sauber neu aufgebaut werden kann.
@@ -54,3 +54,4 @@ PM die Story fuer Epic-Freigabe prueft
 9. Gesamtverifikation erfolgreich am 2026-02-26: `pnpm --dir apps/web lint`, `pnpm --dir apps/web test`, `pnpm --dir apps/web build`.
 10. Reopen-Verifikation am 2026-02-26 erneut erfolgreich: `pnpm --dir apps/web lint`, `pnpm --dir apps/web test`, `pnpm --dir apps/web build`, plus story-spezifischer Lauf `pnpm --dir apps/web test -- src/features/seed-data/local-seed-reset.test.ts`; Ergebnis: Guard- und Scope-Tests gruen, Integrations-Test weiterhin env-abhaengig geskippt.
 11. QA-Review-Recheck am 2026-02-26 erfolgreich: `pnpm --dir apps/web seed:local:reset-reseed` mit `Importierte Nodes: 105`, `Importierte Relationen: 203`, `Read-Check Nodes: 105`, `Read-Check Relationen: 203`; `pnpm --dir apps/web exec vitest run src/features/seed-data/local-seed-reset.test.ts` mit `5 passed, 1 skipped`; `pnpm --dir apps/web lint`, `pnpm --dir apps/web test`, `pnpm --dir apps/web build` alle Exit Code `0`.
+12. PM-Abnahme am 2026-02-26 erfolgt: Story-Status auf `accepted` gesetzt auf Basis von QA-`Pass` in `docs/qa/verdict.md`.
