@@ -6,6 +6,7 @@
 3. Guard greift vor jeder destruktiven DB-Operation; bei Guard-Fail wird kein Driver erstellt und kein Delete-Query ausgefuehrt.
 4. Delete-Scope ist auf Seed-Bestand begrenzt: `WHERE n.id IN $seedNodeIds`.
 5. Security-Tests fuer non-local reject, missing opt-in reject und no delete on guard-fail sind vorhanden und gruen.
+6. Bug-0003 ist gefixt: story-spezifisches Testkommando ist im E1-S6-Kontext auf `pnpm --dir apps/web exec vitest run src/features/seed-data/local-seed-reset.test.ts` normalisiert.
 
 ## Welche Stories wurden umgesetzt
 1. `E1-S6 Neo4j lokal Seed Reset und Reseed` ist von Dev bearbeitet und auf `qa` gesetzt.
@@ -13,7 +14,7 @@
 ## Wie kann QA testen lokal inkl konkrete Startschritte
 1. Lokalen Neo4j Docker starten, erreichbar unter `bolt://localhost:7687`.
 2. In `apps/web/.env.local` setzen: `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`, `ALLOW_DESTRUCTIVE_SEED_RESET=true`.
-3. Story-spezifischen Testlauf ausfuehren.
+3. Story-spezifischen Testlauf ausfuehren: `pnpm --dir apps/web exec vitest run src/features/seed-data/local-seed-reset.test.ts`.
 4. Vollstaendige Verifikation mit Lint, Test, Build ausfuehren.
 5. Optional CLI-Resetlauf ausfuehren.
 
@@ -35,5 +36,5 @@
 1. `pnpm --dir apps/web lint` erwartet Exit Code `0`.
 2. `pnpm --dir apps/web test` erwartet Exit Code `0`.
 3. `pnpm --dir apps/web build` erwartet Exit Code `0`.
-4. `pnpm --dir apps/web test -- src/features/seed-data/local-seed-reset.test.ts` erwartet Exit Code `0` mit Guard-Tests gruen und env-abhaengigem Integrations-Skip.
+4. `pnpm --dir apps/web exec vitest run src/features/seed-data/local-seed-reset.test.ts` erwartet Exit Code `0` mit Guard-Tests gruen und env-abhaengigem Integrations-Skip.
 5. `pnpm --dir apps/web seed:local:reset-reseed` erwartet Exit Code `0` nur bei local URI plus Opt-In.

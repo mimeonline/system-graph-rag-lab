@@ -2,8 +2,8 @@
 
 ## Laufmetadaten
 1. Datum: 2026-02-26.
-2. Commit Kurz: `7316aaa`.
-3. Commit Voll: `7316aaa4bb70fdfef45b974ba3744adc7f91023c`.
+2. Commit Kurz: `c0e1bcb`.
+3. Commit Voll: `c0e1bcb44b0c465d1b5bc75f8967fc6782e1ad93`.
 4. Umgebung: review-story-e1-s6-local.
 5. Ausfuehrender QA Run: `RUN_MODE=review`.
 
@@ -26,6 +26,7 @@
 ### Latenz
 1. Nicht bewertet fuer Eval-Fragen.
 2. Story-spezifische Checks waren stabil mit Exit Code `0` fuer `lint`, `test`, `build`, `seed:local:reset-reseed` und Security-Recheck-Testlauf.
+3. Scope-Recheck wurde dokumentiert: nur `pnpm --dir apps/web exec vitest run src/features/seed-data/local-seed-reset.test.ts` ist praezise auf 1 Testdatei.
 
 ## Zusammenfassung und Empfehlung
 1. Gesamtstatus fuer Eval-Set bleibt: Fail.

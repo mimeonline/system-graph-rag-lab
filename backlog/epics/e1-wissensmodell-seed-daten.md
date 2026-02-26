@@ -1,7 +1,7 @@
 # Epic E1 Wissensmodell und Seed-Daten
 
 ## Status
-blocked
+accepted
 
 ## Ziel
 Ein fachlich konsistentes Wissensmodell und eine kuratierte Seed-Datenbasis aus bereitgestellten Quellen im freigegebenen MVP-Rahmen bereitstellen.

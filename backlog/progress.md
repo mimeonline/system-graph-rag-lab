@@ -20,7 +20,7 @@
 
 | Epic-Datei | Titel | Status | Letztes Update |
 | --- | --- | --- | --- |
-| `e1-wissensmodell-seed-daten.md` | Epic E1 Wissensmodell und Seed-Daten | 🔴 `blocked` | 2026-02-26 |
+| `e1-wissensmodell-seed-daten.md` | Epic E1 Wissensmodell und Seed-Daten | ✅ `accepted` | 2026-02-26 |
 | `e2-retrieval-antwortpipeline.md` | Epic E2 Retrieval und Antwortpipeline | ⚪ `todo` | 2026-02-25 |
 | `e3-frontend-nutzerfuehrung.md` | Epic E3 MVP-Frontend und Nutzerführung | ⚪ `todo` | 2026-02-25 |
 | `e4-deployment-sicherheit-guardrails.md` | Epic E4 Deployment, Sicherheit und Guardrails | ⚪ `todo` | 2026-02-25 |

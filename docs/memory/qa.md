@@ -1,31 +1,30 @@
 # QA Memory
 
 ## Quality Focus Areas
-1. Story-Gates mit klarer Command-Evidenz und Exit Codes dokumentieren.
-2. AK-Abdeckung strikt auf Given When Then pruefen und in Matrix plus Verdict spiegeln.
-3. Security-Recheck fuer lokale destruktive Ablaufe mit Guard- und Delete-Scope-Nachweis pro Story dokumentieren.
-4. Story-Status und `backlog/progress.md` im selben Run synchron halten.
+1. Epic-Rechecks muessen Story-Status, QA-, Security- und DevOps-Gates im selben Run konsistent querpruefen.
+2. Gate-Evidenz bleibt nur valide mit klarer Dateireferenz plus aktuellem Datum.
+3. Cross-Epic-Abhaengigkeiten duerfen nur gelten, wenn sie explizit gefordert sind.
+4. Status-Synchronisation zwischen Story-Dateien, Epic-Progress und Gate-Artefakten muss konsistent bleiben.
 
 ## Known Failure Patterns
-1. Story-spezifische Tests werden durch breite Suite-Laeufe unscharf, wenn `pnpm test -- <file>` statt direktem Vitest-Run genutzt wird.
-2. Integrationspfade gegen Neo4j koennen wegen fehlender Env-Variablen stillschweigend geskippt werden.
-3. Drift zwischen QA-Artefakten und Backlog-Status.
-4. Security-Finding-Dateien koennen formal `Open` bleiben, obwohl QA-Recheck-Tests bereits gruen sind.
+1. Epic-Gates koennen formal auf Fail bleiben, obwohl Story-, Security- und DevOps-Gates bereits auf Pass stehen.
+2. Cross-Epic-Kopplung wird faelschlich als Blocker genutzt, obwohl keine Abhaengigkeit dokumentiert ist.
+3. Backlog-Epic-Status kann nach Recheck in `blocked` verbleiben, wenn PM-Sync nicht nachgezogen wird.
 
 ## Eval Status
-1. Story-Gate `E1-S6` wurde am 2026-02-26 mit `Pass` abgeschlossen.
-2. Security-Recheck-Tests fuer `E1-S6` wurden am 2026-02-26 erneut erfolgreich ausgefuehrt.
-3. Eval-Set mit fuenf Fragen ist weiterhin nicht ausgefuehrt und bleibt `Fail` auf Laufebene.
-4. Epic-Gate `E1` bleibt `Fail`, bis Security- und DevOps-Gates abgeschlossen sind.
+1. Recheck E1 am 2026-02-26 durchgefuehrt.
+2. Story- und QA-Gate fuer E1 stehen auf Pass/accepted.
+3. Security-Gate E1: Pass.
+4. DevOps-Gate E1: Pass.
+5. E5-Eval Q1 bis Q5 bleibt offen, ist aber kein Blocker fuer E1 gemaess Recheck-Regel.
+6. QA Epic Verdict E1: Pass.
 
 ## Open Quality Risks
-1. Local-Pass garantiert keine Public-Paritaet auf Vercel plus Aura.
-2. Reset-Reseed ist env-abhaengig und kann bei falscher Konfiguration lokal destruktiv wirken.
-3. Story-Handoffs enthalten teils unpraezise Story-Testkommandos mit zu breitem Scope.
-4. Ausstehende Epic-Gates blockieren die belastbare E1-Freigabe.
+1. Public-Betriebsparitaet bleibt bis zu E4-Gates unvollstaendig abgesichert.
+2. Eval-Ergebnislage fuer Q1 bis Q5 bleibt fuer E5-Abnahme offen.
+3. Epic-Progress kann ohne PM-Sync von QA-Verdikten abweichen.
 
 ## Next Instructions
-1. Security soll den formalen Status der Findings und des Blockers fuer E1-S6 nach Recheck aktualisieren.
-2. Dev soll Story- und Handoff-Testkommandos fuer E1-S6 auf direkten Vitest-Scoped-Run normieren.
-3. DevOps-Gate fuer E1 mit Fokus auf Local-versus-Public-Betriebsparitaet ausfuehren.
-4. Vor finaler Epic-Abnahme den vollstaendigen Eval-Lauf fuer Q1 bis Q5 ausfuehren.
+1. PM-Sync fuer Epic E1 in `backlog/progress.md` auf Basis des QA-Epic-Pass durchfuehren.
+2. E5-S2 Eval-Lauf fuer Q1 bis Q5 separat ausfuehren und `evals/report.md` aktualisieren.
+3. Nach E5-Eval einen eigenstaendigen QA-Recheck fuer E5 starten.

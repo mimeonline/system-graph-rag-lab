@@ -60,3 +60,10 @@
 3. Output: Exit Code `0` und Kennzahlen fuer importierte sowie gelesene Nodes und Relationen.
 4. Fail oder Edge-Case: fehlende Neo4j-Credentials fuehren zu Fail-Fast vor Driver-Initialisierung; nicht erreichbarer Neo4j-Endpunkt bricht den Ablauf.
 5. Beispiel: `set -a; . apps/web/.env.local; set +a; export NEO4J_DATABASE=${NEO4J_DATABASE:-neo4j}; export ALLOW_DESTRUCTIVE_SEED_RESET=${ALLOW_DESTRUCTIVE_SEED_RESET:-true}; pnpm --dir apps/web seed:local:reset-reseed`.
+
+### Pruefablauf `vitest scoped local-seed-reset`
+1. Zweck: Story-spezifische Testevidenz fuer E1-S6 ohne Suite-Verwischung sicherstellen.
+2. Input: Testdatei `src/features/seed-data/local-seed-reset.test.ts`.
+3. Output: Genau eine ausgefuehrte Testdatei, reproduzierbar `5 passed` und `1 skipped`.
+4. Fail oder Edge-Case: `pnpm --dir apps/web test -- src/features/seed-data/local-seed-reset.test.ts` ist nicht zulassig fuer Scope-Evidenz, da der Lauf weiterhin die Gesamtsuite startet.
+5. Beispiel: `pnpm --dir apps/web exec vitest run src/features/seed-data/local-seed-reset.test.ts`.
