@@ -173,3 +173,37 @@
 1. E3-S3 Herleitungsdetails sichtbarer machen und ergänzende UI-Prüfungen dokumentieren.
 2. Bei Template-Änderungen im QueryPanel erneut manuelle Status/Action-Simulation durchführen.
 3. Nach Backend-Fehlermeldungsanpassungen `getStatusHint` neu validieren.
+
+## Story E3-S3 Herleitungsdetails sichtbar machen
+
+### Ergebnis
+1. Verdict: Pass.
+2. Gate-Typ: Story QA Gate.
+3. Story-ID: E3-S3.
+4. Epic-ID: E3.
+5. Bewertungsdatum: 2026-02-26.
+
+### Szenario-Prüfung Given When Then
+1. Given: Der Query-ViewModel-Flow liefert eine API-Antwort mit mindestens einem Referenzkonzept sowie `coreRationale`.
+2. When: `buildQueryViewModel` wird ausgeführt und das Query-Panel rendert die Antwortbereiche.
+3. Then-1: `derivationDetails` stellt maximal drei nummerierte Kontextsummaries mit `sourceFile` sowie `sourceId` bereit und ergänzt die Erklärung.
+4. Then-2: Hauptantwort, Referenzen und `Knapper P0-Kernnachweis` bleiben ohne weitere Interaktion vollständig sichtbar.
+5. Ergebnis: Pass – `derivationDetails` erweitern die Erklärung, while die drei Kernsektionen stabil sichtbar bleiben.
+
+### Ausgeführte QA-Checks
+1. `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` (3 tests, Exit Code 0) – validiert `derivationDetails`, das Referenzlimit ≤3 und das `coreRationale`-Fallback.
+2. Manuelle UI-Verifikation: Dev-Server (`pnpm --dir apps/web dev`), Defaultfrage und eine zusätzliche Frage absenden; dokumentieren, dass die `Herleitungsdetails`-Sektion erscheint, jede Zeile Label/Summary/Quelle zeigt und Hauptantwort/Referenzen/Kernnachweis im Frontend durchgehend sichtbar sind.
+
+### Merge Block & Fix Requests
+1. Kein Merge Block.
+2. Keine offenen Fix Requests innerhalb des Story-Scopes.
+
+### Top 3 Risiken
+1. `derivationDetails` hängt an `buildQueryViewModel`; Änderungen dort erfordern erneute QA und Referenzlimit-Checks.
+2. Template-Anpassungen an der `Herleitungsdetails`-Sektion könnten die Sichtbarkeit der Hauptbereiche beeinträchtigen.
+3. Änderungen am API-Response-Format (z. B. fehlende `sourceFile`-Angabe) drohen, die Attribution in `derivationDetails` zu beschädigen.
+
+### Nächste Tests
+1. E3-Epic-Check durchführen, sobald E3-S3, Security und DevOps-Gates in der Story-Reihenfolge abgeschlossen sind.
+2. E4-Gates vorbereiten, falls E3-S3 durch neue UI-Templates zusätzliche Rendering-Workflows einführt.
+3. Beobachte, ob `derivationDetails` bei neuen Fragen weiterhin stabil nummeriert und limitiert bleibt.

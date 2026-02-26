@@ -98,3 +98,11 @@
 1. Status-Texts für Loading, Error und Empty müssen unterscheidbar sein und mit der richtigen `Nächsten Aktion` verbunden sein; `QueryPanel` und `QueryInput` sollen diese Texte im Helper-Text und im Status-Hinweis anzeigen.
 2. Testlauf: `pnpm --dir apps/web exec vitest run src/components/organisms/query-panel-status.test.ts` (3 tests, Exit Code 0) – prüft `getStatusHint` für Loading, Error und Empty sowie die Next-Action-Formulierungen.
 3. Manuelle Prüfung: Lade eine Frage, simuliere einen Fehler (z. B. Browser offline) und eine Antwort mit leeren Referenzen (`references: []`), prüfe jeweils den Status-Text, die `Nächste Aktion` und den deaktivierten Submit-Button bzw. Helper-Text.
+### Story E3-S3 Herleitungsdetails sichtbar machen
+1. Validierung, dass `buildQueryViewModel` ein `derivationDetails`-Array bereitstellt, das nummerierte Kontextsummaries mit `sourceFile`-Attribution sowie maximal drei Einträge enthält.
+2. Story-spezifischer Testlauf: `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` (3 tests, Exit Code 0) – bestätigt `derivationDetails`, Referenzlimit und `coreRationale`-Fallback bei leeren Referenzen, sowie die Statusstrom-Handhabung.
+3. Manuelle UI-Flow-Überprüfung: Dev-Server (`pnpm --dir apps/web dev`) starten, Defaultfrage und mindestens eine weitere komplexe Frage absenden und prüfen:
+   - Die `Herleitungsdetails`-Sektion erscheint unterhalb des `Knapper P0-Kernnachweis`.
+   - Jede Zeile zeigt Label, Summary und `sourceFile`, es werden maximal drei Einträge dargestellt.
+   - Hauptantwort, Referenzen und Kernnachweis bleiben ohne zusätzliche Interaktion vollständig sichtbar.
+4. Abnahme: `derivationDetails` generieren zusätzliche Erklärungstiefe, während die Hauptbereiche stabil sichtbar bleiben; Evidence per Testlauf und kurzen Notizen/Screenshots dokumentieren.

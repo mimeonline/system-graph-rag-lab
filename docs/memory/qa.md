@@ -43,3 +43,4 @@
 6. Neue QA-Läufe für E2-S4 auslösen, sobald `reference-expectations.ts` oder API-Responses angepasst werden.
 7. E3-S2 (Loading/Fehler/Leere) QA-Run am 2026-02-26 durchgeführt – `getStatusHint`-Tests grün; Story auf `pass`, Next-Step: E3-S3 überprüfen.
 8. Nach Abschluss aller E3-Stories QA-Epic-Gate inkl. Security/DevOps koordinieren und `docs/qa/verdict-epic.md` ggf. ergänzen.
+9. Story E3-S3 QA-Run am 2026-02-26: `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` (3 tests, Exit Code 0) plus manuelle UI-Checks (Dev-Server, zwei Queries) bestätigen `derivationDetails`, Referenzlimit und konstante Sichtbarkeit der Hauptbereiche; Story-Status auf `pass` gesetzt.

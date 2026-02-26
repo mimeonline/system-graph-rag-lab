@@ -84,3 +84,19 @@
 1. Bei API-Format- oder Referenzlimit-Anpassungen `buildQueryViewModel` und den manual QA-Flow erneut prüfen.
 2. Beobachte, ob `coreRationale`-Inhalte bei neuen Fragen weiterhin den `Knappe P0-Kernnachweis` tragen.
 3. E3-S2/E3-S3 müssen vor Epic-Abnahme durch PM ebenfalls geprüft werden, damit E3-Epic-Gate dokumentiert werden kann.
+
+## E3-S3 Herleitungsdetails sichtbar machen
+### Teststatus
+1. Story-Gate E3-S3 ist auf `Pass` gesetzt.
+2. Reproduzierbare Tests: `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` (3 tests, Exit Code 0) – validiert `derivationDetails`, Referenzlimit und `coreRationale`-Fallback.
+3. Manuelle UI-Check: Dev-Server (`pnpm --dir apps/web dev`), Defaultfrage plus eine ergänzende Frage absenden; dokumentieren, dass die `Herleitungsdetails`-Sektion unterhalb des Kernnachweises erscheint, jede Zeile Label/Summary/Quelle zeigt und Hauptantwort/Referenzen/Kernnachweis dauerhaft sichtbar bleiben.
+
+### Bekannte Einschränkungen
+1. Template-Anpassungen können die `Herleitungsdetails` verschieben; jede Layoutänderung erfordert Recheck.
+2. Die API muss weiterhin `sourceFile` und `sourceId` liefern, damit die Attribution erhalten bleibt.
+3. Automatisierte UI-Prüfungen beschränken sich auf den View-Model-Test; Browser-Verifizierung ist aktuell manuell.
+
+### Monitoring Hinweise
+1. Beobachte, ob neue Referenzen das Limit von drei erreichen und das Layout stabil bleibt.
+2. Stelle sicher, dass jede `Herleitungsdetails`-Zeile die zugehörige Quelle dokumentiert.
+3. Nach Template- oder API-Response-Änderungen `buildQueryViewModel` und die manuellen UI-Checks erneut ausführen.

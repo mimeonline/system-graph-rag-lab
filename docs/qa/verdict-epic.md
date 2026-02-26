@@ -58,9 +58,9 @@
 
 ## Recheck Ergebnis je Gate
 ### Story und QA Gate
-1. E3-S1 und E3-S2 stehen auf `pass`.
-2. Story-QA-Gates dokumentiert in `docs/qa/verdict.md` (E3-S1 und E3-S2 Sections).
-3. Ergebnis: Pass (Story-Level). Das Epic bleibt insgesamt `in_progress`, da E3-S3 noch aussteht.
+1. E3-S1, E3-S2 und E3-S3 stehen auf `pass`.
+2. Story-QA-Gates dokumentiert in `docs/qa/verdict.md` (E3-S1, E3-S2 und E3-S3 Sections).
+3. Ergebnis: Pass (Story-Level). Das Epic bleibt insgesamt `in_progress`, da Security-, DevOps- und PM-Sync für E3 noch ausstehen.
 
 ### Security Gate
 1. Nicht ausgeführt in diesem Run (Scope: Story-Only).
@@ -76,12 +76,12 @@
 
 ## Ergebnis
 1. Story QA Verdict: Pass.
-2. Epic Gate: Pending (E3-S3 in `todo`).
+2. Epic Gate: Pending (Security/DevOps noch ausstehend).
 
 ## Top 3 Risiken
 1. Sichtbarkeit der Hauptantwort/Referenzliste/Core-Rationale bleibt an das bestehende Query-Panel-Template gebunden; jede Template-Änderung erfordert erneute QA-Verifikation.
 2. API-Response-Formatänderungen würden `buildQueryViewModel` betreffen; Änderungen dort benötigen Recheck.
-3. Weitere E3-Stories (E3-S3) müssen vor Epic-Abnahme durch QA und PM und einen zusätzlichen Epic-Gate-Run validiert werden.
+3. Security-, DevOps- und PM-Abläufe für E3 müssen vor Epic-Abnahme durch QA erneut verifiziert werden.
 
 ## Verweise auf Dokumentation und Reports für E3
 1. Story-QA-Gate: `docs/qa/verdict.md`.
