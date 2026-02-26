@@ -1,7 +1,7 @@
 # Story E1-S6 Neo4j lokal Seed Reset und Reseed
 
 ## Status
-blocked
+qa
 
 ## Ziel
 Ein reproduzierbarer lokaler Seed-Reset-und-Reseed-Ablauf fuer Neo4j Docker ist verfuegbar, damit die Datenbasis fuer Next.js Runtime-Reads sauber neu aufgebaut werden kann.
@@ -48,3 +48,8 @@ PM die Story fuer Epic-Freigabe prueft
 3. Fehlerfall verifiziert: fehlende `NEO4J_USERNAME` oder `NEO4J_PASSWORD` fuehren zu fail-fast Fehler vor Driver-Initialisierung und verhindern Teilimporte.
 4. PM-Entscheidung vom 2026-02-26: Re-Open auf `blocked` wegen Security-Gate-Fail in `docs/security/verdict-epic.md` und offenem Blocker in `docs/security/blocker.md`.
 5. Pflicht fuer Freigabe: erst nach dokumentiertem Security-Recheck ohne offene Blocker fuer E1-S6 darf eine erneute PM-Abnahme erfolgen.
+6. `pnpm --dir apps/web test -- src/features/seed-data/local-seed-reset.test.ts` erfolgreich nach Security-Fix; Ergebnis: 6 Tests bestanden, 1 Integrations-Test wie vorgesehen ohne vollstaendige Neo4j-Env geskippt.
+7. Security-Guard verifiziert: non-local `NEO4J_URI` wird abgelehnt, fehlendes `ALLOW_DESTRUCTIVE_SEED_RESET=true` wird abgelehnt und bei Guard-Fehler wird kein Delete-Query ausgefuehrt.
+8. Delete-Scope verifiziert: Reset loescht nur Nodes mit Seed-IDs (`WHERE n.id IN $seedNodeIds`) statt Label-basiertem Global-Delete.
+9. Gesamtverifikation erfolgreich am 2026-02-26: `pnpm --dir apps/web lint`, `pnpm --dir apps/web test`, `pnpm --dir apps/web build`.
+10. Reopen-Verifikation am 2026-02-26 erneut erfolgreich: `pnpm --dir apps/web lint`, `pnpm --dir apps/web test`, `pnpm --dir apps/web build`, plus story-spezifischer Lauf `pnpm --dir apps/web test -- src/features/seed-data/local-seed-reset.test.ts`; Ergebnis: Guard- und Scope-Tests gruen, Integrations-Test weiterhin env-abhaengig geskippt.

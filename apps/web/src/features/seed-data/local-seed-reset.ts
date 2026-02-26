@@ -30,6 +30,7 @@ const ALLOWED_NODE_TYPES: readonly SeedNode["nodeType"][] = [
   "Book",
   "Problem",
 ];
+const LOCAL_HOST_ALLOWLIST = new Set(["localhost", "127.0.0.1", "::1"]);
 
 const NODE_CREATE_QUERY: Record<SeedNode["nodeType"], string> = {
   Concept: `
@@ -163,12 +164,37 @@ function createQualitySeedDataset(): SeedDataset {
   return qualityCheck.dataset;
 }
 
+function assertLocalNeo4jUri(uri: string): void {
+  let parsed: URL;
+  try {
+    parsed = new URL(uri);
+  } catch {
+    throw new Error("Neo4j Seed-Reset/Reseed erlaubt nur gueltige lokale NEO4J_URI.");
+  }
+
+  const host = parsed.hostname.trim().toLowerCase();
+  if (!LOCAL_HOST_ALLOWLIST.has(host)) {
+    throw new Error(
+      "Neo4j Seed-Reset/Reseed ist nur fuer lokale Hosts erlaubt: localhost, 127.0.0.1, ::1.",
+    );
+  }
+}
+
+function assertDestructiveSeedResetOptIn(optInValue: string | null): void {
+  if (optInValue !== "true") {
+    throw new Error(
+      "Neo4j Seed-Reset/Reseed erfordert ALLOW_DESTRUCTIVE_SEED_RESET=true als explizites Opt-In.",
+    );
+  }
+}
+
 /**
  * Zweck:
  * Fuehrt fuer das lokale Profil einen reproduzierbaren Ablauf aus: Seed-Reset, Reseed und Read-Check.
  *
  * Input:
  * - Runtime-Variablen `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`.
+ * - Runtime-Variable `ALLOW_DESTRUCTIVE_SEED_RESET=true` als hartes Opt-In.
  * - Optional `driverFactory`, `runtimeRead` und `seedDatasetFactory` fuer Testinjektion.
  *
  * Output:
@@ -186,6 +212,8 @@ export async function runLocalSeedResetAndReseed(
 ): Promise<LocalSeedResetReseedResult> {
   const env = getQueryRuntimeEnv();
   const uri = assertNonEmptyString(env.neo4jUri, "NEO4J_URI");
+  assertLocalNeo4jUri(uri);
+  assertDestructiveSeedResetOptIn(env.allowDestructiveSeedReset);
   const username = assertNonEmptyString(env.neo4jUsername, "NEO4J_USERNAME");
   const password = assertNonEmptyString(env.neo4jPassword, "NEO4J_PASSWORD");
   const database = assertNonEmptyString(env.neo4jDatabase, "NEO4J_DATABASE");
@@ -204,14 +232,15 @@ export async function runLocalSeedResetAndReseed(
 
     const session = driver.session({ database });
     try {
+      const seedNodeIds = seedDataset.nodes.map((node) => node.id);
       await session.executeWrite(async (transaction) => {
         await transaction.run(
           `
             MATCH (n)
-            WHERE any(label IN labels(n) WHERE label IN $allowedNodeTypes)
+            WHERE n.id IN $seedNodeIds
             DETACH DELETE n
           `,
-          { allowedNodeTypes: [...ALLOWED_NODE_TYPES] },
+          { seedNodeIds },
         );
 
         const nodesByType = groupBy(seedDataset.nodes, (node) => node.nodeType);

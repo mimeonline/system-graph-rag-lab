@@ -1,50 +1,39 @@
 # Dev Handoff E1-S6
 
 ## Was ist fertig
-1. Lokaler Neo4j Ablauf fuer `Seed-Reset -> Seed-Import -> Reseed-Read-Check` ist implementiert.
-2. Neue Orchestrierung `runLocalSeedResetAndReseed` fuehrt kontrolliertes Reset auf erlaubten Node-Typen aus, importiert das qualitaetsgepruefte Seed-Dataset und validiert anschliessend echte Runtime-Reads.
-3. CLI-Aufruf ist verfuegbar ueber `pnpm --dir apps/web seed:local:reset-reseed`.
-4. Unit- und Integrationspfad fuer den neuen Ablauf sind in `local-seed-reset.test.ts` abgedeckt.
+1. Runtime-Guard fuer destruktiven Seed-Reset ist hart lokal: nur `localhost`, `127.0.0.1`, `::1`.
+2. Explizites Opt-In ist verpflichtend: `ALLOW_DESTRUCTIVE_SEED_RESET=true`.
+3. Guard greift vor jeder destruktiven DB-Operation; bei Guard-Fail wird kein Driver erstellt und kein Delete-Query ausgefuehrt.
+4. Delete-Scope ist auf Seed-Bestand begrenzt: `WHERE n.id IN $seedNodeIds`.
+5. Security-Tests fuer non-local reject, missing opt-in reject und no delete on guard-fail sind vorhanden und gruen.
 
-## Umgesetzte Stories
-1. `E1-S6 Neo4j lokal Seed Reset und Reseed` ist auf Status `qa` gesetzt.
+## Welche Stories wurden umgesetzt
+1. `E1-S6 Neo4j lokal Seed Reset und Reseed` ist von Dev bearbeitet und auf `qa` gesetzt.
 
-## Wie QA lokal testet
-1. Neo4j Docker starten und Erreichbarkeit auf `bolt://localhost:7687` sicherstellen.
-2. Runtime-Variablen setzen: `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`.
-3. Falls `.env.local` kein `NEO4J_DATABASE` enthaelt, fuer den Lauf `NEO4J_DATABASE=neo4j` exportieren.
-4. Vollpruefung ausfuehren:
-```bash
-pnpm --dir apps/web lint
-pnpm --dir apps/web test
-pnpm --dir apps/web build
-```
-5. Story-spezifischen Ablauf ausfuehren:
-```bash
-set -a
-. apps/web/.env.local
-set +a
-export NEO4J_DATABASE=${NEO4J_DATABASE:-neo4j}
-pnpm --dir apps/web seed:local:reset-reseed
-pnpm --dir apps/web test -- src/features/seed-data/local-seed-reset.test.ts
-```
+## Wie kann QA testen lokal inkl konkrete Startschritte
+1. Lokalen Neo4j Docker starten, erreichbar unter `bolt://localhost:7687`.
+2. In `apps/web/.env.local` setzen: `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`, `ALLOW_DESTRUCTIVE_SEED_RESET=true`.
+3. Story-spezifischen Testlauf ausfuehren.
+4. Vollstaendige Verifikation mit Lint, Test, Build ausfuehren.
+5. Optional CLI-Resetlauf ausfuehren.
 
-## Testdaten oder Seeds
-1. Seed-Quelle ist `createSeedDataset()` plus `runSeedDatasetQualityCheck(...)` aus `apps/web/src/features/seed-data`.
-2. Erwartete Importmenge im aktuellen Stand: `105` Nodes und `203` Relationen.
+## Welche Testdaten oder Seeds noetig sind
+1. Unit-Tests nutzen injizierte Testdaten und benoetigen keine externe Seed-Datei.
+2. Optionaler CLI-Lauf nutzt Seed-Dataset aus `createSeedDataset()`.
 
 ## Bekannte Einschraenkungen
-1. Der CLI-Lauf erwartet gesetzte Neo4j Runtime-Variablen und bricht bei fehlenden Werten fail-fast ab.
-2. Integrationschecks gegen Neo4j sind env-abhaengig und ohne gueltige lokale Credentials nicht ausfuehrbar.
+1. Der Integrations-Test in `local-seed-reset.test.ts` bleibt ohne vollstaendige Neo4j-Env als `skipped` markiert.
+2. Seed-Reset bleibt absichtlich destruktiv fuer Seed-IDs und ist deshalb per Opt-In abgesichert.
 
 ## Erwartete Failure Modes
-1. Fehlende oder leere `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD` erzeugen sofortige Fehlermeldung ohne Import.
-2. Neo4j Auth-Fehler oder Verbindungsfehler brechen den Ablauf mit `Neo4j Seed-Reset/Reseed fehlgeschlagen` ab.
-3. Read-Check fehlschlaegt, wenn nach dem Import weniger als zwei Nodes oder zwei Relationen lesbar sind.
+1. Nicht-lokale `NEO4J_URI` fuehrt zu sofortigem Abbruch.
+2. Fehlendes oder anderes Opt-In als `ALLOW_DESTRUCTIVE_SEED_RESET=true` fuehrt zu sofortigem Abbruch.
+3. Fehlende Credentials fuehren zu fail-fast vor Driver-Nutzung.
+4. Neo4j Connectivitaets- oder Auth-Fehler brechen den Lauf mit Fehler ab.
 
-## Testkommandos mit erwarteten Ergebnissen
+## Genaue Testkommandos mit erwarteten Ergebnissen
 1. `pnpm --dir apps/web lint` erwartet Exit Code `0`.
 2. `pnpm --dir apps/web test` erwartet Exit Code `0`.
 3. `pnpm --dir apps/web build` erwartet Exit Code `0`.
-4. `pnpm --dir apps/web seed:local:reset-reseed` erwartet Exit Code `0` und Ausgabe mit importierten sowie gelesenen Mengen.
-5. `pnpm --dir apps/web test -- src/features/seed-data/local-seed-reset.test.ts` erwartet Exit Code `0` mit bestandenem Integrationslauf bei gueltiger Neo4j-Umgebung.
+4. `pnpm --dir apps/web test -- src/features/seed-data/local-seed-reset.test.ts` erwartet Exit Code `0` mit Guard-Tests gruen und env-abhaengigem Integrations-Skip.
+5. `pnpm --dir apps/web seed:local:reset-reseed` erwartet Exit Code `0` nur bei local URI plus Opt-In.

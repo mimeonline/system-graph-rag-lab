@@ -131,6 +131,7 @@ describe("local neo4j seed reset and reseed", () => {
     NEO4J_DATABASE: process.env.NEO4J_DATABASE,
     NEO4J_USERNAME: process.env.NEO4J_USERNAME,
     NEO4J_PASSWORD: process.env.NEO4J_PASSWORD,
+    ALLOW_DESTRUCTIVE_SEED_RESET: process.env.ALLOW_DESTRUCTIVE_SEED_RESET,
   };
 
   beforeEach(() => {
@@ -138,6 +139,7 @@ describe("local neo4j seed reset and reseed", () => {
     process.env.NEO4J_DATABASE = originalEnv.NEO4J_DATABASE;
     process.env.NEO4J_USERNAME = originalEnv.NEO4J_USERNAME;
     process.env.NEO4J_PASSWORD = originalEnv.NEO4J_PASSWORD;
+    process.env.ALLOW_DESTRUCTIVE_SEED_RESET = originalEnv.ALLOW_DESTRUCTIVE_SEED_RESET;
   });
 
   afterEach(() => {
@@ -145,11 +147,13 @@ describe("local neo4j seed reset and reseed", () => {
     process.env.NEO4J_DATABASE = originalEnv.NEO4J_DATABASE;
     process.env.NEO4J_USERNAME = originalEnv.NEO4J_USERNAME;
     process.env.NEO4J_PASSWORD = originalEnv.NEO4J_PASSWORD;
+    process.env.ALLOW_DESTRUCTIVE_SEED_RESET = originalEnv.ALLOW_DESTRUCTIVE_SEED_RESET;
   });
 
   it("fails fast on missing credentials and does not start import", async () => {
     process.env.NEO4J_URI = "bolt://localhost:7687";
     process.env.NEO4J_DATABASE = "neo4j";
+    process.env.ALLOW_DESTRUCTIVE_SEED_RESET = "true";
     delete process.env.NEO4J_USERNAME;
     delete process.env.NEO4J_PASSWORD;
 
@@ -163,11 +167,46 @@ describe("local neo4j seed reset and reseed", () => {
     expect(driverFactory).not.toHaveBeenCalled();
   });
 
+  it("rejects non-local neo4j uri before driver initialization", async () => {
+    process.env.NEO4J_URI = "neo4j+s://graph.prod.example.com";
+    process.env.NEO4J_DATABASE = "neo4j";
+    process.env.NEO4J_USERNAME = "neo4j";
+    process.env.NEO4J_PASSWORD = "secret";
+    process.env.ALLOW_DESTRUCTIVE_SEED_RESET = "true";
+
+    const driverFactory = vi.fn();
+    await expect(() =>
+      runLocalSeedResetAndReseed({
+        driverFactory,
+      }),
+    ).rejects.toThrow("ist nur fuer lokale Hosts erlaubt");
+
+    expect(driverFactory).not.toHaveBeenCalled();
+  });
+
+  it("rejects missing destructive reset opt-in before driver initialization", async () => {
+    process.env.NEO4J_URI = "bolt://localhost:7687";
+    process.env.NEO4J_DATABASE = "neo4j";
+    process.env.NEO4J_USERNAME = "neo4j";
+    process.env.NEO4J_PASSWORD = "secret";
+    delete process.env.ALLOW_DESTRUCTIVE_SEED_RESET;
+
+    const driverFactory = vi.fn();
+    await expect(() =>
+      runLocalSeedResetAndReseed({
+        driverFactory,
+      }),
+    ).rejects.toThrow("erfordert ALLOW_DESTRUCTIVE_SEED_RESET=true");
+
+    expect(driverFactory).not.toHaveBeenCalled();
+  });
+
   it("runs reset, reseed and read check with injected runtime adapter", async () => {
     process.env.NEO4J_URI = "bolt://localhost:7687";
     process.env.NEO4J_DATABASE = "neo4j";
     process.env.NEO4J_USERNAME = "neo4j";
     process.env.NEO4J_PASSWORD = "secret";
+    process.env.ALLOW_DESTRUCTIVE_SEED_RESET = "true";
 
     const transaction: FakeTransaction = {
       run: vi.fn().mockResolvedValue(undefined),
@@ -228,6 +267,11 @@ describe("local neo4j seed reset and reseed", () => {
     expect(driver.verifyConnectivity).toHaveBeenCalledTimes(1);
     expect(session.executeWrite).toHaveBeenCalledTimes(1);
     expect(transaction.run).toHaveBeenCalled();
+    const [deleteQuery, deleteParams] = transaction.run.mock.calls[0] as [string, { seedNodeIds: string[] }];
+    expect(deleteQuery).toContain("WHERE n.id IN $seedNodeIds");
+    expect(deleteParams.seedNodeIds).toEqual(
+      expect.arrayContaining(["concept:test", "problem:test", "tool:test"]),
+    );
     expect(session.close).toHaveBeenCalledTimes(1);
     expect(driver.close).toHaveBeenCalledTimes(1);
 
@@ -236,6 +280,40 @@ describe("local neo4j seed reset and reseed", () => {
     expect(result.readCheckNodeCount).toBe(2);
     expect(result.readCheckEdgeCount).toBe(2);
   });
+
+  it("does not run delete query when local-host guard fails", async () => {
+    process.env.NEO4J_URI = "neo4j+s://remote.example.com";
+    process.env.NEO4J_DATABASE = "neo4j";
+    process.env.NEO4J_USERNAME = "neo4j";
+    process.env.NEO4J_PASSWORD = "secret";
+    process.env.ALLOW_DESTRUCTIVE_SEED_RESET = "true";
+
+    const transaction: FakeTransaction = {
+      run: vi.fn().mockResolvedValue(undefined),
+    };
+    const session: FakeSession = {
+      executeWrite: vi.fn().mockImplementation(async (callback: (tx: FakeTransaction) => Promise<void>) => {
+        await callback(transaction);
+      }),
+      close: vi.fn().mockResolvedValue(undefined),
+    };
+    const driver: FakeDriver = {
+      verifyConnectivity: vi.fn().mockResolvedValue(undefined),
+      session: vi.fn().mockReturnValue(session),
+      close: vi.fn().mockResolvedValue(undefined),
+    };
+    const driverFactory = vi.fn().mockReturnValue(driver);
+
+    await expect(() =>
+      runLocalSeedResetAndReseed({
+        driverFactory,
+        seedDatasetFactory: createMinimalSeedDataset,
+      }),
+    ).rejects.toThrow("ist nur fuer lokale Hosts erlaubt");
+
+    expect(driverFactory).not.toHaveBeenCalled();
+    expect(transaction.run).not.toHaveBeenCalled();
+  });
 });
 
 const hasNeo4jEnv = [
@@ -243,6 +321,7 @@ const hasNeo4jEnv = [
   process.env.NEO4J_DATABASE,
   process.env.NEO4J_USERNAME,
   process.env.NEO4J_PASSWORD,
+  process.env.ALLOW_DESTRUCTIVE_SEED_RESET,
 ].every((value) => typeof value === "string" && value.trim().length > 0);
 
 describe.skipIf(!hasNeo4jEnv)("local neo4j seed reset and reseed integration", () => {

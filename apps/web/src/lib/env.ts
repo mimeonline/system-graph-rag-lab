@@ -8,6 +8,7 @@ export type QueryRuntimeEnv = {
   neo4jDatabase: string | null;
   neo4jUsername: string | null;
   neo4jPassword: string | null;
+  allowDestructiveSeedReset: string | null;
   rateLimitMaxRequests: number;
   rateLimitWindowSeconds: number;
 };
@@ -40,6 +41,7 @@ export function getQueryRuntimeEnv(): QueryRuntimeEnv {
     neo4jDatabase: readOptionalEnv("NEO4J_DATABASE"),
     neo4jUsername: readOptionalEnv("NEO4J_USERNAME"),
     neo4jPassword: readOptionalEnv("NEO4J_PASSWORD"),
+    allowDestructiveSeedReset: readOptionalEnv("ALLOW_DESTRUCTIVE_SEED_RESET"),
     rateLimitMaxRequests: readOptionalNumberEnv(
       "RATE_LIMIT_MAX_REQUESTS",
       DEFAULT_RATE_LIMIT_MAX_REQUESTS,

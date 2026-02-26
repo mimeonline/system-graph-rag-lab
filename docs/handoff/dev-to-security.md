@@ -1,22 +1,25 @@
 # Dev to Security Handoff E1-S6
 
-## Security Context
-1. Story `E1-S6` implementiert einen lokalen Neo4j Seed-Reset und Reseed Ablauf fuer das Dev-Profil.
-2. Es wurden keine neuen oeffentlichen API-Endpunkte hinzugefuegt.
-3. Sicherheitsschwerpunkt liegt auf sicherem Umgang mit lokalen Runtime-Credentials und kontrolliertem Datenreset.
+## Kurzer Security-Context der umgesetzten Stories
+1. Story `E1-S6` betrifft den lokalen destruktiven Seed-Reset-Pfad.
+2. Der Reopen-Lauf hat die bestehenden Security-Fixes verifiziert und erneut mit Tests abgesichert.
 
-## Sicherheitsrelevante Eingaben und Endpoints
-1. Sicherheitsrelevante Eingaben sind Runtime-Variablen `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`.
-2. Der Seed-Workflow nutzt direkten Datenbankzugriff ueber `neo4j-driver` im lokalen Kontext.
-3. Kein neuer HTTP-Endpoint wurde eingefuehrt; Aufruf erfolgt ueber lokales Script.
+## Welche Eingaben oder Endpoints sicherheitsrelevant beruehrt wurden
+1. Runtime-Eingaben: `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`, `ALLOW_DESTRUCTIVE_SEED_RESET`.
+2. Betroffene Implementierung: `apps/web/src/features/seed-data/local-seed-reset.ts`.
+3. Betroffener Command: `pnpm --dir apps/web seed:local:reset-reseed`.
 
-## Bekannte Sicherheitsgrenzen und offene Risiken
-1. Workflow ist fuer lokal gedacht; es gibt keine zusaetzliche Zugriffskontrolle ueber den bereits laufenden lokalen Zugriff hinaus.
-2. Seed-Reset loescht alle erlaubten Node-Typen (`Concept`, `Tool`, `Author`, `Book`, `Problem`) kontrolliert, aber bewusst vollstaendig.
-3. Fehlkonfigurationen bei lokalen Credentials fuehren zu Abbruch; es gibt keine automatische Secrets-Validierung gegen zentrale Policy.
+## Welche bekannten Sicherheitsgrenzen oder offenen Risiken bestehen
+1. Der Ablauf ist weiterhin destruktiv fuer Seed-Nodes, aber lokal und opt-in-gebunden.
+2. Daten mit kollidierenden IDs koennen durch den Seed-Reset entfernt werden, da Scope auf Seed-IDs basiert.
+3. Security-Gate fuer Epic E1 bleibt bis Security-Recheck formal offen.
 
-## Security Pruefpunkte fuer Epic Gate
-1. Pruefen, dass keine Secrets in Logs oder Handoff-Dateien ausgegeben werden.
-2. Pruefen, dass der Reset weiterhin nur auf erlaubte Labels begrenzt ist.
-3. Pruefen, dass Fail-fast bei fehlenden Runtime-Variablen weiterhin vor DB-Operationen greift.
-4. Pruefen, dass lokale Seed-Scripts nicht versehentlich im Public Runtime-Pfad verwendet werden.
+## Welche Punkte Security im Epic-Gate gezielt pruefen soll
+1. Non-local URI muss vor DB-Nutzung abgelehnt werden.
+2. Fehlendes Opt-In muss vor DB-Nutzung abgelehnt werden.
+3. Delete-Query muss auf `seedNodeIds` begrenzt sein.
+4. Bei Guard-Fail darf kein delete-query-run stattfinden.
+
+## Epic Gate Hinweis
+1. Epic E1 ist noch nicht abgeschlossen.
+2. Bei Epic-Abschluss bleiben Security Gate und DevOps Gate verpflichtend vor finaler Freigabe.
