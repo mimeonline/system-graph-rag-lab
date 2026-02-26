@@ -9,6 +9,7 @@
 6. Story `E2-S2` ergänzt Retrieval um deduplizierte `context.elements` mit Quellverweisen; API liefert neues `context`-Objekt.
 7. Verifikation: `pnpm --dir apps/web exec vitest run src/features/query/retrieval.test.ts` und `... src/app/api/query/route.test.ts` passierten mit Exit Code 0.
 8. Story `E2-S3` formt aus dem Retrieval-Kontext eine strukturierte Antwort mit maximal drei Referenzen oder klarem Fallback; Tests in `src/features/query/answer.test.ts` plus Route-Test spiegeln die neue Pipeline.
+9. Story `E2-S4` ist QA-ready; die Erwartungsliste aus `evals/rubric` (Q1–Q5) sichert die ersten drei Referenzen ab und ergänzt bei Bedarf den `Hinweis`-Fallback in `answer.coreRationale`. Tests `src/features/query/answer.test.ts` prüfen die positiven und negativen Matching-Szenarien.
 
 ## Active Epics and Stories
 1. Epic `E1` bleibt im Status `blocked` laut Progress.
@@ -16,6 +17,7 @@
 3. Epic `E2` ist aktiv; Story `E2-S1` steht nun auf `qa` mit deterministic retrieval proof.
 4. Story `E2-S2` steht auf `qa` und erweitert Kontextpakete mit zitierfähigen Quellen.
 5. Story `E2-S3` steht auf `qa` und liefert strukturierte Antworten mit maximal drei Referenzen bzw. Fallback.
+6. Story `E2-S4` steht auf `qa` und bestätigt mit den Tests in `src/features/query/answer.test.ts` sowohl positive als auch negative Expectation-Matches.
 
 ## Technical Constraints
 1. Keine API- oder Retrieval-Contract-Aenderungen ausserhalb Story-Scope.

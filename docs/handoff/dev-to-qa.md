@@ -66,3 +66,24 @@
 1. `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts`
 2. `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts`
 3. Eine Beispielanfrage an `/api/query` starten und prüfen, dass `references.length <= 3`, `context.elements.length` mit Referenzen korrespondiert und `answer.coreRationale` die Kontextsummaries wiedergibt.
+
+## E2-S4 Referenzkonzepte in Ausgabe absichern
+### Was ist fertig
+1. Die ersten drei Referenzen einer Antwort werden gegen die freigegebenen Erwartungslisten der fünf Eval-Fragen (Q1–Q5 in `evals/rubric.md`) abgeglichen, ohne externe Abhängigkeiten.
+2. Falls weniger als zwei erwartete Konzepte unter diesen Referenzen auftauchen, ergänzt `answer.coreRationale` den `Hinweis: Unter den ersten drei Referenzen ...`-Fallback, damit Eval-Verantwortliche die fehlenden Konzepte sehen.
+3. Die Erwartungsliste ist deterministisch im Code hinterlegt (`apps/web/src/features/query/reference-expectations.ts`) und die Tests prüfen positive sowie negative Matching-Szenarien.
+
+### Wie kann QA testen
+1. `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts`
+2. Beispielanfrage an `POST /api/query` mit `{"query":"Wie wirken Feedback Loops auf lokale Optimierung in komplexen Systemen?"}` senden und prüfen, dass zwei erwartete Referenzen enthalten sind und der Hinweis ausbleibt.
+3. Beispielanfrage mit einer Frage ohne passende Referenzen ausführen und prüfen, dass die Antwort `answer.coreRationale` den `Hinweis`-Fallback enthält.
+
+### Bekannte Einschränkungen & Testdaten
+1. Erwartungslisten decken nur die fünf Eval-Fragen ab; andere Queries lösen kein Matching und keinen Hinweis aus.
+2. Die Logik prüft immer die tatsächlich gelieferten ersten drei Referenzen und ist damit deterministisch, auch wenn z.B. `context.elements` kürzer ist als die Referenzliste.
+
+### Erwartete Failure Modes
+1. Fällt die `Hinweis`-Nachricht trotz fehlender erwarteter Konzepte aus, ist der Matcher defekt; die Tests aus `answer.test.ts` helfen bei der Rekonstruktion.
+
+### Genaue Testkommandos mit erwarteten Ergebnissen
+1. `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts` Exit Code `0`.

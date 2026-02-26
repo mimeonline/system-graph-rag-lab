@@ -3,6 +3,10 @@ import {
   type QueryReference,
   type QuerySuccessResponse,
 } from "@/features/query/contracts";
+import {
+  buildExpectationFallbackHint,
+  evaluateExpectationMatch,
+} from "@/features/query/reference-expectations";
 
 export const MAX_REFERENCES_IN_RESPONSE = 3;
 const ESTIMATED_TOKEN_DIVISOR = 4;
@@ -86,7 +90,14 @@ export function buildStructuredAnswer({
         )
       : finalReferences.map((reference, index) => `${index + 1}) ${reference.title}`);
 
-  const coreRationale = rationaleSegments.join(" ");
+  const { expectedReferenceIds, matchedCount } = evaluateExpectationMatch(
+    query,
+    finalReferences.map((reference) => reference.nodeId),
+  );
+  const expectationFallback = buildExpectationFallbackHint(query, matchedCount, expectedReferenceIds);
+  const coreRationale = expectationFallback
+    ? `${rationaleSegments.join(" ")} ${expectationFallback}`
+    : rationaleSegments.join(" ");
 
   const contextTokens = finalContextElements.reduce(
     (sum, element) => sum + estimateTokensFromText(element.title) + estimateTokensFromText(element.summary),

@@ -75,3 +75,22 @@
 ### Gezielte Security-Pruefpunkte
 1. Sicherstellen, dass die Antwort maximal drei Referenzen enthält und `context.elements` exakt mit diesen Referenzen übereinstimmt.
 2. Prüfen, dass im No-Reference-Fallback keine zusätzlichen Datenquellen eingeblendet werden.
+
+## E2-S4 Referenzkonzepte in Ausgabe absichern
+### Security Context
+1. Das neue Expectation-Matching nutzt ausschließlich statische Referenz-IDs aus `evals/rubric.md` (Q1–Q5); es werden keine Secrets oder Netzwerkaufrufe benötigt.
+2. Der Fallback (`Hinweis: Unter den ersten drei Referenzen ...`) bleibt innerhalb von `answer.coreRationale` und liefert keine zusätzlichen Kontextdetails.
+3. Es wurden keine neuen Environment- oder Config-Parameter eingeführt.
+
+### Sicherheitsrelevante Eingaben und Endpoints
+1. Der einzige Security-Kontaktpunkt bleibt `POST /api/query`.
+2. Die Query bleibt das einzige Input-Feld; die Expectation-Logik verarbeitet nur die referenzierten Texte ohne weitere Parameter.
+3. Im Fallback werden nur lokale Referenz-IDs genannt, keine Nutzerdaten.
+
+### Bekannte Sicherheitsgrenzen und Risiken
+1. Die Expectation-Liste ist statisch und kann nicht zur Codeinjektion missbraucht werden.
+2. Fallback-Hinweise werden nur ausgegeben, wenn Referenzen fehlen; es gibt kein zusätzliches Logging oder State-Persistence.
+
+### Gezielte Security-Prüfpunkte
+1. Verifizieren, dass der `Hinweis`-Fallback weder private noch dynamische Daten enthält (nur Referenz-IDs).
+2. Sicherstellen, dass keine neuen Endpoints/Flags eingeführt wurden und die Antwort nur lokale Daten verwendet.
