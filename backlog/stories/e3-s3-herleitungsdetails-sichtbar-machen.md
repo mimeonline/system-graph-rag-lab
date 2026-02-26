@@ -1,7 +1,7 @@
 # Story E3-S3 Herleitungsdetails sichtbar machen
 
 ## Status
-pass
+accepted
 
 ## Ziel
 Die Nachvollziehbarkeit der Antwort für Nutzer über den P0-Kernnachweis hinaus erhöhen.

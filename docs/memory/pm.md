@@ -10,6 +10,7 @@
 7. Story E2-S4 Referenzkonzepte in Ausgabe absichern folgte dem QA-Verdikt `Pass` vom 26.02.2026 (`docs/qa/verdict.md`) und wurde PM-seitig auf `accepted` gesetzt, um die Erwartungslisten- und Fallback-Checks rechtzeitig zu verankern.
 8. Story E3-S1 Query-Eingabe und Antwortansicht bereitstellen erhielt das QA-Verdikt `Pass` vom 26.02.2026 und wurde nun PM-seitig ebenfalls auf `accepted` gesetzt; `backlog/progress.md` ist im selben Run synchron aktualisiert worden.
 9. Story E3-S2 Zustände für Loading, Fehler und Leere bereitstellen bestätigt `Pass` in `docs/qa/verdict.md` (26.02.2026) inkl. Unit-Tests und UI-Review; Status ist nun PM-seitig auf `accepted`, `backlog/progress.md` wieder synchron.
+10. Story E3-S3 Herleitungsdetails sichtbar machen wurde nach dem QA-Verdikt `Pass` vom 26.02.2026 in `docs/qa/verdict.md` auf `accepted` gesetzt; `backlog/progress.md` ist im selben Run synchron und widerspiegelt den finalen Status.
 9. Epic E2 ist nach QA-, Security- und DevOps-`Pass`-Verdikten durchgängig synchronisiert und PM-seitig nun ebenfalls auf `accepted`.
 
 ## MVP Scope Guardrails In Out
