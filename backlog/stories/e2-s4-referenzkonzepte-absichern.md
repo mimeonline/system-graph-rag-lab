@@ -1,7 +1,7 @@
 # Story E2-S4 Referenzkonzepte in Ausgabe absichern
 
 ## Status
-pass
+accepted
 
 ## Ziel
 Konsistente Mindestqualität für Referenzkonzepte sicherstellen.
@@ -29,3 +29,6 @@ die ersten drei Referenzkonzepte der Antwort geprüft werden
 
 ## Test Notes
 Führe Positiv- und Negativfälle aus und dokumentiere die Trefferquote sowie das Fallback-Verhalten.
+
+## QA Evidence
+1. `docs/qa/verdict.md`: QA Gate Story E2-S4 – Verdict `Pass`, Fallback- und Erwartungslistenprüfung reproduzierbar (2026-02-26).

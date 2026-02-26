@@ -7,6 +7,7 @@
 4. E2-S1 Kontextkandidaten pro Frage bereitstellen wird nach QA-Pass von PM akzeptiert; Status und Progress sind synchronisiert.
 5. Story E2-S2 Kontext für Antwort konsistent erweitern wurde nach `docs/qa/verdict.md`-Pass von PM auf `accepted` gesetzt; `backlog/progress.md` ist im selben Run konsistent.
 6. Story E2-S3 Antwort aus strukturiertem Kontext erzeugen wurde ebenfalls nach dem QA-Verdikt vom 26.02.2026 in `docs/qa/verdict.md` auf `accepted` gesetzt; QA bestätigt Referenzlimit und Fallback-Stabilität.
+7. Story E2-S4 Referenzkonzepte in Ausgabe absichern folgte dem QA-Verdikt `Pass` vom 26.02.2026 (`docs/qa/verdict.md`) und wurde PM-seitig auf `accepted` gesetzt, um die Erwartungslisten- und Fallback-Checks rechtzeitig zu verankern.
 
 ## MVP Scope Guardrails In Out
 ### In
@@ -34,6 +35,7 @@
 3. Regressionsrisiko bei spaeteren Aenderungen am lokalen Reset-Guard.
 4. Risiko spaeterer Gate-Regressionen durch unsynchronisierte Rechecks in QA, Security oder DevOps.
 5. Retrieval bleibt derzeit keyword-basiert; semantische Embeddings müssen in späteren Stories nachgezogen werden.
+6. Erwartungslistenpflege für neue Eval-Fragen muss parallel zu Story- oder Eval-Erweiterungen koordiniert werden, sonst verlieren Referenz-Matching-Checks wie in E2-S4 ihre Validität.
 
 ## Next Instructions for PM Agent
 1. Vor jeder PM-Abnahme Story-Status, QA-Verdict und Progress querpruefen.
