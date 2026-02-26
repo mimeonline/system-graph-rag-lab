@@ -1,6 +1,6 @@
 # Dev Story Prompt Template
 
-## Vorlage
+## Template
 ```text
 RUN_MODE=review
 
@@ -8,38 +8,37 @@ Rolle: Dev
 Story-ID: <STORY_ID>
 
 Kontext:
-- Epic-Referenz: <EPIC_MD_PFAD>
-- Story-Referenz: <STORY_MD_PFAD>
-- Scope, Akzeptanzkriterien und Testfokus direkt aus der Story-Datei übernehmen.
+- Epic: <EPIC_FILE>
+- Story: <STORY_FILE>
+- Scope: <SCOPE>
+- Akzeptanzkriterien: <AC_LIST>
+- Testfokus: <TEST_FOCUS>
 
 Leitplanken:
-- Keine Scope-Erweiterung.
-- Keine Architekturänderung.
-- Nur erlaubte Schreibpfade für Dev.
-- Bestehende Konventionen, Contracts und ADRs einhalten.
-- Kein vorzeitiger Abschluss: liefere finales Output erst nach Umsetzung, Verifikation und Artefakt-Sync.
+- Keine Scope-Erweiterung
+- Keine Architektur-Aenderung
+- Nur erlaubte Dev-Schreibpfade
 
 Aufgabe:
-1. Lies alle relevanten Pflicht-Inputs für die Story.
-2. Setze als ersten operativen Schritt den Story-Status auf `in_progress` und synchronisiere sofort `backlog/progress.md`.
-3. Implementiere minimal-invasiv nur den Story-Scope.
-4. Führe Lint, Tests und Build aus, soweit im Projekt verfügbar.
-5. Aktualisiere Story-Datei und Backlog-Fortschritt gemäß Workflow.
-6. Wenn die Story die erste aktive Story ihres Epics ist, setze das Epic im selben Run auf `in_progress` und synchronisiere `backlog/progress.md`.
-7. Erzeuge oder aktualisiere das Dev-Handoff und die Dev-Memory-Datei.
-8. Setze `docs/progress/dev/current.md` final auf `completed` oder `failed`.
+1. Pflicht-Inputs lesen.
+2. Story auf `in_progress` setzen und `backlog/progress.md` sofort synchronisieren.
+3. Scope minimal-invasiv umsetzen.
+4. Lint, Tests und Build ausfuehren.
+5. Story-Status auf `qa` oder `blocked` setzen und Progress synchronisieren.
+6. Handoff und `docs/memory/dev.md` aktualisieren.
+7. `docs/progress/dev/current.md` final auf `completed` oder `failed` setzen.
 
 Outputformat:
 1. Status
-2. Geänderte Dateien
-3. Testergebnisse mit Command-Übersicht
+2. Geaenderte Dateien
+3. Testergebnisse je Command
 4. Offene Risiken
 5. Blocker
-6. Bestätigung zu Scope und Architekturkonformität
+6. Scope- und Architektur-Check
 ```
 
-## Platzhalterhilfe
-1. `<STORY_ID>`: eindeutige Story-Referenz aus `backlog/stories`.
-2. `<EPIC_MD_PFAD>`: Pfad zur Epic-Datei unter `backlog/epics/*.md`.
-3. `<STORY_MD_PFAD>`: Pfad zur Story-Datei unter `backlog/stories/*.md`.
-4. Scope, Akzeptanzkriterien und Testfokus werden nicht doppelt im Prompt gepflegt, sondern aus der Story referenziert.
+## Platzhalter
+1. `<STORY_ID>` ist die Story-ID aus `backlog/stories`.
+2. `<EPIC_FILE>` ist der Pfad der Epic-Datei.
+3. `<STORY_FILE>` ist der Pfad der Story-Datei.
+4. `<SCOPE>`, `<AC_LIST>` und `<TEST_FOCUS>` kommen direkt aus der Story.

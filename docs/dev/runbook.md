@@ -1,71 +1,37 @@
 # Dev Runbook
 
-## Ziel und Scope
-1. Dieses Runbook ist die verbindliche Arbeitsgrundlage vor dem Dev Start im MVP.
-2. Es beschreibt nur Betriebsabläufe für lokale Entwicklung, Verifikation und Übergaben.
-3. Es führt keine Scope Erweiterung, keine Architekturänderung und keine Featureänderung ein.
+## Start lokal
+1. In `apps/web` Abhaengigkeiten installieren: `pnpm install --frozen-lockfile`.
+2. Lokalen Neo4j Docker mit `neo4j:5.26.0` starten.
+3. `apps/web/.env.local` setzen, optional `apps/web/.env` als Fallback.
+4. App starten: `pnpm --dir apps/web dev`.
+5. Erreichbarkeit auf `http://localhost:3000` pruefen.
 
-## Voraussetzungen lokal
-1. Node.js in einer Version, die mit Next.js `16.1.6` kompatibel ist.
-2. Paketmanager gemäß Projektkonvention und installierte Abhängigkeiten.
-3. Docker Desktop oder kompatible Docker Runtime für lokalen Neo4j Betrieb.
-4. Netzwerkzugriff für OpenAI API.
+## Start Tests
+1. Lint: `pnpm --dir apps/web lint`.
+2. Tests: `pnpm --dir apps/web test`.
+3. Build: `pnpm --dir apps/web build`.
+4. Story E1-S6 lokal: `pnpm --dir apps/web seed:local:reset-reseed`.
 
-## Local Start Reihenfolge
-1. Neo4j Docker starten.
-2. Neo4j Erreichbarkeit prüfen auf `bolt://localhost:7687`.
-3. Environment-Datei laden über `.env.local`, optional `.env` als Fallback.
-4. Next.js lokal starten auf `http://localhost:3000`.
-5. API Smoke Check gegen `POST /api/query` ausführen.
+## Troubleshooting
+1. Build oder TypeScript Fehler: `pnpm --dir apps/web install --frozen-lockfile` erneut und danach Lint plus Test plus Build.
+2. Smoke-Check Fehler: `X-Request-Id` notieren und Abschluss-Event im Log pruefen.
+3. Laufzeitdifferenz local versus public: zuerst identische Env-Namen und Rate-Limit-Werte abgleichen.
 
-## Environment Handling Best Practices
-1. Primär wird `.env.local` genutzt.
-2. Optional kann `.env` als Fallback genutzt werden.
-3. Secrets und Keys bleiben immer außerhalb des Repository.
-4. `.env.example` dient nur als Template ohne echte Werte.
-5. `.env.local` und `.env` dürfen nicht versioniert werden.
+## Common failure modes
+1. DB unreachable: `NEO4J_URI` oder Neo4j Container ist nicht erreichbar.
+2. Rate limit: `429` mit `Retry-After`; Last reduzieren und nach Wartezeit erneut pruefen.
+3. Key missing: fehlendes `OPENAI_API_KEY` oder leeres `OPENAI_MODEL` fuehrt zu API-Fehler.
+4. Auth failure: `NEO4J_USERNAME` oder `NEO4J_PASSWORD` sind falsch.
 
-## Pflichtvariablen
-1. `OPENAI_API_KEY`
-2. `OPENAI_MODEL` mit Default `gpt-5-mini`
-3. `NEO4J_URI`
-4. `NEO4J_USERNAME`
-5. `NEO4J_PASSWORD`
-
-## Story Workflow und Status
-1. Zulaessige Story Status sind `todo`, `in_progress`, `qa`, `pass`, `accepted`, `blocked`.
-2. Dev setzt zu Run-Beginn als ersten operativen Schritt den Story-Status auf `in_progress`.
-3. Dev synchronisiert direkt danach `backlog/progress.md`.
-4. Dev setzt nach Umsetzung nur `qa` oder `blocked`.
-5. Dev setzt nicht `accepted`.
-6. QA setzt nach erfolgreichem QA Gate zuerst `pass`.
-7. PM setzt `accepted` erst nach PM-Review auf Basis von `pass`.
-
-## Epic Gate Trigger
-1. Alle Stories eines Epics muessen mindestens Status `pass` haben.
-2. Danach sind Security Gate und DevOps Gate verpflichtend.
-3. Erst nach diesen Gates ist die Epic Freigabe für den nächsten Schritt belastbar.
-
-## Verifikation
-1. Lint: `pnpm lint`
-2. Tests: `pnpm test`
-3. Build: `pnpm build`
-4. Smoke Check lokal:
+## Betriebsablauf API Smoke
+1. Zweck: Schnellpruefung nach lokalem Start oder Rollback.
+2. Input: laufende App, gesetzte Env-Variablen, laufender Neo4j.
+3. Output: valide JSON-Response oder reproduzierbarer Fehlercode.
+4. Fehlerfall: `5xx` oder Timeout blockiert Gate bis Ursache dokumentiert ist.
+5. Beispiel:
 ```bash
 curl -s -X POST http://localhost:3000/api/query \
   -H 'Content-Type: application/json' \
-  -d '{"query":"Wie wirken Feedback Loops auf lokale Optimierung?"}'
+  -d '{"query":"Was sind Feedback Loops?"}'
 ```
-
-## Troubleshooting Kurz
-1. `NEO4J_URI` nicht erreichbar: Docker Container, Port-Mapping und lokale Firewall prüfen.
-2. `OPENAI_API_KEY` fehlt oder ungültig: lokale Env-Datei und Key-Status prüfen.
-3. `429 RATE_LIMIT`: kurz warten, `Retry-After` beachten und Last reduzieren.
-4. Build Fehler: zuerst `pnpm install --frozen-lockfile` erneut ausführen und danach Lint plus Tests wiederholen.
-5. Unvollständige Antwortdaten: Logs auf `requestId`, `errorCode` und `statusCode` prüfen.
-
-## Übergabehinweise an QA und PM
-1. Übergabe an QA enthält Story Status, Test Notes und Verifikationsresultate.
-2. QA prüft Contract-Verhalten, Fehlercodes und Smoke-Reproduzierbarkeit.
-3. Bei QA-Pass setzt QA den Story-Status auf `pass` und synchronisiert `backlog/progress.md` im selben Run.
-4. PM setzt finalen Story-Status `accepted` nur nach vorherigem `pass` und erfolgreichem PM-Review.
