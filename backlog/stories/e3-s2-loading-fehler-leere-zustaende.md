@@ -1,7 +1,7 @@
 # Story E3-S2 Zustände für Loading, Fehler und Leere bereitstellen
 
 ## Status
-pass
+accepted
 
 ## Ziel
 Nutzerführung in nicht idealen Antwortpfaden absichern.
@@ -30,3 +30,6 @@ der jeweilige Zustand eintritt
 
 ## Test Notes
 Simuliere Loading, Fehler und leere Ergebnisse separat und dokumentiere je Zustand Status-Text und nächste Aktion.
+
+## QA Evidence
+QA-Report `docs/qa/verdict.md` vom 26.02.2026 dokumentiert Verdict `Pass` für E3-S2, inklusive Unit-Tests zu `getStatusHint` und Code Review der Status-/Action-Flow-Komponenten.
