@@ -28,6 +28,9 @@ type NodeSearchEntry = {
 const ESTIMATED_TOKEN_DIVISOR = 4;
 const MIN_TOKEN_LENGTH = 2;
 
+/**
+ * Normalizes text for accent-insensitive and case-insensitive matching.
+ */
 function normalizeText(value: string): string {
   return value
     .normalize("NFKD")
@@ -35,16 +38,25 @@ function normalizeText(value: string): string {
     .toLowerCase();
 }
 
+/**
+ * Extracts normalized alphanumeric tokens for retrieval scoring.
+ */
 function extractTokens(value: string): string[] {
   const normalized = normalizeText(value);
   const fragments = normalized.match(/[a-z0-9]+/g) ?? [];
   return fragments.filter((fragment) => fragment.length >= MIN_TOKEN_LENGTH);
 }
 
+/**
+ * Creates a deduplicated token set from text input.
+ */
 function buildTokenSet(value: string): Set<string> {
   return new Set(extractTokens(value));
 }
 
+/**
+ * Estimates token count with a lightweight character-based heuristic.
+ */
 function estimateTokenCount(value: string): number {
   if (!value) {
     return 0;
@@ -56,10 +68,16 @@ function estimateTokenCount(value: string): number {
 const CONTEXT_SUMMARY_LIMIT = 280;
 const SOURCE_KEY_DELIMITER = "|";
 
+/**
+ * Builds a deterministic composite key for source lookup.
+ */
 function getSourceLookupKey(sourceType: SeedSourceType, sourceFile: string): string {
   return `${sourceType}${SOURCE_KEY_DELIMITER}${sourceFile}`;
 }
 
+/**
+ * Indexes curated source entries by source type and file.
+ */
 function buildSourceLookup(sources: CuratedSourceEntry[]): Map<string, CuratedSourceEntry> {
   const lookup = new Map<string, CuratedSourceEntry>();
   for (const source of sources) {
@@ -69,6 +87,9 @@ function buildSourceLookup(sources: CuratedSourceEntry[]): Map<string, CuratedSo
   return lookup;
 }
 
+/**
+ * Trims and length-limits summaries for response context elements.
+ */
 function truncateSummary(value: string): string {
   const trimmed = value.trim();
   if (trimmed.length <= CONTEXT_SUMMARY_LIMIT) {
@@ -98,6 +119,9 @@ const SEARCH_INDEX: NodeSearchEntry[] = seedDataset.nodes.map((node) => {
   };
 });
 
+/**
+ * Provides deterministic ordering for equally scored retrieval candidates.
+ */
 function compareCandidates(a: NodeSearchEntry, b: NodeSearchEntry, scoreA: number, scoreB: number): number {
   if (scoreA !== scoreB) {
     return scoreB - scoreA;
@@ -114,6 +138,9 @@ function compareCandidates(a: NodeSearchEntry, b: NodeSearchEntry, scoreA: numbe
   return a.nodeId.localeCompare(b.nodeId);
 }
 
+/**
+ * Computes a simple overlap score between query tokens and candidate tokens.
+ */
 function computeScore(tokenSet: Set<string>, queryTokens: string[]): number {
   if (queryTokens.length === 0) {
     return 0;
@@ -135,6 +162,9 @@ export type RetrievalResult = {
   contextElements: QueryContextElement[];
 };
 
+/**
+ * Selects top context candidates under ranking and context-budget constraints.
+ */
 export function buildContextCandidates(query: string): RetrievalResult {
   const queryTokens = extractTokens(query);
   const scoredEntries = SEARCH_INDEX.map((entry) => ({
@@ -186,6 +216,9 @@ export function buildContextCandidates(query: string): RetrievalResult {
   };
 }
 
+/**
+ * Maps a ranked candidate into the contract-compliant context element structure.
+ */
 function buildContextElement(entry: NodeSearchEntry): QueryContextElement {
   const sourceKey = getSourceLookupKey(entry.sourceType, entry.sourceFile);
   const curatedSource = SOURCE_LOOKUP.get(sourceKey);

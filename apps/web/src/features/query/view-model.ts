@@ -22,6 +22,9 @@ export type DerivationDetail = {
   sourceFile: string;
 };
 
+/**
+ * Builds the UI-facing query view model from API response and submitted query.
+ */
 export function buildQueryViewModel(
   response: QuerySuccessResponse,
   submittedQuery: string,
@@ -45,6 +48,9 @@ export function buildQueryViewModel(
   };
 }
 
+/**
+ * Derives numbered context detail entries used by the derivation section.
+ */
 function buildDerivationDetails(elements: QueryContextElement[]): DerivationDetail[] {
   return elements.map((element, index) => ({
     nodeId: element.nodeId,

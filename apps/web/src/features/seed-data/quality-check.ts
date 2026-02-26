@@ -38,6 +38,9 @@ export type SeedQualityCheckResult = {
   report: SeedQualityReport;
 };
 
+/**
+ * Initializes quality counter objects with optional initial checked count.
+ */
 function createCounters(checked = 0): SeedQualityCounters {
   return {
     checked,
@@ -46,6 +49,9 @@ function createCounters(checked = 0): SeedQualityCounters {
   };
 }
 
+/**
+ * Appends a normalized issue entry to the quality report.
+ */
 function pushIssue(
   report: SeedQualityReport,
   scope: SeedQualityIssue["scope"],
@@ -61,6 +67,9 @@ function pushIssue(
   });
 }
 
+/**
+ * Increments rejected counters for an item and its source-type bucket.
+ */
 function markBeanstandet(
   counters: SeedQualityCounters,
   sourceTypeCounters: SeedQualityCounters,

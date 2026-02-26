@@ -24,6 +24,9 @@ export type BuildStructuredAnswerResult = {
   contextTokens: number;
 };
 
+/**
+ * Estimates token count from text length using a conservative heuristic.
+ */
 function estimateTokensFromText(value: string): number {
   if (!value) {
     return 0;
@@ -32,6 +35,9 @@ function estimateTokensFromText(value: string): number {
   return Math.ceil(value.length / ESTIMATED_TOKEN_DIVISOR);
 }
 
+/**
+ * Joins concept titles into a German-readable list with proper conjunction.
+ */
 function formatConceptList(titles: string[]): string {
   if (titles.length === 0) {
     return "";
@@ -50,6 +56,9 @@ function formatConceptList(titles: string[]): string {
   return `${initial} und ${last}`;
 }
 
+/**
+ * Builds the final structured answer with capped references and context rationale.
+ */
 export function buildStructuredAnswer({
   query,
   references,

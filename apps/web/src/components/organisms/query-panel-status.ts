@@ -30,6 +30,9 @@ const STATUS_HINTS: Record<QueryPanelStatus, QueryPanelStatusHint> = {
   },
 };
 
+/**
+ * Returns user-facing status copy and optional error override for the query panel.
+ */
 export function getStatusHint(
   status: QueryPanelStatus,
   errorMessage?: string | null,

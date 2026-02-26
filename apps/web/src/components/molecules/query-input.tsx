@@ -15,6 +15,9 @@ type QueryInputProps = {
 const DEFAULT_HELPER_TEXT =
   "Kernfluss: Frage absenden und Hauptantwort, Referenzen sowie P0-Kernnachweis im nächsten Abschnitt prüfen.";
 
+/**
+ * Renders the query form with helper status text and submit action.
+ */
 export function QueryInput({
   query,
   onSubmit,

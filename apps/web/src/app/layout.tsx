@@ -17,6 +17,9 @@ export const metadata: Metadata = {
   description: "Bootstrap fuer das technische MVP-Grundgeruest.",
 };
 
+/**
+ * Global root layout that applies fonts and shared HTML shell for all routes.
+ */
 export default function RootLayout({
   children,
 }: Readonly<{

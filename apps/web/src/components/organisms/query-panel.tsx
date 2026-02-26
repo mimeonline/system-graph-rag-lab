@@ -22,6 +22,9 @@ const STATUS_LABELS: Record<QueryPanelStatus, string> = {
   empty: "leer",
 };
 
+/**
+ * Renders the interactive query workflow and orchestrates API request state.
+ */
 export function QueryPanel(): React.JSX.Element {
   const [query, setQuery] = useState(DEFAULT_QUERY);
   const [viewModel, setViewModel] = useState<QueryViewModel | null>(null);
@@ -32,6 +35,9 @@ export function QueryPanel(): React.JSX.Element {
   const helperText = statusHint.statusText;
   const statusAction = statusHint.nextAction;
 
+  /**
+   * Submits the current query to the API and updates panel state from the response.
+   */
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const trimmedQuery = query.trim();

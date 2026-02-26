@@ -28,6 +28,9 @@ const EXPECTED_REFERENCES_BY_QUERY: Record<string, string[]> = {
 
 const NORMALIZE_PATTERN = /\s+/g;
 
+/**
+ * Normalizes a user query to a stable lookup key for deterministic expectation checks.
+ */
 function normalizeQuestion(query: string): string {
   return query.trim().toLowerCase().replace(NORMALIZE_PATTERN, " ");
 }
@@ -37,10 +40,16 @@ export type ExpectationCheckResult = {
   matchedCount: number;
 };
 
+/**
+ * Returns configured expected reference ids for a known question variant.
+ */
 export function getExpectedReferencesForQuery(query: string): string[] {
   return EXPECTED_REFERENCES_BY_QUERY[normalizeQuestion(query)] ?? [];
 }
 
+/**
+ * Compares returned reference ids against expected ids and reports the match count.
+ */
 export function evaluateExpectationMatch(
   query: string,
   referenceIds: string[],
@@ -63,6 +72,9 @@ export function evaluateExpectationMatch(
 
 export const EXPECTATION_FALLBACK_PREFIX = "Hinweis: Unter den ersten drei Referenzen";
 
+/**
+ * Builds a fallback hint when fewer than two expected concepts appear in top references.
+ */
 export function buildExpectationFallbackHint(
   query: string,
   matchedCount: number,

@@ -13,6 +13,9 @@ export type QueryRuntimeEnv = {
   rateLimitWindowSeconds: number;
 };
 
+/**
+ * Reads an optional env var and normalizes empty or whitespace-only values to null.
+ */
 function readOptionalEnv(key: string): string | null {
   const raw = process.env[key];
   if (!raw) {
@@ -23,6 +26,9 @@ function readOptionalEnv(key: string): string | null {
   return value.length > 0 ? value : null;
 }
 
+/**
+ * Reads a positive integer env var and falls back when value is missing or invalid.
+ */
 function readOptionalNumberEnv(key: string, fallback: number): number {
   const value = readOptionalEnv(key);
   if (!value) {
@@ -33,6 +39,9 @@ function readOptionalNumberEnv(key: string, fallback: number): number {
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
 }
 
+/**
+ * Collects query runtime configuration from process environment variables.
+ */
 export function getQueryRuntimeEnv(): QueryRuntimeEnv {
   return {
     openAiApiKey: readOptionalEnv("OPENAI_API_KEY"),

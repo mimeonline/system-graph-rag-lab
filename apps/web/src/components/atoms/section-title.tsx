@@ -4,6 +4,9 @@ export type SectionTitleProps = {
   description: string;
 };
 
+/**
+ * Renders the feature intro heading block used on the home page.
+ */
 export function SectionTitle({
   eyebrow,
   title,

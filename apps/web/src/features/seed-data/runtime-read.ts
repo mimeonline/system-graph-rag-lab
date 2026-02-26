@@ -32,10 +32,16 @@ type RuntimeSeedReadOptions = {
   driverFactory?: (uri: string, username: string, password: string) => Driver;
 };
 
+/**
+ * Type guard for accepted source types returned by runtime reads.
+ */
 function isAllowedSourceType(sourceType: unknown): sourceType is SeedSourceType {
   return typeof sourceType === "string" && ALLOWED_SOURCE_TYPES.includes(sourceType as SeedSourceType);
 }
 
+/**
+ * Asserts that a runtime value is a non-empty string and returns it.
+ */
 function assertNonEmptyString(value: unknown, fieldName: string): string {
   if (typeof value !== "string" || value.trim().length === 0) {
     throw new Error(`Neo4j Runtime-Read hat ungueltiges Feld ${fieldName}.`);

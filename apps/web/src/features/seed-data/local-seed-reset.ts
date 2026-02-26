@@ -127,6 +127,9 @@ const EDGE_CREATE_QUERY: Record<SeedEdge["type"], string> = {
   `,
 };
 
+/**
+ * Asserts that a runtime value is a non-empty string and returns it.
+ */
 function assertNonEmptyString(value: unknown, fieldName: string): string {
   if (typeof value !== "string" || value.trim().length === 0) {
     throw new Error(`Neo4j Seed-Reset/Reseed hat ungueltiges Feld ${fieldName}.`);
@@ -135,6 +138,9 @@ function assertNonEmptyString(value: unknown, fieldName: string): string {
   return value;
 }
 
+/**
+ * Groups items by a computed string key while preserving item order per group.
+ */
 function groupBy<T, TKey extends string>(
   items: readonly T[],
   getKey: (item: T) => TKey,
@@ -155,15 +161,24 @@ function groupBy<T, TKey extends string>(
   return grouped;
 }
 
+/**
+ * Creates a deterministic comparison key for a directed edge triple.
+ */
 function toEdgeKey(edge: Pick<SeedEdge, "type" | "fromNodeId" | "toNodeId">): string {
   return `${edge.type}:${edge.fromNodeId}:${edge.toNodeId}`;
 }
 
+/**
+ * Creates seed data and applies quality filtering before import.
+ */
 function createQualitySeedDataset(): SeedDataset {
   const qualityCheck = runSeedDatasetQualityCheck(createSeedDataset());
   return qualityCheck.dataset;
 }
 
+/**
+ * Restricts destructive reset operations to local Neo4j hosts only.
+ */
 function assertLocalNeo4jUri(uri: string): void {
   let parsed: URL;
   try {
@@ -180,6 +195,9 @@ function assertLocalNeo4jUri(uri: string): void {
   }
 }
 
+/**
+ * Enforces explicit destructive reset opt-in via environment variable.
+ */
 function assertDestructiveSeedResetOptIn(optInValue: string | null): void {
   if (optInValue !== "true") {
     throw new Error(

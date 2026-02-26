@@ -1,5 +1,8 @@
 import { runLocalSeedResetAndReseed } from "@/features/seed-data/local-seed-reset";
 
+/**
+ * Runs local reset/reseed flow and prints a concise operational summary.
+ */
 async function main(): Promise<void> {
   const result = await runLocalSeedResetAndReseed();
   console.log("Neo4j Seed-Reset/Reseed erfolgreich.");
