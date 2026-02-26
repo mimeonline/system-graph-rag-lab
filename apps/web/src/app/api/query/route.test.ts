@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { POST } from "@/app/api/query/route";
+import { MAX_REFERENCES_IN_RESPONSE } from "@/features/query/answer";
 
 const originalOpenAiModel = process.env.OPENAI_MODEL;
 
@@ -71,5 +72,6 @@ describe("POST /api/query", () => {
     expect(body.meta.contextTokens).toBeGreaterThanOrEqual(0);
     expect(body.answer.main.length).toBeGreaterThan(0);
     expect(body.answer.coreRationale.length).toBeGreaterThan(0);
+    expect(body.references.length).toBeLessThanOrEqual(MAX_REFERENCES_IN_RESPONSE);
   });
 });

@@ -38,7 +38,7 @@
 | `e1-s6-neo4j-lokal-seed-reset.md` | E1-S6 Neo4j lokal Seed Reset und Reseed | ✅ `accepted` | 2026-02-26 |
 | `e2-s1-kontextkandidaten-bereitstellen.md` | E2-S1 Kontextkandidaten pro Frage bereitstellen | ✅ `accepted` | 2026-02-26 |
 | `e2-s2-kontext-konsistent-erweitern.md` | E2-S2 Kontext für Antwort konsistent erweitern | ✅ `accepted` | 2026-02-26 |
-| `e2-s3-antwort-aus-kontext-erzeugen.md` | E2-S3 Antwort aus strukturiertem Kontext erzeugen | ⚪ `todo` | 2026-02-25 |
+| `e2-s3-antwort-aus-kontext-erzeugen.md` | E2-S3 Antwort aus strukturiertem Kontext erzeugen | 🟡 `qa` | 2026-02-26 |
 | `e2-s4-referenzkonzepte-absichern.md` | E2-S4 Referenzkonzepte in Ausgabe absichern | ⚪ `todo` | 2026-02-25 |
 | `e3-s1-query-und-antwortansicht.md` | E3-S1 Query-Eingabe und Antwortansicht bereitstellen | ⚪ `todo` | 2026-02-25 |
 | `e3-s2-loading-fehler-leere-zustaende.md` | E3-S2 Zustände für Loading, Fehler und Leere bereitstellen | ⚪ `todo` | 2026-02-25 |

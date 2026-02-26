@@ -57,3 +57,21 @@
 ### Gezielte Security-Pruefpunkte
 1. Verifizieren, dass `context.elements` keine doppelten `nodeId`s enthält und den Catalog-Quellen entspricht.
 2. Prüfen, dass `context.elements[].source.publicReference` keine URLs/ISBNs enthält, die nicht kuratiert sind.
+
+## E2-S3 Antwort aus strukturiertem Kontext erzeugen
+### Security Context
+1. Die Antwort wird ausschließlich aus den lokalen `references` und `context.elements` der Retrieval-Pipeline gebildet; es gibt keine zusätzlichen Netzwerkaufrufe oder Secrets.
+2. Die zusätzliche Strukturierung nutzt keine neuen Environment-Variablen; sie bleibt innerhalb der bestehenden `OPENAI_*`-Konfiguration.
+3. Der Fallbackpfad für fehlende Referenzen liefert eine klare Mitteilung, ohne weitere Kontextdaten zu persistieren.
+
+### Sicherheitsrelevante Eingaben und Endpoints
+1. `POST /api/query` bleibt der einzige Sicherheitskontaktpunkt.
+2. Es wurden keine neuen Parameter oder Flags eingeführt.
+
+### Bekannte Sicherheitsgrenzen und Risiken
+1. Die Limitierung auf maximal drei Referenzen begrenzt die Sichtbarkeit potenziell sensibler Metadaten.
+2. Context Summaries stammen weiter ausschließlich aus Kuratierungsdaten; keine User-Input-Felder werden direkt wiedergegeben.
+
+### Gezielte Security-Pruefpunkte
+1. Sicherstellen, dass die Antwort maximal drei Referenzen enthält und `context.elements` exakt mit diesen Referenzen übereinstimmt.
+2. Prüfen, dass im No-Reference-Fallback keine zusätzlichen Datenquellen eingeblendet werden.

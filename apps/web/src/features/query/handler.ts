@@ -8,6 +8,7 @@ import {
 import { parseQueryRequest } from "@/features/query/schemas";
 import { getQueryRuntimeEnv } from "@/lib/env";
 import { buildContextCandidates } from "@/features/query/retrieval";
+import { buildStructuredAnswer } from "@/features/query/answer";
 
 type QueryHandlerResult = {
   status: number;
@@ -158,7 +159,12 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
     };
   }
 
-  const { references, contextTokens, contextElements } = buildContextCandidates(parsed.data.query);
+  const retrievalResult = buildContextCandidates(parsed.data.query);
+  const composedAnswer = buildStructuredAnswer({
+    query: parsed.data.query,
+    references: retrievalResult.references,
+    contextElements: retrievalResult.contextElements,
+  });
   const latencyMs = Date.now() - startedAt;
   const baseSuccess = buildEmptySuccessResponse(
     requestId,
@@ -172,15 +178,16 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
     headers: baseHeaders,
     body: {
       ...baseSuccess,
-      state: references.length === 0 ? "empty" : "answer",
-      references,
+      state: composedAnswer.references.length === 0 ? "empty" : "answer",
+      answer: composedAnswer.answer,
+      references: composedAnswer.references,
       context: {
-        elements: contextElements,
+        elements: composedAnswer.contextElements,
       },
       meta: {
         ...baseSuccess.meta,
-        retrievedNodeCount: references.length,
-        contextTokens,
+        retrievedNodeCount: composedAnswer.references.length,
+        contextTokens: composedAnswer.contextTokens,
       },
     },
   };

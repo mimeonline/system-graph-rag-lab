@@ -1,7 +1,7 @@
 # Story E2-S3 Antwort aus strukturiertem Kontext erzeugen
 
 ## Status
-todo
+qa
 
 ## Ziel
 Aus vorbereitetem Kontext eine strukturierte Antwort erzeugen.
@@ -29,4 +29,5 @@ die Antworterzeugung ausgeführt wird
 2. Das Ergebnis enthält eine Referenzsektion mit bis zu drei Referenzkonzepten oder einem klaren Fallback-Hinweis.
 
 ## Test Notes
-Prüfe Nicht-Leere der Hauptantwort sowie Referenzsektion inklusive Fallback-Verhalten in Negativfällen.
+1. Prüfe Nicht-Leere der Hauptantwort sowie Referenzsektion inklusive Fallback-Verhalten in Negativfällen.
+2. `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts src/app/api/query/route.test.ts`

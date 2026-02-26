@@ -55,3 +55,14 @@
 ### Wie kann QA testen
 1. `pnpm --dir apps/web exec vitest run src/features/query/retrieval.test.ts`
 2. `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts`
+
+## E2-S3 Antwort aus strukturiertem Kontext erzeugen
+### Was ist fertig
+1. Die Antwortpipeline erzeugt aus dem Retrieval-Kontext eine nicht-leere `answer.main` und eine strukturierte `coreRationale`.
+2. Es werden maximal drei Referenzkonzepte aus dem Kontextpaket übergeben; wenn keine Referenzen vorliegen, liefert die Antwort einen klaren Hinweis zum Nachsteuern.
+3. `context.elements`, `meta.retrievedNodeCount` und `contextTokens` stimmen mit den gelieferten Referenzen überein und reflektieren nur die sichtbaren Kontextelemente.
+
+### Wie kann QA testen
+1. `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts`
+2. `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts`
+3. Eine Beispielanfrage an `/api/query` starten und prüfen, dass `references.length <= 3`, `context.elements.length` mit Referenzen korrespondiert und `answer.coreRationale` die Kontextsummaries wiedergibt.
