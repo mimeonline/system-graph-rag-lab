@@ -50,6 +50,7 @@ describe("POST /api/query", () => {
       status: string;
       state: string;
       references: unknown[];
+      context: { elements: { source: { kind: string } }[] };
       meta: { topK: number; hopDepth: number; retrievedNodeCount: number };
       answer: { main: string; coreRationale: string };
     };
@@ -62,6 +63,11 @@ describe("POST /api/query", () => {
     expect(body.meta.retrievedNodeCount).toBe(body.references.length);
     expect(Array.isArray(body.references)).toBe(true);
     expect(body.references.length).toBeGreaterThan(0);
+    expect(Array.isArray(body.context.elements)).toBe(true);
+    expect(body.context.elements.length).toBe(body.references.length);
+    expect(
+      body.context.elements.every((element) => element.source.kind === "candidate"),
+    ).toBe(true);
     expect(body.meta.contextTokens).toBeGreaterThanOrEqual(0);
     expect(body.answer.main.length).toBeGreaterThan(0);
     expect(body.answer.coreRationale.length).toBeGreaterThan(0);

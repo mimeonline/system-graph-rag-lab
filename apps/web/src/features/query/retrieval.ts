@@ -1,7 +1,14 @@
 import { createSeedDataset } from "@/features/seed-data/seed-data";
+import type {
+  CuratedSourceEntry,
+  PublicReference,
+  SeedSourceType,
+} from "@/features/seed-data/seed-data";
 import {
   CONTEXT_BUDGET_TOKENS,
   TOP_K,
+  type QueryContextElement,
+  type QueryContextElementSource,
   type QueryReference,
 } from "@/features/query/contracts";
 
@@ -10,6 +17,9 @@ type NodeSearchEntry = {
   nodeType: QueryReference["nodeType"];
   title: string;
   summary: string;
+  sourceType: SeedSourceType;
+  sourceFile: string;
+  publicReference: PublicReference;
   tokenSet: Set<string>;
   contextTokens: number;
   hop: number;
@@ -43,7 +53,33 @@ function estimateTokenCount(value: string): number {
   return Math.ceil(value.length / ESTIMATED_TOKEN_DIVISOR);
 }
 
+const CONTEXT_SUMMARY_LIMIT = 280;
+const SOURCE_KEY_DELIMITER = "|";
+
+function getSourceLookupKey(sourceType: SeedSourceType, sourceFile: string): string {
+  return `${sourceType}${SOURCE_KEY_DELIMITER}${sourceFile}`;
+}
+
+function buildSourceLookup(sources: CuratedSourceEntry[]): Map<string, CuratedSourceEntry> {
+  const lookup = new Map<string, CuratedSourceEntry>();
+  for (const source of sources) {
+    lookup.set(getSourceLookupKey(source.sourceType, source.sourceFile), source);
+  }
+
+  return lookup;
+}
+
+function truncateSummary(value: string): string {
+  const trimmed = value.trim();
+  if (trimmed.length <= CONTEXT_SUMMARY_LIMIT) {
+    return trimmed;
+  }
+
+  return `${trimmed.slice(0, CONTEXT_SUMMARY_LIMIT - 3)}...`;
+}
+
 const seedDataset = createSeedDataset();
+const SOURCE_LOOKUP = buildSourceLookup(seedDataset.sources);
 
 const SEARCH_INDEX: NodeSearchEntry[] = seedDataset.nodes.map((node) => {
   const displayTitle = node.title ?? node.name ?? "Unbekannter Knoten";
@@ -53,6 +89,9 @@ const SEARCH_INDEX: NodeSearchEntry[] = seedDataset.nodes.map((node) => {
     nodeType: node.nodeType,
     title: displayTitle,
     summary: node.summary,
+    sourceType: node.sourceType,
+    sourceFile: node.sourceFile,
+    publicReference: node.publicReference,
     tokenSet: buildTokenSet(combinedText),
     contextTokens: estimateTokenCount(displayTitle) + estimateTokenCount(node.summary),
     hop: 0,
@@ -93,6 +132,7 @@ function computeScore(tokenSet: Set<string>, queryTokens: string[]): number {
 export type RetrievalResult = {
   references: QueryReference[];
   contextTokens: number;
+  contextElements: QueryContextElement[];
 };
 
 export function buildContextCandidates(query: string): RetrievalResult {
@@ -107,6 +147,8 @@ export function buildContextCandidates(query: string): RetrievalResult {
   );
 
   const references: QueryReference[] = [];
+  const contextElements: QueryContextElement[] = [];
+  const selectedNodeIds = new Set<string>();
   let totalContextTokens = 0;
 
   for (const candidate of scoredEntries) {
@@ -119,6 +161,10 @@ export function buildContextCandidates(query: string): RetrievalResult {
       continue;
     }
 
+    if (selectedNodeIds.has(candidate.entry.nodeId)) {
+      continue;
+    }
+
     references.push({
       nodeId: candidate.entry.nodeId,
       nodeType: candidate.entry.nodeType,
@@ -127,11 +173,35 @@ export function buildContextCandidates(query: string): RetrievalResult {
       hop: candidate.entry.hop,
     });
 
+    contextElements.push(buildContextElement(candidate.entry));
+    selectedNodeIds.add(candidate.entry.nodeId);
+
     totalContextTokens = nextTokenBudget;
   }
 
   return {
     references,
     contextTokens: totalContextTokens,
+    contextElements,
+  };
+}
+
+function buildContextElement(entry: NodeSearchEntry): QueryContextElement {
+  const sourceKey = getSourceLookupKey(entry.sourceType, entry.sourceFile);
+  const curatedSource = SOURCE_LOOKUP.get(sourceKey);
+
+  return {
+    nodeId: entry.nodeId,
+    nodeType: entry.nodeType,
+    title: entry.title,
+    summary: truncateSummary(entry.summary),
+    source: {
+      kind: "candidate",
+      candidateId: entry.nodeId,
+      sourceId: curatedSource?.sourceId,
+      sourceFile: entry.sourceFile,
+      sourceType: entry.sourceType,
+      publicReference: entry.publicReference,
+    },
   };
 }

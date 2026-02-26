@@ -6,11 +6,14 @@
 3. Story- und Dev-Handoff-Referenzen fuer den story-spezifischen Testlauf sind auf `pnpm --dir apps/web exec vitest run src/features/seed-data/local-seed-reset.test.ts` normalisiert.
 4. Seed-Reset-Guards bleiben unveraendert: local-only URI, explizites `ALLOW_DESTRUCTIVE_SEED_RESET=true`, Delete-Scope auf Seed-IDs.
 5. Verifikation im Fix-Run erfolgreich: scope-command, `lint`, `test`, `build` jeweils Exit Code `0`.
+6. Story `E2-S2` ergänzt Retrieval um deduplizierte `context.elements` mit Quellverweisen; API liefert neues `context`-Objekt.
+7. Verifikation: `pnpm --dir apps/web exec vitest run src/features/query/retrieval.test.ts` und `... src/app/api/query/route.test.ts` passierten mit Exit Code 0.
 
 ## Active Epics and Stories
 1. Epic `E1` bleibt im Status `blocked` laut Progress.
 2. Story `E1-S6` steht im Status `qa` und wartet auf QA-Recheck.
 3. Epic `E2` ist aktiv; Story `E2-S1` steht nun auf `qa` mit deterministic retrieval proof.
+4. Story `E2-S2` steht auf `qa` und erweitert Kontextpakete mit zitierfähigen Quellen.
 
 ## Technical Constraints
 1. Keine API- oder Retrieval-Contract-Aenderungen ausserhalb Story-Scope.
@@ -31,3 +34,4 @@
 2. Story `E2-S1` ist in QA; Dev muss QA-Tests aus `docs/handoff/dev-to-qa.md` mit Lint/Test/Build verifizieren.
 3. Bei weiteren E1-S6-Doku-Abweichungen nur scope-strikt und ohne Contract- oder Architektur-Aenderung korrigieren.
 4. Story niemals auf `accepted` setzen; nur QA und PM folgen dem Gate-Prozess.
+5. Story `E2-S2` ist jetzt QA-ready; Dokumentation und `retrieval`/`route` Tests wurden ausgeführt.

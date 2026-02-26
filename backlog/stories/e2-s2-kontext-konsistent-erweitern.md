@@ -1,7 +1,7 @@
 # Story E2-S2 Kontext für Antwort konsistent erweitern
 
 ## Status
-todo
+qa
 
 ## Ziel
 Primärkandidaten um relevante Kontextelemente für die Antwortvorbereitung ergänzen.
@@ -30,4 +30,6 @@ die Kontextanreicherung ausgeführt wird
 2. Jedes Kontextelement ist einem Kandidaten oder einer Erweiterungsquelle zugeordnet.
 
 ## Test Notes
-Prüfe Duplikatfreiheit und dokumentiere für jedes Kontextelement die zugeordnete Quelle.
+- Prüfe Duplikatfreiheit sowie den `context.elements`-Katalog inklusive `source.publicReference`.
+- Verifiziere die neuen Assertions mit `pnpm --dir apps/web exec vitest run src/features/query/retrieval.test.ts`.
+- Stelle sicher, dass die API `context.elements` im Response liefert: `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts`.

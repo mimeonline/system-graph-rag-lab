@@ -1,3 +1,8 @@
+import type {
+  PublicReference,
+  SeedSourceType,
+} from "@/features/seed-data/seed-data";
+
 export const TOP_K = 6;
 export const HOP_DEPTH = 1;
 export const CONTEXT_BUDGET_TOKENS = 1400;
@@ -15,6 +20,29 @@ export type QueryReference = {
   hop: number;
 };
 
+type ContextElementSourceKind = "candidate" | "extension";
+
+export type QueryContextElementSource = {
+  kind: ContextElementSourceKind;
+  candidateId: string;
+  sourceId?: string;
+  sourceFile: string;
+  sourceType: SeedSourceType;
+  publicReference: PublicReference;
+};
+
+export type QueryContextElement = {
+  nodeId: string;
+  nodeType: QueryReference["nodeType"];
+  title: string;
+  summary: string;
+  source: QueryContextElementSource;
+};
+
+export type QueryResponseContext = {
+  elements: QueryContextElement[];
+};
+
 export type QuerySuccessResponse = {
   status: "ok";
   state: "answer" | "empty";
@@ -24,6 +52,7 @@ export type QuerySuccessResponse = {
     coreRationale: string;
   };
   references: QueryReference[];
+  context: QueryResponseContext;
   meta: {
     topK: number;
     hopDepth: number;

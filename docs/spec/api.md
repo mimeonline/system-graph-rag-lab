@@ -71,6 +71,28 @@
       "hop": 0
     }
   ],
+  "context": {
+    "elements": [
+      {
+        "nodeId": "concept:feedback_loops",
+        "nodeType": "Concept",
+        "title": "Feedback Loops",
+        "summary": "Kurztext mit maximal 280 Zeichen",
+        "source": {
+          "kind": "candidate",
+          "candidateId": "concept:feedback_loops",
+          "sourceId": "src-system-thinking-overview",
+          "sourceFile": "System Thinking.md",
+          "sourceType": "primary_md",
+          "publicReference": {
+            "kind": "book",
+            "citation": "Donella H. Meadows, Thinking in Systems: A Primer (2008)",
+            "isbn": "9781603580557"
+          }
+        }
+      }
+    ]
+  },
   "meta": {
     "topK": 6,
     "hopDepth": 1,
@@ -96,6 +118,9 @@
 7. `state="answer"` gilt genau dann, wenn `meta.retrievedNodeCount>=1` und `references` zwischen 1 und 3 Elemente enthält.
 8. `answer.main` und `answer.coreRationale` sind in beiden States nicht leer.
 9. Header `X-Request-Id` ist identisch zu `requestId` im Body.
+10. `context.elements` ist dedupliziert nach `nodeId` und enthält für jeden Referenzknoten eine Kontextzusammenfassung.
+11. Jede `context.elements`-Zusammenfassung ist auf 280 Zeichen begrenzt (mit `...` bei Kürzung) und enthält das `source`-Objekt mit `sourceId`, `sourceFile`, `sourceType` und `publicReference`.
+12. `context.elements.length` entspricht `references.length` und verweist auf dieselben Kandidatenquellen.
 
 ## Error Schema
 ```json

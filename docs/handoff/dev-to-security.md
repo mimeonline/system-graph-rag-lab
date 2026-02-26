@@ -40,3 +40,20 @@
 1. Verifizieren, dass `buildContextCandidates` ausschließlich lokale, in-code Seed-Daten nutzt.
 2. Meta-Felder enthalten keine vertraulichen Informationen (nur counts und tokens).
 3. Keine neuen Side-Effects oder Netzwerk-Calls ergaenzt worden.
+
+## E2-S2 Kontext für Antwort konsistent erweitern
+### Security Context
+1. Das neue `context.elements` Paket bleibt innerhalb des Retrieval-Scopes und liefert ausschließlich lokal kuratierte Seed-Informationen.
+2. Jeder Kontext enthält eine zitierfähige Quelle inklusive `sourceId`, damit keine dynamischen Datenverlinkungen entstehen.
+
+### Sicherheitsrelevante Eingaben und Endpoints
+1. Der Endpoint bleibt `POST /api/query`; nur die API-Response wurde erweitert.
+2. Es werden weiterhin keine neuen Secrets oder Umgebungsvariablen benötigt.
+
+### Bekannte Sicherheitsgrenzen und Risiken
+1. Kontextzusammenfassungen bleiben lokal generiert, enthalten keine Nutzereingaben oder sensitive Daten.
+2. Trunkierte Summaries verwenden weiterhin dieselben Seed-Metadaten; keine neuen externen Aufrufe nötig.
+
+### Gezielte Security-Pruefpunkte
+1. Verifizieren, dass `context.elements` keine doppelten `nodeId`s enthält und den Catalog-Quellen entspricht.
+2. Prüfen, dass `context.elements[].source.publicReference` keine URLs/ISBNs enthält, die nicht kuratiert sind.

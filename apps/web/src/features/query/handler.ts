@@ -96,6 +96,9 @@ function buildEmptySuccessResponse(
         remaining: rateLimitLimit,
       },
     },
+    context: {
+      elements: [],
+    },
   };
 }
 
@@ -155,7 +158,7 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
     };
   }
 
-  const { references, contextTokens } = buildContextCandidates(parsed.data.query);
+  const { references, contextTokens, contextElements } = buildContextCandidates(parsed.data.query);
   const latencyMs = Date.now() - startedAt;
   const baseSuccess = buildEmptySuccessResponse(
     requestId,
@@ -171,6 +174,9 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
       ...baseSuccess,
       state: references.length === 0 ? "empty" : "answer",
       references,
+      context: {
+        elements: contextElements,
+      },
       meta: {
         ...baseSuccess.meta,
         retrievedNodeCount: references.length,

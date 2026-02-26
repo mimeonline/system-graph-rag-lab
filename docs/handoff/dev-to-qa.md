@@ -45,3 +45,13 @@
 1. `pnpm --dir apps/web test -- src/features/query/retrieval.test.ts`
 2. `pnpm --dir apps/web test -- src/app/api/query/route.test.ts`
 3. Laufende Lint, Test und Build (siehe Liste oben) sichern den Contract.
+
+## E2-S2 Kontext für Antwort konsistent erweitern
+### Was ist fertig
+1. Die Retrieval-Antwort enthält ein `context.elements` Paket, das jede Referenz mit deduplizierten Kontextelementen verbindet.
+2. Jedes Kontextelement enthält den gekürzten Summarytext (max. 280 Zeichen) sowie das `source`-Objekt mit `sourceId`, `sourceFile`, `sourceType` und öffentlicher Referenz.
+3. `context.elements.length` entspricht der Referenzliste, sodass QA jedes Element eindeutig einem Kandidaten zuordnen kann.
+
+### Wie kann QA testen
+1. `pnpm --dir apps/web exec vitest run src/features/query/retrieval.test.ts`
+2. `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts`

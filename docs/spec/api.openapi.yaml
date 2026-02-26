@@ -199,6 +199,7 @@ components:
         - requestId
         - answer
         - references
+        - context
         - meta
       properties:
         status:
@@ -218,6 +219,8 @@ components:
           maxItems: 3
           items:
             $ref: '#/components/schemas/ReferenceObject'
+        context:
+          $ref: '#/components/schemas/ResponseContext'
         meta:
           allOf:
             - $ref: '#/components/schemas/SuccessMeta'
@@ -235,6 +238,7 @@ components:
         - requestId
         - answer
         - references
+        - context
         - meta
       properties:
         status:
@@ -253,6 +257,8 @@ components:
           maxItems: 0
           items:
             $ref: '#/components/schemas/ReferenceObject'
+        context:
+          $ref: '#/components/schemas/ResponseContext'
         meta:
           allOf:
             - $ref: '#/components/schemas/SuccessMeta'
@@ -304,6 +310,89 @@ components:
           type: integer
           minimum: 0
           maximum: 1
+    PublicReferenceObject:
+      type: object
+      additionalProperties: false
+      required:
+        - kind
+        - citation
+      properties:
+        kind:
+          type: string
+          enum:
+            - book
+            - web
+        citation:
+          type: string
+          minLength: 1
+        url:
+          type: string
+        isbn:
+          type: string
+    ContextElementSourceObject:
+      type: object
+      additionalProperties: false
+      required:
+        - kind
+        - candidateId
+        - sourceFile
+        - sourceType
+        - publicReference
+      properties:
+        kind:
+          type: string
+          enum:
+            - candidate
+            - extension
+        candidateId:
+          type: string
+        sourceId:
+          type: string
+        sourceFile:
+          type: string
+        sourceType:
+          type: string
+          enum:
+            - primary_md
+            - optional_internet
+        publicReference:
+          $ref: '#/components/schemas/PublicReferenceObject'
+    ContextElementObject:
+      type: object
+      additionalProperties: false
+      required:
+        - nodeId
+        - nodeType
+        - title
+        - summary
+        - source
+      properties:
+        nodeId:
+          type: string
+        nodeType:
+          type: string
+          enum:
+            - Concept
+            - Tool
+            - Author
+            - Book
+            - Problem
+        title:
+          type: string
+        summary:
+          type: string
+        source:
+          $ref: '#/components/schemas/ContextElementSourceObject'
+    ResponseContext:
+      type: object
+      additionalProperties: false
+      required:
+        - elements
+      properties:
+        elements:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContextElementObject'
     SuccessMeta:
       type: object
       additionalProperties: false

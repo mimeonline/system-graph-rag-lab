@@ -25,4 +25,24 @@ describe("buildContextCandidates", () => {
     expect(result.references.length).toBeLessThanOrEqual(TOP_K);
     expect(result.contextTokens).toBeLessThanOrEqual(CONTEXT_BUDGET_TOKENS);
   });
+
+  it("builds deduplicated context elements with source attribution", () => {
+    const result = buildContextCandidates("Feedback loops context und systemisches Denken");
+    expect(result.contextElements.length).toBe(result.references.length);
+
+    const contextNodeIds = result.contextElements.map((element) => element.nodeId);
+    expect(new Set(contextNodeIds).size).toBe(contextNodeIds.length);
+
+    expect(
+      result.contextElements.every((element) => element.source.kind === "candidate"),
+    ).toBe(true);
+
+    expect(
+      result.contextElements.every((element) => element.source.candidateId === element.nodeId),
+    ).toBe(true);
+
+    expect(
+      result.contextElements.every((element) => element.summary.length <= 280),
+    ).toBe(true);
+  });
 });
