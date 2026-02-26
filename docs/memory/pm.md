@@ -4,6 +4,7 @@
 1. E1 ist als lokaler Datenbasis-Nachweis abgeschlossen und PM-seitig auf `accepted` gesetzt.
 2. E4 bleibt der separate Nachweisstrang fuer Public-Plattform-Readiness.
 3. PM-Entscheidungen bleiben gate-basiert mit synchronem Statusabgleich in `backlog/progress.md`.
+4. E2-S1 Kontextkandidaten pro Frage bereitstellen wird nach QA-Pass von PM akzeptiert; Status und Progress sind synchronisiert.
 
 ## MVP Scope Guardrails In Out
 ### In

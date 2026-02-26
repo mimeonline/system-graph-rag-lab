@@ -1,7 +1,7 @@
 # Story E2-S1 Kontextkandidaten pro Frage bereitstellen
 
 ## Status
-pass
+accepted
 
 ## Umsetzung
 1. Deterministische Keyword-Matching-Indizierung aller Seed-Nodes über Titel + Summary.
