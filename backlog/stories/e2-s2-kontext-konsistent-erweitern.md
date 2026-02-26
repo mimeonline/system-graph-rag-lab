@@ -1,7 +1,11 @@
 # Story E2-S2 Kontext für Antwort konsistent erweitern
 
 ## Status
-pass
+accepted
+
+## PM Abnahme
+1. QA-Verdict `Pass` (Dokument: `docs/qa/verdict.md`).
+2. Story-Status wurde von PM auf `accepted` gesetzt, da die Akzeptanzkriterien aus den QA-Checks bestätigt sind.
 
 ## Ziel
 Primärkandidaten um relevante Kontextelemente für die Antwortvorbereitung ergänzen.

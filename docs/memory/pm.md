@@ -5,6 +5,7 @@
 2. E4 bleibt der separate Nachweisstrang fuer Public-Plattform-Readiness.
 3. PM-Entscheidungen bleiben gate-basiert mit synchronem Statusabgleich in `backlog/progress.md`.
 4. E2-S1 Kontextkandidaten pro Frage bereitstellen wird nach QA-Pass von PM akzeptiert; Status und Progress sind synchronisiert.
+5. Story E2-S2 Kontext für Antwort konsistent erweitern wurde nach `docs/qa/verdict.md`-Pass von PM auf `accepted` gesetzt; `backlog/progress.md` ist im selben Run konsistent.
 
 ## MVP Scope Guardrails In Out
 ### In
@@ -31,8 +32,10 @@
 2. Vermischung von lokalem Nachweis E1 und Public-Nachweis E4.
 3. Regressionsrisiko bei spaeteren Aenderungen am lokalen Reset-Guard.
 4. Risiko spaeterer Gate-Regressionen durch unsynchronisierte Rechecks in QA, Security oder DevOps.
+5. Retrieval bleibt derzeit keyword-basiert; semantische Embeddings müssen in späteren Stories nachgezogen werden.
 
 ## Next Instructions for PM Agent
 1. Vor jeder PM-Abnahme Story-Status, QA-Verdict und Progress querpruefen.
 2. Bei jedem Statuswechsel Story oder Epic im selben Run `backlog/progress.md` synchronisieren.
 3. Epic-Freigaben nur setzen, wenn QA-, Security- und DevOps-Gate fuer das Epic dokumentiert `Pass` sind.
+4. Nach PM-Abnahmen kurz im PM-Memory festhalten, welcher verdiktierte QA-Report die Entscheidung trug.

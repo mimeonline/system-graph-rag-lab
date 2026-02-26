@@ -14,3 +14,7 @@
 1. Welche Informationsdichte bleibt im Erstkontakt robust?
 2. Welche Formulierung ist fuer Fallback-Hinweise am klarsten?
 3. Welche mobile Mindestdarstellung sichert dieselbe Verstaendlichkeit wie Desktop?
+
+## Recent Story Status
+1. Story E2-S2 Kontext für Antwort konsistent erweitern wurde nach QA-Verdict `Pass` (`docs/qa/verdict.md`) von PM auf `accepted` gesetzt.
+2. Status und `backlog/progress.md` sind im selben Run synchron ausgegeben; die Story ist damit abgeschlossen und bedient den Kontext-E2-Zweig.
