@@ -11,6 +11,15 @@ export type QueryViewModel = {
   references: QueryReference[];
   contextElements: QueryContextElement[];
   contextTokens: number;
+  derivationDetails: DerivationDetail[];
+};
+
+export type DerivationDetail = {
+  nodeId: string;
+  nodeType: QueryContextElement["nodeType"];
+  label: string;
+  summary: string;
+  sourceFile: string;
 };
 
 export function buildQueryViewModel(
@@ -32,5 +41,16 @@ export function buildQueryViewModel(
     references: structuredAnswer.references,
     contextElements: structuredAnswer.contextElements,
     contextTokens: structuredAnswer.contextTokens,
+    derivationDetails: buildDerivationDetails(structuredAnswer.contextElements),
   };
+}
+
+function buildDerivationDetails(elements: QueryContextElement[]): DerivationDetail[] {
+  return elements.map((element, index) => ({
+    nodeId: element.nodeId,
+    nodeType: element.nodeType,
+    label: `${index + 1}) ${element.title}`,
+    summary: element.summary,
+    sourceFile: element.source.sourceFile,
+  }));
 }

@@ -70,7 +70,9 @@ export function QueryPanel(): React.JSX.Element {
   };
 
   const references = viewModel?.references ?? [];
+  const derivationDetails = viewModel?.derivationDetails ?? [];
   const hasReferences = references.length > 0;
+  const hasDerivationDetails = derivationDetails.length > 0;
   const mainAnswer =
     viewModel?.answer.main ??
     "Sobald die Query gesendet wurde, erscheint hier die Hauptantwort.";
@@ -148,6 +150,35 @@ export function QueryPanel(): React.JSX.Element {
           <span className="text-xs font-semibold text-slate-500">core rationale</span>
         </div>
         <p className="text-sm leading-7 text-slate-700">{coreRationale}</p>
+      </section>
+
+      <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
+            Herleitungsdetails
+          </h2>
+          <span className="text-xs font-semibold text-slate-500">kontextuelle Tiefe</span>
+        </div>
+        {hasDerivationDetails ? (
+          <ul className="space-y-3">
+            {derivationDetails.map((detail) => (
+              <li
+                key={detail.nodeId}
+                className="space-y-1 rounded-xl border border-slate-100 bg-slate-50 p-4 text-sm text-slate-900"
+              >
+                <div className="text-sm font-semibold text-slate-900">{detail.label}</div>
+                <p className="text-sm leading-6 text-slate-700">{detail.summary}</p>
+                <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
+                  Quelle: {detail.sourceFile}
+                </p>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="text-sm text-slate-600">
+            Nach erfolgreicher Antwort erscheinen hier die wichtigsten Kontextsummaries plus Quelle.
+          </p>
+        )}
       </section>
     </div>
   );

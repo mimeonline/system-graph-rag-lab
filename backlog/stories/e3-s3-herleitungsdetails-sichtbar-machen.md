@@ -1,7 +1,7 @@
 # Story E3-S3 Herleitungsdetails sichtbar machen
 
 ## Status
-todo
+qa
 
 ## Ziel
 Die Nachvollziehbarkeit der Antwort für Nutzer über den P0-Kernnachweis hinaus erhöhen.
@@ -31,3 +31,4 @@ zusätzliche Herleitungsdetails angezeigt werden
 
 ## Test Notes
 Validiere, dass P0-Ausgabe ohne P1-Details vollständig nutzbar bleibt und dokumentiere den Zusatznutzen in mindestens zwei Beispielanfragen.
+- `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` (Exit Code `0`) – sichert die `derivationDetails`-Erstellung und den `coreRationale`-Fallback sowie die drei Referenzen im ViewModel.

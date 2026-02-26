@@ -14,6 +14,8 @@
 11. Story `E3-S1` ist QA-ready; Tests `src/features/query/view-model.test.ts` grün und manuelle Prüfung der drei Anzeigeabschnitte (Hauptantwort, Referenzen, Kernnachweis) bestätigt die AC-Erfüllung für mindestens zwei Fragen.
 12. Story `E3-S2` ergänzt `QueryPanel` um deterministische Status-/Action-Hinweise (Loading, Error, Empty) und `QueryInput` um den sichtbaren `Nächste Aktion`-Text; `src/components/organisms/query-panel-status.test.ts` deckt die Mappinglogik ab.
 
+9. Story `E3-S3` ergänzt die Antwortansicht um nummerierte Herleitungsdetails aus Kontextsummaries und verweist die Quelle, damit die Erklärung nachvollziehbar bleibt; `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` bestätigt mit Exit Code `0`, dass `derivationDetails` korrekt aufgebaut und auf die drei Referenzen begrenzt sind.
+
 ## Active Epics and Stories
 1. Epic `E1` bleibt im Status `blocked` laut Progress.
 2. Story `E1-S6` steht im Status `qa` und wartet auf QA-Recheck.
@@ -21,7 +23,7 @@
 4. Story `E2-S2` steht auf `qa` und erweitert Kontextpakete mit zitierfähigen Quellen.
 5. Story `E2-S3` steht auf `qa` und liefert strukturierte Antworten mit maximal drei Referenzen bzw. Fallback.
 6. Story `E2-S4` steht auf `qa` und bestätigt mit den Tests in `src/features/query/answer.test.ts` sowohl positive als auch negative Expectation-Matches.
-7. Epic `E3` ist auf `in_progress` gesprungen; Story `E3-S1` ist accepted, Story `E3-S2` ist QA-ready (Statusführung + `Nächste Aktion`), während E3-S3 vorbereitend folgt.
+7. Epic `E3` ist auf `in_progress` gesprungen; Story `E3-S1` ist accepted, Story `E3-S2` ist QA-ready (Statusführung + `Nächste Aktion`), Story `E3-S3` ist QA-ready und wartet auf QA-Bestätigung der neuen Herleitungsdetails.
 
 ## Technical Constraints
 1. Keine API- oder Retrieval-Contract-Aenderungen ausserhalb Story-Scope.
@@ -46,3 +48,4 @@
 6. Story `E2-S3` ist QA-ready; Tests `src/features/query/answer.test.ts` und `src/app/api/query/route.test.ts` legen die Antwortpipeline und Referenzlimits offen.
 7. Story `E3-S1` ist in Arbeit; verifiziere `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` und dokumentiere den manuellen Durchlauf für Hauptantwort, Referenzen und Kernnachweis (mindestens zwei Fragen).
 8. Story `E3-S2` ist QA-ready; für den QA-Run `pnpm --dir apps/web exec vitest run src/components/organisms/query-panel-status.test.ts` ausführen und die Loading-/Error-/Empty-Hilfetexte sowie die `Nächste Aktion`-Hinweise gemäß QA-Handoff prüfen.
+9. Story `E3-S3` erweitert das QueryPanel um die neuen Herleitungsdetails; QA soll (erneut) `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` ausführen und im Dev-Server überprüfen, dass Hauptantwort, Referenzen und der P0-Kernnachweis stets sichtbar bleiben, während die nummerierten Details darunter erscheinen.

@@ -131,6 +131,22 @@
 1. Nachstellen eines Backend-Fehlers und validieren, dass der Helpertext nur die API-Nachricht und den vordefinierten „Nächste Aktion“-Hinweis anzeigt.
 2. Empty-State simulieren (z. B. lokale Proxy/Mock-Response mit `references: []`) und sicherstellen, dass die Nachricht keine zusätzlichen Referenzdaten enthält.
 
+## E3-S3 Herleitungsdetails sichtbar machen
+### Security Context
+1. Der neue Herleitungsdetails-Bereich nutzt ausschließlich die vorhandenen `context.elements`-Summaries aus der etablierten Antwort und verbleibt vollständig im Frontend ohne zusätzliche Netzwerkaufrufe.
+2. Die erweiterten Texte enthalten nur titel- und summarybasierte Informationen sowie den `sourceFile`-Namen; keine zusätzlichen Metadaten oder User-Daten werden eingeblendet.
+3. Das erweiterte ViewModel inklusive `derivationDetails` wird über `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` verifiziert und bleibt auf die bestehenden Kontextdaten beschränkt.
+### Sicherheitsrelevante Eingaben und Endpoints
+1. Die einzige Eingabe bleibt die Query-Textbox; keine neuen Parameter, Flags oder Secrets wurden ergänzt.
+2. Der einzige Endpoint bleibt `POST /api/query` im bestehenden Contract.
+### Bekannte Sicherheitsgrenzen und Risiken
+1. Die Herleitungsdetails reflektieren kuratierte Kontextinfos und geben keine Nutzereingaben oder sensiblen Daten wieder.
+2. Es werden keine neuen Links, URLs oder externen Ressourcen referenziert.
+### Gezielte Security-Prüfpunkte
+1. Verifizieren, dass keine neuen Endpoints, Flags oder Secrets im Frontend oder Backend eingeführt wurden.
+2. Sicherstellen, dass der Bereich ausschließlich Titel, Summary und `sourceFile` anzeigt und keine dynamischen Nutzerdaten enthält.
+3. Sicherstellen, dass `derivationDetails` weiterhin maximal drei Einträge enthält und ausschließlich auf den vorhandenen `context.elements` basiert (wird vom ViewModel-Test gedeckt).
+
 ## DevOps Gate Kontext zu E2
 1. Observability-Signale (`referenceCount`, `contextCandidateCount`, `referenceFallbackUsed`) sind in Logs und API-Responses nachweisbar.
 2. Guardrails sorgen fuer deterministische Referenzlisten und validierte Rate-Limit-Verhalten, auch wenn keine Referenzen veröffentlicht werden.

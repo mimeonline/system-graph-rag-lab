@@ -88,9 +88,10 @@ describe("buildQueryViewModel", () => {
 
   it("limits Referenzen auf drei Einträge und bildet rationale Abschnitte", () => {
     const references = Array.from({ length: 5 }, (_, index) => createReference(index));
+    const contextElements = references.map(createContextElement);
     const response = createSuccessResponse({
       references,
-      contextElements: references.map(createContextElement),
+      contextElements,
     });
 
     const viewModel = buildQueryViewModel(response, "Kernfrage");
@@ -98,6 +99,10 @@ describe("buildQueryViewModel", () => {
     expect(viewModel.references).toHaveLength(3);
     expect(viewModel.contextElements).toHaveLength(3);
     expect(viewModel.answer.coreRationale).toContain("1)");
+    expect(viewModel.derivationDetails).toHaveLength(3);
+    expect(viewModel.derivationDetails[0].label).toBe("1) Konzept 1");
+    expect(viewModel.derivationDetails[0].summary).toBe(contextElements[0].summary);
+    expect(viewModel.derivationDetails[0].sourceFile).toBe(contextElements[0].source.sourceFile);
   });
 
   it("setzt den Fallbacktext, wenn keine Referenzen vorliegen", () => {
@@ -111,5 +116,6 @@ describe("buildQueryViewModel", () => {
     expect(viewModel.references).toHaveLength(0);
     expect(viewModel.answer.main).toContain("keine Antwort");
     expect(viewModel.answer.coreRationale).toContain("Bitte formuliere die Frage");
+    expect(viewModel.derivationDetails).toHaveLength(0);
   });
 });

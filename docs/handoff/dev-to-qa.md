@@ -135,3 +135,18 @@
 
 ### Genaue Testkommandos mit erwarteten Ergebnissen
 1. `pnpm --dir apps/web exec vitest run src/components/organisms/query-panel-status.test.ts` Exit Code `0`.
+
+## E3-S3 Herleitungsdetails sichtbar machen
+### Was ist fertig
+1. `QueryPanel` bleibt bei den drei Hauptbereichen (Hauptantwort, Referenzen, Knapper P0-Kernnachweis) und ergänzt einen festen „Herleitungsdetails“-Block, der Kontextsummaries plus `sourceFile` listaartig zeigt.
+2. `buildQueryViewModel` stellt das neue `derivationDetails`-Array bereit und nummeriert jeden Kontextblock zur klaren Nachvollziehbarkeit der Quellen.
+3. Die zusätzlichen Details erweitern die Erklärung ohne weitere Interaktion; Hauptantwort, Referenzliste und P0-Kernnachweis bleiben durchgängig sichtbar.
+### Wie kann QA testen lokal inkl konkrete Startschritte
+1. `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` – überprüft die Erzeugung von `derivationDetails` und den leeren Zustand ohne Referenzen.
+2. Dev-Server starten (`pnpm --dir apps/web dev`), Defaultfrage absenden und sicherstellen:
+   - Die „Herleitungsdetails“-Sektion erscheint unterhalb des Kernnachweises,
+   - Jede Zeile zeigt nummeriertes Label, Summary und Quelle; es werden maximal drei Einträge dargestellt,
+   - Hauptantwort, Referenzkonzepte und Knapper P0-Kernnachweis bleiben sichtbar, ohne zusätzliche Klicks.
+3. Zweite Beispielanfrage absenden (z. B. „Wie beeinflussen Feedback Loops lokale Optimierungen?“) und prüfen, dass neue Kontexte ebenfalls unter Herleitungsdetails auftauchen.
+### Genaue Testkommandos mit erwarteten Ergebnissen
+1. `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` → Exit Code `0`, verifiziert die ViewModel-Erweiterung und die korrekte Limitierung auf drei Referenzen/Derivations.
