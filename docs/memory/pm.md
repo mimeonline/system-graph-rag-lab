@@ -8,6 +8,7 @@
 5. Story E2-S2 Kontext für Antwort konsistent erweitern wurde nach `docs/qa/verdict.md`-Pass von PM auf `accepted` gesetzt; `backlog/progress.md` ist im selben Run konsistent.
 6. Story E2-S3 Antwort aus strukturiertem Kontext erzeugen wurde ebenfalls nach dem QA-Verdikt vom 26.02.2026 in `docs/qa/verdict.md` auf `accepted` gesetzt; QA bestätigt Referenzlimit und Fallback-Stabilität.
 7. Story E2-S4 Referenzkonzepte in Ausgabe absichern folgte dem QA-Verdikt `Pass` vom 26.02.2026 (`docs/qa/verdict.md`) und wurde PM-seitig auf `accepted` gesetzt, um die Erwartungslisten- und Fallback-Checks rechtzeitig zu verankern.
+8. Epic E2 ist nach QA-, Security- und DevOps-`Pass`-Verdikten durchgängig synchronisiert und PM-seitig nun ebenfalls auf `accepted`.
 
 ## MVP Scope Guardrails In Out
 ### In

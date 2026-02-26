@@ -1,7 +1,7 @@
 # Epic E2 Retrieval und Antwortpipeline
 
 ## Status
-todo
+accepted
 
 ## Ziel
 Für Nutzerfragen einen stabilen Pfad von Kontextbereitstellung bis strukturierter Antwort mit Referenzsektion bereitstellen.
