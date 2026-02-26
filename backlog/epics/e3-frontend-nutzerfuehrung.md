@@ -1,7 +1,7 @@
 # Epic E3 MVP-Frontend und Nutzerführung
 
 ## Status
-in_progress
+accepted
 
 ## Ziel
 Den Kernfluss von Frageeingabe bis verständlicher Antwortanzeige im MVP nutzbar machen.
