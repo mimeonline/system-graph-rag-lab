@@ -158,18 +158,20 @@
 
 ## E4-S1 OpenAI Real Integration für Query API
 ### Security Context
-1. Die Query-API führt nun serverseitig einen HTTPS-Call zur OpenAI Chat Completions API durch. Secrets (`OPENAI_API_KEY`) bleiben ausschließlich in Environment-Variablen und werden weder geloggt noch an den Client weitergegeben.
-2. Die Pipeline nutzt die bereits vorhandenen Retrieval-Referenzen und Kontextsummaries als Prompt-Grundlage; es wurden keine neuen externen Quellen oder Secrets eingeführt.
-3. Upstream-Fehler werden als `LLM_UPSTREAM_ERROR` oder `INTERNAL_ERROR` reportet, sodass Fehlermeldungen minimal und contract-konform bleiben.
+1. Die Query-API führt nun serverseitig API-Calls zu OpenAI durch: sowohl die Chat Completions API als auch die Embeddings API (`OPENAI_EMBEDDINGS_MODEL`) werden genutzt; der API-Key (`OPENAI_API_KEY`) bleibt ausschließlich in Environment-Variablen und wird weder geloggt noch an den Client weitergegeben.
+2. Zusätzlich wird ein Neo4j-Vektorindex (`NEO4J_VECTOR_INDEX_NAME`) per `db.index.vector.queryNodes` angefragt, optional ergänzt um 1-Hop-Nachbarn, alles basierend auf lokal kuratierten Seed-Daten.
+3. Upstream-Fehler werden als `LLM_UPSTREAM_ERROR`, `GRAPH_BACKEND_UNAVAILABLE` oder `INTERNAL_ERROR` reportet; Graph-Fehler bleiben allgemein, damit keine Secrets austreten.
 
 ### Sicherheitsrelevante Eingaben und Endpoints
-1. Der einzige Endpoint bleibt `POST /api/query`; der OpenAI-Call ist ein interner Server-to-Server-Request.
-2. Sicherheitsrelevantes Feld: `OPENAI_API_KEY`. Der API-Key wird ausschließlich im Authorization-Header verwendet und niemals ausgegeben oder geloggt.
+1. Der einzige Endpoint bleibt `POST /api/query`; die OpenAI- und Neo4j-Calls erfolgen serverseitig.
+2. Sicherheitsrelevante Eingaben: `OPENAI_API_KEY`, `OPENAI_EMBEDDINGS_MODEL`, `NEO4J_VECTOR_INDEX_NAME`, ergänzt um die bekannten `NEO4J_*`-Credentials.
 
 ### Bekannte Sicherheitsgrenzen und Risiken
 1. Der OpenAI-Key darf nur in lokalem `.env.local` oder in Vercel-Umgebungen liegen; es gibt derzeit keine Key-Rotation oder zusätzliche Secret-Exfiltration.
-2. Das Error-Mapping verhindert Detail-Exfiltration: nur der Code und eine generische Nachricht erscheinen in den API-Resp., während der Schlüssel verborgen bleibt.
+2. Die Kontextgenerierung mit Vektorindex und optionalen 1-Hop-Nachbarn basiert ausschließlich auf lokal kuratierten Seed-Daten; es gibt keine neuen externen Datenquellen.
+3. Das Error-Mapping verhindert Detail-Exfiltration: nur der Code und eine generische Nachricht erscheinen in den API-Resp., während der Schlüssel verborgen bleibt.
 
 ### Gezielte Security-Pruefpunkte
 1. Prüfen, dass `OPENAI_API_KEY` nicht in Logs oder Responses auftaucht und ausschließlich im Request-Header genutzt wird.
 2. Validieren, dass `POST /api/query` bei non-2xx von OpenAI mit `502 LLM_UPSTREAM_ERROR` antwortet und keine sensiblen Details preisgibt.
+3. Testen, dass ein fehlender oder offline Vektorindex auf den Keyword-Fallback umschaltet, während echte Graph-Ausfälle `GRAPH_BACKEND_UNAVAILABLE` zurückliefern.

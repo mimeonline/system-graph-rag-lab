@@ -4,10 +4,12 @@ const DEFAULT_RATE_LIMIT_WINDOW_SECONDS = 60;
 export type QueryRuntimeEnv = {
   openAiApiKey: string | null;
   openAiModel: string | null;
+  openAiEmbeddingsModel: string | null;
   neo4jUri: string | null;
   neo4jDatabase: string | null;
   neo4jUsername: string | null;
   neo4jPassword: string | null;
+  neo4jVectorIndexName: string | null;
   allowDestructiveSeedReset: string | null;
   rateLimitMaxRequests: number;
   rateLimitWindowSeconds: number;
@@ -46,10 +48,12 @@ export function getQueryRuntimeEnv(): QueryRuntimeEnv {
   return {
     openAiApiKey: readOptionalEnv("OPENAI_API_KEY"),
     openAiModel: readOptionalEnv("OPENAI_MODEL"),
+    openAiEmbeddingsModel: readOptionalEnv("OPENAI_EMBEDDINGS_MODEL"),
     neo4jUri: readOptionalEnv("NEO4J_URI"),
     neo4jDatabase: readOptionalEnv("NEO4J_DATABASE"),
     neo4jUsername: readOptionalEnv("NEO4J_USERNAME"),
     neo4jPassword: readOptionalEnv("NEO4J_PASSWORD"),
+    neo4jVectorIndexName: readOptionalEnv("NEO4J_VECTOR_INDEX_NAME"),
     allowDestructiveSeedReset: readOptionalEnv("ALLOW_DESTRUCTIVE_SEED_RESET"),
     rateLimitMaxRequests: readOptionalNumberEnv(
       "RATE_LIMIT_MAX_REQUESTS",

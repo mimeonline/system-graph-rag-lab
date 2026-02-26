@@ -9,7 +9,11 @@ import {
 } from "@/features/query/contracts";
 import { parseQueryRequest } from "@/features/query/schemas";
 import { getQueryRuntimeEnv } from "@/lib/env";
-import { buildContextCandidates } from "@/features/query/retrieval";
+import {
+  buildContextCandidates,
+  GraphBackendUnavailableError,
+  type RetrievalResult,
+} from "@/features/query/retrieval";
 import { buildStructuredAnswer } from "@/features/query/answer";
 
 type QueryHandlerResult = {
@@ -335,7 +339,26 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
     };
   }
 
-  const retrievalResult = buildContextCandidates(parsed.data.query);
+  let retrievalResult: RetrievalResult;
+  try {
+    retrievalResult = await buildContextCandidates(parsed.data.query, env);
+  } catch (error) {
+    if (error instanceof GraphBackendUnavailableError) {
+      const latencyMs = Date.now() - startedAt;
+      return {
+        status: 503,
+        headers: baseHeaders,
+        body: buildErrorResponse(
+          requestId,
+          latencyMs,
+          "GRAPH_BACKEND_UNAVAILABLE",
+          "Der Graph-Backend-Service ist derzeit nicht erreichbar.",
+          true,
+        ),
+      };
+    }
+    throw error;
+  }
   const composedAnswer = buildStructuredAnswer({
     query: parsed.data.query,
     references: retrievalResult.references,

@@ -176,3 +176,27 @@
 
 ### Genaue Testkommandos mit erwarteten Ergebnissen
 1. `pnpm --dir apps/web test -- src/app/api/query/route.test.ts` Exit Code `0`.
+
+## E4 Semantic Graph Retrieval via OpenAI Embeddings + Neo4j-Vektorindex
+### Was ist fertig
+1. Die Query-Pipeline erzeugt serverseitig ein Embedding (`OPENAI_EMBEDDINGS_MODEL`) und fragt den konfigurierten Neo4j-Vektorindex (`NEO4J_VECTOR_INDEX_NAME`) über `db.index.vector.queryNodes` an.
+2. Top-K-Referenzen werden als `references` plus `context.elements` zurückgeliefert; optionale 1-Hop-Nachbarn erweitern den Kontext, ohne Duplikate oder Tokenbudget-Brüche zu produzieren.
+3. Fehlt die Graph-Konfiguration oder ist der Vektorindex offline, fällt die Pipeline deterministisch auf den bisherigen Keyword-Index zurück; echte Graph-Ausfälle werden mit `GRAPH_BACKEND_UNAVAILABLE` gemappt.
+4. Die Route-Tests (`src/app/api/query/route.test.ts`) decken Graph-Erfolg, Index-Offline, Fallback sowie das Error-Mapping ab, `src/features/query/retrieval.test.ts` bleibt für die Keyword-Alternative grün.
+
+### Wie kann QA testen lokal inkl konkrete Startschritte
+1. Neo4j plus Seed-Daten mit Embedded-Vektorindex bereithalten; die Runtime-Variablen in `apps/web/.env.local` setzen: `OPENAI_MODEL`, `OPENAI_API_KEY`, `OPENAI_EMBEDDINGS_MODEL`, `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`, `NEO4J_VECTOR_INDEX_NAME`.
+2. Automatisiert: `pnpm --dir apps/web test -- src/app/api/query/route.test.ts`.
+3. Optional: `pnpm --dir apps/web dev` starten und `POST /api/query` mit einer Frage senden; die Antwort sollte Graph-Referenzen plus Kontextsummaries enthalten.
+
+### Bekannte Einschränkungen & Testdaten
+1. Ohne die Graph-Env oder mit einem fehlenden Vektorindex bleibt die Antwort auf den Keyword-Fallback beschränkt; der Fehler erscheint nur als Log-Event, nicht in der Response.
+2. Die 1-Hop-Erweiterung bleibt innerhalb des Tokenbudgets (1.400) und liefert nur zusätzliche Kontexte, wenn noch Budget frei ist.
+
+### Erwartete Failure Modes
+1. Neo4j ist unreachable → API antwortet mit `503 GRAPH_BACKEND_UNAVAILABLE`.
+2. Vector-Index existiert nicht oder ist offline → die Pipeline fällt auf die Keyword-Retrieval-Alternative zurück, `status: "ok"` bleibt erhalten.
+
+### Genaue Testkommandos mit erwarteten Ergebnissen
+1. `pnpm --dir apps/web test -- src/app/api/query/route.test.ts` → Exit Code `0`.
+2. `pnpm --dir apps/web test -- src/features/query/retrieval.test.ts` → Exit Code `0`.

@@ -1,18 +1,56 @@
+import neo4j from "neo4j-driver";
 import { createSeedDataset } from "@/features/seed-data/seed-data";
 import type {
   CuratedSourceEntry,
   PublicReference,
+  SeedNode,
   SeedSourceType,
 } from "@/features/seed-data/seed-data";
+import type { QueryRuntimeEnv } from "@/lib/env";
 import {
   CONTEXT_BUDGET_TOKENS,
+  HOP_DEPTH,
   TOP_K,
   type QueryContextElement,
-  type QueryContextElementSource,
   type QueryReference,
 } from "@/features/query/contracts";
 
-type NodeSearchEntry = {
+const OPENAI_EMBEDDINGS_ENDPOINT = "https://api.openai.com/v1/embeddings";
+const GRAPH_VECTOR_SEARCH_LIMIT = TOP_K * 2;
+const GRAPH_NEIGHBOR_LIMIT_PER_CANDIDATE = 3;
+const CONTEXT_SUMMARY_LIMIT = 280;
+const SOURCE_KEY_DELIMITER = "|";
+
+const GRAPH_VECTOR_SEARCH_QUERY = `
+  CALL db.index.vector.queryNodes(
+    $vectorIndex,
+    $topK,
+    $vector
+  )
+  YIELD node, score
+  RETURN node.id AS nodeId,
+         node.title AS title,
+         node.name AS name,
+         node.summary AS summary,
+         node.sourceType AS sourceType,
+         node.sourceFile AS sourceFile,
+         score
+  ORDER BY score DESC
+`;
+
+const GRAPH_NEIGHBOR_QUERY = `
+  UNWIND $parentIds AS parentId
+  CALL {
+    WITH parentId
+    MATCH (parent {id: parentId})-[rel]-(neighbor)
+    WHERE neighbor.id IS NOT NULL AND neighbor.id <> parentId
+    RETURN parentId, neighbor.id AS neighborId
+    LIMIT $neighborLimit
+  }
+  RETURN parentId, neighborId
+`;
+
+type QueryCandidate = {
   nodeId: string;
   nodeType: QueryReference["nodeType"];
   title: string;
@@ -20,13 +58,33 @@ type NodeSearchEntry = {
   sourceType: SeedSourceType;
   sourceFile: string;
   publicReference: PublicReference;
+  hop: number;
   tokenSet: Set<string>;
   contextTokens: number;
-  hop: number;
 };
 
-const ESTIMATED_TOKEN_DIVISOR = 4;
-const MIN_TOKEN_LENGTH = 2;
+export type RetrievalResult = {
+  references: QueryReference[];
+  contextTokens: number;
+  contextElements: QueryContextElement[];
+};
+
+export class GraphBackendUnavailableError extends Error {
+  constructor() {
+    super("Graph backend nicht erreichbar.");
+  }
+}
+
+class GraphIndexUnavailableError extends Error {
+  constructor() {
+    super("Vector-Index nicht verfügbar.");
+  }
+}
+
+const seedDataset = createSeedDataset();
+const SOURCE_LOOKUP = buildSourceLookup(seedDataset.sources);
+const SEED_NODE_LOOKUP = new Map(seedDataset.nodes.map((node) => [node.id, node]));
+const SEARCH_INDEX = seedDataset.nodes.map((node) => buildCandidateFromSeedNode(node, 0));
 
 /**
  * Normalizes text for accent-insensitive and case-insensitive matching.
@@ -39,44 +97,53 @@ function normalizeText(value: string): string {
 }
 
 /**
- * Extracts normalized alphanumeric tokens for retrieval scoring.
+ * Extracts normalized tokens for retrieval scoring.
  */
 function extractTokens(value: string): string[] {
   const normalized = normalizeText(value);
   const fragments = normalized.match(/[a-z0-9]+/g) ?? [];
-  return fragments.filter((fragment) => fragment.length >= MIN_TOKEN_LENGTH);
+  return fragments.filter((fragment) => fragment.length >= 2);
 }
 
 /**
- * Creates a deduplicated token set from text input.
+ * Builds a deduplicated token set from the input text.
  */
 function buildTokenSet(value: string): Set<string> {
   return new Set(extractTokens(value));
 }
 
 /**
- * Estimates token count with a lightweight character-based heuristic.
+ * Estimates token count with a lightweight heuristic.
  */
 function estimateTokenCount(value: string): number {
   if (!value) {
     return 0;
   }
 
-  return Math.ceil(value.length / ESTIMATED_TOKEN_DIVISOR);
+  return Math.ceil(value.length / 4);
 }
 
-const CONTEXT_SUMMARY_LIMIT = 280;
-const SOURCE_KEY_DELIMITER = "|";
+/**
+ * Truncates summaries to a fixed limit.
+ */
+function truncateSummary(value: string): string {
+  const trimmed = value.trim();
+  if (trimmed.length <= CONTEXT_SUMMARY_LIMIT) {
+    return trimmed;
+  }
+
+  return `${trimmed.slice(0, CONTEXT_SUMMARY_LIMIT - 3)}...`;
+}
 
 /**
- * Builds a deterministic composite key for source lookup.
+ * Builds a deterministic lookup key for sources.
  */
 function getSourceLookupKey(sourceType: SeedSourceType, sourceFile: string): string {
   return `${sourceType}${SOURCE_KEY_DELIMITER}${sourceFile}`;
 }
 
 /**
- * Indexes curated source entries by source type and file.
+ * Indexes curated sources by source type + file.
  */
 function buildSourceLookup(sources: CuratedSourceEntry[]): Map<string, CuratedSourceEntry> {
   const lookup = new Map<string, CuratedSourceEntry>();
@@ -88,41 +155,35 @@ function buildSourceLookup(sources: CuratedSourceEntry[]): Map<string, CuratedSo
 }
 
 /**
- * Trims and length-limits summaries for response context elements.
+ * Builds a candidate from a seed node.
  */
-function truncateSummary(value: string): string {
-  const trimmed = value.trim();
-  if (trimmed.length <= CONTEXT_SUMMARY_LIMIT) {
-    return trimmed;
-  }
-
-  return `${trimmed.slice(0, CONTEXT_SUMMARY_LIMIT - 3)}...`;
-}
-
-const seedDataset = createSeedDataset();
-const SOURCE_LOOKUP = buildSourceLookup(seedDataset.sources);
-
-const SEARCH_INDEX: NodeSearchEntry[] = seedDataset.nodes.map((node) => {
+function buildCandidateFromSeedNode(node: SeedNode, hop: number): QueryCandidate {
   const displayTitle = node.title ?? node.name ?? "Unbekannter Knoten";
   const combinedText = `${displayTitle} ${node.summary}`;
+
   return {
     nodeId: node.id,
-    nodeType: node.nodeType,
+    nodeType: node.nodeType as QueryReference["nodeType"],
     title: displayTitle,
     summary: node.summary,
     sourceType: node.sourceType,
     sourceFile: node.sourceFile,
     publicReference: node.publicReference,
+    hop,
     tokenSet: buildTokenSet(combinedText),
     contextTokens: estimateTokenCount(displayTitle) + estimateTokenCount(node.summary),
-    hop: 0,
   };
-});
+}
 
 /**
- * Provides deterministic ordering for equally scored retrieval candidates.
+ * Determines ordering for lexical candidates.
  */
-function compareCandidates(a: NodeSearchEntry, b: NodeSearchEntry, scoreA: number, scoreB: number): number {
+function compareCandidates(
+  a: QueryCandidate,
+  b: QueryCandidate,
+  scoreA: number,
+  scoreB: number,
+): number {
   if (scoreA !== scoreB) {
     return scoreB - scoreA;
   }
@@ -139,7 +200,7 @@ function compareCandidates(a: NodeSearchEntry, b: NodeSearchEntry, scoreA: numbe
 }
 
 /**
- * Computes a simple overlap score between query tokens and candidate tokens.
+ * Computes overlap score for lexical retrieval.
  */
 function computeScore(tokenSet: Set<string>, queryTokens: string[]): number {
   if (queryTokens.length === 0) {
@@ -156,16 +217,37 @@ function computeScore(tokenSet: Set<string>, queryTokens: string[]): number {
   return Number(matches.toFixed(6));
 }
 
-export type RetrievalResult = {
-  references: QueryReference[];
-  contextTokens: number;
-  contextElements: QueryContextElement[];
-};
+/**
+ * Builds a context element from a candidate.
+ */
+function buildContextElement(
+  candidate: QueryCandidate,
+  sourceKind: "candidate" | "extension",
+  candidateId: string,
+): QueryContextElement {
+  const sourceKey = getSourceLookupKey(candidate.sourceType, candidate.sourceFile);
+  const curatedSource = SOURCE_LOOKUP.get(sourceKey);
+
+  return {
+    nodeId: candidate.nodeId,
+    nodeType: candidate.nodeType,
+    title: candidate.title,
+    summary: truncateSummary(candidate.summary),
+    source: {
+      kind: sourceKind,
+      candidateId,
+      sourceId: curatedSource?.sourceId,
+      sourceFile: candidate.sourceFile,
+      sourceType: candidate.sourceType,
+      publicReference: candidate.publicReference,
+    },
+  };
+}
 
 /**
- * Selects top context candidates under ranking and context-budget constraints.
+ * Lexical fallback for when graph retrieval is unavailable.
  */
-export function buildContextCandidates(query: string): RetrievalResult {
+function buildLexicalContextCandidates(query: string): RetrievalResult {
   const queryTokens = extractTokens(query);
   const scoredEntries = SEARCH_INDEX.map((entry) => ({
     entry,
@@ -186,12 +268,11 @@ export function buildContextCandidates(query: string): RetrievalResult {
       break;
     }
 
-    const nextTokenBudget = totalContextTokens + candidate.entry.contextTokens;
-    if (nextTokenBudget > CONTEXT_BUDGET_TOKENS) {
+    if (selectedNodeIds.has(candidate.entry.nodeId)) {
       continue;
     }
 
-    if (selectedNodeIds.has(candidate.entry.nodeId)) {
+    if (totalContextTokens + candidate.entry.contextTokens > CONTEXT_BUDGET_TOKENS) {
       continue;
     }
 
@@ -203,10 +284,9 @@ export function buildContextCandidates(query: string): RetrievalResult {
       hop: candidate.entry.hop,
     });
 
-    contextElements.push(buildContextElement(candidate.entry));
+    contextElements.push(buildContextElement(candidate.entry, "candidate", candidate.entry.nodeId));
     selectedNodeIds.add(candidate.entry.nodeId);
-
-    totalContextTokens = nextTokenBudget;
+    totalContextTokens += candidate.entry.contextTokens;
   }
 
   return {
@@ -217,24 +297,252 @@ export function buildContextCandidates(query: string): RetrievalResult {
 }
 
 /**
- * Maps a ranked candidate into the contract-compliant context element structure.
+ * Determines whether graph retrieval is configured.
  */
-function buildContextElement(entry: NodeSearchEntry): QueryContextElement {
-  const sourceKey = getSourceLookupKey(entry.sourceType, entry.sourceFile);
-  const curatedSource = SOURCE_LOOKUP.get(sourceKey);
+function canUseGraphRetrieval(env: QueryRuntimeEnv): boolean {
+  return Boolean(
+    env.neo4jUri &&
+      env.neo4jDatabase &&
+      env.neo4jUsername &&
+      env.neo4jPassword &&
+      env.openAiApiKey &&
+      env.openAiEmbeddingsModel &&
+      env.neo4jVectorIndexName,
+  );
+}
 
-  return {
-    nodeId: entry.nodeId,
-    nodeType: entry.nodeType,
-    title: entry.title,
-    summary: truncateSummary(entry.summary),
-    source: {
-      kind: "candidate",
-      candidateId: entry.nodeId,
-      sourceId: curatedSource?.sourceId,
-      sourceFile: entry.sourceFile,
-      sourceType: entry.sourceType,
-      publicReference: entry.publicReference,
-    },
+/**
+ * Main entry point for query retrieval.
+ */
+export async function buildContextCandidates(
+  query: string,
+  env?: QueryRuntimeEnv,
+): Promise<RetrievalResult> {
+  if (!env || !canUseGraphRetrieval(env)) {
+    return buildLexicalContextCandidates(query);
+  }
+
+  try {
+    return await buildGraphContextCandidates(query, env);
+  } catch (error) {
+    if (error instanceof GraphIndexUnavailableError) {
+      return buildLexicalContextCandidates(query);
+    }
+
+    if (error instanceof GraphBackendUnavailableError) {
+      throw error;
+    }
+
+    throw error;
+  }
+}
+
+/**
+ * Performs graph-based retrieval via embeddings + Neo4j vector index.
+ */
+async function buildGraphContextCandidates(query: string, env: QueryRuntimeEnv): Promise<RetrievalResult> {
+  const vector = await fetchQueryEmbedding({
+    apiKey: env.openAiApiKey!,
+    model: env.openAiEmbeddingsModel!,
+    query,
+  });
+
+  const driver = neo4j.driver(
+    env.neo4jUri!,
+    neo4j.auth.basic(env.neo4jUsername!, env.neo4jPassword!),
+  );
+
+  try {
+    const session = driver.session({ database: env.neo4jDatabase! });
+    try {
+      const vectorResult = await session.run(GRAPH_VECTOR_SEARCH_QUERY, {
+        vectorIndex: env.neo4jVectorIndexName!,
+        topK: GRAPH_VECTOR_SEARCH_LIMIT,
+        vector,
+      });
+
+      const references: QueryReference[] = [];
+      const contextElements: QueryContextElement[] = [];
+      const selectedNodeIds = new Set<string>();
+      let totalContextTokens = 0;
+      const referenceParents: string[] = [];
+
+      for (const record of vectorResult.records) {
+        if (references.length >= TOP_K) {
+          break;
+        }
+
+        const nodeId = record.get("nodeId") as string | undefined;
+        if (!nodeId || selectedNodeIds.has(nodeId)) {
+          continue;
+        }
+
+        const seedNode = SEED_NODE_LOOKUP.get(nodeId);
+        if (!seedNode) {
+          continue;
+        }
+
+        const candidate = buildCandidateFromSeedNode(seedNode, 0);
+        if (totalContextTokens + candidate.contextTokens > CONTEXT_BUDGET_TOKENS) {
+          continue;
+        }
+
+        references.push({
+          nodeId: candidate.nodeId,
+          nodeType: candidate.nodeType,
+          title: candidate.title,
+          score: normalizeNumber(record.get("score")),
+          hop: 0,
+        });
+
+        contextElements.push(buildContextElement(candidate, "candidate", candidate.nodeId));
+        selectedNodeIds.add(candidate.nodeId);
+        totalContextTokens += candidate.contextTokens;
+        referenceParents.push(candidate.nodeId);
+      }
+
+      if (HOP_DEPTH > 0 && referenceParents.length > 0) {
+        const neighborResult = await session.run(GRAPH_NEIGHBOR_QUERY, {
+          parentIds: [...new Set(referenceParents)],
+          neighborLimit: GRAPH_NEIGHBOR_LIMIT_PER_CANDIDATE,
+        });
+
+        for (const neighborRecord of neighborResult.records) {
+          const neighborId = neighborRecord.get("neighborId") as string | undefined;
+          const parentId = neighborRecord.get("parentId") as string | undefined;
+          if (!neighborId || !parentId || selectedNodeIds.has(neighborId)) {
+            continue;
+          }
+
+          const neighborNode = SEED_NODE_LOOKUP.get(neighborId);
+          if (!neighborNode) {
+            continue;
+          }
+
+          const neighborCandidate = buildCandidateFromSeedNode(neighborNode, 1);
+          if (totalContextTokens + neighborCandidate.contextTokens > CONTEXT_BUDGET_TOKENS) {
+            continue;
+          }
+
+          contextElements.push(
+            buildContextElement(neighborCandidate, "extension", parentId),
+          );
+          selectedNodeIds.add(neighborId);
+          totalContextTokens += neighborCandidate.contextTokens;
+        }
+      }
+
+      return {
+        references,
+        contextTokens: totalContextTokens,
+        contextElements,
+      };
+    } catch (error) {
+      if (isNeo4jIndexError(error)) {
+        throw new GraphIndexUnavailableError();
+      }
+
+      throw new GraphBackendUnavailableError();
+    } finally {
+      await session.close();
+    }
+  } catch (error) {
+    if (error instanceof GraphIndexUnavailableError || error instanceof GraphBackendUnavailableError) {
+      throw error;
+    }
+
+    if (isNeo4jIndexError(error)) {
+      throw new GraphIndexUnavailableError();
+    }
+
+    throw new GraphBackendUnavailableError();
+  } finally {
+    await driver.close();
+  }
+}
+
+/**
+ * Calls OpenAI to generate an embedding for the query.
+ */
+async function fetchQueryEmbedding(options: {
+  apiKey: string;
+  model: string;
+  query: string;
+}): Promise<number[]> {
+  const { apiKey, model, query } = options;
+
+  let response: Response;
+  try {
+    response = await fetch(OPENAI_EMBEDDINGS_ENDPOINT, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${apiKey}`,
+      },
+      body: JSON.stringify({
+        model,
+        input: query,
+      }),
+    });
+  } catch {
+    throw new GraphBackendUnavailableError();
+  }
+
+  if (!response.ok) {
+    throw new GraphBackendUnavailableError();
+  }
+
+  const payload = (await response.json()) as {
+    data?: Array<{ embedding?: number[] }>;
   };
+
+  const embedding = payload.data?.[0]?.embedding;
+  if (!Array.isArray(embedding) || embedding.length === 0) {
+    throw new GraphBackendUnavailableError();
+  }
+
+  return embedding;
+}
+
+/**
+ * Normalizes Neo4j numeric types to native numbers.
+ */
+function normalizeNumber(value: unknown): number {
+  if (value === null || value === undefined) {
+    return 0;
+  }
+
+  if (typeof value === "number") {
+    return value;
+  }
+
+  if (typeof value === "bigint") {
+    return Number(value);
+  }
+
+  if (typeof value === "object" && "toNumber" in value && typeof value["toNumber"] === "function") {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    return (value as { toNumber: () => number }).toNumber();
+  }
+
+  return 0;
+}
+
+/**
+ * Determines if an error should trigger the lexical fallback.
+ */
+function isNeo4jIndexError(error: unknown): boolean {
+  if (typeof error !== "object" || error === null) {
+    return false;
+  }
+
+  const candidate = error as { code?: string };
+  if (!candidate.code) {
+    return false;
+  }
+
+  return (
+    candidate.code.startsWith("Neo.ClientError.Schema.Index") ||
+    candidate.code.startsWith("Neo.ClientError.Procedure")
+  );
 }

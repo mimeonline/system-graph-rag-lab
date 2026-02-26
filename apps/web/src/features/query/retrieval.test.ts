@@ -6,10 +6,10 @@ import {
 import { buildContextCandidates } from "@/features/query/retrieval";
 
 describe("buildContextCandidates", () => {
-  it("returns deterministic top-3 order across repeated runs", () => {
+  it("returns deterministic top-3 order across repeated runs", async () => {
     const query = "Feedback loops, Systemgrenzen und Interdependenzen";
-    const first = buildContextCandidates(query);
-    const second = buildContextCandidates(query);
+    const first = await buildContextCandidates(query);
+    const second = await buildContextCandidates(query);
 
     const firstTopIds = first.references.slice(0, 3).map((reference) => reference.nodeId);
     const secondTopIds = second.references.slice(0, 3).map((reference) => reference.nodeId);
@@ -17,8 +17,10 @@ describe("buildContextCandidates", () => {
     expect(firstTopIds).toEqual(secondTopIds);
   });
 
-  it("produces duplicate-free references and honors token budget", () => {
-    const result = buildContextCandidates("Ganzheitliche Sicht auf Feedback-Loops und Hebelpunkte");
+  it("produces duplicate-free references and honors token budget", async () => {
+    const result = await buildContextCandidates(
+      "Ganzheitliche Sicht auf Feedback-Loops und Hebelpunkte",
+    );
     const nodeIds = result.references.map((reference) => reference.nodeId);
 
     expect(new Set(nodeIds).size).toBe(nodeIds.length);
@@ -26,8 +28,8 @@ describe("buildContextCandidates", () => {
     expect(result.contextTokens).toBeLessThanOrEqual(CONTEXT_BUDGET_TOKENS);
   });
 
-  it("builds deduplicated context elements with source attribution", () => {
-    const result = buildContextCandidates("Feedback loops context und systemisches Denken");
+  it("builds deduplicated context elements with source attribution", async () => {
+    const result = await buildContextCandidates("Feedback loops context und systemisches Denken");
     expect(result.contextElements.length).toBe(result.references.length);
 
     const contextNodeIds = result.contextElements.map((element) => element.nodeId);

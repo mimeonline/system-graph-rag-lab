@@ -15,6 +15,7 @@
 12. Story `E3-S2` ergänzt `QueryPanel` um deterministische Status-/Action-Hinweise (Loading, Error, Empty) und `QueryInput` um den sichtbaren `Nächste Aktion`-Text; `pnpm --dir apps/web exec vitest run src/components/organisms/query-panel-status.test.ts` deckt die Mappinglogik ab.
 13. Story `E3-S3` ergänzt die Antwortansicht um nummerierte Herleitungsdetails aus Kontextsummaries und verweist die Quelle, damit die Erklärung nachvollziehbar bleibt; `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` bestätigt mit Exit Code `0`, dass `derivationDetails` korrekt aufgebaut und auf die drei Referenzen begrenzt sind.
 14. Story `E4-S1` integriert die OpenAI Chat Completions API serverseitig in die Query-Pipeline; `pnpm --dir apps/web test -- src/app/api/query/route.test.ts` verifiziert erfolgreiche Antworten sowie das `LLM_UPSTREAM_ERROR`-Mapping bei non-2xx-Responses.
+15. Story `e4-semantic-graph-retrieval` implementiert echte semantische Referenzen via OpenAI Embeddings + Neo4j Vector Index (inkl. 1-Hop-Erweiterung, Lexical-Fallback und `GRAPH_BACKEND_UNAVAILABLE` bei Ausfällen); Tests: `pnpm --dir apps/web test -- src/app/api/query/route.test.ts src/features/query/retrieval.test.ts`.
 
 ## Active Epics and Stories
 1. Epic `E1` bleibt im Status `blocked` laut Progress.
@@ -24,7 +25,7 @@
 5. Story `E2-S3` steht auf `qa` und liefert strukturierte Antworten mit maximal drei Referenzen bzw. Fallback.
 6. Story `E2-S4` steht auf `qa` und bestätigt mit den Tests in `src/features/query/answer.test.ts` sowohl positive als auch negative Expectation-Matches.
 7. Epic `E3` ist auf `in_progress` gesprungen; Story `E3-S1` ist accepted, Story `E3-S2` ist QA-ready (Statusführung + `Nächste Aktion`), Story `E3-S3` ist QA-ready und wartet auf QA-Bestätigung der neuen Herleitungsdetails.
-8. Epic `E4` ist aktiv; Story `e4-openai-real-integration` implementiert die Live-OpenAI-Integration in `POST /api/query` und steht im Scope der aktuellen Story.
+8. Epic `E4` ist aktiv; Story `e4-openai-real-integration` implementiert die Live-OpenAI-Integration in `POST /api/query` und steht im Scope der aktuellen Story, Story `e4-semantic-graph-retrieval` ist in Progress mit dem Neo4j Vector Retrieval plus Fallback und Error-Mapping.
 
 ## Technical Constraints
 1. Keine API- oder Retrieval-Contract-Aenderungen ausserhalb Story-Scope.
@@ -51,6 +52,7 @@
 8. Story `E3-S2` ist QA-ready; für den QA-Run `pnpm --dir apps/web exec vitest run src/components/organisms/query-panel-status.test.ts` ausführen und die Loading-/Error-/Empty-Hilfetexte sowie die `Nächste Aktion`-Hinweise gemäß QA-Handoff prüfen.
 9. Story `E3-S3` erweitert das QueryPanel um die neuen Herleitungsdetails; QA soll (erneut) `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` ausführen und im Dev-Server überprüfen, dass Hauptantwort, Referenzen und der P0-Kernnachweis stets sichtbar bleiben, während die nummerierten Details darunter erscheinen.
 10. Story `e4-openai-real-integration` ergänzt die Route um einen echten OpenAI-Call; Dev soll `pnpm --dir apps/web test -- src/app/api/query/route.test.ts` ausführen und die Mock-Erfolge wie die `LLM_UPSTREAM_ERROR`-Zustände prüfen.
+11. Story `e4-semantic-graph-retrieval` bringt OpenAI-Embeddings, Neo4j Vector Index, 1-Hop-Kontext und `GRAPH_BACKEND_UNAVAILABLE`; Dev soll `pnpm --dir apps/web test -- src/app/api/query/route.test.ts src/features/query/retrieval.test.ts` laufen lassen und den Graph-Fallback sowie das Fehler-Mapping validieren.
 
 ## Recent Bugfixes
 - Laufzeit-ReferenceError `nextAction is not defined` in `QueryInput` behoben, indem die Prop explizit destructed wird und der `Nächste Aktion`-Hinweis nur mit vorhandenem Text rendert.
