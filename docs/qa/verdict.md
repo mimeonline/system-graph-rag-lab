@@ -17,14 +17,15 @@
 
 ## Ausgefuehrte QA-Checks
 1. `pnpm --dir apps/web lint` mit Exit Code `0`.
-2. `pnpm --dir apps/web test` mit Exit Code `0` und Ergebnis `23 passed, 2 skipped`.
+2. `pnpm --dir apps/web test` mit Exit Code `0` und Ergebnis `26 passed, 2 skipped`.
 3. `pnpm --dir apps/web build` mit Exit Code `0`.
 4. `pnpm --dir apps/web seed:local:reset-reseed` mit Exit Code `0`.
-5. `pnpm --dir apps/web test -- src/features/seed-data/local-seed-reset.test.ts` mit Exit Code `0` und Ergebnis `25 passed, 0 skipped`.
+5. `pnpm --dir apps/web exec vitest run src/features/seed-data/local-seed-reset.test.ts` mit Exit Code `0` und Ergebnis `5 passed, 1 skipped`.
+6. Security-Recheck in `local-seed-reset.test.ts` bestaetigt: local-only Guard, Opt-In Guard, fail-fast vor Driver-Init, kein Delete bei Guard-Fail und Delete-Scope `WHERE n.id IN $seedNodeIds`.
 
 ## Merge Block Grund und Fix Requests
 1. Kein Merge Block fuer Story `E1-S6`.
-2. Kein Fix-Request aus Story-Gate-Evidenz offen.
+2. Dokumentations-Fix-Request offen: Story-spezifisches Testkommando in Story und Dev-Handoff auf direkten Vitest-Run normieren, siehe `docs/qa/bugs/bug-0003.md`.
 
 ## Top 3 Risiken
 1. Public Runtime Paritaet gegen Vercel plus Aura ist in diesem lokalen Story-Gate nicht abgedeckt.

@@ -2,8 +2,8 @@
 
 ## Laufmetadaten
 1. Datum: 2026-02-26.
-2. Commit Kurz: `1f0891b`.
-3. Commit Voll: `1f0891bd853a63ba1cc7f170afc104e3f65b3285`.
+2. Commit Kurz: `7316aaa`.
+3. Commit Voll: `7316aaa4bb70fdfef45b974ba3744adc7f91023c`.
 4. Umgebung: review-story-e1-s6-local.
 5. Ausfuehrender QA Run: `RUN_MODE=review`.
 
@@ -25,7 +25,7 @@
 
 ### Latenz
 1. Nicht bewertet fuer Eval-Fragen.
-2. Story-spezifische Checks waren stabil mit Exit Code `0` fuer `lint`, `test`, `build`, `seed:local:reset-reseed`.
+2. Story-spezifische Checks waren stabil mit Exit Code `0` fuer `lint`, `test`, `build`, `seed:local:reset-reseed` und Security-Recheck-Testlauf.
 
 ## Zusammenfassung und Empfehlung
 1. Gesamtstatus fuer Eval-Set bleibt: Fail.

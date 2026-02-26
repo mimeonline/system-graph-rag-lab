@@ -3,7 +3,8 @@
 ## Teststrategie
 ### Unit
 1. Story-Fokus `E1-S6`: Validierung der lokalen Seed-Reset-Orchestrierung und der Fail-Fast-Regeln fuer fehlende Neo4j-Credentials.
-2. Story-spezifische Evidenz ueber `pnpm --dir apps/web test -- src/features/seed-data/local-seed-reset.test.ts`.
+2. Security-Recheck fuer Story `E1-S6`: local-only Guard, Opt-In Guard, fail-fast vor Driver-Init und Delete-Scope auf `seedNodeIds`.
+3. Story-spezifische Evidenz ueber `pnpm --dir apps/web exec vitest run src/features/seed-data/local-seed-reset.test.ts`.
 
 ### Integration
 1. Regressionslauf ueber `pnpm --dir apps/web test`.
@@ -12,7 +13,7 @@
 ### E2E minimal
 1. Statische Qualitaet: `pnpm --dir apps/web lint`.
 2. Build-Readiness: `pnpm --dir apps/web build`.
-3. Story-spezifischer Runtime-Ablauf: `pnpm --dir apps/web seed:local:reset-reseed` nach Env-Load.
+3. Story-spezifischer Runtime-Ablauf: `pnpm --dir apps/web seed:local:reset-reseed` nach Env-Load mit explizitem Opt-In.
 
 ## Testumgebung
 ### local
@@ -40,6 +41,14 @@
 4. Then: Seed-Datenbasis wird aus freigegebener Quelle erneut eingespielt.
 5. Then: echte Neo4j-Reads fuer mindestens zwei Nodes und zwei Relationen sind nach Reseed erfolgreich.
 
+### Security-Recheck Szenario E1-S6
+1. Given: Security-Findings zu Runtime-Guard und Delete-Scope liegen als Recheck-Ziel vor.
+2. When: story-spezifische Tests fuer `local-seed-reset` werden ausgefuehrt.
+3. Then: non-local URI wird vor Driver-Init abgelehnt.
+4. Then: fehlendes `ALLOW_DESTRUCTIVE_SEED_RESET=true` wird vor Driver-Init abgelehnt.
+5. Then: bei Guard-Fail wird kein Delete-Query ausgefuehrt.
+6. Then: Delete-Query ist auf `WHERE n.id IN $seedNodeIds` begrenzt.
+
 ### Gate-Regel
 1. Pass: `lint`, `test`, `build` und story-spezifischer Reset-Reseed-Check laufen mit Exit Code `0` und die Given-When-Then-Bedingungen sind reproduzierbar belegt.
 2. Fail: mindestens ein Pflicht-Check fehlschlaegt oder eine Then-Bedingung ist nicht reproduzierbar nachweisbar.
@@ -50,4 +59,4 @@
 2. Input: geladene lokale Env-Werte, laufender Neo4j-Container, Seed-Dataset.
 3. Output: Exit Code `0` und Kennzahlen fuer importierte sowie gelesene Nodes und Relationen.
 4. Fail oder Edge-Case: fehlende Neo4j-Credentials fuehren zu Fail-Fast vor Driver-Initialisierung; nicht erreichbarer Neo4j-Endpunkt bricht den Ablauf.
-5. Beispiel: `set -a; . apps/web/.env.local; set +a; export NEO4J_DATABASE=${NEO4J_DATABASE:-neo4j}; pnpm --dir apps/web seed:local:reset-reseed`.
+5. Beispiel: `set -a; . apps/web/.env.local; set +a; export NEO4J_DATABASE=${NEO4J_DATABASE:-neo4j}; export ALLOW_DESTRUCTIVE_SEED_RESET=${ALLOW_DESTRUCTIVE_SEED_RESET:-true}; pnpm --dir apps/web seed:local:reset-reseed`.

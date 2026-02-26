@@ -22,3 +22,4 @@
 1. Story-Gate Ergebnis `E1-S6` siehe `docs/qa/verdict.md`.
 2. Matrix-Evidenz siehe `docs/qa/test-matrix.md`.
 3. Eval-Kontext siehe `evals/report.md`.
+4. Reproduzierbarer QA-Befund zum Testkommando-Scope siehe `docs/qa/bugs/bug-0003.md`.
