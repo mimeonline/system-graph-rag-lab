@@ -10,6 +10,8 @@
 7. Verifikation: `pnpm --dir apps/web exec vitest run src/features/query/retrieval.test.ts` und `... src/app/api/query/route.test.ts` passierten mit Exit Code 0.
 8. Story `E2-S3` formt aus dem Retrieval-Kontext eine strukturierte Antwort mit maximal drei Referenzen oder klarem Fallback; Tests in `src/features/query/answer.test.ts` plus Route-Test spiegeln die neue Pipeline.
 9. Story `E2-S4` ist QA-ready; die Erwartungsliste aus `evals/rubric` (Q1–Q5) sichert die ersten drei Referenzen ab und ergänzt bei Bedarf den `Hinweis`-Fallback in `answer.coreRationale`. Tests `src/features/query/answer.test.ts` prüfen die positiven und negativen Matching-Szenarien.
+10. Story `E3-S1` bringt die interaktive Query-Eingabe ins Frontend, ruft die bestehende `/api/query`-Route auf und rendert Hauptantwort, Referenzkonzepte sowie den P0-Kernnachweis via `buildQueryViewModel`.
+11. Story `E3-S1` ist QA-ready; Tests `src/features/query/view-model.test.ts` grün und manuelle Prüfung der drei Anzeigeabschnitte (Hauptantwort, Referenzen, Kernnachweis) bestätigt die AC-Erfüllung für mindestens zwei Fragen.
 
 ## Active Epics and Stories
 1. Epic `E1` bleibt im Status `blocked` laut Progress.
@@ -18,6 +20,7 @@
 4. Story `E2-S2` steht auf `qa` und erweitert Kontextpakete mit zitierfähigen Quellen.
 5. Story `E2-S3` steht auf `qa` und liefert strukturierte Antworten mit maximal drei Referenzen bzw. Fallback.
 6. Story `E2-S4` steht auf `qa` und bestätigt mit den Tests in `src/features/query/answer.test.ts` sowohl positive als auch negative Expectation-Matches.
+7. Epic `E3` ist auf `in_progress` gesprungen; Story `E3-S1` liefert die Query-Eingabe und Antwortansicht, während E3-S2/E3-S3 die Folge-Stories vorbereiten.
 
 ## Technical Constraints
 1. Keine API- oder Retrieval-Contract-Aenderungen ausserhalb Story-Scope.
@@ -40,3 +43,4 @@
 4. Story niemals auf `accepted` setzen; nur QA und PM folgen dem Gate-Prozess.
 5. Story `E2-S2` ist jetzt QA-ready; Dokumentation und `retrieval`/`route` Tests wurden ausgeführt.
 6. Story `E2-S3` ist QA-ready; Tests `src/features/query/answer.test.ts` und `src/app/api/query/route.test.ts` legen die Antwortpipeline und Referenzlimits offen.
+7. Story `E3-S1` ist in Arbeit; verifiziere `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` und dokumentiere den manuellen Durchlauf für Hauptantwort, Referenzen und Kernnachweis (mindestens zwei Fragen).

@@ -94,6 +94,24 @@
 ### Gezielte Security-Prüfpunkte
 1. Verifizieren, dass der `Hinweis`-Fallback weder private noch dynamische Daten enthält (nur Referenz-IDs).
 2. Sicherstellen, dass keine neuen Endpoints/Flags eingeführt wurden und die Antwort nur lokale Daten verwendet.
+
+## E3-S1 Query-Eingabe und Antwortansicht bereitstellen
+### Security Context
+1. Das Frontend nimmt eine Frage entgegen und kommuniziert ausschließlich mit dem bestehenden Endpoint `POST /api/query`.
+2. Es werden weder neue Secrets noch zusätzliche Runtime-Konfigurationen benötigt; alle UI-Daten bleiben im Browser und werden nicht persistiert.
+3. Die Story behandelt nur den erfolgreichen Kernfluss; komplexere Fehlerzustände folgen in E3-S2, daher gibt es keine neuen Exfiltrationspfade.
+
+### Sicherheitsrelevante Eingaben und Endpoints
+1. Sicherheitsrelevantes Input-Feld: die Query-Freitextbox auf der Startseite.
+2. Sicherheitsrelevanter Endpoint bleibt ausschließlich `POST /api/query`; kein weiteres Backend oder Service wurde ergänzt.
+
+### Bekannte Sicherheitsgrenzen und Risiken
+1. Nutzerfragetexte werden in Klartext an `/api/query` gesendet; es gibt keine zusätzliche Verschlüsselung auf Anwendungsebene.
+2. Fehler- und Loading-Zustände sind noch nicht Story-relevant; das Frontend zeigt lediglich Statushilfetexte ohne zusätzliche Logging-Mechanismen.
+
+### Gezielte Security-Prüfpunkte
+1. Sicherstellen, dass keine neuen Endpoints aufgerufen und keine Secrets im Client-Code geloggt werden.
+2. Validitätsprüfung besteht darin, zwei Beispielanfragen aus Sicht eines Reviewers zu senden und in DevTools zu prüfen, dass nur `query` übergeben wird.
 ## DevOps Gate Kontext zu E2
 1. Observability-Signale (`referenceCount`, `contextCandidateCount`, `referenceFallbackUsed`) sind in Logs und API-Responses nachweisbar.
 2. Guardrails sorgen fuer deterministische Referenzlisten und validierte Rate-Limit-Verhalten, auch wenn keine Referenzen veröffentlicht werden.

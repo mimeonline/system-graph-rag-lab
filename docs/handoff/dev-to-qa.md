@@ -87,3 +87,28 @@
 
 ### Genaue Testkommandos mit erwarteten Ergebnissen
 1. `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts` Exit Code `0`.
+
+## E3-S1 Query-Eingabe und Antwortansicht bereitstellen
+### Was ist fertig
+1. Die Query-Panel-UI nimmt Freitext entgegen, sendet ihn an `POST /api/query` und visualisiert den Haupttext, die Referenzliste sowie den knappen P0-Kernnachweis.
+2. `QueryInput` ist interaktiv, zeigt den aktuellen Status (idle, loading, success/error) sowie Statushilfetext und deaktiviert den Submit-Button während des Ladens.
+3. `QueryPanel` wertet die strukturierte API-Antwort mit `buildQueryViewModel` aus und hält die maximal drei Referenzen, Kontextsummarys sowie das Tokenbudget fest.
+
+### Wie kann QA testen lokal inkl konkrete Startschritte
+1. `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` – bestätigt die View-Model-Logik für die UI-Flow-Steuerung.
+2. Dev-Server starten (`pnpm --dir apps/web dev`), Browser öffnen und Homepage laden.
+3. Mindestens zwei verschiedene Fragen absenden (z. B. die Defaultfrage plus eine weitere), jeweils prüfen, dass
+   - die Hauptantwort (`Hauptantwort`-Sektion) sichtbar ist,
+   - unter `Referenzkonzepte` maximal drei Items auftauchen,
+   - der `Knapper P0-Kernnachweis` die `coreRationale` aus der API zeigt und Referenzmöglichkeiten dokumentiert.
+
+### Bekannte Einschränkungen & Testdaten
+1. Loading-, Fehler- und Leerezustände bleiben für E3-S2 reserviert; aktuell wird nur der erfolgreiche Kernfluss behandelt, Fehlermeldungen erscheinen als einfacher Statustext.
+2. Die API-Antworten kommen aus der bestehenden Route `/api/query`; keine neuen Endpoints oder Secrets wurden eingeführt.
+
+### Erwartete Failure Modes
+1. `/api/query` ist nicht erreichbar oder liefert einen Fehlerstatus → UI zeigt die Fehlermeldung im Helper-Text, kann aber keine Antwort darstellen.
+2. Query-Text leer lassen → es wird eine clientseitige Validierung ausgelöst und der Submit ist für diese Frage deaktiviert.
+
+### Genaue Testkommandos mit erwarteten Ergebnissen
+1. `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` Exit Code `0`.
