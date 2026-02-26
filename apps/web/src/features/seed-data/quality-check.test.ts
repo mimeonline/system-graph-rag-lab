@@ -81,4 +81,35 @@ describe("seed data quality check", () => {
     expect(result.report.bySourceType.primary_md.beanstandet).toBe(0);
     expect(result.report.issues.some((issue) => issue.sourceType === "optional_internet")).toBe(true);
   });
+
+  it("excludes entries without reliable source reference and reports the reason", () => {
+    const dataset = createSeedDataset();
+    const invalidEdge = {
+      ...dataset.edges[0],
+      sourceFile: "unknown-source.md",
+      internalSource: {
+        sourceType: dataset.edges[0].sourceType,
+        sourceFile: "unknown-source.md",
+      },
+      publicReference: {
+        ...dataset.edges[0].publicReference,
+        citation: "",
+      },
+    };
+
+    const result = runSeedDatasetQualityCheck({
+      sources: dataset.sources,
+      nodes: dataset.nodes,
+      edges: [...dataset.edges, invalidEdge],
+    });
+
+    expect(result.valid).toBe(false);
+    expect(result.report.edges.beanstandet).toBe(1);
+    expect(result.report.edges.ausgeschlossen).toBe(1);
+    expect(result.dataset.edges.length).toBe(dataset.edges.length);
+    expect(result.report.issues.some((issue) => issue.reason === "unbekannte Quelle")).toBe(true);
+    expect(result.report.issues.some((issue) => issue.reason === "leere publicReference.citation")).toBe(
+      true,
+    );
+  });
 });

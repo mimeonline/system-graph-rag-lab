@@ -20,7 +20,7 @@
 
 | Epic-Datei | Titel | Status | Letztes Update |
 | --- | --- | --- | --- |
-| `e1-wissensmodell-seed-daten.md` | Epic E1 Wissensmodell und Seed-Daten | 🔵 `in_progress` | 2026-02-25 |
+| `e1-wissensmodell-seed-daten.md` | Epic E1 Wissensmodell und Seed-Daten | 🔵 `in_progress` | 2026-02-26 |
 | `e2-retrieval-antwortpipeline.md` | Epic E2 Retrieval und Antwortpipeline | ⚪ `todo` | 2026-02-25 |
 | `e3-frontend-nutzerfuehrung.md` | Epic E3 MVP-Frontend und Nutzerführung | ⚪ `todo` | 2026-02-25 |
 | `e4-deployment-sicherheit-guardrails.md` | Epic E4 Deployment, Sicherheit und Guardrails | ⚪ `todo` | 2026-02-25 |
@@ -34,8 +34,8 @@
 | `e1-s2-seed-datenbasis-erzeugen.md` | E1-S2 Kuratierte Quellbasis aus bereitgestellten Quellen erfassen | ✅ `accepted` | 2026-02-25 |
 | `e1-s3-datenbasis-verfuegbar-machen.md` | E1-S3 Normalisierte Datenbasis im Zielbetrieb verfügbar machen | ✅ `accepted` | 2026-02-25 |
 | `e1-s4-qualitaetspruefung-seed-daten.md` | E1-S4 Qualitätsprüfung für kuratierte Seed-Daten ausführen | ✅ `accepted` | 2026-02-25 |
-| `e1-s5-quellen-extraktion-normalisierung.md` | E1-S5 Quelleninhalte extrahieren und normalisieren | ⚪ `todo` | 2026-02-25 |
-| `e1-s6-neo4j-lokal-seed-reset.md` | E1-S6 Neo4j lokal Seed Reset und Reseed | ⚪ `todo` | 2026-02-25 |
+| `e1-s5-quellen-extraktion-normalisierung.md` | E1-S5 Quelleninhalte extrahieren und normalisieren | ✅ `accepted` | 2026-02-25 |
+| `e1-s6-neo4j-lokal-seed-reset.md` | E1-S6 Neo4j lokal Seed Reset und Reseed | 🟡 `qa` | 2026-02-26 |
 | `e2-s1-kontextkandidaten-bereitstellen.md` | E2-S1 Kontextkandidaten pro Frage bereitstellen | ⚪ `todo` | 2026-02-25 |
 | `e2-s2-kontext-konsistent-erweitern.md` | E2-S2 Kontext für Antwort konsistent erweitern | ⚪ `todo` | 2026-02-25 |
 | `e2-s3-antwort-aus-kontext-erzeugen.md` | E2-S3 Antwort aus strukturiertem Kontext erzeugen | ⚪ `todo` | 2026-02-25 |

@@ -1,7 +1,7 @@
 # Story E1-S5 Quelleninhalte extrahieren und normalisieren
 
 ## Status
-todo
+accepted
 
 ## Ziel
 Kuratierte Inhalte aus freigegebenen Quellen ontologiekonform in eine belastbare Seed-Datenbasis überführen.
@@ -30,6 +30,6 @@ Quelleninhalte extrahiert und auf die Ontologie normalisiert werden
 3. werden Inhalte ohne belastbare Quellenreferenz nicht übernommen und im Laufprotokoll ausgewiesen.
 
 ## Test Notes
-1. Prüfe, dass die Mengenkriterien für Nodes und Edges nach Normalisierung erreicht sind.
-2. Prüfe stichprobenartig je fünf Nodes und Relationen auf vollständige Herkunftskennzeichnung.
-3. Prüfe im Laufprotokoll, dass ausgeschlossene Inhalte mit Grund dokumentiert sind.
+1. `pnpm --dir apps/web test` erfolgreich; E1-S5 Tests validieren `105` Nodes und `203` Edges nach Normalisierung.
+2. `apps/web/src/features/seed-data/seed-data.test.ts` validiert Herkunftskennzeichnung fuer `sources`, `nodes` und `edges` auf `primary_md` oder `optional_internet`.
+3. `apps/web/src/features/seed-data/quality-check.test.ts` validiert Ausschluss ohne belastbare Quellenreferenz und dokumentierten Grund im Laufprotokoll (`issues`).

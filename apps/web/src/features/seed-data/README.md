@@ -40,6 +40,18 @@ Die Daten stammen aus freigegebenen Markdown-Quellen und enthalten Herkunftsmeta
 4. Fehlerfall: wirft einen Fehler bei fehlenden Env-Variablen, Neo4j-Verbindungsproblemen oder ungueltigen Datensaetzen.
 5. Beispiel: `const rows = await readSeedDatasetForRuntime(); rows.nodes.slice(0, 2)`.
 
+### `runLocalSeedResetAndReseed(options?)`
+1. Zweck: fuehrt den lokalen Ablauf Reset, Seed-Import und Reseed-Read-Check fuer Neo4j reproduzierbar aus.
+2. Input: `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD` plus optional `options.driverFactory`, `options.runtimeRead` und `options.seedDatasetFactory`.
+3. Output: `Promise<LocalSeedResetReseedResult>` mit importierten Node und Relationsmengen sowie Read-Check Kennzahlen.
+4. Fehlerfall: wirft einen Fehler bei fehlenden Runtime-Variablen, fehlgeschlagenem Import oder wenn der Read-Check weniger als zwei Nodes oder zwei Relationen liefert.
+5. Beispiel: `const result = await runLocalSeedResetAndReseed(); result.readCheckNodeCount >= 2`.
+
+## Lokaler Ablauf Seed Reset und Reseed
+1. Runtime-Variablen setzen: `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`.
+2. Ablauf starten mit `pnpm --dir apps/web seed:local:reset-reseed`.
+3. Erfolgsfall liefert Importmengen plus Read-Check fuer Nodes und Relationen.
+
 ## Hinweise
 1. `sourceType` ist je Eintrag auf `primary_md` oder `optional_internet` begrenzt.
 2. `sourceFile` muss auf einen Eintrag im kuratierten Quellenkatalog verweisen.

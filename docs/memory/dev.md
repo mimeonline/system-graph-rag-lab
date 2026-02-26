@@ -1,31 +1,30 @@
 # Dev Memory
 
 ## Current Implementation Status
-1. Story `E1-S4` ist implementiert und im aktuellen Prozess auf `pass` bewertet.
-2. `runSeedDatasetQualityCheck` in `apps/web/src/features/seed-data/quality-check.ts` prueft Quellen, Nodes und Edges auf Konsistenz.
-3. Das Pruefprotokoll liefert `checked`, `beanstandet`, `ausgeschlossen`, `issues` und `bySourceType`.
-4. Story-spezifischer Test fuer E1-S4 laeuft ueber direkten Vitest-Run reproduzierbar.
+1. Story `E1-S6` ist implementiert und auf Status `qa` gesetzt.
+2. Lokaler Neo4j Workflow fuer `reset -> reseed -> read-check` ist in `apps/web/src/features/seed-data/local-seed-reset.ts` umgesetzt.
+3. Script-Aufruf `pnpm --dir apps/web seed:local:reset-reseed` ist verfuegbar.
 
 ## Active Epics and Stories
-1. Source of truth ist `backlog/progress.md`; Story-Status wird nicht aus Memory abgeleitet.
-2. E1 ist aktiv und enthaelt noch offene Stories (`E1-S5`, `E1-S6`).
-3. PM-Freigaben bleiben strikt nach `pass`.
+1. Epic `E1` bleibt `in_progress`.
+2. Story `E1-S6` wartet im Status `qa` auf QA-Gate.
+3. PM-Freigabe auf `accepted` bleibt nach QA-Status `pass` vorbehalten.
 
 ## Technical Constraints
-1. API- und Retrieval-Contract aus `docs/spec/**` bleiben unveraendert bindend.
-2. Next.js `16.1.6`, TypeScript `strict=true`.
-3. Dev setzt Story-Status nur auf `in_progress`, `qa` oder `blocked`.
-4. Keine Architekturabweichung ohne akzeptierte ADR.
+1. API- und Retrieval-Contracts unter `docs/spec/**` bleiben unveraendert.
+2. Stack-Invarianten bleiben bindend: Next.js `16.1.6`, TypeScript `strict=true`, Tailwind CSS und shadcn/ui.
+3. Lokaler Seed-Workflow darf nur ueber Runtime-Variablen arbeiten, ohne Secrets im Repository.
+4. Story-Status durch Dev nur `in_progress`, `qa` oder `blocked`.
 
 ## Known Technical Debt
-1. Qualitaetsprotokoll ist derzeit nur In-Memory und nicht als persistentes Audit-Artefakt abgelegt.
-2. Lokale Neo4j-Integrationslaeufe haengen von sauber gesetzten Runtime-Variablen ab.
-3. Offene Upstream-Storys (`E1-S5`, `E1-S6`) koennen Folgeeffekte auf spaetere QA-Gates haben.
+1. Der lokale Seed-Scriptlauf benoetigt vollstaendige Neo4j Runtime-Variablen und hat keine komfortable Default-Konfiguration fuer `NEO4J_DATABASE` im Code.
+2. Seed-Dataset bleibt statisch im Code gepflegt und nicht aus separatem Extraktionsartefakt generiert.
+3. Qualitaetsreporting bleibt nicht persistent.
 
 ## Blocking Issues
-1. Kein akuter Dev-Blocker dokumentiert.
+1. Kein aktueller Blocker fuer QA.
 
 ## Next Instructions for Dev Agent
-1. Vor Story-Start immer Story-Datei plus `backlog/progress.md` lesen und synchron halten.
-2. Story-spezifische Tests mit exaktem Scope-Kommando ausfuehren.
-3. Dev-Handoff und Dev-Memory nur mit verifizierten, langlebigen Informationen aktualisieren.
+1. QA-Feedback zu `E1-S6` priorisiert bearbeiten und Status-Sync beibehalten.
+2. Bei QA-Fail gezielt in `local-seed-reset.ts` oder Testabdeckung nachziehen, ohne Contract-Aenderung.
+3. Danach naechste Story gemaess Backlog mit erstem Schritt `in_progress` plus sofortigem Sync in `backlog/progress.md` starten.

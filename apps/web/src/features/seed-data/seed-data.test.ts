@@ -38,6 +38,22 @@ describe("seed dataset generation", () => {
     expect(sources.every((source) => source.sourceFile.length > 0)).toBe(true);
     expect(sources.every((source) => source.publicReference.citation.length > 0)).toBe(true);
   });
+
+  it("meets E1-S5 volume and source attribution acceptance criteria", () => {
+    const dataset = createSeedDataset();
+    const allowedSourceTypes = ["primary_md", "optional_internet"];
+
+    expect(dataset.nodes.length).toBeGreaterThan(100);
+    expect(dataset.edges.length).toBeGreaterThan(200);
+
+    expect(dataset.sources.every((source) => allowedSourceTypes.includes(source.sourceType))).toBe(true);
+    expect(dataset.nodes.every((node) => allowedSourceTypes.includes(node.sourceType))).toBe(true);
+    expect(dataset.edges.every((edge) => allowedSourceTypes.includes(edge.sourceType))).toBe(true);
+
+    expect(dataset.sources.every((source) => source.sourceFile.trim().length > 0)).toBe(true);
+    expect(dataset.nodes.every((node) => node.sourceFile.trim().length > 0)).toBe(true);
+    expect(dataset.edges.every((edge) => edge.sourceFile.trim().length > 0)).toBe(true);
+  });
 });
 
 describe("seed dataset validation", () => {

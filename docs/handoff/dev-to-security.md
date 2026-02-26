@@ -1,18 +1,22 @@
-# Dev to Security Handoff
+# Dev to Security Handoff E1-S6
 
-## Scope
-1. Story `E1-S4` fuehrt einen internen Seed-Qualitaetslauf ein.
-2. Keine neuen oeffentlichen Endpoints und keine API-Contract-Aenderung.
+## Security Context
+1. Story `E1-S6` implementiert einen lokalen Neo4j Seed-Reset und Reseed Ablauf fuer das Dev-Profil.
+2. Es wurden keine neuen oeffentlichen API-Endpunkte hinzugefuegt.
+3. Sicherheitsschwerpunkt liegt auf sicherem Umgang mit lokalen Runtime-Credentials und kontrolliertem Datenreset.
 
-## Security-relevante Stellen
-1. `apps/web/src/features/seed-data/quality-check.ts` validiert Integritaet und Herkunft.
-2. Beanstandete Eintraege werden ausgeschlossen statt weiterverarbeitet.
+## Sicherheitsrelevante Eingaben und Endpoints
+1. Sicherheitsrelevante Eingaben sind Runtime-Variablen `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`.
+2. Der Seed-Workflow nutzt direkten Datenbankzugriff ueber `neo4j-driver` im lokalen Kontext.
+3. Kein neuer HTTP-Endpoint wurde eingefuehrt; Aufruf erfolgt ueber lokales Script.
 
-## Pruefziele fuer Security
-1. Sicherstellen, dass beanstandete Daten in Folgepfaden nicht wieder eingehen.
-2. Sicherstellen, dass `issues` keine sensitiven Details exponieren.
-3. Logging und Fehlerausgaben auf Redaction und Scope pruefen.
+## Bekannte Sicherheitsgrenzen und offene Risiken
+1. Workflow ist fuer lokal gedacht; es gibt keine zusaetzliche Zugriffskontrolle ueber den bereits laufenden lokalen Zugriff hinaus.
+2. Seed-Reset loescht alle erlaubten Node-Typen (`Concept`, `Tool`, `Author`, `Book`, `Problem`) kontrolliert, aber bewusst vollstaendig.
+3. Fehlkonfigurationen bei lokalen Credentials fuehren zu Abbruch; es gibt keine automatische Secrets-Validierung gegen zentrale Policy.
 
-## Offene Risiken
-1. Kein extern persistiertes Audit-Protokoll.
-2. Integritaet des Ursprungspfads bleibt vorgelagert.
+## Security Pruefpunkte fuer Epic Gate
+1. Pruefen, dass keine Secrets in Logs oder Handoff-Dateien ausgegeben werden.
+2. Pruefen, dass der Reset weiterhin nur auf erlaubte Labels begrenzt ist.
+3. Pruefen, dass Fail-fast bei fehlenden Runtime-Variablen weiterhin vor DB-Operationen greift.
+4. Pruefen, dass lokale Seed-Scripts nicht versehentlich im Public Runtime-Pfad verwendet werden.
