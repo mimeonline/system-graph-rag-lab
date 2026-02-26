@@ -1,7 +1,7 @@
 # Story E1-S6 Neo4j lokal Seed Reset und Reseed
 
 ## Status
-qa
+pass
 
 ## Ziel
 Ein reproduzierbarer lokaler Seed-Reset-und-Reseed-Ablauf fuer Neo4j Docker ist verfuegbar, damit die Datenbasis fuer Next.js Runtime-Reads sauber neu aufgebaut werden kann.

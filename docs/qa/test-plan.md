@@ -2,46 +2,52 @@
 
 ## Teststrategie
 ### Unit
-1. Story-Fokus `E1-S5`: `createSeedDataset`, `validateSeedDataset` und `runSeedDatasetQualityCheck` pruefen Volumen, Herkunftstypen und Ausschlussregeln.
-2. Story-spezifische Evidenz ueber `pnpm --dir apps/web exec vitest run src/features/seed-data/seed-data.test.ts`.
-3. Negativfall-Evidenz ueber `pnpm --dir apps/web exec vitest run src/features/seed-data/quality-check.test.ts`.
+1. Story-Fokus `E1-S6`: Validierung der lokalen Seed-Reset-Orchestrierung und der Fail-Fast-Regeln fuer fehlende Neo4j-Credentials.
+2. Story-spezifische Evidenz ueber `pnpm --dir apps/web test -- src/features/seed-data/local-seed-reset.test.ts`.
 
 ### Integration
 1. Regressionslauf ueber `pnpm --dir apps/web test`.
-2. Erwartung: Exit Code `0` mit gruenen Seed- und Quality-Check-Tests.
+2. Erwartung: Exit Code `0` und gruenes Verhalten fuer Seed-Domain, API-Route und lokale Neo4j-Integrationspfade.
 
 ### E2E minimal
 1. Statische Qualitaet: `pnpm --dir apps/web lint`.
 2. Build-Readiness: `pnpm --dir apps/web build`.
-3. Public Runtime Checks auf Vercel und Aura bleiben ausserhalb dieses Story-Gates.
+3. Story-spezifischer Runtime-Ablauf: `pnpm --dir apps/web seed:local:reset-reseed` nach Env-Load.
 
 ## Testumgebung
 ### local
-1. Verbindliche Umgebung fuer Story-Gate `E1-S5`.
-2. Ausgefuehrte Pflicht-Commands: `pnpm --dir apps/web lint`, `pnpm --dir apps/web test`, `pnpm --dir apps/web build`.
-3. Zusatz-Evidenz: `pnpm --dir apps/web install` und story-spezifische Testdatei-Analyse.
-4. Laufdatum: `2026-02-25`.
+1. Verbindliche Umgebung fuer Story-Gate `E1-S6`.
+2. Neo4j Docker lokal erreichbar auf `bolt://localhost:7687`.
+3. Runtime-Variablen gesetzt: `NEO4J_URI`, `NEO4J_DATABASE`, `NEO4J_USERNAME`, `NEO4J_PASSWORD`.
+4. Laufdatum: `2026-02-26`.
 
 ### vercel
 1. Nicht im Scope dieses Story-Gates.
-2. Bleibt Risiko bis Epic-Gates E4 und E5.
 
 ### aura
 1. Nicht im Scope dieses Story-Gates.
-2. Runtime-Read-Integration bleibt env-abhaengig und kann lokal geskippt sein.
 
 ## Testdaten und Seed Voraussetzungen
-1. Kein externer Seed erforderlich.
-2. Story-Evidenz basiert auf kuratiertem In-Memory-Dataset in `apps/web/src/features/seed-data/seed-data.ts`.
-3. Zulassige Herkunftstypen bleiben `primary_md` und `optional_internet`.
-4. Ausschluesse ohne belastbare Referenz muessen im Protokoll `issues` sichtbar sein.
+1. Seed-Quelle: `createSeedDataset()` plus `runSeedDatasetQualityCheck(...)`.
+2. Erwartete Importgroesse im aktuellen Stand: `105` Nodes und `203` Relationen.
+3. Fuer reproduzierbare lokale Laeufe gilt Fallback `NEO4J_DATABASE=neo4j`, falls nicht in `.env.local` gesetzt.
 
 ## Abnahmekriterien
-### Story E1-S5 Szenario
-1. Given: kuratierter Quellenkatalog aus `primary_md` und `optional_internet` plus freigegebene Ontologie.
-2. When: Quelleninhalte werden extrahiert und ontologiekonform normalisiert.
-3. Then: mehr als 100 valide Nodes und mehr als 200 valide Edges, Herkunft je Eintrag auf erlaubte Typen begrenzt, Eintraege ohne belastbare Quellenreferenz ausgeschlossen und im Laufprotokoll ausgewiesen.
+### Story E1-S6 Szenario
+1. Given: laufender lokaler Neo4j-Docker-Container, verfuegbare Seed-Quelle, gesetzte Runtime-Variablen.
+2. When: lokaler Ablauf fuer Seed-Reset, Seed-Import und Reseed wird ausgefuehrt.
+3. Then: bestehende Seed-Datenbasis wird kontrolliert zurueckgesetzt.
+4. Then: Seed-Datenbasis wird aus freigegebener Quelle erneut eingespielt.
+5. Then: echte Neo4j-Reads fuer mindestens zwei Nodes und zwei Relationen sind nach Reseed erfolgreich.
 
 ### Gate-Regel
-1. Pass: `lint`, `test` und `build` laufen mit Exit Code `0` und die Then-Bedingungen sind durch Testevidenz reproduzierbar belegt.
-2. Fail: mindestens ein Pflicht-Command fehlschlaegt oder eine Then-Bedingung ist nicht reproduzierbar nachweisbar.
+1. Pass: `lint`, `test`, `build` und story-spezifischer Reset-Reseed-Check laufen mit Exit Code `0` und die Given-When-Then-Bedingungen sind reproduzierbar belegt.
+2. Fail: mindestens ein Pflicht-Check fehlschlaegt oder eine Then-Bedingung ist nicht reproduzierbar nachweisbar.
+
+## Funktionsdoku fuer Pruefablauf
+### Pruefablauf `seed:local:reset-reseed`
+1. Zweck: Reproduzierbar pruefen, dass lokaler Neo4j-Reset, Reimport und Runtime-Read-Check als zusammenhaengender Story-Ablauf funktionieren.
+2. Input: geladene lokale Env-Werte, laufender Neo4j-Container, Seed-Dataset.
+3. Output: Exit Code `0` und Kennzahlen fuer importierte sowie gelesene Nodes und Relationen.
+4. Fail oder Edge-Case: fehlende Neo4j-Credentials fuehren zu Fail-Fast vor Driver-Initialisierung; nicht erreichbarer Neo4j-Endpunkt bricht den Ablauf.
+5. Beispiel: `set -a; . apps/web/.env.local; set +a; export NEO4J_DATABASE=${NEO4J_DATABASE:-neo4j}; pnpm --dir apps/web seed:local:reset-reseed`.

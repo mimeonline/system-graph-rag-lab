@@ -4,7 +4,7 @@
 1. Story-Gates mit klarer Command-Evidenz und Exit Codes dokumentieren.
 2. AK-Abdeckung strikt auf Given When Then pruefen und in Matrix plus Verdict spiegeln.
 3. Story-Status und `backlog/progress.md` im selben Run synchron halten.
-4. Story-Gate und Epic-Gate weiterhin getrennt bewerten.
+4. Destruktive lokale Seed-Ablaufe nur mit expliziter Runtime-Evidenz und Read-Checks freigeben.
 
 ## Known Failure Patterns
 1. Story steht auf `qa`, aber QA-Evidenz ist nicht vollstaendig dokumentiert.
@@ -13,16 +13,16 @@
 4. Drift zwischen QA-Artefakten und Backlog-Status.
 
 ## Eval Status
-1. Story-Gate `E1-S5` wurde am 2026-02-25 mit `Pass` abgeschlossen.
+1. Story-Gate `E1-S6` wurde am 2026-02-26 mit `Pass` abgeschlossen.
 2. Eval-Set mit fuenf Fragen ist weiterhin nicht ausgefuehrt und bleibt `Fail` auf Laufebene.
-3. Epic-Gate `E1` bleibt `Fail`, bis `E1-S6` sowie Security- und DevOps-Gates abgeschlossen sind.
+3. Epic-Gate `E1` bleibt `Fail`, bis Security- und DevOps-Gates abgeschlossen sind.
 
 ## Open Quality Risks
 1. Local-Pass garantiert keine Public-Paritaet auf Vercel plus Aura.
-2. Env-abhaengige Runtime-Read-Tests koennen weiterhin teilweise skippbar sein.
-3. Ausstehender E1-S6-Gate blockiert die Epic-Abnahme.
+2. Reset-Reseed ist env-abhaengig und kann bei falscher Konfiguration lokal destruktiv wirken.
+3. Ausstehende Epic-Gates blockieren die belastbare E1-Freigabe.
 
 ## Next Instructions
-1. E1-S6 mit reproduzierbarem Reset- und Reseed-Lauf als naechsten Story-Gate-Run pruefen.
-2. Danach Epic-Gates Security und DevOps fuer E1 mit QA-Artefakten verknuepfen.
-3. Vor Epic-Abnahme den vollstaendigen Eval-Lauf fuer Q1 bis Q5 ausfuehren.
+1. Security-Gate fuer E1 mit Fokus auf Secret-Hygiene und lokalen Reset-Guardrails ausfuehren.
+2. DevOps-Gate fuer E1 mit Fokus auf Local-versus-Public-Betriebsparitaet ausfuehren.
+3. Vor finaler Epic-Abnahme den vollstaendigen Eval-Lauf fuer Q1 bis Q5 ausfuehren.
