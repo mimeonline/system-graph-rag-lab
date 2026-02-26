@@ -93,3 +93,8 @@
 2. Manuelle UI-Flow-Pruefung: Dev-Server (`pnpm --dir apps/web dev`) starten, mindestens zwei Fragen (Default + eine komplexe eigene Frage) absenden und nach jeder Antwort die Sektionen `Hauptantwort`, `Referenzkonzepte` (≤3 Items) und `Knapper P0-Kernnachweis` prüfen.
 3. Beobachtung: Der Submit-Button darf währen des Ladens inaktiv sein und die Statusanzeige muss von `loading` auf `success` wechseln, bevor neue Queries möglich sind.
 4. Abnahme: Hauptantwort, Referenzliste und Kernnachweis bleiben nach je zwei Queries sichtbar dokumentiert; Screenshot/Notizen festhalten.
+
+### Story E3-S2 Loading-, Fehler- und Leerezustände
+1. Status-Texts für Loading, Error und Empty müssen unterscheidbar sein und mit der richtigen `Nächsten Aktion` verbunden sein; `QueryPanel` und `QueryInput` sollen diese Texte im Helper-Text und im Status-Hinweis anzeigen.
+2. Testlauf: `pnpm --dir apps/web exec vitest run src/components/organisms/query-panel-status.test.ts` (3 tests, Exit Code 0) – prüft `getStatusHint` für Loading, Error und Empty sowie die Next-Action-Formulierungen.
+3. Manuelle Prüfung: Lade eine Frage, simuliere einen Fehler (z. B. Browser offline) und eine Antwort mit leeren Referenzen (`references: []`), prüfe jeweils den Status-Text, die `Nächste Aktion` und den deaktivierten Submit-Button bzw. Helper-Text.

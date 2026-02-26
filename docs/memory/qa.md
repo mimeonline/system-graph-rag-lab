@@ -41,5 +41,5 @@
 4. PM-Abnahme fuer E2-S1 auf Basis von `docs/handoff/qa-to-pm.md` durchfuehren.
 5. Story E2-S4 Referenzkonzepte absichern und Fallback-Regeln gegen `/api/query`-Contract prüfen.
 6. Neue QA-Läufe für E2-S4 auslösen, sobald `reference-expectations.ts` oder API-Responses angepasst werden.
-7. E3-S2 (Loading/Fehler/Leere) QA-Run planen, danach E3-S3 (Herleitungsdetails) angehen.
+7. E3-S2 (Loading/Fehler/Leere) QA-Run am 2026-02-26 durchgeführt – `getStatusHint`-Tests grün; Story auf `pass`, Next-Step: E3-S3 überprüfen.
 8. Nach Abschluss aller E3-Stories QA-Epic-Gate inkl. Security/DevOps koordinieren und `docs/qa/verdict-epic.md` ggf. ergänzen.

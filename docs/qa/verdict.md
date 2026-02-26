@@ -138,3 +138,38 @@
 1. E3-S2 Loading-, Fehler- und Leerezustände in `QueryPanel` testen.
 2. E3-S3 Herleitungsdetails sichtbarer machen und die UI-Metadaten (e.g. References & Rationale) in Story-Context ausbauen.
 3. Sobald neue API-Antworten das Format ändern, `buildQueryViewModel` sowie die manuellen UI-Schritte erneut validieren.
+
+## Story E3-S2 Loading-, Fehler- und Leerezustände
+
+### Ergebnis
+1. Verdict: Pass.
+2. Gate-Typ: Story QA Gate.
+3. Story-ID: E3-S2.
+4. Epic-ID: E3.
+5. Bewertungsdatum: 2026-02-26.
+
+### Szenario-Prüfung Given When Then
+1. Given: Die UI zeigt `QueryPanel` mit Status-Texten und zugehörigen `nextAction`-Hinweisen.
+2. When: Der Status wechselt auf Loading, Error oder Empty.
+3. Then-1: Status-Text ist jeweils unterscheidbar für Loading, Error und Empty.
+4. Then-2: Für jeden Status erscheint eine klar benannte `Nächste Aktion`.
+5. Then-3: `QueryInput` nutzt die Hinweise im Helper-Text und deaktiviert den Submit-Button während des Ladens.
+6. Ergebnis: Pass, Status-/Action-Texte aus `getStatusHint` validiert und von `QueryPanel` übernommen, Submit-Button-Logik gewährleistet.
+
+### Ausgeführte QA-Checks
+1. `pnpm --dir apps/web exec vitest run src/components/organisms/query-panel-status.test.ts` (3 tests, Exit Code 0) – der Test prüft `getStatusHint` für Loading, Error und Empty inkl. `nextAction`.
+2. Code Review `apps/web/src/components/organisms/query-panel.tsx` sowie `QueryInput`-Props bestätigt Fluss vom Status-Hinweis zu Helper-Text und Submit-Button-Zustand.
+
+### Merge Block & Fix Requests
+1. Kein Merge Block.
+2. Keine offenen Fix Requests innerhalb des Story-Scopes.
+
+### Top 3 Risiken
+1. Manuelle UI-Simulation (offline/Error, Empty) wurde nicht im Browser-Dev-Server durchgeführt; sollte bei Bedarf lokal reproduziert werden.
+2. Änderungen an der Submit-Logik in `QueryInput` könnten erneut die Helper-Text-Anbindung brechen; Recheck erforderlich.
+3. Neue API-Fehlermeldungen könnten den `errorMessage`-Flow verändern; Kombination mit `getStatusHint` muss bestehen bleiben.
+
+### Nächste Tests
+1. E3-S3 Herleitungsdetails sichtbarer machen und ergänzende UI-Prüfungen dokumentieren.
+2. Bei Template-Änderungen im QueryPanel erneut manuelle Status/Action-Simulation durchführen.
+3. Nach Backend-Fehlermeldungsanpassungen `getStatusHint` neu validieren.
