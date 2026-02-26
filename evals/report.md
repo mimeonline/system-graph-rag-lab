@@ -32,6 +32,11 @@
 1. `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts` (2 tests, Exit Code 0) – validiert nicht leere Hauptantwort, Core-Rationale-Inhalte sowie Referenzlimit- und Fallback-Verhalten.
 2. `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts` (2 tests, Exit Code 0) – bestätigt API-Contract, Referenzen ≤ 3 und konsistente `context.elements`.
 
+### Story E2-S4 QA
+1. `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts` (4 tests, Exit Code 0) – deckt Match- und Fallback-Szenarien entlang der Erwartungsliste ab.
+2. Manuelle `POST /api/query`-Anfragen (z. B. Q1 plus eine Query ohne passende Konzepte) belegen sowohl Hinweis-Ausbleiben als auch den `Hinweis: ...`-Fallback inklusive Referenzliste.
+3. Erwartungsliste in `reference-expectations.ts` bleibt deterministisch und deckt die fünf Eval-Fragen ab.
+
 ## Zusammenfassung und Empfehlung
 1. Gesamtstatus fuer Eval-Set bleibt: Fail.
 2. Story-QA-Gate `E1-S6` ist davon getrennt und wurde mit Pass bewertet.

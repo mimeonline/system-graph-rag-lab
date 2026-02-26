@@ -52,3 +52,20 @@
 ### Monitoring Hinweise
 1. Bei API-Änderungen sicherstellen, dass `references.length` im Contract weiterhin ≤ 3 bleibt.
 2. Fallback und Core-Rationale Texte regelmäßig gegen neue Kontext-Summaries prüfen.
+3. E2-S4 Referenz-Abgleich prüfen, wenn neue Erwartungslisten ergänzt werden.
+
+## E2-S4 Referenzkonzepte in Ausgabe absichern
+### Teststatus
+1. Story-Gate E2-S4 ist auf `Pass` gesetzt.
+2. Reproduzierbare Tests: `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts` (4 tests, Exit Code 0) – Match- und Fallback-Szenarien; `POST /api/query`-Beispielanfragen zeigen sowohl Hinweis-Ausbleiben als auch `Hinweis: ...` bei fehlenden Referenzen.
+3. Erwartungsliste `reference-expectations.ts` deckt die fünf Eval-Fragen ab und bleibt deterministisch.
+
+### Bekannte Einschränkungen
+1. Erwartungslisten sind aktuell auf fünf Eval-Fragen begrenzt; zusätzliche Fragen müssen manuell ergänzt werden.
+2. Fallback-Hinweis ist sprachlich klar definiert; jede professionelle Übersetzung/Paraphrase verlangt neue Tests.
+3. API-Responses liefern maximal drei Referenzen; neue Referenzbegrenzungen müssen abgestimmt werden.
+
+### Monitoring Hinweise
+1. Bei neuen Eval-Fragen die `reference-expectations.ts`-Tabelle um erwartete Konzepte erweitern und Story neu testen.
+2. Fallback-Hinweis muss bei Änderungen an `buildStructuredAnswer` oder `evaluateExpectationMatch` erneut überprüft werden.
+3. Beobachte, ob Referenz-Reihenfolge durch Retrieval-Änderungen die deterministischen Matches beeinflusst.

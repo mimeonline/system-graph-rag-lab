@@ -80,3 +80,9 @@
    - `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts`
    - `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts`
 4. Erwartung: Beide Tests Exit Code `0`, API-Contract bleibt intakt (`status`, `state`, `references`, `context.elements`, `meta`, `answer`).
+
+### Story E2-S4 Referenzkonzepte absichern
+1. Erwartungsliste aus `apps/web/src/features/query/reference-expectations.ts` wird gegen die ersten drei Referenzen der generierten Antwort geprüft und erlaubt nur deterministische Matches.
+2. Story-spezifischer Testlauf: `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts` (vier Tests, inklusive Match- und Fallback-Szenarien).
+3. Zusatzcheck: manuelle `POST /api/query`-Beispielanfrage (Q1 oder eine Frage ohne passende Konzepte) dokumentieren und prüfen, dass im ersten Fall der Hinweis ausbleibt und im zweiten Fall der `Hinweis: ...`-Fallback erscheint.
+4. Abnahme erwartet: mindestens zwei erwartete Konzepte unter den ersten drei Referenzen oder ein deutlich formulierter Fallback-Hinweis mit Bezug auf die erwarteten Konzepte.

@@ -1,7 +1,7 @@
 # Story E2-S4 Referenzkonzepte in Ausgabe absichern
 
 ## Status
-qa
+pass
 
 ## Ziel
 Konsistente Mindestqualität für Referenzkonzepte sicherstellen.

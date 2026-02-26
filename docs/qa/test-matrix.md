@@ -17,7 +17,7 @@
 | E2-S2 | AC-2 | QA-E2-S2-02 | Jedes Kontextelement ist auf Kandidat oder Erweiterungsquelle rueckfuehrbar | local | x |  | 2026-02-26: Obige Tests bestaetigen das `context.elements`-Paket inklusive `source.publicReference`, `sourceId`, `sourceFile` und `sourceType`. |
 | E2-S3 | AC-1 | QA-E2-S3-01 | Hauptantwort ist nicht leer | local,vercel | x |  | 2026-02-26: `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts` (2 tests, Exit Code 0) und `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts` (2 tests, Exit Code 0); `answer.main` bleibt nicht leer. |
 | E2-S3 | AC-2 | QA-E2-S3-02 | Referenzsektion enthaelt bis zu drei Konzepte oder klaren Fallback-Hinweis | local,vercel | x |  | 2026-02-26: Obige Tests bestaetigen `references.length <= 3` sowie fallback-spezifische Texte. |
-| E2-S4 | AC-1 | QA-E2-S4-01 | Unter den ersten drei Referenzen sind mindestens zwei erwartete Konzepte oder klarer Fallback | local,vercel |  |  |  |
+| E2-S4 | AC-1 | QA-E2-S4-01 | Unter den ersten drei Referenzen sind mindestens zwei erwartete Konzepte oder klarer Fallback | local,vercel | x |  | 2026-02-26: `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts` (4 tests, Exit Code 0) validiert Match- und Fallback-Szenarien; `POST /api/query`-Beispiel (Q1) bestätigt Hinweis ausbleibt, zusätzlicher Query ohne passende Konzepte belegt `Hinweis`-Fallback. |
 | E3-S1 | AC-1 | QA-E3-S1-01 | Hauptantwort sichtbar nach gueltiger Anfrage | local,vercel |  |  |  |
 | E3-S1 | AC-2 | QA-E3-S1-02 | Referenzkonzepte und P0-Kernnachweis sichtbar | local,vercel |  |  |  |
 | E3-S2 | AC-1 | QA-E3-S2-01 | Loading, Fehler, Leere zeigen unterscheidbaren Status-Text | local,vercel |  |  |  |
