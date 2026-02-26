@@ -34,3 +34,8 @@
 3. Output: stabilisierte Last und dokumentierte Anpassung.
 4. Fehlerfall: fehlende Header-Body-Konsistenz bei `429` ist Gate-Blocker.
 5. Beispiel: Lasttest reproduziert `429` und liefert identische Retry-Werte in Header und Body.
+
+## E3 Query Flow Guardrails
+1. Das Query-Panel sendet ausschließlich `POST /api/query` mit dem `query`-Payload; es wurden keine neuen Endpunkte oder Payload-Felder eingeführt (siehe QA-Szenarien in `docs/qa/verdict.md`).
+2. Die Statushelfer (Loading, Error, Empty) aus E3-S1 bis E3-S3 deaktivieren den Submit-Button bei laufender Anfrage, wodurch das Rate-Limit durch UI-Steuerung zusätzlich geschützt wird (dokumentiert in `docs/handoff/qa-to-devops.md`).
+3. Die Rate-Limit- und Redaction-Guardrails behalten ihre Gültigkeit: `Retry-After`-Header und `retryAfterSeconds`-Body bleiben konsistent, rohe Queries und Secrets werden nicht geloggt.

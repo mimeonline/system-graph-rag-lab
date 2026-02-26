@@ -24,3 +24,8 @@
 3. Output: Fehlerklasse, Latenzbild, naechster operativer Schritt.
 4. Fehlerfall: Fehlende `requestId` blockiert schnelle Korrelation und wird als Defekt dokumentiert.
 5. Beispiel: Suche nach `requestId=<uuid>` im Runtime-Log und mappe auf `errorCode`.
+
+## E3 Query Flow Observability
+1. Die Query-Panel- und View-Model-Änderungen basieren auf den gleichen `/api/query`-Completion-Events; es werden weiterhin `requestId`, `route`, `statusCode`, `latencyMs` und die E2-Fields (`referenceCount`, `referenceFallbackUsed`, `referenceQuality`) pro Request ausgegeben.
+2. Die manuellen QA-Schritte in `docs/handoff/qa-to-devops.md` dokumentieren, dass jede UI-Abfrage über die bestehende Lifecycle-Logik läuft, sodass Triage über das `requestId`-Korrelationselement weiter funktionsfähig bleibt.
+3. Keine neuen Log-Felder oder Public-Exponierungen wurden eingeführt; der Observability-Minimalstandard bleibt der zentrale Referenzpunkt für alle Query-Flows.
