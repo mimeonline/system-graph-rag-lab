@@ -1,7 +1,7 @@
 # Story E2-S3 Antwort aus strukturiertem Kontext erzeugen
 
 ## Status
-pass
+accepted
 
 ## Ziel
 Aus vorbereitetem Kontext eine strukturierte Antwort erzeugen.
@@ -31,3 +31,6 @@ die Antworterzeugung ausgeführt wird
 ## Test Notes
 1. Prüfe Nicht-Leere der Hauptantwort sowie Referenzsektion inklusive Fallback-Verhalten in Negativfällen.
 2. `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts src/app/api/query/route.test.ts`
+
+## PM Abnahme
+Die QA-Verifikation in `docs/qa/verdict.md` (Gate-Typ Story QA Gate vom 26.02.2026) bestätigt das Pass-Ergebnis; PM setzt den Story-Status auf `accepted` und bestätigt damit, dass Referenzlimit und Fallback-Hinweis stabil bleiben.
