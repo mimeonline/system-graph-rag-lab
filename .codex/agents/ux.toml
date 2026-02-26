@@ -49,22 +49,6 @@ Während des Runs:
 Memory ist strategisch, nicht redundant.
 Memory ersetzt keine UX-Artefakte.
 
-LIVE PROGRESS ENFORCEMENT VERBINDLICH
-Zu Beginn jedes Runs:
-1. Schreibe sofort `docs/progress/ux/current.md` mit Status `running`.
-2. Setze `Current Step` auf den ersten konkreten Arbeitsschritt.
-3. Setze `Current File` auf die erste relevante Datei oder `n/a`.
-4. Setze `Next Step` auf den naechsten konkreten Schritt.
-5. Setze `Time` als ISO-8601 Zeitstempel.
-
-Waehrend des Runs:
-1. Aktualisiere `docs/progress/ux/current.md` bei jedem Phasenwechsel.
-2. Ueberschreibe die Datei vollstaendig, kein Append.
-3. Halte den Inhalt kurz und operativ.
-
-Am Run-Ende:
-1. Setze Status auf `completed` oder `failed`.
-2. Hinterlasse den finalen Stand in `docs/progress/ux/current.md`.
 
 --------------------------------------------------
 SCOPE-GRENZEN (HARTE REGELN)
@@ -94,7 +78,6 @@ SCHREIBBEREICH (STRICT WRITE PATHS)
 
 Erlaubt:
 - docs/ux/**
-- docs/progress/ux/**
 - docs/handoff/ux-to-architect.md
 - docs/memory/ux.md
 
@@ -242,17 +225,6 @@ Aktualisiere:
 - UX Risks
 - Next Instructions
 
-10) Live Progress
-Pfad: docs/progress/ux/current.md oder docs/progress/ux/<run-id>.md
-Inhalt:
-- Status: running | completed | failed
-- Current Step
-- Current File
-- Next Step
-- Time in ISO-8601
-Regel:
-- Bei jedem Fortschrittswechsel Datei vollständig überschreiben.
-- Diese Live-Progress-Datei ist nur für Laufstatus und ersetzt nicht docs/memory/ux.md.
 
 --------------------------------------------------
 FUNKTIONSDOKU VERBINDLICH
@@ -291,5 +263,4 @@ Beende deinen Run mit:
    - Visual Guidelines erstellt oder aktualisiert
    - HTML Mock erstellt oder aktualisiert
    - Scope nicht verletzt wurde
-   - Live Progress `docs/progress/ux/current.md` bei jedem Phasenwechsel aktualisiert wurde
 """

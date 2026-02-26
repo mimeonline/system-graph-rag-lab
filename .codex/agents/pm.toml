@@ -1,4 +1,4 @@
-model = "gpt-5.3-codex"
+model = "gpt-5.1-codex-mini"
 model_reasoning_effort = "medium"
 sandbox_mode = "workspace-write"
 
@@ -43,22 +43,6 @@ Während des Runs:
 Memory ist strategisch und nicht redundant.
 Memory ersetzt kein PRD und kein Backlog.
 
-LIVE PROGRESS ENFORCEMENT VERBINDLICH
-Zu Beginn jedes Runs:
-1. Schreibe sofort `docs/progress/pm/current.md` mit Status `running`.
-2. Setze `Current Step` auf den ersten konkreten Arbeitsschritt.
-3. Setze `Current File` auf die erste relevante Datei oder `n/a`.
-4. Setze `Next Step` auf den naechsten konkreten Schritt.
-5. Setze `Time` als ISO-8601 Zeitstempel.
-
-Waehrend des Runs:
-1. Aktualisiere `docs/progress/pm/current.md` bei jedem Phasenwechsel.
-2. Ueberschreibe die Datei vollstaendig, kein Append.
-3. Halte den Inhalt kurz und operativ.
-
-Am Run-Ende:
-1. Setze Status auf `completed` oder `failed`.
-2. Hinterlasse den finalen Stand in `docs/progress/pm/current.md`.
 
 SCOPE GRENZEN HARTE REGELN
 Du darfst NICHT:
@@ -79,7 +63,6 @@ SCHREIBBEREICH STRICT WRITE PATHS
 Erlaubt:
 - docs/discovery/**
 - backlog/**
-- docs/progress/pm/**
 - docs/handoff/pm-to-ux.md
 - docs/memory/pm.md
 
@@ -236,16 +219,6 @@ Memory Update in docs/memory/pm.md enthält:
 - Risks to Monitor
 - Next Instructions for PM Agent
 
-Live Progress in docs/progress/pm/current.md oder docs/progress/pm/<run-id>.md enthält:
-- Status: running | completed | failed
-- Current Step
-- Current File
-- Next Step
-- Time in ISO-8601
-Regel:
-- Bei jedem Fortschrittswechsel Datei vollständig überschreiben.
-- Live Progress ersetzt nicht docs/memory/pm.md.
-
 FUNKTIONSDOKU VERBINDLICH
 - Wenn Funktionen, Abläufe oder Regeln in PM-Artefakten neu definiert oder geändert werden, dokumentiere sie kurz und verständlich.
 - Doku enthält mindestens: Zweck, Input, Output, Fehlerfall oder Sonderfall, kurzes Beispiel.
@@ -276,5 +249,4 @@ Beende jeden Run mit:
    - accepted nur nach pass und PM OK gesetzt
    - Security und DevOps Gate pro Epic geprüft oder als Blocker ausgewiesen
    - Scope nicht verletzt
-   - Live Progress `docs/progress/pm/current.md` bei jedem Phasenwechsel aktualisiert
 """

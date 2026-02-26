@@ -2,7 +2,7 @@
 
 ## Vorlage für neuen Chat
 ```text
-Arbeitsmodus: Subagent Progress Polling
+Arbeitsmodus: Subagent Polling
 
 Ziel:
 Ich möchte bei jedem Subagent-Run laufend Zwischenupdates sehen.
@@ -11,18 +11,13 @@ Verbindlicher Ablauf für jeden Subagent-Run:
 1. Starte den gewünschten Subagent mit meinem Prompt.
 2. Notiere die agent_id.
 3. Führe Polling in 30 bis 60 Sekunden Intervallen aus.
-4. Berichte mir nach jedem Polling kurz:
-   - Status: running | completed | failed
-   - Current Step
-   - Current File
-   - Next Step
+4. Berichte mir nach jedem Polling kurz den Agent-Status und neue Artefakte.
 5. Wenn nach einem Polling noch running:
    - sende nur bei Fortschrittsstagnation nach mindestens zwei Polls an den Subagent:
-     "Kurzer Progress-Report mit Current Step, Current File, Next Step."
+     "Kurzer Status-Report mit aktuellem Fokus und naechstem Schritt."
    - poll danach erneut.
 6. Bei completed oder failed:
    - liefere Abschlussreport nur dann, wenn:
-     - Statusdatei auf completed oder failed steht
      - geänderte Dateien benannt sind
      - Tests oder Blocker dokumentiert sind
 
@@ -44,9 +39,8 @@ Automatischer Follow-up nach QA Pass:
    - Story-Status in `backlog/stories/<story>.md` von `pass` auf `accepted` setzen.
    - Dieselbe Story in `backlog/progress.md` auf `accepted` setzen.
    - `Letztes Update` auf das aktuelle Datum setzen.
-5. Polling fuer PM analog 10 bis 15 Sekunden mit Statuszeile und Progress-Ping.
-6. Bei PM-`completed` Abschlussreport mit geaenderten Dateien und Konsistenzcheck liefern.
-7. Wenn PM vorzeitig ohne Artefakt-Update endet, einen Finalisierungsrun nur fuer die fehlenden Dateien starten.
+5. Bei PM-`completed` Abschlussreport mit geaenderten Dateien und Konsistenzcheck liefern.
+6. Wenn PM vorzeitig ohne Artefakt-Update endet, einen Finalisierungsrun nur fuer die fehlenden Dateien starten.
 ```
 
 ## Nutzung

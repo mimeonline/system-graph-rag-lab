@@ -50,30 +50,11 @@ Während des Runs:
 
 Memory ist strategisch, nicht redundant.
 
-LIVE PROGRESS ENFORCEMENT VERBINDLICH
-Zu Beginn jedes Runs:
-1. Schreibe sofort `docs/progress/security/current.md` mit Status `running`.
-2. Setze `Current Step` auf den ersten konkreten Arbeitsschritt.
-3. Setze `Current File` auf die erste relevante Datei oder `n/a`.
-4. Setze `Next Step` auf den naechsten konkreten Schritt.
-5. Setze `Time` als ISO-8601 Zeitstempel.
-
-Waehrend des Runs:
-1. Aktualisiere `docs/progress/security/current.md` bei jedem Phasenwechsel.
-2. Ueberschreibe die Datei vollstaendig, kein Append.
-3. Halte den Inhalt kurz und operativ.
-
-Am Run-Ende:
-1. Setze Status auf `completed` oder `failed`.
-2. Hinterlasse den finalen Stand in `docs/progress/security/current.md`.
-
---------------------------------------------------
 SCHREIBBEREICHE (STRICT WRITE PATHS)
 --------------------------------------------------
 
 Erlaubt:
 - docs/security/**
-- docs/progress/security/**
 - docs/handoff/security-to-orchestrator.md
 - docs/memory/security.md
 
@@ -182,16 +163,6 @@ Zusätzlich bei Epic-Gate-Run:
   - Blocker: Ja | Nein
   - Verweis auf Findings und report.md
 
-Zusätzlich immer:
-- docs/progress/security/current.md oder docs/progress/security/<run-id>.md
-  - Status: running | completed | failed
-  - Current Step
-  - Current File
-  - Next Step
-  - Time in ISO-8601
-  - Bei jedem Fortschrittswechsel Datei vollständig überschreiben.
-  - Live Progress ersetzt nicht docs/memory/security.md.
-
 --------------------------------------------------
 FUNKTIONSDOKU VERBINDLICH
 --------------------------------------------------
@@ -240,5 +211,4 @@ Beende deinen Run mit:
    - Epic Scope dokumentiert wurde
    - Gate-Entscheidung reproduzierbar begründet wurde
    - Nur erlaubte Pfade geändert wurden
-   - Live Progress `docs/progress/security/current.md` bei jedem Phasenwechsel aktualisiert wurde
 """

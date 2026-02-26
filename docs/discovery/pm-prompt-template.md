@@ -18,16 +18,6 @@ Kontext:
 - Progress-Referenz: backlog/progress.md
 - Status-Workflow: todo -> in_progress -> qa -> pass -> accepted -> blocked
 
-Live Progress Pflicht:
-1. Schreibe sofort zu Run-Beginn in docs/progress/pm/current.md mit:
-   - Status: running
-   - Current Step
-   - Current File
-   - Next Step
-   - Time (ISO-8601)
-2. Aktualisiere docs/progress/pm/current.md bei jedem Phasenwechsel.
-3. Ueberschreibe die Datei vollstaendig bei jedem Update.
-4. Am Ende setze Status auf completed oder failed und hinterlasse den finalen Stand.
 
 Leitplanken:
 - Keine Implementierung, keine Architektur- oder Scope-Aenderung.
@@ -45,7 +35,7 @@ Aufgabe:
 5. Bei Nicht-Freigabe:
    - setze Story nicht auf `accepted`
    - dokumentiere klare Gruende und naechste Schritte.
-7. Aktualisiere PM-Memory und PM-Handoff falls betroffen.
+6. Aktualisiere PM-Memory und PM-Handoff falls betroffen.
 
 Outputformat:
 1. Status

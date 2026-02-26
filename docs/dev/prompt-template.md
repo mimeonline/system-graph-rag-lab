@@ -26,7 +26,6 @@ Aufgabe:
 4. Lint, Tests und Build ausfuehren.
 5. Story-Status auf `qa` oder `blocked` setzen und Progress synchronisieren.
 6. Handoff und `docs/memory/dev.md` aktualisieren.
-7. `docs/progress/dev/current.md` final auf `completed` oder `failed` setzen.
 
 Outputformat:
 1. Status
