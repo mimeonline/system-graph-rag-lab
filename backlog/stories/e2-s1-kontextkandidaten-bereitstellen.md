@@ -1,7 +1,17 @@
 # Story E2-S1 Kontextkandidaten pro Frage bereitstellen
 
 ## Status
-todo
+qa
+
+## Umsetzung
+1. Deterministische Keyword-Matching-Indizierung aller Seed-Nodes über Titel + Summary.
+2. Stabilisierte Sortierung nach Score, Hop, Node-Type und Node-ID mit TOP_K=6.
+3. Tokenbudget wird bei Kontextzusammenstellung strikt geprüft, Deduplizierung über Node-ID natürlich gegeben.
+4. API-Antwort setzt `state="answer"` sobald Referenzen vorliegen, meta-Felder spiegeln Tokenverbrauch sowie Anzahl wider.
+
+## Tests
+1. `pnpm --dir apps/web test -- src/features/query/retrieval.test.ts`
+2. `pnpm --dir apps/web test -- src/app/api/query/route.test.ts`
 
 ## Ziel
 Zu einer Nutzerfrage belastbare Kontextkandidaten in definierter Struktur liefern.

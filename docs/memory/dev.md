@@ -2,13 +2,15 @@
 
 ## Current Implementation Status
 1. Story `E1-S6` ist nach Bug-0003-Fix wieder auf `qa` gesetzt.
-2. Story- und Dev-Handoff-Referenzen fuer den story-spezifischen Testlauf sind auf `pnpm --dir apps/web exec vitest run src/features/seed-data/local-seed-reset.test.ts` normalisiert.
-3. Seed-Reset-Guards bleiben unveraendert: local-only URI, explizites `ALLOW_DESTRUCTIVE_SEED_RESET=true`, Delete-Scope auf Seed-IDs.
-4. Verifikation im Fix-Run erfolgreich: scope-command, `lint`, `test`, `build` jeweils Exit Code `0`.
+2. Story `E2-S1` liefert deterministische Kontextcandidates via Keyword-Index und Tokenbudget-Budgetierung; `state="answer"` sobald Referenzen existieren.
+3. Story- und Dev-Handoff-Referenzen fuer den story-spezifischen Testlauf sind auf `pnpm --dir apps/web exec vitest run src/features/seed-data/local-seed-reset.test.ts` normalisiert.
+4. Seed-Reset-Guards bleiben unveraendert: local-only URI, explizites `ALLOW_DESTRUCTIVE_SEED_RESET=true`, Delete-Scope auf Seed-IDs.
+5. Verifikation im Fix-Run erfolgreich: scope-command, `lint`, `test`, `build` jeweils Exit Code `0`.
 
 ## Active Epics and Stories
 1. Epic `E1` bleibt im Status `blocked` laut Progress.
 2. Story `E1-S6` steht im Status `qa` und wartet auf QA-Recheck.
+3. Epic `E2` ist aktiv; Story `E2-S1` steht nun auf `qa` mit deterministic retrieval proof.
 
 ## Technical Constraints
 1. Keine API- oder Retrieval-Contract-Aenderungen ausserhalb Story-Scope.
@@ -26,5 +28,6 @@
 
 ## Next Instructions for Dev Agent
 1. Auf QA-Feedback zu `E1-S6` reagieren und Story plus Progress synchron halten.
-2. Bei weiteren E1-S6-Doku-Abweichungen nur scope-strikt und ohne Contract- oder Architektur-Aenderung korrigieren.
-3. Story niemals auf `accepted` setzen; nur QA und PM folgen dem Gate-Prozess.
+2. Story `E2-S1` ist in QA; Dev muss QA-Tests aus `docs/handoff/dev-to-qa.md` mit Lint/Test/Build verifizieren.
+3. Bei weiteren E1-S6-Doku-Abweichungen nur scope-strikt und ohne Contract- oder Architektur-Aenderung korrigieren.
+4. Story niemals auf `accepted` setzen; nur QA und PM folgen dem Gate-Prozess.

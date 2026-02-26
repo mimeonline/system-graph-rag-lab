@@ -7,6 +7,7 @@ import {
 } from "@/features/query/contracts";
 import { parseQueryRequest } from "@/features/query/schemas";
 import { getQueryRuntimeEnv } from "@/lib/env";
+import { buildContextCandidates } from "@/features/query/retrieval";
 
 type QueryHandlerResult = {
   status: number;
@@ -154,15 +155,27 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
     };
   }
 
+  const { references, contextTokens } = buildContextCandidates(parsed.data.query);
   const latencyMs = Date.now() - startedAt;
+  const baseSuccess = buildEmptySuccessResponse(
+    requestId,
+    latencyMs,
+    env.rateLimitMaxRequests,
+    env.rateLimitWindowSeconds,
+  );
+
   return {
     status: 200,
     headers: baseHeaders,
-    body: buildEmptySuccessResponse(
-      requestId,
-      latencyMs,
-      env.rateLimitMaxRequests,
-      env.rateLimitWindowSeconds,
-    ),
+    body: {
+      ...baseSuccess,
+      state: references.length === 0 ? "empty" : "answer",
+      references,
+      meta: {
+        ...baseSuccess.meta,
+        retrievedNodeCount: references.length,
+        contextTokens,
+      },
+    },
   };
 }

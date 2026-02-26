@@ -56,12 +56,13 @@ describe("POST /api/query", () => {
 
     expect(response.status).toBe(200);
     expect(body.status).toBe("ok");
-    expect(body.state).toBe("empty");
+    expect(body.state).toBe("answer");
     expect(body.meta.topK).toBe(6);
     expect(body.meta.hopDepth).toBe(1);
-    expect(body.meta.retrievedNodeCount).toBe(0);
+    expect(body.meta.retrievedNodeCount).toBe(body.references.length);
     expect(Array.isArray(body.references)).toBe(true);
-    expect(body.references.length).toBe(0);
+    expect(body.references.length).toBeGreaterThan(0);
+    expect(body.meta.contextTokens).toBeGreaterThanOrEqual(0);
     expect(body.answer.main.length).toBeGreaterThan(0);
     expect(body.answer.coreRationale.length).toBeGreaterThan(0);
   });
