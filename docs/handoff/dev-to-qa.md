@@ -136,6 +136,10 @@
 ### Genaue Testkommandos mit erwarteten Ergebnissen
 1. `pnpm --dir apps/web exec vitest run src/components/organisms/query-panel-status.test.ts` Exit Code `0`.
 
+### Bugfix-Note
+- Runtime-ReferenceError `nextAction is not defined` in `QueryInput` beendet, indem die Prop explizit destructed wird, sodass der `Nächste Aktion`-Hinweis nur mit vorhandenem Text rendert.
+- Testkommando: `pnpm --dir apps/web exec vitest run src/components/organisms/query-panel-status.test.ts`
+
 ## E3-S3 Herleitungsdetails sichtbar machen
 ### Was ist fertig
 1. `QueryPanel` bleibt bei den drei Hauptbereichen (Hauptantwort, Referenzen, Knapper P0-Kernnachweis) und ergänzt einen festen „Herleitungsdetails“-Block, der Kontextsummaries plus `sourceFile` listaartig zeigt.

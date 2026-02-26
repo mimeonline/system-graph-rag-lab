@@ -20,6 +20,7 @@ export function QueryInput({
   onSubmit,
   onQueryChange,
   helperText,
+  nextAction,
   isSubmitting,
 }: QueryInputProps): React.JSX.Element {
   return (

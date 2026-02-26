@@ -131,6 +131,10 @@
 1. Nachstellen eines Backend-Fehlers und validieren, dass der Helpertext nur die API-Nachricht und den vordefinierten „Nächste Aktion“-Hinweis anzeigt.
 2. Empty-State simulieren (z. B. lokale Proxy/Mock-Response mit `references: []`) und sicherstellen, dass die Nachricht keine zusätzlichen Referenzdaten enthält.
 
+### Bugfix-Note
+- Runtime-ReferenceError `nextAction is not defined` in `QueryInput` behoben, indem die Prop explizit destructed wird und der `Nächste Aktion`-Hinweis nur mit vorhandenem Text gerendert wird.
+- Testkommando: `pnpm --dir apps/web exec vitest run src/components/organisms/query-panel-status.test.ts`
+
 ## E3-S3 Herleitungsdetails sichtbar machen
 ### Security Context
 1. Der neue Herleitungsdetails-Bereich nutzt ausschließlich die vorhandenen `context.elements`-Summaries aus der etablierten Antwort und verbleibt vollständig im Frontend ohne zusätzliche Netzwerkaufrufe.

@@ -49,3 +49,7 @@
 7. Story `E3-S1` ist in Arbeit; verifiziere `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` und dokumentiere den manuellen Durchlauf für Hauptantwort, Referenzen und Kernnachweis (mindestens zwei Fragen).
 8. Story `E3-S2` ist QA-ready; für den QA-Run `pnpm --dir apps/web exec vitest run src/components/organisms/query-panel-status.test.ts` ausführen und die Loading-/Error-/Empty-Hilfetexte sowie die `Nächste Aktion`-Hinweise gemäß QA-Handoff prüfen.
 9. Story `E3-S3` erweitert das QueryPanel um die neuen Herleitungsdetails; QA soll (erneut) `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` ausführen und im Dev-Server überprüfen, dass Hauptantwort, Referenzen und der P0-Kernnachweis stets sichtbar bleiben, während die nummerierten Details darunter erscheinen.
+
+## Recent Bugfixes
+- Laufzeit-ReferenceError `nextAction is not defined` in `QueryInput` behoben, indem die Prop explizit destructed wird und der `Nächste Aktion`-Hinweis nur mit vorhandenem Text rendert.
+- Test: `pnpm --dir apps/web exec vitest run src/components/organisms/query-panel-status.test.ts`
