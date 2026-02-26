@@ -10,6 +10,12 @@
 1. Regressionslauf ueber `pnpm --dir apps/web test`.
 2. Erwartung: Exit Code `0` und gruenes Verhalten fuer Seed-Domain, API-Route und lokale Neo4j-Integrationspfade.
 
+### Story E2-S2 Kontext-Erweiterung
+1. Validierung des Response-Pakets `context.elements` auf einen eindeutigen Kontextelementsatz, der keine Duplikate mit derselben `sourceId` oder `sourceFile` enthaelt.
+2. Sicherstellen, dass jedes Kontextelement eine `source.publicReference` sowie `sourceId`, `sourceFile`, `sourceType` und `sourceSummary` enthaelt und einer Kandidatenquelle oder Erweiterungsquelle zugeordnet werden kann.
+3. Story-spezifischer Testlauf mit `pnpm --dir apps/web exec vitest run src/features/query/retrieval.test.ts` und `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts`.
+4. Erwartung: Beide Tests laufen mit Exit Code `0` und bestaetigen deduplizierte `context.elements` plus die Source-Attribute.
+
 ### E2E minimal
 1. Statische Qualitaet: `pnpm --dir apps/web lint`.
 2. Build-Readiness: `pnpm --dir apps/web build`.
