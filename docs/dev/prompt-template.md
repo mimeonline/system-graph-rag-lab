@@ -2,42 +2,18 @@
 
 ## Template
 ```text
-RUN_MODE=review
+spawn_agent agent_type=dev
 
-Rolle: Dev
-Story-ID: <STORY_ID>
-
-Kontext:
-- Epic: <EPIC_FILE>
-- Story: <STORY_FILE>
-- Scope: <SCOPE>
-- Akzeptanzkriterien: <AC_LIST>
-- Testfokus: <TEST_FOCUS>
-
-Leitplanken:
-- Keine Scope-Erweiterung
-- Keine Architektur-Aenderung
-- Nur erlaubte Dev-Schreibpfade
-
-Aufgabe:
-1. Pflicht-Inputs lesen.
-2. Story auf `in_progress` setzen und `backlog/progress.md` sofort synchronisieren.
-3. Scope minimal-invasiv umsetzen.
-4. Lint, Tests und Build ausfuehren.
-5. Story-Status auf `qa` oder `blocked` setzen und Progress synchronisieren.
-6. Handoff und `docs/memory/dev.md` aktualisieren.
-
-Outputformat:
-1. Status
-2. Geaenderte Dateien
-3. Testergebnisse je Command
-4. Offene Risiken
-5. Blocker
-6. Scope- und Architektur-Check
+RUNTIME_CONTEXT:
+policy_ref: core-policy-v1
+role_ref: dev-v1
+run_mode: review
+story_id: <STORY_ID>
+objective: <1-3 Saetze>
+allowed_paths: [<PFADE>]
+input_files: [<DATEIEN>]
+constraints: [<MAX_7>]
+recent_decisions: [<MAX_3>]
+open_risks: [<MAX_3>]
+done_criteria: [<CHECKS>]
 ```
-
-## Platzhalter
-1. `<STORY_ID>` ist die Story-ID aus `backlog/stories`.
-2. `<EPIC_FILE>` ist der Pfad der Epic-Datei.
-3. `<STORY_FILE>` ist der Pfad der Story-Datei.
-4. `<SCOPE>`, `<AC_LIST>` und `<TEST_FOCUS>` kommen direkt aus der Story.
