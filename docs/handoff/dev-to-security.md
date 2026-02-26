@@ -112,6 +112,25 @@
 ### Gezielte Security-Prüfpunkte
 1. Sicherstellen, dass keine neuen Endpoints aufgerufen und keine Secrets im Client-Code geloggt werden.
 2. Validitätsprüfung besteht darin, zwei Beispielanfragen aus Sicht eines Reviewers zu senden und in DevTools zu prüfen, dass nur `query` übergeben wird.
+
+## E3-S2 Loading-, Fehler- und Leerezustände
+### Security Context
+1. Die neuen Statushilfetexte und `Nächste Aktion`-Hinweise bleiben vollständig im Frontend und enthalten keine persistenten Daten.
+2. Der Error-Status präsentiert nur die API-Fehlermeldung oder eine generische Hilfestellung; es findet keine Verarbeitung sensibler Backend-Details statt.
+3. Der Empty-Status gibt lediglich Hinweis-Text zum Nutzerverhalten; es werden keine zusätzlichen Kontextdaten exfiltriert.
+
+### Sicherheitsrelevante Eingaben und Endpoints
+1. Das einzige Input-Feld bleibt weiterhin die Query-Freitextbox; keine neuen Formulare oder Parameter wurden ergänzt.
+2. Der einzige Kommunikationskanal ist `POST /api/query`; es wurden keine neuen Endpunkte, Webhooks oder WebSocket-Verbindungen aufgebaut.
+
+### Bekannte Sicherheitsgrenzen und Risiken
+1. Der Error-State zeigt die unveränderte API-Nachricht; die Story vermeidet dabei zusätzliche Logweitergabe oder Persistenz im Browser.
+2. Loading-, Error- und Empty-Texte befinden sich im Helper-Panel und werden nicht geloggt oder ausgespielt; sie sind render-only.
+
+### Gezielte Security-Prüfpunkte
+1. Nachstellen eines Backend-Fehlers und validieren, dass der Helpertext nur die API-Nachricht und den vordefinierten „Nächste Aktion“-Hinweis anzeigt.
+2. Empty-State simulieren (z. B. lokale Proxy/Mock-Response mit `references: []`) und sicherstellen, dass die Nachricht keine zusätzlichen Referenzdaten enthält.
+
 ## DevOps Gate Kontext zu E2
 1. Observability-Signale (`referenceCount`, `contextCandidateCount`, `referenceFallbackUsed`) sind in Logs und API-Responses nachweisbar.
 2. Guardrails sorgen fuer deterministische Referenzlisten und validierte Rate-Limit-Verhalten, auch wenn keine Referenzen veröffentlicht werden.

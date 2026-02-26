@@ -8,6 +8,7 @@ type QueryInputProps = {
   onQueryChange: (value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   helperText?: string;
+  nextAction?: string;
   isSubmitting: boolean;
 };
 
@@ -34,6 +35,11 @@ export function QueryInput({
           />
         </label>
         <p className="text-sm text-slate-600">{helperText ?? DEFAULT_HELPER_TEXT}</p>
+        {nextAction && (
+          <p className="text-xs font-semibold text-slate-900">
+            Nächste Aktion: {nextAction}
+          </p>
+        )}
         <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "Antwort wird geladen…" : "Antwort anzeigen"}
         </Button>

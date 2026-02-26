@@ -1,7 +1,7 @@
 # Story E3-S2 Zustände für Loading, Fehler und Leere bereitstellen
 
 ## Status
-todo
+qa
 
 ## Ziel
 Nutzerführung in nicht idealen Antwortpfaden absichern.

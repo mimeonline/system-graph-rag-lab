@@ -112,3 +112,26 @@
 
 ### Genaue Testkommandos mit erwarteten Ergebnissen
 1. `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` Exit Code `0`.
+
+## E3-S2 Loading-, Fehler- und Leerezustände
+### Was ist fertig
+1. `QueryPanel` liefert für Loading, Fehler und einen No-Reference-Fallback je einen individuellen Statustext plus klar benannte `Nächste Aktion`.
+2. `QueryPanel` wechselt nach erfolgreichem API-Antwort-Zyklus automatisch in den Status `empty`, sobald keine Referenzkonzepte zurückkommen.
+3. `QueryInput` zeigt den passenden `Nächste Aktion`-Hinweis unterhalb des Hilfetextes und hält den Submit-Button während des Ladens deaktiviert.
+
+### Wie kann QA testen lokal inkl konkrete Startschritte
+1. `pnpm --dir apps/web exec vitest run src/components/organisms/query-panel-status.test.ts` – validiert die Status-/Action-Zuordnung für Loading, Error und Empty.
+2. Dev-Server starten (`pnpm --dir apps/web dev`), Browser öffnen und die Defaultfrage absenden; prüfe beim Absenden den Helper-Text sowie den `Nächste Aktion`-Hinweis während des Ladens.
+3. API-Antwort simulieren (z. B. über Chrome DevTools → Network → Offline setzen oder `POST /api/query` blockieren): die Fehlermeldung im Helper-Text sollte angezeigt werden und die `Nächste Aktion` lautet „Fehler prüfen …“.
+4. Empty-Zustand simulieren, indem die Anfrage im Browser oder über einen lokalen Proxy auf eine Response mit `references: []` umgeleitet wird; anschließend sollte der Helper-Text auf „keine Referenzkonzepte“ hinweisen und die `Nächste Aktion` zur präziseren Formulierung auffordern.
+
+### Bekannte Einschränkungen & Testdaten
+1. Empty-Antworten treten nur auf, wenn keine Referenzkonzepte gefunden werden; im normal frontenden Dataset ist das selten, daher ist die Umleitung der Response für den Test hilfreich.
+2. Der Loading-Text erscheint nur während einer aktiven Fetch-Anfrage; ein kurzzeitiges Nachladeverhalten lässt sich z. B. mit „Slow 3G“+Throttling in DevTools visualisieren.
+
+### Erwartete Failure Modes
+1. Der `Nächste Aktion`-Hinweis fehlt oder ist nicht unterscheidbar zwischen Loading, Error und Empty → Story nicht erfüllt.
+2. Error-Helpertext enthält mehr Details als die API-Nachricht und könnte sensitive Infos referenzieren.
+
+### Genaue Testkommandos mit erwarteten Ergebnissen
+1. `pnpm --dir apps/web exec vitest run src/components/organisms/query-panel-status.test.ts` Exit Code `0`.

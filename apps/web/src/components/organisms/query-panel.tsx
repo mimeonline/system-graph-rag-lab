@@ -6,17 +6,20 @@ import { useState } from "react";
 import { QueryInput } from "@/components/molecules/query-input";
 import { buildQueryViewModel, type QueryViewModel } from "@/features/query/view-model";
 import type { QuerySuccessResponse } from "@/features/query/contracts";
-
-type QueryPanelStatus = "idle" | "loading" | "success" | "error";
+import {
+  getStatusHint,
+  type QueryPanelStatus,
+} from "@/components/organisms/query-panel-status";
 
 const DEFAULT_QUERY =
   "Welche Zielkonflikte entstehen zwischen Entkopplung und Betriebsaufwand in eventgetriebenen Systemen?";
 
-const STATUS_HELPER: Record<QueryPanelStatus, string> = {
-  idle: "Formuliere eine Frage und sende sie ab, um Hauptantwort, Referenzen und Kernnachweis sichtbar zu machen.",
-  loading: "Antwort wird vom Backend angefordert. Bitte einen Moment Geduld.",
-  success: "Antwort verfügbar: Haupttext, Referenzen und Kernnachweis folgen unten.",
-  error: "Beim Laden der Antwort ist ein Problem aufgetreten; bitte erneut senden.",
+const STATUS_LABELS: Record<QueryPanelStatus, string> = {
+  idle: "idle",
+  loading: "wird geladen",
+  success: "aktiv",
+  error: "fehler",
+  empty: "leer",
 };
 
 export function QueryPanel(): React.JSX.Element {
@@ -25,7 +28,9 @@ export function QueryPanel(): React.JSX.Element {
   const [status, setStatus] = useState<QueryPanelStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const helperText = errorMessage ?? STATUS_HELPER[status];
+  const statusHint = getStatusHint(status, errorMessage);
+  const helperText = statusHint.statusText;
+  const statusAction = statusHint.nextAction;
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -53,8 +58,9 @@ export function QueryPanel(): React.JSX.Element {
       }
 
       const payload = (await response.json()) as QuerySuccessResponse;
-      setViewModel(buildQueryViewModel(payload, trimmedQuery));
-      setStatus("success");
+      const viewModel = buildQueryViewModel(payload, trimmedQuery);
+      setViewModel(viewModel);
+      setStatus(viewModel.references.length === 0 ? "empty" : "success");
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Unerwarteter Fehler während der Anfrage.";
@@ -79,6 +85,7 @@ export function QueryPanel(): React.JSX.Element {
         onQueryChange={setQuery}
         onSubmit={handleSubmit}
         helperText={helperText}
+        nextAction={statusAction}
         isSubmitting={status === "loading"}
       />
 
@@ -94,13 +101,7 @@ export function QueryPanel(): React.JSX.Element {
             aria-live="polite"
             className="rounded-full border border-slate-200 px-3 py-1 text-xs font-medium text-slate-500"
           >
-            {status === "loading"
-              ? "wird geladen"
-              : status === "success"
-              ? "aktiv"
-              : status === "error"
-              ? "fehler"
-              : "idle"}
+            {STATUS_LABELS[status]}
           </span>
         </div>
         <p className="text-sm leading-7 text-slate-700">{mainAnswer}</p>
