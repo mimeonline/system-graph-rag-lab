@@ -21,6 +21,7 @@
 7. Story-Gate E2-S1 am 2026-02-26 auf Pass gesetzt.
 8. Evidenz fuer E2-S1: retrieval- und route-Tests sowie lint/test/build sind reproduzierbar gruen.
 9. Story-Gate E2-S2 am 2026-02-26 auf Pass gesetzt; Retrieval- und API-Tests bestaetigen deduplizierte `context.elements` mit Source-Attribution.
+10. Story-Gate E2-S3 am 2026-02-26 auf Pass gesetzt; `answer`- und `route`-Tests demonstrieren nicht leere Hauptantwort, Referenzlimit ≤3 und neue Fallback-Logik.
 
 ## Open Quality Risks
 1. Public-Betriebsparitaet bleibt bis zu E4-Gates unvollstaendig abgesichert.
@@ -28,10 +29,11 @@
 3. Epic-Progress kann ohne PM-Sync von QA-Verdikten abweichen.
 4. E2-Retrieval ist aktuell keyword-basiert und kann semantische Randfaelle schlechter priorisieren.
 5. Kontext-Attribution in `context.elements` braucht enge Nachverfolgung, falls sich Source-IDs oder Source-Filestructure aendern.
+6. Referenz-Fallback-Text und Referenzlimit müssen bei künftigen Antwort-Anpassungen nachziehen, sonst drohen Inkonsistenzen.
 
 ## Next Instructions
 1. PM-Sync fuer Epic E1 in `backlog/progress.md` auf Basis des QA-Epic-Pass durchfuehren.
 2. E5-S2 Eval-Lauf fuer Q1 bis Q5 separat ausfuehren und `evals/report.md` aktualisieren.
 3. Nach E5-Eval einen eigenstaendigen QA-Recheck fuer E5 starten.
 4. PM-Abnahme fuer E2-S1 auf Basis von `docs/handoff/qa-to-pm.md` durchfuehren.
-5. Story E2-S3 mit Fokus auf Antwortgenerierung und Referenzabsicherung vorbereiten; Open-Risk fuer Kontext-Attribution dokumentieren.
+5. Story E2-S4 Referenzkonzepte absichern und Fallback-Regeln gegen `/api/query`-Contract prüfen.

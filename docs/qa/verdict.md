@@ -1,33 +1,69 @@
-# QA Gate Verdict E2-S2
+# QA Gate Verdict Epic E2
 
-## Ergebnis
+## Story E2-S2 Kontext konsistent erweitern
+
+### Ergebnis
 1. Verdict: Pass.
 2. Gate-Typ: Story QA Gate.
 3. Story-ID: E2-S2.
 4. Epic-ID: E2.
 5. Bewertungsdatum: 2026-02-26.
 
-## Szenario-Prüfung Given When Then
-1. Given: Ein Antwortprozess mit limitiertem Kontextbudget und einer Anfrage, die relevante Kontextkandidaten benötigt.
-2. When: Die Kontext-Erweiterung erstellt das `context.elements`-Paket für jede Referenz in der Antwort.
-3. Then-1 Prüfung: Der Antwortkontext ist dedupliziert, sodass jedes Konzept (identifizierbar über `sourceId`/`sourceFile`/`source.publicReference`) nur einmal im Paket auftaucht.
-4. Then-2 Prüfung: Jedes Kontextelement enthält `source.publicReference`, `sourceId`, `sourceFile`, `sourceType` und `sourceSummary`, womit es einer Kandidatenquelle oder Erweiterungsquelle zugeordnet werden kann.
-5. Ergebnis: Pass, die deduplizierten `context.elements` mit vollständiger Attribution sind reproduzierbar nachgewiesen.
+### Szenario-Prüfung Given When Then
+1. Given: Der Retrieval-Layer liefert Kontextkandidaten mit Source-Attributen.
+2. When: Die Antwortpipeline erweitert den Kontext zu `context.elements`.
+3. Then-1: Jede Referenz ist dedupliziert über `sourceId`, `sourceFile` und `source.publicReference`.
+4. Then-2: Jedes Kontextelement enthält `source.publicReference`, `sourceId`, `sourceFile` und `sourceType`.
+5. Ergebnis: Pass, deduplizierte Kontextpakete mit vollständiger Attribution reproduzierbar.
 
-## Ausgeführte QA-Checks
-1. `pnpm --dir apps/web exec vitest run src/features/query/retrieval.test.ts` (3 tests, Exit Code 0) – validiert dedupliziertes Context-Paket plus Source-Attribut-Assertionen.
-2. `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts` (2 tests, Exit Code 0) – bestätigt API-Response mit `context.elements` inklusive `source.publicReference`.
+### Ausgeführte QA-Checks
+1. `pnpm --dir apps/web exec vitest run src/features/query/retrieval.test.ts` (3 tests, Exit Code 0).
+2. `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts` (2 tests, Exit Code 0).
 
-## Merge Block Grund und Fix Requests
-1. Kein Merge Block für Story `E2-S2`.
-2. Kein offener Fix-Request im Story-Scope.
+### Merge Block & Fix Requests
+1. Kein Merge Block.
+2. Keine offenen Fix Requests innerhalb des Story-Scopes.
 
-## Top 3 Risiken
-1. Deduplizierung basiert auf aktuell stabilen Source-IDs und Source-Dateipfaden; bei Änderungen im Source-Mapping ist eine Nachprüfung nötig.
-2. Attribution hängt vom Kontextpaket – Fallback für fehlende `source.publicReference` ist noch nicht automatisiert.
-3. Epic E2 bleibt in `todo`, daher keine übergreifenden QA-/Epic-Gates zum Story-Ergebnis vorhanden; Risiken wandern in nachfolgende Stories.
+### Top 3 Risiken
+1. Deduplizierung stützt sich auf aktuelle Source-IDs und Dateipfade.
+2. Attribution setzt `source.publicReference` voraus; Fallback noch manuell.
+3. Epic E2 bleibt in `todo`, daher verlieren Probleme im Nachgang an Sichtbarkeit.
 
-## Nächste Tests
-1. E2-S3 Antwortgenerierung gegen strukturierte Kontextdaten inklusive `context.elements` testen.
-2. E2-S4 Referenzen absichern und Fallback-Regeln gegen Response-Contract prüfen.
-3. E2-S2 erneut re-checken, falls Kontextdatenmodell oder Source-Attribution geändert werden.
+### Nächste Tests
+1. E2-S3 Antwortgenerierung gegen strukturierte Kontextdaten testen.
+2. E2-S4 Referenzabsicherung und Fallback-Regeln gegen Response-Contract prüfen.
+3. E2-S2 re-checken, falls Kontextdatenmodell oder Attribution geändert werden.
+
+## Story E2-S3 Antwort aus strukturiertem Kontext erzeugen
+
+### Ergebnis
+1. Verdict: Pass.
+2. Gate-Typ: Story QA Gate.
+3. Story-ID: E2-S3.
+4. Epic-ID: E2.
+5. Bewertungsdatum: 2026-02-26.
+
+### Szenario-Prüfung Given When Then
+1. Given: Ein strukturiertes Kontextpaket mit Referenzen aus `context.elements`.
+2. When: Die Antwortpipeline wird ausgeführt.
+3. Then-1: `answer.main` ist nicht leer und liefert eine erklärbare Aussage.
+4. Then-2: Die Referenzsektion enthält maximal drei Konzepte oder einen klaren Fallback-Hinweis.
+5. Ergebnis: Pass, Hauptantwort nicht leer, Referenzen auf ≤3 begrenzt, Core-Rationale aus Kontextsummaries.
+
+### Ausgeführte QA-Checks
+1. `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts` (2 tests, Exit Code 0) – prüft Fallback-Text und Referenzlimit.
+2. `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts` (2 tests, Exit Code 0) – bestätigt API-Contract, Referenz- und Kontextanalyse.
+
+### Merge Block & Fix Requests
+1. Kein Merge Block.
+2. Keine offenen Fix Requests innerhalb des Story-Scopes.
+
+### Top 3 Risiken
+1. Fallback-Text muss bei fehlenden Referenzen exakt spezifiziert bleiben.
+2. Referenzlimit auf drei Einträge darf durch Codeänderungen nicht aufweichen.
+3. Core-Rationale hängt von `context.elements`-Summaries; Änderungen hier benötigen erneute QA.
+
+### Nächste Tests
+1. E2-S4 Referenzabsicherung und Referenz-Fallback gegen `/api/query` Response prüfen.
+2. E2-S3 End-to-End-Query (z.B. via Story-Simulationsdaten) ausführen, sobald API-Samples verfügbar.
+3. E2-S4 und E2-S5 als Konsistenz-Check erneut re-checken, falls Kontext/Antwort-Fix-Requests auftreten.

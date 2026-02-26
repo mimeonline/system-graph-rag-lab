@@ -12,7 +12,7 @@
 
 ### Story E2-S2 Kontext-Erweiterung
 1. Validierung des Response-Pakets `context.elements` auf einen eindeutigen Kontextelementsatz, der keine Duplikate mit derselben `sourceId` oder `sourceFile` enthaelt.
-2. Sicherstellen, dass jedes Kontextelement eine `source.publicReference` sowie `sourceId`, `sourceFile`, `sourceType` und `sourceSummary` enthaelt und einer Kandidatenquelle oder Erweiterungsquelle zugeordnet werden kann.
+2. Sicherstellen, dass jedes Kontextelement eine `source.publicReference` sowie `sourceId`, `sourceFile` und `sourceType` enthaelt und einer Kandidatenquelle oder Erweiterungsquelle zugeordnet werden kann.
 3. Story-spezifischer Testlauf mit `pnpm --dir apps/web exec vitest run src/features/query/retrieval.test.ts` und `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts`.
 4. Erwartung: Beide Tests laufen mit Exit Code `0` und bestaetigen deduplizierte `context.elements` plus die Source-Attribute.
 
@@ -73,3 +73,10 @@
 3. Output: Genau eine ausgefuehrte Testdatei, reproduzierbar `5 passed` und `1 skipped`.
 4. Fail oder Edge-Case: `pnpm --dir apps/web test -- src/features/seed-data/local-seed-reset.test.ts` ist nicht zulassig fuer Scope-Evidenz, da der Lauf weiterhin die Gesamtsuite startet.
 5. Beispiel: `pnpm --dir apps/web exec vitest run src/features/seed-data/local-seed-reset.test.ts`.
+### Story E2-S3 Antwort aus strukturiertem Kontext
+1. Validierung, dass `answer.main` nicht leer bleibt und `answer.coreRationale` den Kontext nachvollziehbar zusammenfasst.
+2. Sicherstellung, dass `references.length <= 3` und bei leerem Referenzset ein klarer Fallback-Text erscheint.
+3. Story-spezifischer Testlauf:
+   - `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts`
+   - `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts`
+4. Erwartung: Beide Tests Exit Code `0`, API-Contract bleibt intakt (`status`, `state`, `references`, `context.elements`, `meta`, `answer`).

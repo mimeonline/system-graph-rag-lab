@@ -27,7 +27,7 @@
 ### Teststatus
 1. Story-Gate E2-S2 ist auf `Pass` gesetzt.
 2. Reproduzierbare Tests: `pnpm --dir apps/web exec vitest run src/features/query/retrieval.test.ts` (3 tests, Exit Code 0) und `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts` (2 tests, Exit Code 0).
-3. Kontext-Verifikation: `context.elements` wurde auf deduplizierte Einträge mit `source.publicReference`, `sourceId`, `sourceFile`, `sourceType` und `sourceSummary` geprüft.
+3. Kontext-Verifikation: `context.elements` wurde auf deduplizierte Einträge mit `source.publicReference`, `sourceId`, `sourceFile` und `sourceType` geprüft.
 
 ### Bekannte Einschränkungen
 1. Attribution basiert auf aktuellen Source-IDs und File-Pfaden; Updates am Source-Mapping erfordern neue QA-Pruefung.
@@ -38,3 +38,17 @@
 1. Beobachte, ob künftig neue Kontextfelder die Deduplizierungslogik beeinflussen.
 2. Pruefe bei API-Updates, ob die `context.elements`-Länge weiterhin der Referenzliste entspricht.
 3. Behalte das Datenmodell fuer Quellen-Attribute im Auge, damit Attribution konsistent bleibt.
+
+## E2-S3 Antwort aus strukturiertem Kontext erzeugen
+### Teststatus
+1. Story-Gate E2-S3 ist auf `Pass` gesetzt.
+2. Reproduzierbare Tests: `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts` (2 tests, Exit Code 0) und `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts` (2 tests, Exit Code 0).
+3. Antwort-Kernelemente inklusive `answer.main`, `answer.coreRationale`, `references` und `context.elements` wurden in den Tests validiert.
+
+### Bekannte Einschränkungen
+1. Referenz-Fallback-Text muss weiterhin bei fehlenden Referenzen klar und konsistent formuliert bleiben.
+2. Referenzlimit auf drei Einträge über `MAX_REFERENCES_IN_RESPONSE` darf nicht überschritten werden.
+
+### Monitoring Hinweise
+1. Bei API-Änderungen sicherstellen, dass `references.length` im Contract weiterhin ≤ 3 bleibt.
+2. Fallback und Core-Rationale Texte regelmäßig gegen neue Kontext-Summaries prüfen.

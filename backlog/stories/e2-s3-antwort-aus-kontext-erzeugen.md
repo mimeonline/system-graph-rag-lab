@@ -1,7 +1,7 @@
 # Story E2-S3 Antwort aus strukturiertem Kontext erzeugen
 
 ## Status
-qa
+pass
 
 ## Ziel
 Aus vorbereitetem Kontext eine strukturierte Antwort erzeugen.

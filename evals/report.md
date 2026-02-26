@@ -28,6 +28,10 @@
 2. Story-spezifische Checks waren stabil mit Exit Code `0` fuer `lint`, `test`, `build`, `seed:local:reset-reseed` und Security-Recheck-Testlauf.
 3. Scope-Recheck wurde dokumentiert: nur `pnpm --dir apps/web exec vitest run src/features/seed-data/local-seed-reset.test.ts` ist praezise auf 1 Testdatei.
 
+### Story E2-S3 QA
+1. `pnpm --dir apps/web exec vitest run src/features/query/answer.test.ts` (2 tests, Exit Code 0) – validiert nicht leere Hauptantwort, Core-Rationale-Inhalte sowie Referenzlimit- und Fallback-Verhalten.
+2. `pnpm --dir apps/web exec vitest run src/app/api/query/route.test.ts` (2 tests, Exit Code 0) – bestätigt API-Contract, Referenzen ≤ 3 und konsistente `context.elements`.
+
 ## Zusammenfassung und Empfehlung
 1. Gesamtstatus fuer Eval-Set bleibt: Fail.
 2. Story-QA-Gate `E1-S6` ist davon getrennt und wurde mit Pass bewertet.
