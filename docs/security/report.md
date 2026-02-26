@@ -103,3 +103,39 @@
 ### Gate Decision fuer Epic
 1. Pass.
 2. Begruendung: Alle E2-Stories wurden accepted, der Response-Flow verwendet nur lokale Seeds, Reference-Limits und statische Expectation-Lists, es gibt keine neuen Endpoints oder Secrets und keine offenen Findings.
+
+## Epic E3 MVP-Frontend und Nutzerführung
+
+### Summary
+1. Critical: 0
+2. High: 0
+3. Medium: 0
+4. Low: 0
+5. Offene Findings gesamt: 0
+6. Mitigated Findings gesamt: 0
+
+### Top Risiken
+1. `answer.main`, `answer.coreRationale` und die neuen `derivationDetails` liefern unveränderte Backend-Daten; sie dürfen nur mit Text-Rendering (`textContent`) angezeigt werden, um reflektiertes XSS aus dem Query-String zu verhindern – der QueryPanel-Code respektiert das bereits.
+2. Die `sourceFile`-Angaben stammen aus kuratierten Seed-Daten; bei künftigen Quellenanpassungen muss sichergestellt werden, dass keine sensiblen oder internen Pfade publik gemacht werden.
+3. `/api/query` bleibt ohne zusätzliche Authentifizierung oder Rate-Limits; Abuse- und Monitoring-Hardening steht weiterhin als E4-Run auf der Agenda.
+
+### Recheck Ablauf
+1. Scope: Der QueryFlow nutzt weiterhin ausschließlich `POST /api/query`; keine neuen Endpoints oder Secrets wurden eingeführt (Code: `apps/web/src/components/organisms/query-panel.tsx` und `apps/web/src/features/query/view-model.ts`).
+2. `buildQueryViewModel` erzeugt `derivationDetails` rein aus `context.elements` und gibt den Titel, Summary und `sourceFile` als Text aus (die Seriennummern sind auf drei Items limitiert – gedeckt durch `view-model.test.ts`).
+3. QA-Verifikation (`docs/qa/verdict.md`) dokumentiert manuelle Abnahme der Herleitungsdetails und Referenzen nach dem E3-S3-Run.
+4. Ziel ist, dass `derivationDetails` keine Benutzer- oder Hochrisiko-Metadaten übermittelt und dass die Anzeige strikt textbasiert bleibt.
+
+### Limitations des Reviews
+1. Kein Security-Run gegen den laufenden Dev-Server; die UI-Abnahme erfolgt über die QA-Dokumentation.
+2. Keine dynamischen Penetrationstests gegen `/api/query`; Hardening bleibt E4.
+
+### Epic Gate Scope
+1. Epic: `backlog/epics/e3-frontend-nutzerfuehrung.md`
+2. Abgedeckte Stories:
+3. `backlog/stories/e3-s1-query-und-antwortansicht.md`
+4. `backlog/stories/e3-s2-loading-fehler-leere-zustaende.md`
+5. `backlog/stories/e3-s3-herleitungsdetails-sichtbar-machen.md`
+
+### Gate Decision fuer Epic
+1. Pass.
+2. Begruendung: Die neuen E3-Features arbeiten mit den bestehenden `/api/query`-Antwortdaten; `derivationDetails` zeigt nur kuratierte Kontexte/Quellen und die Anzeige erfolgt textbasiert, es gibt keine zusätzlichen Secrets oder Endpoints und keine offenen Findings.

@@ -63,3 +63,35 @@
 ### Naechste Schritte fuer Architect
 1. Threat-Model-Reviews dokumentieren, sobald neue Retrieval-Datenquellen oder Referenzlisten hinzukommen.
 2. Epics parallel zu E2 in E4 fortfuehren, um die Public-Runtime-Hardening-Verpflichtungen zu erfuellen.
+
+## Epic E3: MVP-Frontend und Nutzerführung
+
+### Gesamtverdikt
+1. Pass
+
+### Epic Gate
+1. Pass
+
+### Blocker vorhanden
+1. Nein
+
+### Top Risiken
+1. Der QueryPanel-Flow interpoliert weiterhin das User-Query in `answer.main`, `coreRationale` und `derivationDetails`; das Rendering muss, wie im aktuellen Code verankert, rein textbasiert bleiben (`textContent`) und darf nicht zu `innerHTML`-basierter Anzeige wechseln.
+2. `derivationDetails` zeigt `sourceFile` und `summary` aus `context.elements`; bei Erweiterung der Seed-Daten ist darauf zu achten, dass keine empfindlichen Pfade oder internen Daten freigegeben werden.
+3. `/api/query` bleibt ohne zusätzliche Auth/Rate-Limit; die Belastung und Abuse-Monitoring-Hardening ist weiterhin für E4 vorgesehen.
+
+### Betroffene Stories und Epic-ID
+1. Epic-ID: E3
+2. Stories: `backlog/stories/e3-s1-query-und-antwortansicht.md`, `backlog/stories/e3-s2-loading-fehler-leere-zustaende.md`, `backlog/stories/e3-s3-herleitungsdetails-sichtbar-machen.md`
+
+### Naechste Schritte fuer Dev
+1. Jede Änderung an `buildQueryViewModel` oder der neuen Herleitungsdetails-Sektion nach Security-Prinzipien evaluieren, insbesondere ob neue Felder der API den Clients mehr als nur beschriebene Textdaten liefern.
+2. Bei Änderungen am `context.elements`-Modell sicherstellen, dass `summary` und `sourceFile` weiterhin kuratierte, nicht sensitive Informationen enthalten.
+
+### Naechste Schritte fuer DevOps
+1. `/api/query` bei E4 weiterhin mit Abuse-Detection, Rate-Limits und API-Key-Hardening absichern, da keine neuen Endpoints oder Authentifizierungen in E3 eingezogen wurden.
+2. Monitoring etablieren, damit auffällige Query-Muster oder plötzlich steigende Antwortzeiten früh erkannt werden.
+
+### Naechste Schritte fuer Architect
+1. Die neuen Herleitungsdetails als Teil des UI-Flow dokumentieren, inklusive der Annahme, dass nur Seed-basierte Kontextdaten angezeigt werden.
+2. Bei künftigen Source-File-Erweiterungen prüfen, dass die gezeigten Namen nicht auf interne Infrastruktur oder vertrauliche Pfade schließen lassen.

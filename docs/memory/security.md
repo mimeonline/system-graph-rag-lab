@@ -5,6 +5,7 @@
 2. Diese Bedrohung ist durch Local-Host-Guard plus explizites Opt-In mitigiert.
 3. Der Reset bleibt lokal fuer Seed-IDs destruktiv und erzeugt Restrisiko bei ID-Kollisionen.
 4. Epic E2 Response liefert `answer.*` mit interpoliertem User-Query; Frontends muessen die Werte als Text behandeln, damit reflektiertes XSS unterbunden wird.
+5. Epic E3 zeigt neue `Herleitungsdetails`, die Titel/Summary/`sourceFile` aus `context.elements` darstellen; die Datenquelle ist weiterhin kuratiert, und die Darstellung muss textbasiert bleiben.
 
 ## Secret Handling Status
 1. Keine harten Secrets in den geprueften E1-Artefakten gefunden.
@@ -27,9 +28,11 @@
 2. Public Runtime Hardening zu Rate-Limit, Headern und Abuse-Schutz bleibt in E4 zu gate'n.
 3. Vollstaendige Dependency- und Supply-Chain-Pruefung ist in diesem Recheck nicht enthalten.
 4. `/api/query` sendet Meta-Daten ohne Abuse-Checks; zudem offenbart der Erwartungs-Fallback statische Referenz-IDs, sodass neue Einträge kuratiert bleiben muessen.
+5. Die neuen Herleitungsdetails zeigen `sourceFile`-Pfadnamen und Summaries aus dem Seed-Graph; bei Source-File-Erweiterungen darf keine interne Infrastruktur oder sensible Dateiidentifikation nach außen dringen.
 
 ## Next Instructions for Security Agent
 1. Beim naechsten Epic-Gate fuer E4 Public-Hardening strikt gegen API- und Ops-Vertrag pruefen.
 2. Bei Aenderungen am Seed-Reset erneut verifizieren, dass Guard und ID-scope Delete unveraendert aktiv bleiben.
 3. Vor Public Demo einen finalen Security-Gesamtlauf mit QA und DevOps durchfuehren.
 4. Vornaechsten Review-Einsatz fuer die Antwortpipeline: prüfen, dass Frontends `textContent` (nicht `innerHTML`) nutzen, Expectation-IDs nicht sensible Graph-IDs enthalten und `/api/query` mit Monitoring/Rate-Limit in E4 ausgestattet wird.
+5. Bei jeder Änderung der `context.elements`-Daten oder der Herleitungsdetails sicherstellen, dass nur kuratierte Titel/Summaries/`sourceFile`-Daten angezeigt werden und keine zusätzlichen dynamischen Daten aufgenommen werden.

@@ -21,7 +21,27 @@
 2. `docs/security/blocker.md`
 3. `docs/security/finding-e1-local-reset-missing-runtime-guard.md`
 4. `docs/security/finding-e1-local-reset-overbroad-delete-scope.md`
-5. `docs/handoff/security-to-orchestrator.md`
+
+## Epic E3 MVP-Frontend und Nutzerführung
+
+### Epic Referenz
+1. Epic-ID: E3
+2. Epic-Datei: `backlog/epics/e3-frontend-nutzerfuehrung.md`
+
+### Scope der Pruefung
+1. Security-Review für E3-Stories E3-S1 bis E3-S3 mit Fokus auf das QueryPanel, Status-Hints, Referenzen und die neuen Herleitungsdetails.
+2. Geprüfte Evidenz: `apps/web/src/components/organisms/query-panel.tsx`, `apps/web/src/features/query/view-model.ts`, `docs/qa/verdict.md`, `docs/handoff/security-to-orchestrator.md`.
+
+### Verdict
+1. Pass
+
+### Blocker
+1. Nein
+
+### Referenzen
+1. `docs/security/report.md`
+2. `docs/security/blocker.md`
+3. `docs/handoff/security-to-orchestrator.md`
 
 ## Epic E2 Retrieval und Antwortpipeline
 
