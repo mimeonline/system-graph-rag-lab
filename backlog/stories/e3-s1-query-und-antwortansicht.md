@@ -1,7 +1,7 @@
 # Story E3-S1 Query-Eingabe und Antwortansicht bereitstellen
 
 ## Status
-pass
+accepted
 
 ## Ziel
 Den Kernfluss von Frageeingabe bis Antwortanzeige nutzbar machen.
