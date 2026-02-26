@@ -29,7 +29,8 @@
 2. Input: laufende App, gesetzte Env-Variablen, laufender Neo4j.
 3. Output: valide JSON-Response oder reproduzierbarer Fehlercode.
 4. Fehlerfall: `5xx` oder Timeout blockiert Gate bis Ursache dokumentiert ist.
-5. Beispiel:
+5. Nach dem Smoke: `referenceCount`, `referenceFallbackUsed` und `referenceQuality` pruefen, damit E2-Referenzregeln dokumentiert sind.
+6. Beispiel:
 ```bash
 curl -s -X POST http://localhost:3000/api/query \
   -H 'Content-Type: application/json' \

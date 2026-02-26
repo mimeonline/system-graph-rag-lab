@@ -94,3 +94,7 @@
 ### Gezielte Security-Prüfpunkte
 1. Verifizieren, dass der `Hinweis`-Fallback weder private noch dynamische Daten enthält (nur Referenz-IDs).
 2. Sicherstellen, dass keine neuen Endpoints/Flags eingeführt wurden und die Antwort nur lokale Daten verwendet.
+## DevOps Gate Kontext zu E2
+1. Observability-Signale (`referenceCount`, `contextCandidateCount`, `referenceFallbackUsed`) sind in Logs und API-Responses nachweisbar.
+2. Guardrails sorgen fuer deterministische Referenzlisten und validierte Rate-Limit-Verhalten, auch wenn keine Referenzen veröffentlicht werden.
+3. Security- und DevOps-Gates haben jeweils `Pass` fuer E2 dokumentiert, es existieren keine neuen Blocker.

@@ -3,8 +3,9 @@
 ## Erfasste Metriken und Logs
 1. Pro API-Request genau ein strukturiertes Abschluss-Event.
 2. Pflichtfelder: `requestId`, `route`, `method`, `statusCode`, `latencyMs`, `topK`, `hopDepth`, `retrievedNodeCount`, `contextTokens`, `rateLimitTriggered`, `errorCode`.
-3. Public Ziel ist Vercel Runtime Log Stream.
-4. Lokal werden dieselben Felder im lokalen Log Stream erfasst.
+3. E2-spezifische Felder: `referenceCount`, `contextCandidateCount`, `referenceQuality`, `referenceFallbackUsed`.
+4. Public Ziel ist Vercel Runtime Log Stream.
+5. Lokal werden dieselben Felder im lokalen Log Stream erfasst.
 
 ## Log Redaction Regeln
 1. Keine Roh-User-Queries loggen.

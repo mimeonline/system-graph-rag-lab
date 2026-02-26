@@ -24,3 +24,4 @@
 2. Pflicht-Gates: QA, Security und DevOps pro Epic.
 3. Vor Public Demo oder Release ist ein kompletter Gate-Run verpflichtend.
 4. Epic bleibt `in_progress`, solange ein Pflicht-Gate offen oder `Fail` ist.
+5. DevOps-Gates dokumentieren Referenzen- und Observability-Integritaeten (z.B. `referenceCount`, `contextCandidateCount`, Log-Felder) wenn sie neue API-Flow-Elemente einführen.

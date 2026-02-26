@@ -22,6 +22,12 @@
 2. Massnahmen sind Rate Limit, Query-Validierung und Model-Steuerung ueber `OPENAI_MODEL`.
 3. Incident-Fall: Last drosseln und Key-Limit anpassen, danach Smoke und Log-Triage wiederholen.
 
+## E2 Retrieval Guardrail
+1. Antwortreferenzen sind auf maximal drei `referenceId`s pro Anfrage begrenzt; jede Referenz wird auf `referenceQuality` und `referenceSource` validiert.
+2. Fehlende Referenzen fuehren zu einem klaren `referenceFallbackUsed`-Flag und einem kurzen Hinweistext ohne erweiterte Metadaten.
+3. Die neue `referenceCount`-Metrik muss mit der Zahl der in der API-Antwort gelisteten Referenzen korrelieren, sonst ist ein Guardrail-Verstoss zu dokumentieren.
+4. Guardrails fuer Requests ohne Referenz-Backup setzen die `Retry-After`-Integritaet nicht ausser Kraft und behalten das `429`-Contract-Verhalten bei.
+
 ## Betriebsablauf Rate-Limit Incident
 1. Zweck: Kosten und Abuse kurzfristig eindaemmen.
 2. Input: erhoehte `429` Quote, Fehlertrend, Log-Korrelation.
