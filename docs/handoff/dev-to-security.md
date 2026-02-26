@@ -166,6 +166,18 @@
 1. Der einzige Endpoint bleibt `POST /api/query`; die OpenAI- und Neo4j-Calls erfolgen serverseitig.
 2. Sicherheitsrelevante Eingaben: `OPENAI_API_KEY`, `OPENAI_EMBEDDINGS_MODEL`, `NEO4J_VECTOR_INDEX_NAME`, ergänzt um die bekannten `NEO4J_*`-Credentials.
 
+### Neo4j Vector Index Setup
+1. Fehlt `NEO4J_VECTOR_INDEX_NAME`, nutzt die Runtime automatisch `node_embedding_index`, damit der Graph-Pfad aktiv bleibt und Graph-Fehler weiterhin kontrolliert abgefangen werden können.
+2. Beispiel-Cypher (Label/Property entsprechend dem Seed-Dataset anpassen):
+```
+CALL db.index.vector.createNodeIndex(
+  "node_embedding_index",
+  ["Concept"],
+  ["embedding"],
+  { dimensions: 384, similarity: "COSINE" }
+);
+```
+
 ### Bekannte Sicherheitsgrenzen und Risiken
 1. Der OpenAI-Key darf nur in lokalem `.env.local` oder in Vercel-Umgebungen liegen; es gibt derzeit keine Key-Rotation oder zusätzliche Secret-Exfiltration.
 2. Die Kontextgenerierung mit Vektorindex und optionalen 1-Hop-Nachbarn basiert ausschließlich auf lokal kuratierten Seed-Daten; es gibt keine neuen externen Datenquellen.
@@ -175,3 +187,7 @@
 1. Prüfen, dass `OPENAI_API_KEY` nicht in Logs oder Responses auftaucht und ausschließlich im Request-Header genutzt wird.
 2. Validieren, dass `POST /api/query` bei non-2xx von OpenAI mit `502 LLM_UPSTREAM_ERROR` antwortet und keine sensiblen Details preisgibt.
 3. Testen, dass ein fehlender oder offline Vektorindex auf den Keyword-Fallback umschaltet, während echte Graph-Ausfälle `GRAPH_BACKEND_UNAVAILABLE` zurückliefern.
+
+### Bugfix-Note
+- Non-2xx-Antworten von OpenAI geparst; `error.message` enthält die upstream Message und `error.retryable` unterscheidet 4xx (non-retryable) von 5xx/429 (retryable).
+- Testkommando: `pnpm --dir apps/web test -- src/app/api/query/route.test.ts`.

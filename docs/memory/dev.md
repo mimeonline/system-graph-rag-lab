@@ -16,6 +16,8 @@
 13. Story `E3-S3` ergänzt die Antwortansicht um nummerierte Herleitungsdetails aus Kontextsummaries und verweist die Quelle, damit die Erklärung nachvollziehbar bleibt; `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts` bestätigt mit Exit Code `0`, dass `derivationDetails` korrekt aufgebaut und auf die drei Referenzen begrenzt sind.
 14. Story `E4-S1` integriert die OpenAI Chat Completions API serverseitig in die Query-Pipeline; `pnpm --dir apps/web test -- src/app/api/query/route.test.ts` verifiziert erfolgreiche Antworten sowie das `LLM_UPSTREAM_ERROR`-Mapping bei non-2xx-Responses.
 15. Story `e4-semantic-graph-retrieval` implementiert echte semantische Referenzen via OpenAI Embeddings + Neo4j Vector Index (inkl. 1-Hop-Erweiterung, Lexical-Fallback und `GRAPH_BACKEND_UNAVAILABLE` bei Ausfällen); Tests: `pnpm --dir apps/web test -- src/app/api/query/route.test.ts src/features/query/retrieval.test.ts`.
+16. `E4-S1` bewahrt nun die parsed Upstream-Nachricht (`error.message` enthält die Details) und klassifiziert 4xx (non-retryable) vs. 5xx/429 (retryable); bei fehlendem `NEO4J_VECTOR_INDEX_NAME` wird der Default `node_embedding_index` genutzt, Tests `pnpm --dir apps/web test -- src/app/api/query/route.test.ts` wurden erneut durchlaufen (Exit Code `0`).
+17. Story `bugfix-openai-400-and-vector-index-default` stabilisiert den OpenAI-Call mit GPT-5-kompatiblen Parametern, best-effort Upstream-Details, retry-mapping je Statusklasse sowie der Default-Index-Konfiguration `node_embedding_index`; verifiziert via `pnpm --dir apps/web test -- src/app/api/query/route.test.ts`.
 
 ## Active Epics and Stories
 1. Epic `E1` bleibt im Status `blocked` laut Progress.
@@ -26,6 +28,7 @@
 6. Story `E2-S4` steht auf `qa` und bestätigt mit den Tests in `src/features/query/answer.test.ts` sowohl positive als auch negative Expectation-Matches.
 7. Epic `E3` ist auf `in_progress` gesprungen; Story `E3-S1` ist accepted, Story `E3-S2` ist QA-ready (Statusführung + `Nächste Aktion`), Story `E3-S3` ist QA-ready und wartet auf QA-Bestätigung der neuen Herleitungsdetails.
 8. Epic `E4` ist aktiv; Story `e4-openai-real-integration` implementiert die Live-OpenAI-Integration in `POST /api/query` und steht im Scope der aktuellen Story, Story `e4-semantic-graph-retrieval` ist in Progress mit dem Neo4j Vector Retrieval plus Fallback und Error-Mapping.
+9. Story `bugfix-openai-400-and-vector-index-default` läuft im aktuellen Bugfix-Run; sie dokumentiert die neuen QA- und Security-Handoffs zur Neo4j-Index-Errichtung und sorgt für die Default-Index-Nutzung plus resilientere OpenAI-Fehlerbehandlung.
 
 ## Technical Constraints
 1. Keine API- oder Retrieval-Contract-Aenderungen ausserhalb Story-Scope.

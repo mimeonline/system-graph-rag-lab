@@ -177,6 +177,10 @@
 ### Genaue Testkommandos mit erwarteten Ergebnissen
 1. `pnpm --dir apps/web test -- src/app/api/query/route.test.ts` Exit Code `0`.
 
+### Bugfix-Note
+- Non-2xx OpenAI-Antworten werden jetzt best-effort geparst; `error.message` enthält die upstream Message und `error.retryable` reflektiert 4xx (non-retryable) vs. 5xx/429 (retryable).
+- Testkommando: `pnpm --dir apps/web test -- src/app/api/query/route.test.ts`.
+
 ## E4 Semantic Graph Retrieval via OpenAI Embeddings + Neo4j-Vektorindex
 ### Was ist fertig
 1. Die Query-Pipeline erzeugt serverseitig ein Embedding (`OPENAI_EMBEDDINGS_MODEL`) und fragt den konfigurierten Neo4j-Vektorindex (`NEO4J_VECTOR_INDEX_NAME`) über `db.index.vector.queryNodes` an.
@@ -192,6 +196,18 @@
 ### Bekannte Einschränkungen & Testdaten
 1. Ohne die Graph-Env oder mit einem fehlenden Vektorindex bleibt die Antwort auf den Keyword-Fallback beschränkt; der Fehler erscheint nur als Log-Event, nicht in der Response.
 2. Die 1-Hop-Erweiterung bleibt innerhalb des Tokenbudgets (1.400) und liefert nur zusätzliche Kontexte, wenn noch Budget frei ist.
+
+### Neo4j Vector Index Setup
+1. Die Runtime nutzt `node_embedding_index` als Default und aktiviert damit den Graph-Pfad auch dann, wenn `NEO4J_VECTOR_INDEX_NAME` in der Environment fehlt; der Index muss exakt wie im Seed-Dataset benannt sein, damit die Vektorabfragen Daten zurückliefern.
+2. Beispiel-Cypher (Label/Property ggf. an eigene Seed-Daten anpassen):
+```
+CALL db.index.vector.createNodeIndex(
+  "node_embedding_index",
+  ["Concept"],
+  ["embedding"],
+  { dimensions: 384, similarity: "COSINE" }
+);
+```
 
 ### Erwartete Failure Modes
 1. Neo4j ist unreachable → API antwortet mit `503 GRAPH_BACKEND_UNAVAILABLE`.

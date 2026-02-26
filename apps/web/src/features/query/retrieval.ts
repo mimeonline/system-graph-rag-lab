@@ -20,7 +20,7 @@ const GRAPH_VECTOR_SEARCH_LIMIT = TOP_K * 2;
 const GRAPH_NEIGHBOR_LIMIT_PER_CANDIDATE = 3;
 const CONTEXT_SUMMARY_LIMIT = 280;
 const SOURCE_KEY_DELIMITER = "|";
-
+const DEFAULT_NEO4J_VECTOR_INDEX_NAME = "node_embedding_index";
 const GRAPH_VECTOR_SEARCH_QUERY = `
   CALL db.index.vector.queryNodes(
     $vectorIndex,
@@ -299,6 +299,10 @@ function buildLexicalContextCandidates(query: string): RetrievalResult {
 /**
  * Determines whether graph retrieval is configured.
  */
+function getNeo4jVectorIndexName(env: QueryRuntimeEnv): string {
+  return env.neo4jVectorIndexName ?? DEFAULT_NEO4J_VECTOR_INDEX_NAME;
+}
+
 function canUseGraphRetrieval(env: QueryRuntimeEnv): boolean {
   return Boolean(
     env.neo4jUri &&
@@ -307,7 +311,7 @@ function canUseGraphRetrieval(env: QueryRuntimeEnv): boolean {
       env.neo4jPassword &&
       env.openAiApiKey &&
       env.openAiEmbeddingsModel &&
-      env.neo4jVectorIndexName,
+      getNeo4jVectorIndexName(env),
   );
 }
 
@@ -355,8 +359,10 @@ async function buildGraphContextCandidates(query: string, env: QueryRuntimeEnv):
   try {
     const session = driver.session({ database: env.neo4jDatabase! });
     try {
+      const vectorIndexName = getNeo4jVectorIndexName(env);
+
       const vectorResult = await session.run(GRAPH_VECTOR_SEARCH_QUERY, {
-        vectorIndex: env.neo4jVectorIndexName!,
+        vectorIndex: vectorIndexName,
         topK: GRAPH_VECTOR_SEARCH_LIMIT,
         vector,
       });

@@ -116,7 +116,26 @@ type OpenAiAnswer = {
   coreRationale: string;
 };
 
-class OpenAiUpstreamError extends Error {}
+type OpenAiErrorDetails = {
+  message?: string;
+  code?: string;
+  type?: string;
+  param?: string;
+};
+
+class OpenAiUpstreamError extends Error {
+  public readonly retryable: boolean;
+
+  constructor(message: string, public readonly status?: number, retryable?: boolean) {
+    super(message);
+    Object.setPrototypeOf(this, new.target.prototype);
+    this.name = "OpenAiUpstreamError";
+    this.retryable =
+      typeof retryable === "boolean"
+        ? retryable
+        : status === 429 || (status !== undefined && status >= 500);
+  }
+}
 
 /**
  * Formats ranked references as numbered lines for the LLM prompt.
@@ -195,6 +214,92 @@ function tryParseJson(text: string): Record<string, unknown> | null {
   }
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null;
+}
+
+function sanitizeErrorText(text: string): string | null {
+  const trimmed = text.trim();
+  if (trimmed.length === 0) {
+    return null;
+  }
+
+  const singleLine = trimmed.replace(/\s+/g, " ");
+  return singleLine.length <= 400 ? singleLine : `${singleLine.slice(0, 397)}...`;
+}
+
+function extractOpenAiErrorDetails(text: string): OpenAiErrorDetails | null {
+  if (!text) {
+    return null;
+  }
+
+  try {
+    const parsed = JSON.parse(text);
+    const candidate =
+      typeof parsed === "object" && parsed !== null && "error" in parsed
+        ? (parsed as { error: unknown }).error
+        : parsed;
+
+    if (typeof candidate !== "object" || candidate === null) {
+      return null;
+    }
+
+    const details: OpenAiErrorDetails = {};
+    if (typeof (candidate as { message?: unknown }).message === "string") {
+      details.message = (candidate as { message?: string }).message.trim();
+    }
+    if (typeof (candidate as { code?: unknown }).code === "string") {
+      details.code = (candidate as { code?: string }).code;
+    }
+    if (typeof (candidate as { type?: unknown }).type === "string") {
+      details.type = (candidate as { type?: string }).type;
+    }
+    if (typeof (candidate as { param?: unknown }).param === "string") {
+      details.param = (candidate as { param?: string }).param;
+    }
+
+    if (Object.keys(details).length === 0) {
+      return null;
+    }
+
+    return details;
+  } catch {
+    return null;
+  }
+}
+
+function buildOpenAiErrorMessage(
+  status: number,
+  rawBody: string,
+  details?: OpenAiErrorDetails | null,
+): string {
+  const segments: string[] = [];
+
+  if (details?.message) {
+    segments.push(details.message);
+  }
+  if (details?.code) {
+    segments.push(`code=${details.code}`);
+  }
+  if (details?.type) {
+    segments.push(`type=${details.type}`);
+  }
+  if (details?.param) {
+    segments.push(`param=${details.param}`);
+  }
+
+  if (!segments.length) {
+    const sanitized = sanitizeErrorText(rawBody);
+    if (sanitized) {
+      segments.push(sanitized);
+    } else {
+      segments.push(`Status ${status} ohne zusätzliche Details.`);
+    }
+  }
+
+  return `OpenAI API error ${status}: ${segments.join("; ")}`;
+}
+
 /**
  * Parses and validates OpenAI JSON content into the internal answer shape.
  */
@@ -202,13 +307,21 @@ function parseOpenAiJson(content: string): OpenAiAnswer {
   const trimmed = content.trim();
   const candidate = tryParseJson(trimmed);
   if (!candidate) {
-    throw new OpenAiUpstreamError("OpenAI lieferte kein gültiges JSON im erwarteten Format.");
+    throw new OpenAiUpstreamError(
+      "OpenAI lieferte kein gültiges JSON im erwarteten Format.",
+      200,
+      true,
+    );
   }
 
   const main = candidate.main;
   const coreRationale = candidate.coreRationale;
   if (typeof main !== "string" || typeof coreRationale !== "string") {
-    throw new OpenAiUpstreamError("OpenAI-Antwort enthält keine Strings für 'main' und 'coreRationale'.");
+    throw new OpenAiUpstreamError(
+      "OpenAI-Antwort enthält keine Strings für 'main' und 'coreRationale'.",
+      200,
+      true,
+    );
   }
 
   return {
@@ -229,12 +342,11 @@ async function fetchOpenAiAnswer(options: {
 }): Promise<OpenAiAnswer> {
   const { apiKey, model, query, references, contextElements } = options;
 
-  const body = JSON.stringify({
+  const requestPayload = {
     model,
-    temperature: 0.2,
-    max_tokens: 400,
+    max_completion_tokens: 400,
     messages: buildOpenAiMessages(query, references, contextElements),
-  });
+  };
 
   let response: Response;
   try {
@@ -244,16 +356,24 @@ async function fetchOpenAiAnswer(options: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${apiKey}`,
       },
-      body,
+      body: JSON.stringify(requestPayload),
     });
   } catch (error) {
-    throw new OpenAiUpstreamError(
-      error instanceof Error ? error.message : "Fehler bei der Verbindung zur OpenAI API.",
-    );
+    const message =
+      error instanceof Error ? error.message : "Fehler bei der Verbindung zur OpenAI API.";
+    throw new OpenAiUpstreamError(`OpenAI API error: ${message}`, 0, true);
   }
 
   if (!response.ok) {
-    throw new OpenAiUpstreamError(`OpenAI API antwortete mit Status ${response.status}.`);
+    const rawBody = await response.text();
+    const details = extractOpenAiErrorDetails(rawBody);
+    const composedMessage = buildOpenAiErrorMessage(response.status, rawBody, details);
+    const retryable = response.status === 429 || response.status >= 500;
+    throw new OpenAiUpstreamError(
+      composedMessage,
+      response.status,
+      retryable,
+    );
   }
 
   const payload = (await response.json()) as {
@@ -262,7 +382,7 @@ async function fetchOpenAiAnswer(options: {
 
   const assistantContent = payload.choices?.[0]?.message?.content;
   if (!assistantContent) {
-    throw new OpenAiUpstreamError("OpenAI lieferte keine Assistant-Antwort.");
+    throw new OpenAiUpstreamError("OpenAI lieferte keine Assistant-Antwort.", 200, true);
   }
 
   return parseOpenAiJson(assistantContent);
@@ -377,6 +497,10 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
   } catch (error) {
     const latencyMs = Date.now() - startedAt;
     const isOpenAiError = error instanceof OpenAiUpstreamError;
+    const retryable = isOpenAiError ? error.retryable : false;
+    const message =
+      error instanceof Error ? error.message : "Fehler bei der Antwortgenerierung.";
+
     return {
       status: isOpenAiError ? 502 : 500,
       headers: baseHeaders,
@@ -384,8 +508,8 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
         requestId,
         latencyMs,
         isOpenAiError ? "LLM_UPSTREAM_ERROR" : "INTERNAL_ERROR",
-        error instanceof Error ? error.message : "Fehler bei der Antwortgenerierung.",
-        isOpenAiError,
+        message,
+        retryable,
       ),
     };
   }
