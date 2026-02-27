@@ -14,13 +14,19 @@ export function ActionCard({ steps }: ActionCardProps): React.JSX.Element {
         </h3>
         <span className="text-xs font-semibold text-slate-500">nächste Schritte</span>
       </div>
-      <ul className="space-y-2">
-        {steps.map((step) => (
-          <li key={step} className="text-sm leading-6 text-slate-700">
-            {step}
+      <ol className="space-y-2">
+        {steps.map((step, index) => (
+          <li
+            key={step}
+            className="flex gap-3 rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm leading-6 text-slate-700"
+          >
+            <span className="mt-0.5 inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-slate-100 px-1 text-xs font-semibold text-slate-600">
+              {index + 1}
+            </span>
+            <span>{step}</span>
           </li>
         ))}
-      </ul>
+      </ol>
     </section>
   );
 }

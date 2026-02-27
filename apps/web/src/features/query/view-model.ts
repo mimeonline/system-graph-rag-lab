@@ -19,7 +19,8 @@ export type DerivationDetail = {
   nodeType: QueryContextElement["nodeType"];
   label: string;
   summary: string;
-  sourceFile: string;
+  sourceLabel: string;
+  sourceUrl?: string;
 };
 
 export type QueryReferenceView = QueryReference & {
@@ -59,6 +60,7 @@ function buildDerivationDetails(elements: QueryContextElement[]): DerivationDeta
     nodeType: element.nodeType,
     label: `${index + 1}) ${element.title}`,
     summary: element.summary,
-    sourceFile: element.source.publicReference.url ?? element.source.sourceFile,
+    sourceLabel: element.source.publicReference.citation,
+    sourceUrl: element.source.publicReference.url,
   }));
 }

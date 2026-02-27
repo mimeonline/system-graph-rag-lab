@@ -96,6 +96,7 @@ type RawSeedEdge = {
 
 const PRIMARY_MD: SeedSourceType = "primary_md";
 const OPTIONAL_INTERNET: SeedSourceType = "optional_internet";
+const WIKIPEDIA_SEARCH_BASE_URL = "https://en.wikipedia.org/wiki/Special:Search?search=";
 const PRIMARY_REFERENCE_URL_BY_SOURCE_FILE: Record<string, string> = {
   "System Thinking.md": "https://en.wikipedia.org/wiki/Systems_thinking",
   "Methoden/CLDs - Causal Loop Diagrams.md": "https://en.wikipedia.org/wiki/Causal_loop_diagram",
@@ -110,6 +111,23 @@ const PRIMARY_REFERENCE_URL_BY_SOURCE_FILE: Record<string, string> = {
   "Tools/Tools.md": "https://thesystemsthinker.com/",
   "Tools/Modellierungssoftware.md": "https://en.wikipedia.org/wiki/System_dynamics",
 };
+
+function toPrimaryReferenceFallbackUrl(sourceFile: string): string {
+  const cleaned = sourceFile
+    .replace(/\.md$/i, "")
+    .replace(/^Books\//i, "")
+    .replace(/^Konzepte\//i, "")
+    .replace(/^Methoden\//i, "")
+    .replace(/^Mentale Modelle\//i, "")
+    .replace(/^Problem Solving\//i, "")
+    .replace(/^Thinking in Systems\//i, "")
+    .replace(/^Tools\//i, "")
+    .replace(/[-_]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+
+  return `${WIKIPEDIA_SEARCH_BASE_URL}${encodeURIComponent(cleaned.length > 0 ? cleaned : sourceFile)}`;
+}
 
 /**
  * Zweck:
@@ -138,6 +156,7 @@ function createPublicReference(sourceFile: string, sourceType: SeedSourceType): 
   }
 
   const primaryReferenceUrl = PRIMARY_REFERENCE_URL_BY_SOURCE_FILE[sourceFile];
+  const primaryFallbackUrl = toPrimaryReferenceFallbackUrl(sourceFile);
 
   if (sourceFile.includes("Thinking in Systems") || sourceFile.includes("System Thinking")) {
     return {
@@ -180,7 +199,7 @@ function createPublicReference(sourceFile: string, sourceType: SeedSourceType): 
   return {
     kind: "book",
     citation: "Kuratierte Sekundärquelle, fachlich auf Primärliteratur rückführbar",
-    url: primaryReferenceUrl ?? "https://en.wikipedia.org/wiki/Systems_thinking",
+    url: primaryReferenceUrl ?? primaryFallbackUrl,
   };
 }
 

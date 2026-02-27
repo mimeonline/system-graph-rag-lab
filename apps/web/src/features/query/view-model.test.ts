@@ -113,7 +113,8 @@ describe("buildQueryViewModel", () => {
     expect(viewModel.derivationDetails).toHaveLength(5);
     expect(viewModel.derivationDetails[0].label).toBe("1) Konzept 1");
     expect(viewModel.derivationDetails[0].summary).toBe(contextElements[0].summary);
-    expect(viewModel.derivationDetails[0].sourceFile).toBe("Test.md");
+    expect(viewModel.derivationDetails[0].sourceLabel).toBe("Test Citation");
+    expect(viewModel.derivationDetails[0].sourceUrl).toBeUndefined();
   });
 
   it("maps empty states without injecting synthetic next steps", () => {

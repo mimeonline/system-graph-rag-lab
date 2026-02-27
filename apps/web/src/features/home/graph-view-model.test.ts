@@ -97,6 +97,6 @@ describe("buildHomeGraphModel", () => {
     expect(model.edges.some((edge) => edge.source === "query")).toBe(true);
     expect(model.caption).toContain("relevante Konzepte");
     expect(queryNode?.y).toBe(20);
-    expect(feedbackNode?.y).toBe(56);
+    expect(feedbackNode?.y).toBe(52);
   });
 });

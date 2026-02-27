@@ -28,14 +28,14 @@ export type HomeGraphModel = {
 const FALLBACK_QUERY = "Beispielfrage";
 
 const REFERENCE_LAYOUT_BY_COUNT: Record<number, Array<{ x: number; y: number }>> = {
-  1: [{ x: 50, y: 54 }],
+  1: [{ x: 50, y: 50 }],
   2: [
-    { x: 26, y: 56 },
-    { x: 74, y: 56 },
+    { x: 26, y: 52 },
+    { x: 74, y: 52 },
   ],
   3: [
     { x: 18, y: 52 },
-    { x: 50, y: 66 },
+    { x: 50, y: 60 },
     { x: 82, y: 52 },
   ],
 };
@@ -69,7 +69,7 @@ export function buildHomeGraphModel(
           label: "Top-Konzept",
           compactLabel: "Konzept",
           kind: "reference",
-          x: 21,
+          x: 24,
           y: 56,
         },
         {
@@ -77,8 +77,8 @@ export function buildHomeGraphModel(
           label: "Beleg",
           compactLabel: "Beleg",
           kind: "evidence",
-          x: 56,
-          y: 56,
+          x: 58,
+          y: 70,
         },
         {
           id: "answer-fallback",
@@ -86,7 +86,7 @@ export function buildHomeGraphModel(
           compactLabel: "Antwort",
           kind: "reference",
           x: 78,
-          y: 84,
+          y: 88,
         },
       ],
       edges: [
@@ -143,8 +143,8 @@ export function buildHomeGraphModel(
     label: detail.label,
     compactLabel: toCompactLabel(detail.label),
     kind: "evidence",
-    x: derivationDetails.length === 1 ? 50 : 35 + index * 30,
-    y: 84,
+    x: derivationDetails.length === 1 ? 50 : 33 + index * 34,
+    y: 88,
   }));
 
   const queryEdges: HomeGraphEdge[] = referenceNodes.map((node) => ({

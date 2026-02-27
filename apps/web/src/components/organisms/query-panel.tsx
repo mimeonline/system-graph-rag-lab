@@ -173,9 +173,13 @@ export function QueryPanel(): React.JSX.Element {
                   <p className="text-xs text-slate-600">{reference.citation}</p>
                   <ul className="grid gap-1 sm:grid-cols-2">
                     {reference.tools.map((tool) => (
-                      <li key={tool.label} className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs">
+                      <li
+                        key={tool.label}
+                        className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs"
+                        title={tool.label}
+                      >
                         <a
-                          className="text-slate-700 underline decoration-slate-300 underline-offset-2"
+                          className="block whitespace-nowrap overflow-hidden text-ellipsis text-slate-700 underline decoration-slate-300 underline-offset-2"
                           href={tool.url}
                           target="_blank"
                           rel="noreferrer noopener"
@@ -211,9 +215,21 @@ export function QueryPanel(): React.JSX.Element {
                 >
                   <div className="text-sm font-semibold text-slate-900">{detail.label}</div>
                   <p className="text-sm leading-6 text-slate-700">{detail.summary}</p>
-                  <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
-                    Quelle: {detail.sourceFile}
-                  </p>
+                  <div className="text-xs text-slate-600">
+                    <span className="font-semibold uppercase tracking-[0.2em] text-slate-500">Quelle:</span>{" "}
+                    {detail.sourceUrl ? (
+                      <a
+                        className="underline decoration-slate-300 underline-offset-2"
+                        href={detail.sourceUrl}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                      >
+                        {detail.sourceLabel}
+                      </a>
+                    ) : (
+                      <span>{detail.sourceLabel}</span>
+                    )}
+                  </div>
                 </li>
               ))}
             </ul>
