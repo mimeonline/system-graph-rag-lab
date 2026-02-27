@@ -93,7 +93,7 @@ export async function getBlogPostBySlug(slug: string): Promise<{
       ),
       pre: ({ children }) => <pre className="mt-4 overflow-auto rounded-xl bg-slate-900 p-4 text-slate-100">{children}</pre>,
       img: ({ src, alt }) => (
-        <figure className="mt-5 overflow-hidden rounded-xl border border-slate-200 bg-white">
+        <span className="mt-5 block overflow-hidden rounded-xl border border-slate-200 bg-white">
           <Image
             src={String(src ?? "")}
             alt={alt ?? ""}
@@ -101,8 +101,8 @@ export async function getBlogPostBySlug(slug: string): Promise<{
             height={900}
             className="block h-auto w-full"
           />
-          {alt ? <figcaption className="px-3 py-2 text-xs text-slate-500">{alt}</figcaption> : null}
-        </figure>
+          {alt ? <span className="block px-3 py-2 text-xs text-slate-500">{alt}</span> : null}
+        </span>
       ),
       a: ({ href, children }) => (
         <a href={href} className="text-sky-700 underline decoration-sky-300 underline-offset-2" target="_blank" rel="noreferrer noopener">

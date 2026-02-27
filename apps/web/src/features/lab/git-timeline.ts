@@ -8,98 +8,56 @@ type RawCommit = {
   subject: string;
 };
 
-const MAX_COMMITS = 220;
-
-const THEME_DEFINITIONS: Array<{
-  key: GitTimelineEvent["theme"];
+type ThemeRule = {
+  theme: GitTimelineEvent["theme"];
   phase: GitTimelineEvent["phase"];
   matchers: string[];
-  context: string;
-  decision: string;
-  why: string;
-  result: string;
-  tradeoffs: string;
-  impactScore: number;
-}> = [
+  label: string;
+};
+
+const MAX_COMMITS = 320;
+
+const THEME_RULES: ThemeRule[] = [
   {
-    key: "graph-ux",
-    phase: "ux",
-    matchers: ["graph", "layout", "tooltip", "cytoscape", "explorer", "ui", "motion"],
-    context: "Die Graphdarstellung musste gleichzeitig verständlich, interaktiv und visuell überzeugend werden.",
-    decision: "Fokus auf iterative UX-Verbesserungen am Explorer und an der Herleitungsvisualisierung.",
-    why: "Die größte Wirkung auf Nutzervertrauen kam über sichtbare Nachvollziehbarkeit im Interface.",
-    result: "Bessere Lesbarkeit, weniger Überlappung und klarere Interaktionsmuster im Graph.",
-    tradeoffs: "Mehr Feinjustierung im Frontend und wiederholte visuelle Iterationsschleifen.",
-    impactScore: 89,
+    theme: "process-governance",
+    phase: "process",
+    label: "Prozess und Rollen-Gates",
+    matchers: ["qa", "security", "devops", "pm", "epic", "story", "backlog", "workflow", "docs", "agent", "gate"],
   },
   {
-    key: "retrieval-prompting",
+    theme: "query-retrieval-core",
     phase: "retrieval",
-    matchers: ["retrieval", "prompt", "openai", "semantic", "query", "llm", "context"],
-    context: "Die Antwortqualität hing stark von sauberem Kontextaufbau und robustem Prompting ab.",
-    decision: "Retrieval, Kontextpaket und Prompt-Transparenz wurden systematisch ausgebaut.",
-    why: "Nur so wird aus plausibler Ausgabe eine überprüfbare Herleitung.",
-    result: "Stabilere Antworten, klarere Referenzen und bessere Fehlersichtbarkeit im Query-Flow.",
-    tradeoffs: "Höhere Komplexität im Datenfluss zwischen Retrieval, Prompting und UI.",
-    impactScore: 92,
+    label: "Query und Retrieval Kern",
+    matchers: ["query", "retrieval", "openai", "vector", "semantic", "prompt", "answer", "reference", "neo4j", "seed"],
   },
   {
-    key: "stability-ops",
+    theme: "graph-ux-iteration",
+    phase: "ux",
+    label: "Graph UX Iterationen",
+    matchers: ["graph", "layout", "tooltip", "cytoscape", "explorer", "node", "edge", "popover", "fullscreen", "hydration", "session"],
+  },
+  {
+    theme: "public-showcase",
+    phase: "showcase",
+    label: "Public Showcase und Story",
+    matchers: ["blog", "story", "lab", "showcase", "hero", "editorial", "linkedin", "medium", "three", "3d"],
+  },
+  {
+    theme: "stability-hardening",
     phase: "stability",
-    matchers: ["fix", "stabil", "security", "devops", "qa", "gate", "seed", "reset"],
-    context: "Der öffentliche MVP brauchte verlässliche Guardrails und reproduzierbare Betriebsabläufe.",
-    decision: "Security-, QA- und DevOps-Gates wurden früh in den Delivery-Flow integriert.",
-    why: "Öffentliche Demos brauchen belastbare Laufzeitstabilität statt kurzfristiger Hacks.",
-    result: "Konsistentere Releases und klar dokumentierte Betriebsgrenzen.",
-    tradeoffs: "Etwas langsameres Delivery-Tempo durch zusätzliche Prüfpfade.",
-    impactScore: 86,
-  },
-  {
-    key: "storytelling-showcase",
-    phase: "storytelling",
-    matchers: ["blog", "story", "lab", "showcase", "template", "content", "hero"],
-    context: "Die Technik musste in eine verständliche, überzeugende Produktgeschichte übersetzt werden.",
-    decision: "Neue Story- und Content-Flächen wurden für Medium/LinkedIn-Reuse aufgebaut.",
-    why: "Reichweite entsteht durch klare Narrative und gut wiederverwendbare Inhalte.",
-    result: "Bessere Positionierung als Public Showcase mit klarer Außenwirkung.",
-    tradeoffs: "Mehr redaktioneller Aufwand neben der reinen Implementierung.",
-    impactScore: 84,
+    label: "Stabilisierung und Fixes",
+    matchers: ["fix", "stabil", "harden", "fallback", "retry", "error"],
   },
 ];
 
 export function getGitTimelineEvents(): GitTimelineEvent[] {
   const commits = loadCommits();
-  const clusters = clusterCommits(commits);
+  const grouped = groupByTheme(commits);
 
-  const events = clusters
-    .map((cluster) => {
-      const definition = THEME_DEFINITIONS.find((item) => item.key === cluster.theme);
-      if (!definition) {
-        return null;
-      }
-
-      const commitRefs = cluster.commits.slice(0, 10).map((entry) => `${entry.hash} ${entry.subject}`);
-      const date = cluster.commits[0]?.date ?? "n/a";
-
-      return {
-        id: `${cluster.theme}-${date}`,
-        date,
-        theme: cluster.theme,
-        phase: definition.phase,
-        context: definition.context,
-        decision: definition.decision,
-        why: definition.why,
-        result: definition.result,
-        tradeoffs: definition.tradeoffs,
-        commitRefs,
-        impactScore: definition.impactScore,
-        commitCount: cluster.commits.length,
-      } satisfies GitTimelineEvent;
-    })
+  return grouped
+    .map((bucket) => toTimelineEvent(bucket.rule, bucket.commits))
     .filter((event): event is GitTimelineEvent => event !== null)
     .sort((a, b) => (a.date < b.date ? 1 : -1));
-
-  return events;
 }
 
 export function toCaseStudyEntries(events: GitTimelineEvent[]): CaseStudyEntry[] {
@@ -128,7 +86,7 @@ function loadCommits(): RawCommit[] {
       return parsed;
     }
   } catch {
-    // Fallback to committed snapshot for environments without .git metadata.
+    // fallback below
   }
   return (snapshot as RawCommit[]).slice(0, MAX_COMMITS);
 }
@@ -145,25 +103,123 @@ function parseGitLog(raw: string): RawCommit[] {
         subject: rest.join("|").trim(),
       };
     })
-    .filter((entry) => entry.hash.length > 0 && entry.date.length > 0 && entry.subject.length > 0);
+    .filter((entry) => entry.hash && entry.date && entry.subject);
 }
 
-function clusterCommits(commits: RawCommit[]): Array<{ theme: GitTimelineEvent["theme"]; commits: RawCommit[] }> {
-  const grouped = new Map<GitTimelineEvent["theme"], RawCommit[]>();
+function groupByTheme(commits: RawCommit[]): Array<{ rule: ThemeRule; commits: RawCommit[] }> {
+  const map = new Map<GitTimelineEvent["theme"], { rule: ThemeRule; commits: RawCommit[] }>();
 
   for (const commit of commits) {
     const normalized = commit.subject.toLowerCase();
-    const matched = THEME_DEFINITIONS.find((theme) =>
-      theme.matchers.some((matcher) => normalized.includes(matcher)),
-    );
+    const scored = THEME_RULES.map((rule) => ({
+      rule,
+      score: rule.matchers.reduce((sum, matcher) => sum + (normalized.includes(matcher) ? 1 : 0), 0),
+    })).sort((a, b) => b.score - a.score);
 
-    const themeKey = matched?.key ?? "storytelling-showcase";
-    const current = grouped.get(themeKey) ?? [];
-    current.push(commit);
-    grouped.set(themeKey, current);
+    const chosenRule = scored[0] && scored[0].score > 0 ? scored[0].rule : THEME_RULES[0];
+    const existing = map.get(chosenRule.theme);
+    if (existing) {
+      existing.commits.push(commit);
+    } else {
+      map.set(chosenRule.theme, { rule: chosenRule, commits: [commit] });
+    }
   }
 
-  return [...grouped.entries()]
-    .map(([theme, groupedCommits]) => ({ theme, commits: groupedCommits }))
-    .filter((entry) => entry.commits.length > 0);
+  return [...map.values()].filter((bucket) => bucket.commits.length > 0);
+}
+
+function toTimelineEvent(rule: ThemeRule, commits: RawCommit[]): GitTimelineEvent | null {
+  if (commits.length === 0) {
+    return null;
+  }
+
+  const sortedByDate = [...commits].sort((a, b) => (a.date < b.date ? 1 : -1));
+  const latestDate = sortedByDate[0]?.date ?? "n/a";
+  const byType = countByCommitType(commits);
+  const topKeywords = extractTopKeywords(commits.map((c) => c.subject), 3);
+  const examples = sortedByDate.slice(0, 3).map((c) => c.subject);
+  const refs = sortedByDate.slice(0, 12).map((c) => `${c.hash} ${c.subject}`);
+
+  const dominantType = findDominantType(byType);
+  const impactScore = computeImpactScore(commits.length, byType);
+
+  return {
+    id: `${rule.theme}-${latestDate}`,
+    date: latestDate,
+    theme: rule.theme,
+    phase: rule.phase,
+    context: `${rule.label}: ${commits.length} Commits. Haeufige Begriffe: ${topKeywords.join(", ")}.`,
+    decision: `Dominanter Commit-Typ: ${dominantType}. Beispiele: ${examples.join(" | ")}`,
+    why: `Verteilung feat/fix/chore/docs/test = ${byType.feat}/${byType.fix}/${byType.chore}/${byType.docs}/${byType.test}.`,
+    result: `Aktueller Stand basiert auf realen Commit-Mustern dieser Phase statt generischer Annahmen.`,
+    tradeoffs: `Hoher Fokus auf ${dominantType} verbessert Verlaesslichkeit in diesem Bereich, reduziert aber Zeit fuer andere Themen.`,
+    commitRefs: refs,
+    impactScore,
+    commitCount: commits.length,
+  };
+}
+
+function countByCommitType(commits: RawCommit[]): Record<"feat" | "fix" | "chore" | "docs" | "test" | "other", number> {
+  const initial = { feat: 0, fix: 0, chore: 0, docs: 0, test: 0, other: 0 };
+  for (const commit of commits) {
+    const s = commit.subject.toLowerCase();
+    if (s.startsWith("feat")) initial.feat += 1;
+    else if (s.startsWith("fix")) initial.fix += 1;
+    else if (s.startsWith("chore")) initial.chore += 1;
+    else if (s.startsWith("docs")) initial.docs += 1;
+    else if (s.startsWith("test")) initial.test += 1;
+    else initial.other += 1;
+  }
+  return initial;
+}
+
+function findDominantType(byType: Record<"feat" | "fix" | "chore" | "docs" | "test" | "other", number>): string {
+  return Object.entries(byType).sort((a, b) => b[1] - a[1])[0]?.[0] ?? "other";
+}
+
+function computeImpactScore(commitCount: number, byType: Record<"feat" | "fix" | "chore" | "docs" | "test" | "other", number>): number {
+  const base = Math.min(55 + Math.round(commitCount / 2), 85);
+  const deliveryBonus = byType.feat * 1.5 + byType.fix * 1.2 + byType.test * 0.8;
+  const governanceBonus = byType.docs * 0.5 + byType.chore * 0.4;
+  return Math.max(50, Math.min(98, Math.round(base + deliveryBonus / 4 + governanceBonus / 8)));
+}
+
+function extractTopKeywords(subjects: string[], limit: number): string[] {
+  const stop = new Set([
+    "feat",
+    "fix",
+    "chore",
+    "docs",
+    "test",
+    "web",
+    "add",
+    "update",
+    "improve",
+    "refine",
+    "for",
+    "and",
+    "with",
+    "via",
+    "the",
+    "all",
+    "commit",
+    "changes",
+    "sync",
+  ]);
+
+  const counts = new Map<string, number>();
+  for (const subject of subjects) {
+    const tokens = subject
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, " ")
+      .split(/\s+/)
+      .map((t) => t.trim())
+      .filter((t) => t.length >= 3 && !stop.has(t));
+    for (const token of tokens) {
+      counts.set(token, (counts.get(token) ?? 0) + 1);
+    }
+  }
+
+  const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1]).map(([token]) => token);
+  return ranked.slice(0, limit).length > 0 ? ranked.slice(0, limit) : ["keine", "klaren", "keywords"];
 }

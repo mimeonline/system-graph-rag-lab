@@ -6,15 +6,15 @@ export type CaseStudyEntry = {
   tradeoffs: string;
   date: string;
   commitRefs?: string[];
-  phase?: "retrieval" | "ux" | "stability" | "storytelling";
+  phase?: "process" | "retrieval" | "ux" | "showcase" | "stability";
   impactScore?: number;
 };
 
 export type GitTimelineEvent = {
   id: string;
   date: string;
-  theme: "graph-ux" | "retrieval-prompting" | "stability-ops" | "storytelling-showcase";
-  phase: "retrieval" | "ux" | "stability" | "storytelling";
+  theme: "process-governance" | "query-retrieval-core" | "graph-ux-iteration" | "public-showcase" | "stability-hardening";
+  phase: "process" | "retrieval" | "ux" | "showcase" | "stability";
   context: string;
   decision: string;
   why: string;
