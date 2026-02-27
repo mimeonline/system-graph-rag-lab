@@ -4,10 +4,12 @@ import cytoscape, { type Core, type ElementDefinition } from "cytoscape";
 import dagre from "cytoscape-dagre";
 import type { HomeGraphModel, HomeGraphNode } from "@/features/home/graph-view-model";
 import { Button } from "@/components/ui/button";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type GraphLayoutMode = "force" | "hierarchy-vertical" | "hierarchy-horizontal";
 type GraphPresetMode = "all" | "concepts-tools" | "archetypes" | "problems-interventions";
+type ContextHopMode = "1" | "2";
 
 type MiniMapSnapshot = {
   nodes: Array<{ id: string; x: number; y: number; nodeType: string }>;
@@ -21,10 +23,19 @@ type GraphPreviewProps = {
   initialLayout?: GraphLayoutMode;
 };
 
+type PersistedExplorerSettings = {
+  layoutMode: GraphLayoutMode;
+  presetMode: GraphPresetMode;
+  enabledEdgeLabels: string[];
+  pathToAnswerMode: boolean;
+  contextHopMode: ContextHopMode;
+};
+
 const GRAPH_HEIGHT_PX_BY_VARIANT: Record<NonNullable<GraphPreviewProps["variant"]>, number> = {
   default: 400,
   expanded: 560,
 };
+const EXPLORER_SETTINGS_STORAGE_KEY = "graph-explorer-settings-v1";
 
 const NODE_SIZE_BY_KIND: Record<HomeGraphNode["kind"], { width: number; height: number }> = {
   query: { width: 120, height: 42 },
@@ -169,6 +180,117 @@ function applyGraphPreset(model: HomeGraphModel, preset: GraphPresetMode): HomeG
   if (filteredNodes.length === 0) {
     return model;
   }
+
+  return {
+    ...model,
+    nodes: filteredNodes,
+    edges: filteredEdges,
+  };
+}
+
+function applyPathToAnswerFilter(model: HomeGraphModel): HomeGraphModel {
+  const queryNodes = model.nodes.filter((node) => normalizeNodeType(node) === "query");
+  const answerNodes = model.nodes.filter((node) => normalizeNodeType(node) === "answer");
+  if (queryNodes.length === 0 || answerNodes.length === 0) {
+    return model;
+  }
+
+  const answerIds = new Set(answerNodes.map((node) => node.id));
+  const incomingByTarget = new Map<string, string[]>();
+  for (const edge of model.edges) {
+    const incoming = incomingByTarget.get(edge.target) ?? [];
+    incoming.push(edge.source);
+    incomingByTarget.set(edge.target, incoming);
+  }
+
+  const keepNodeIds = new Set<string>(answerNodes.map((node) => node.id));
+  const queue = [...answerNodes.map((node) => node.id)];
+  while (queue.length > 0) {
+    const currentId = queue.shift();
+    if (!currentId) {
+      continue;
+    }
+    const incoming = incomingByTarget.get(currentId) ?? [];
+    for (const sourceId of incoming) {
+      if (!keepNodeIds.has(sourceId)) {
+        keepNodeIds.add(sourceId);
+        queue.push(sourceId);
+      }
+    }
+  }
+
+  for (const queryNode of queryNodes) {
+    keepNodeIds.add(queryNode.id);
+  }
+
+  const filteredEdges = model.edges.filter(
+    (edge) => keepNodeIds.has(edge.source) && keepNodeIds.has(edge.target),
+  );
+  const connectedNodeIds = new Set<string>();
+  for (const edge of filteredEdges) {
+    connectedNodeIds.add(edge.source);
+    connectedNodeIds.add(edge.target);
+  }
+  for (const queryNode of queryNodes) {
+    connectedNodeIds.add(queryNode.id);
+  }
+
+  const filteredNodes = model.nodes.filter((node) => connectedNodeIds.has(node.id));
+  if (filteredNodes.length === 0 || filteredEdges.length === 0 || answerIds.size === 0) {
+    return model;
+  }
+
+  return {
+    ...model,
+    nodes: filteredNodes,
+    edges: filteredEdges,
+  };
+}
+
+function applyPinnedNodeContextFilter(
+  model: HomeGraphModel,
+  pinnedNodeId: string,
+  hopDepth: number,
+): HomeGraphModel {
+  const hasPinnedNode = model.nodes.some((node) => node.id === pinnedNodeId);
+  if (!hasPinnedNode) {
+    return model;
+  }
+
+  const adjacency = new Map<string, Set<string>>();
+  for (const edge of model.edges) {
+    const sourceNeighbors = adjacency.get(edge.source) ?? new Set<string>();
+    sourceNeighbors.add(edge.target);
+    adjacency.set(edge.source, sourceNeighbors);
+
+    const targetNeighbors = adjacency.get(edge.target) ?? new Set<string>();
+    targetNeighbors.add(edge.source);
+    adjacency.set(edge.target, targetNeighbors);
+  }
+
+  const keepNodeIds = new Set<string>([pinnedNodeId]);
+  let frontier = new Set<string>([pinnedNodeId]);
+  for (let hop = 0; hop < hopDepth; hop += 1) {
+    const nextFrontier = new Set<string>();
+    for (const nodeId of frontier) {
+      const neighbors = adjacency.get(nodeId) ?? new Set<string>();
+      for (const neighborId of neighbors) {
+        if (!keepNodeIds.has(neighborId)) {
+          keepNodeIds.add(neighborId);
+          nextFrontier.add(neighborId);
+        }
+      }
+    }
+    frontier = nextFrontier;
+    if (frontier.size === 0) {
+      break;
+    }
+  }
+
+  const filteredEdges = model.edges.filter(
+    (edge) => keepNodeIds.has(edge.source) && keepNodeIds.has(edge.target),
+  );
+  const filteredNodes = model.nodes.filter((node) => keepNodeIds.has(node.id));
 
   return {
     ...model,
@@ -421,18 +543,23 @@ export function GraphPreview({
   const [layoutMode, setLayoutMode] = useState<GraphLayoutMode>(initialLayout);
   const [presetMode, setPresetMode] = useState<GraphPresetMode>("all");
   const [enabledEdgeLabels, setEnabledEdgeLabels] = useState<Set<string>>(new Set());
+  const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
   const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [pinnedNodeId, setPinnedNodeId] = useState<string | null>(null);
+  const [contextHopMode, setContextHopMode] = useState<ContextHopMode>("1");
+  const [pathToAnswerMode, setPathToAnswerMode] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const [miniMap, setMiniMap] = useState<MiniMapSnapshot | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [fullscreenHeightPx, setFullscreenHeightPx] = useState<number | null>(null);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string; isNode?: boolean } | null>(null);
+  const [didLoadSettings, setDidLoadSettings] = useState(false);
   const edgeLabels = useMemo(
     () => [...new Set(model.edges.map((edge) => edge.label))].sort((a, b) => a.localeCompare(b)),
     [model.edges],
   );
   const presetModel = useMemo(() => applyGraphPreset(model, presetMode), [model, presetMode]);
-  const filteredModel = useMemo(() => {
+  const filteredByEdgeModel = useMemo(() => {
     const filteredEdges = presetModel.edges.filter((edge) => enabledEdgeLabels.has(edge.label));
     const allowedNodeIds = new Set<string>();
     for (const edge of filteredEdges) {
@@ -448,6 +575,22 @@ export function GraphPreview({
       edges: filteredEdges,
     };
   }, [presetModel, enabledEdgeLabels]);
+  const supportsPathToAnswer = useMemo(
+    () =>
+      filteredByEdgeModel.nodes.some((node) => normalizeNodeType(node) === "query") &&
+      filteredByEdgeModel.nodes.some((node) => normalizeNodeType(node) === "answer"),
+    [filteredByEdgeModel.nodes],
+  );
+  const filteredModel = useMemo(() => {
+    let nextModel = filteredByEdgeModel;
+    if (pathToAnswerMode && supportsPathToAnswer) {
+      nextModel = applyPathToAnswerFilter(nextModel);
+    }
+    if (pinnedNodeId) {
+      nextModel = applyPinnedNodeContextFilter(nextModel, pinnedNodeId, Number(contextHopMode));
+    }
+    return nextModel;
+  }, [contextHopMode, filteredByEdgeModel, pathToAnswerMode, pinnedNodeId, supportsPathToAnswer]);
   const nodeCount = filteredModel.nodes.length;
   const forceSeedPositions = useMemo(
     () => (layoutMode === "force" ? computeForceSeedPositions(filteredModel.nodes) : null),
@@ -492,6 +635,18 @@ export function GraphPreview({
 
     return { node, incoming, outgoing, neighbors };
   }, [filteredModel.edges, filteredModel.nodes, selectedNodeId]);
+  const selectedEdgeDetails = useMemo(() => {
+    if (!selectedEdgeId) {
+      return null;
+    }
+    const edge = filteredModel.edges.find((entry) => entry.id === selectedEdgeId);
+    if (!edge) {
+      return null;
+    }
+    const sourceNode = filteredModel.nodes.find((entry) => entry.id === edge.source);
+    const targetNode = filteredModel.nodes.find((entry) => entry.id === edge.target);
+    return { edge, sourceNode, targetNode };
+  }, [filteredModel.edges, filteredModel.nodes, selectedEdgeId]);
   const graphHeightPx = isFullscreen
     ? Math.max(520, (fullscreenHeightPx ?? 900) - (interactive ? 190 : 140))
     : baseGraphHeightPx;
@@ -501,13 +656,87 @@ export function GraphPreview({
   }, [initialLayout]);
 
   useEffect(() => {
+    if (!interactive || didLoadSettings) {
+      return;
+    }
+    try {
+      const raw = window.localStorage.getItem(EXPLORER_SETTINGS_STORAGE_KEY);
+      if (!raw) {
+        setDidLoadSettings(true);
+        return;
+      }
+      const parsed = JSON.parse(raw) as PersistedExplorerSettings;
+      if (parsed.layoutMode) {
+        setLayoutMode(parsed.layoutMode);
+      }
+      if (parsed.presetMode) {
+        setPresetMode(parsed.presetMode);
+      }
+      if (Array.isArray(parsed.enabledEdgeLabels)) {
+        setEnabledEdgeLabels(new Set(parsed.enabledEdgeLabels));
+      }
+      setPathToAnswerMode(parsed.pathToAnswerMode === true);
+      if (parsed.contextHopMode === "2") {
+        setContextHopMode("2");
+      }
+    } catch {
+      // Ignore malformed persisted settings.
+    }
+    setDidLoadSettings(true);
+  }, [didLoadSettings, interactive]);
+
+  useEffect(() => {
     setEnabledEdgeLabels(new Set(edgeLabels));
   }, [edgeLabels]);
 
   useEffect(() => {
+    if (!interactive || !didLoadSettings) {
+      return;
+    }
+    const payload: PersistedExplorerSettings = {
+      layoutMode,
+      presetMode,
+      enabledEdgeLabels: [...enabledEdgeLabels],
+      pathToAnswerMode,
+      contextHopMode,
+    };
+    try {
+      window.localStorage.setItem(EXPLORER_SETTINGS_STORAGE_KEY, JSON.stringify(payload));
+    } catch {
+      // Ignore quota/browser restrictions.
+    }
+  }, [contextHopMode, didLoadSettings, enabledEdgeLabels, interactive, layoutMode, pathToAnswerMode, presetMode]);
+
+  useEffect(() => {
     setSelectedNodeId(null);
+    setSelectedEdgeId(null);
+    setPinnedNodeId(null);
     setIsDescriptionExpanded(false);
   }, [model]);
+
+  useEffect(() => {
+    if (pinnedNodeId && !filteredByEdgeModel.nodes.some((node) => node.id === pinnedNodeId)) {
+      setPinnedNodeId(null);
+    }
+  }, [filteredByEdgeModel.nodes, pinnedNodeId]);
+
+  useEffect(() => {
+    if (selectedNodeId && !filteredModel.nodes.some((node) => node.id === selectedNodeId)) {
+      setSelectedNodeId(null);
+    }
+  }, [filteredModel.nodes, selectedNodeId]);
+
+  useEffect(() => {
+    if (selectedEdgeId && !filteredModel.edges.some((edge) => edge.id === selectedEdgeId)) {
+      setSelectedEdgeId(null);
+    }
+  }, [filteredModel.edges, selectedEdgeId]);
+
+  useEffect(() => {
+    if (pathToAnswerMode && !supportsPathToAnswer) {
+      setPathToAnswerMode(false);
+    }
+  }, [pathToAnswerMode, supportsPathToAnswer]);
 
   useEffect(() => {
     const handler = () => {
@@ -731,6 +960,22 @@ export function GraphPreview({
       });
 
       setSelectedNodeId(String(node.id()));
+      setSelectedEdgeId(null);
+      setIsDescriptionExpanded(false);
+    });
+
+    cy.on("tap", "edge", (event) => {
+      const edge = event.target;
+      clearFocus();
+      withCySafely(cy, (activeCy) => {
+        const edgeNeighborhood = edge.connectedNodes().union(edge);
+        activeCy.elements().addClass("muted");
+        edgeNeighborhood.removeClass("muted");
+        edge.addClass("focus-edge");
+        edge.connectedNodes().addClass("focus-node");
+      });
+      setSelectedEdgeId(String(edge.id()));
+      setSelectedNodeId(null);
       setIsDescriptionExpanded(false);
     });
 
@@ -738,6 +983,7 @@ export function GraphPreview({
       if (event.target === cy) {
         clearFocus();
         setSelectedNodeId(null);
+        setSelectedEdgeId(null);
         setIsDescriptionExpanded(false);
       }
     });
@@ -891,6 +1137,51 @@ export function GraphPreview({
               {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
             </Button>
           </div>
+          <div className="grid gap-2 md:grid-cols-[auto_auto_auto] md:items-center">
+            <button
+              type="button"
+              disabled={!supportsPathToAnswer}
+              onClick={() => setPathToAnswerMode((current) => !current)}
+              className={`rounded-md border px-3 py-2 text-xs font-semibold transition ${
+                pathToAnswerMode
+                  ? "border-indigo-300 bg-indigo-50 text-indigo-800"
+                  : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+              } disabled:cursor-not-allowed disabled:opacity-50`}
+            >
+              Pfad zur Antwort {pathToAnswerMode ? "an" : "aus"}
+            </button>
+            <button
+              type="button"
+              disabled={!selectedNodeDetails}
+              onClick={() =>
+                setPinnedNodeId((current) =>
+                  current === (selectedNodeDetails?.node.id ?? null) ? null : (selectedNodeDetails?.node.id ?? null),
+                )
+              }
+              className={`rounded-md border px-3 py-2 text-xs font-semibold transition ${
+                pinnedNodeId ? "border-amber-300 bg-amber-50 text-amber-800" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+              } disabled:cursor-not-allowed disabled:opacity-50`}
+            >
+              {pinnedNodeId ? "Pin lösen" : "Node pinnen"}
+            </button>
+            <div className="flex items-center gap-1 rounded-md border border-slate-300 bg-white p-1">
+              <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">Kontext</span>
+              <button
+                type="button"
+                onClick={() => setContextHopMode("1")}
+                className={`rounded px-2 py-1 text-xs font-semibold ${contextHopMode === "1" ? "bg-sky-100 text-sky-800" : "text-slate-600"}`}
+              >
+                1-Hop
+              </button>
+              <button
+                type="button"
+                onClick={() => setContextHopMode("2")}
+                className={`rounded px-2 py-1 text-xs font-semibold ${contextHopMode === "2" ? "bg-sky-100 text-sky-800" : "text-slate-600"}`}
+              >
+                2-Hop
+              </button>
+            </div>
+          </div>
           {edgeLabels.length > 0 ? (
             <div className="space-y-1">
               <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
@@ -998,114 +1289,153 @@ export function GraphPreview({
             <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
               Node-Details
             </p>
-            {selectedNodeDetails ? (
-              <div className="space-y-3">
-                <p className="text-sm font-semibold text-slate-900">
-                  {stripNodeTypePrefix(
-                    selectedNodeDetails.node.label,
-                    (selectedNodeDetails.node.nodeType ?? "").toLowerCase(),
-                  )}
-                </p>
-                <p className="text-xs text-slate-500">
-                  Typ: {selectedNodeDetails.node.nodeType ?? "Unbekannt"} · Nachbarn:{" "}
-                  {selectedNodeDetails.neighbors.length} · Eingehend: {selectedNodeDetails.incoming.length} ·
-                  Ausgehend: {selectedNodeDetails.outgoing.length}
-                </p>
-                <div className="rounded-md border border-slate-200 bg-slate-50 px-2 py-2 text-xs text-slate-700">
-                  <p className="font-semibold uppercase tracking-[0.1em] text-slate-500">Beschreibung</p>
-                  <p className="mt-1 leading-6">
-                    {getCollapsibleDescriptionText(
-                      selectedNodeDetails.node.longDescription?.trim() ||
-                        selectedNodeDetails.node.shortDescription?.trim(),
-                      isDescriptionExpanded,
-                    ) || "Keine Beschreibung verfügbar."}
+            {selectedNodeDetails || selectedEdgeDetails ? (
+              <div className="space-y-2">
+                {selectedNodeDetails ? (
+                  <p className="text-sm font-semibold text-slate-900">
+                    {stripNodeTypePrefix(
+                      selectedNodeDetails.node.label,
+                      (selectedNodeDetails.node.nodeType ?? "").toLowerCase(),
+                    )}
                   </p>
-                  {shouldShowDescriptionToggle(
-                    selectedNodeDetails.node.longDescription?.trim() ||
-                      selectedNodeDetails.node.shortDescription?.trim() ||
-                      "",
-                  ) ? (
-                    <button
-                      type="button"
-                      onClick={() => setIsDescriptionExpanded((current) => !current)}
-                      className="mt-1 text-xs font-semibold text-sky-700 underline decoration-sky-300 underline-offset-2"
-                    >
-                      {isDescriptionExpanded ? "Weniger anzeigen" : "Mehr anzeigen"}
-                    </button>
+                ) : null}
+                {selectedEdgeDetails ? (
+                  <p className="text-sm font-semibold text-slate-900">
+                    Kante: {selectedEdgeDetails.edge.label} (
+                    {stripNodeTypePrefix(selectedEdgeDetails.sourceNode?.compactLabel ?? selectedEdgeDetails.edge.source, (selectedEdgeDetails.sourceNode?.nodeType ?? "").toLowerCase())}
+                    {" -> "}
+                    {stripNodeTypePrefix(selectedEdgeDetails.targetNode?.compactLabel ?? selectedEdgeDetails.edge.target, (selectedEdgeDetails.targetNode?.nodeType ?? "").toLowerCase())})
+                  </p>
+                ) : null}
+                <Accordion type="multiple" defaultValue={["description", "neighbors"]} className="space-y-2">
+                  {selectedNodeDetails ? (
+                    <AccordionItem value="description">
+                      <AccordionTrigger>Beschreibung</AccordionTrigger>
+                      <AccordionContent>
+                        <p className="text-sm leading-6">
+                          {getCollapsibleDescriptionText(
+                            selectedNodeDetails.node.longDescription?.trim() ||
+                              selectedNodeDetails.node.shortDescription?.trim(),
+                            isDescriptionExpanded,
+                          ) || "Keine Beschreibung verfügbar."}
+                        </p>
+                        {shouldShowDescriptionToggle(
+                          selectedNodeDetails.node.longDescription?.trim() ||
+                            selectedNodeDetails.node.shortDescription?.trim() ||
+                            "",
+                        ) ? (
+                          <button
+                            type="button"
+                            onClick={() => setIsDescriptionExpanded((current) => !current)}
+                            className="mt-1 text-xs font-semibold text-sky-700 underline decoration-sky-300 underline-offset-2"
+                          >
+                            {isDescriptionExpanded ? "Weniger anzeigen" : "Mehr anzeigen"}
+                          </button>
+                        ) : null}
+                      </AccordionContent>
+                    </AccordionItem>
                   ) : null}
-                </div>
-                <div className="grid gap-2 md:grid-cols-2">
-                  <div className="rounded-md border border-slate-200 bg-white px-2 py-2 text-xs text-slate-700">
-                    <p className="font-semibold uppercase tracking-[0.1em] text-slate-500">Quelle / Link</p>
-                    {selectedNodeDetails.node.url ? (
-                      <a
-                        className="mt-1 inline-block text-sky-700 underline decoration-sky-300 underline-offset-2"
-                        href={selectedNodeDetails.node.url}
-                        target="_blank"
-                        rel="noreferrer noopener"
-                      >
-                        Link öffnen
-                      </a>
-                    ) : (
-                      <p className="mt-1 text-slate-500">Kein Link hinterlegt.</p>
-                    )}
-                  </div>
-                  <div className="rounded-md border border-slate-200 bg-white px-2 py-2 text-xs text-slate-700">
-                    <p className="font-semibold uppercase tracking-[0.1em] text-slate-500">Nachbarn</p>
-                    {selectedNodeDetails.neighbors.length > 0 ? (
-                      <p className="mt-1 leading-5">
-                        {selectedNodeDetails.neighbors
-                          .slice(0, 6)
-                          .map((neighbor) =>
-                            truncateText(
-                              stripNodeTypePrefix(
-                                neighbor.compactLabel ?? neighbor.label,
-                                (neighbor.nodeType ?? "").toLowerCase(),
-                              ),
-                              28,
-                            ),
-                          )
-                          .join(", ")}
-                        {selectedNodeDetails.neighbors.length > 6 ? ", ..." : ""}
-                      </p>
-                    ) : (
-                      <p className="mt-1 text-slate-500">Keine Nachbarn sichtbar.</p>
-                    )}
-                  </div>
-                </div>
-                <div className="grid gap-2 md:grid-cols-2">
-                  <div className="rounded-md border border-slate-200 bg-white px-2 py-2 text-xs text-slate-700">
-                    <p className="font-semibold uppercase tracking-[0.1em] text-slate-500">Eingehende Kanten</p>
-                    {selectedNodeDetails.incoming.length > 0 ? (
-                      <p className="mt-1 leading-5">
-                        {selectedNodeDetails.incoming
-                          .slice(0, 4)
-                          .map((edge) => edge.label)
-                          .join(", ")}
-                        {selectedNodeDetails.incoming.length > 4 ? ", ..." : ""}
-                      </p>
-                    ) : (
-                      <p className="mt-1 text-slate-500">Keine eingehenden Kanten.</p>
-                    )}
-                  </div>
-                  <div className="rounded-md border border-slate-200 bg-white px-2 py-2 text-xs text-slate-700">
-                    <p className="font-semibold uppercase tracking-[0.1em] text-slate-500">Ausgehende Kanten</p>
-                    {selectedNodeDetails.outgoing.length > 0 ? (
-                      <p className="mt-1 leading-5">
-                        {selectedNodeDetails.outgoing
-                          .slice(0, 4)
-                          .map((edge) => edge.label)
-                          .join(", ")}
-                        {selectedNodeDetails.outgoing.length > 4 ? ", ..." : ""}
-                      </p>
-                    ) : (
-                      <p className="mt-1 text-slate-500">Keine ausgehenden Kanten.</p>
-                    )}
-                  </div>
-                </div>
+                  {selectedNodeDetails ? (
+                    <AccordionItem value="source">
+                      <AccordionTrigger>Quelle / Link</AccordionTrigger>
+                      <AccordionContent>
+                        {selectedNodeDetails.node.url ? (
+                          <a
+                            className="inline-block text-xs font-semibold text-sky-700 underline decoration-sky-300 underline-offset-2"
+                            href={selectedNodeDetails.node.url}
+                            target="_blank"
+                            rel="noreferrer noopener"
+                          >
+                            Link öffnen
+                          </a>
+                        ) : (
+                          <p className="text-xs text-slate-500">Kein Link hinterlegt.</p>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ) : null}
+                  {selectedNodeDetails ? (
+                    <AccordionItem value="neighbors">
+                      <AccordionTrigger>Nachbarn</AccordionTrigger>
+                      <AccordionContent>
+                        {selectedNodeDetails.neighbors.length > 0 ? (
+                          <ul className="space-y-1 text-xs text-slate-700">
+                            {selectedNodeDetails.neighbors.slice(0, 8).map((neighbor) => (
+                              <li key={neighbor.id}>
+                                {truncateText(
+                                  stripNodeTypePrefix(
+                                    neighbor.compactLabel ?? neighbor.label,
+                                    (neighbor.nodeType ?? "").toLowerCase(),
+                                  ),
+                                  54,
+                                )}
+                              </li>
+                            ))}
+                            {selectedNodeDetails.neighbors.length > 8 ? <li>...</li> : null}
+                          </ul>
+                        ) : (
+                          <p className="text-xs text-slate-500">Keine Nachbarn sichtbar.</p>
+                        )}
+                      </AccordionContent>
+                    </AccordionItem>
+                  ) : null}
+                  {selectedNodeDetails ? (
+                    <AccordionItem value="edges-node">
+                      <AccordionTrigger>Eingehende / Ausgehende Kanten</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="grid gap-2 md:grid-cols-2">
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Eingehend</p>
+                            <p className="mt-1 text-xs text-slate-700">
+                              {selectedNodeDetails.incoming.length > 0
+                                ? selectedNodeDetails.incoming.slice(0, 6).map((edge) => edge.label).join(", ")
+                                : "Keine"}
+                              {selectedNodeDetails.incoming.length > 6 ? ", ..." : ""}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-xs font-semibold uppercase tracking-[0.08em] text-slate-500">Ausgehend</p>
+                            <p className="mt-1 text-xs text-slate-700">
+                              {selectedNodeDetails.outgoing.length > 0
+                                ? selectedNodeDetails.outgoing.slice(0, 6).map((edge) => edge.label).join(", ")
+                                : "Keine"}
+                              {selectedNodeDetails.outgoing.length > 6 ? ", ..." : ""}
+                            </p>
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ) : null}
+                  {selectedEdgeDetails ? (
+                    <AccordionItem value="edge-details">
+                      <AccordionTrigger>Edge-Details</AccordionTrigger>
+                      <AccordionContent>
+                        <div className="space-y-1 text-xs text-slate-700">
+                          <p>Typ: {selectedEdgeDetails.edge.label}</p>
+                          <p>
+                            Von:{" "}
+                            {stripNodeTypePrefix(
+                              selectedEdgeDetails.sourceNode?.label ?? selectedEdgeDetails.edge.source,
+                              (selectedEdgeDetails.sourceNode?.nodeType ?? "").toLowerCase(),
+                            )}
+                          </p>
+                          <p>
+                            Nach:{" "}
+                            {stripNodeTypePrefix(
+                              selectedEdgeDetails.targetNode?.label ?? selectedEdgeDetails.edge.target,
+                              (selectedEdgeDetails.targetNode?.nodeType ?? "").toLowerCase(),
+                            )}
+                          </p>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ) : null}
+                </Accordion>
               </div>
             ) : (
-              <p className="text-sm text-slate-600">Klicke einen Knoten an, um die Langbeschreibung zu sehen.</p>
+              <p className="text-sm text-slate-600">
+                Klicke einen Knoten oder eine Kante an, um Details zu sehen.
+              </p>
             )}
           </section>
         </div>

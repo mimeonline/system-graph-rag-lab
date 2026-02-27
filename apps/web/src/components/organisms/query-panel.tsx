@@ -33,6 +33,20 @@ type SessionHistoryEntry = {
   referenceCount: number;
 };
 
+type QualitySignalState = "green" | "yellow" | "red";
+
+type QualitySignal = {
+  label: string;
+  value: string;
+  state: QualitySignalState;
+};
+
+type LlmOnlyAnswer = {
+  main: string;
+  coreRationale: string;
+  nextSteps: string[];
+};
+
 const DEFAULT_QUERY =
   "Wo verlieren wir im Alltag Zeit, weil Aufgaben zwischen Teams hin und her gehen?";
 const QUERY_SUGGESTION_GROUPS: QuerySuggestionGroup[] = [
@@ -100,6 +114,12 @@ export function QueryPanel(): React.JSX.Element {
   const [isSystemGraphLoading, setIsSystemGraphLoading] = useState(false);
   const [expandedDerivationIds, setExpandedDerivationIds] = useState<Record<string, boolean>>({});
   const [sessionHistory, setSessionHistory] = useState<SessionHistoryEntry[]>([]);
+  const [llmOnlyAnswer, setLlmOnlyAnswer] = useState<LlmOnlyAnswer | null>(null);
+  const [isLlmOnlyLoading, setIsLlmOnlyLoading] = useState(false);
+  const [llmOnlyError, setLlmOnlyError] = useState<string | null>(null);
+  const [isLlmOnlyExpanded, setIsLlmOnlyExpanded] = useState(false);
+  const [isGraphRagExpanded, setIsGraphRagExpanded] = useState(false);
+  const [isSessionMemoryExpanded, setIsSessionMemoryExpanded] = useState(true);
 
   const statusHint = getStatusHint(status, errorMessage);
   const helperText = statusHint.statusText;
@@ -129,53 +149,87 @@ export function QueryPanel(): React.JSX.Element {
   }, [sessionHistory]);
 
   /**
-   * Submits the current query to the API and updates panel state from the response.
+   * Loads GraphRAG and LLM-only answers for a query and updates UI state.
    */
-  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const trimmedQuery = query.trim();
+  const runQuery = async (rawQuery: string, addToHistory: boolean) => {
+    const trimmedQuery = rawQuery.trim();
     if (!trimmedQuery) {
       setErrorMessage("Bitte gib eine gültige Frage ein.");
       setStatus("error");
       return;
     }
 
+    setQuery(trimmedQuery);
     setStatus("loading");
     setErrorMessage(null);
+    setLlmOnlyError(null);
+    setIsLlmOnlyLoading(true);
+    setLlmOnlyAnswer(null);
 
     try {
-      const response = await fetch("/api/query", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: trimmedQuery }),
-        cache: "no-store",
-      });
+      const [graphResponse, llmOnlyResponse] = await Promise.all([
+        fetch("/api/query", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: trimmedQuery }),
+          cache: "no-store",
+        }),
+        fetch("/api/query/llm-only", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: trimmedQuery }),
+          cache: "no-store",
+        }),
+      ]);
 
-      if (!response.ok) {
-        const remoteMessage = await response.text();
+      if (!graphResponse.ok) {
+        const remoteMessage = await graphResponse.text();
         throw new Error(remoteMessage || "Antwort konnte nicht geladen werden.");
       }
 
-      const payload = (await response.json()) as QuerySuccessResponse;
+      const payload = (await graphResponse.json()) as QuerySuccessResponse;
       const viewModel = buildQueryViewModel(payload, trimmedQuery);
       setViewModel(viewModel);
       setStatus(viewModel.references.length === 0 ? "empty" : "success");
       setIsQuestionSelectionLocked(true);
-      setSessionHistory((current) => {
-        const next: SessionHistoryEntry = {
-          query: trimmedQuery,
-          answerPreview: viewModel.answer.main.slice(0, 180),
-          createdAt: new Date().toISOString(),
-          referenceCount: viewModel.references.length,
+      if (addToHistory) {
+        setSessionHistory((current) => {
+          const next: SessionHistoryEntry = {
+            query: trimmedQuery,
+            answerPreview: viewModel.answer.main.slice(0, 180),
+            createdAt: new Date().toISOString(),
+            referenceCount: viewModel.references.length,
+          };
+          return [next, ...current].slice(0, SESSION_HISTORY_LIMIT);
+        });
+      }
+
+      if (llmOnlyResponse.ok) {
+        const llmOnlyPayload = (await llmOnlyResponse.json()) as {
+          status: "ok";
+          answer: LlmOnlyAnswer;
         };
-        return [next, ...current].slice(0, SESSION_HISTORY_LIMIT);
-      });
+        setLlmOnlyAnswer(llmOnlyPayload.answer);
+      } else {
+        const llmErrorText = await llmOnlyResponse.text();
+        setLlmOnlyError(llmErrorText || "LLM-only Antwort konnte nicht geladen werden.");
+      }
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Unerwarteter Fehler während der Anfrage.";
       setErrorMessage(message);
       setStatus("error");
+    } finally {
+      setIsLlmOnlyLoading(false);
     }
+  };
+
+  /**
+   * Submits the current query to the API and updates panel state from the response.
+   */
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    await runQuery(query, true);
   };
 
   const references = viewModel?.references ?? [];
@@ -191,6 +245,13 @@ export function QueryPanel(): React.JSX.Element {
     "Hier wird der knappe P0-Kernnachweis angezeigt, sobald eine Antwort vorliegt.";
   const graphModel = buildHomeGraphModel(viewModel, query);
   const explorerGraphModel = explorerMode === "system" ? systemGraphModel : graphModel;
+  const qualitySignals = buildQualitySignals(
+    references.length,
+    viewModel?.contextTokens ?? 0,
+    new Set(references.map((reference) => reference.nodeType)).size,
+    derivationDetails.length,
+  );
+  const overallQualityState = getOverallQualityState(qualitySignals);
 
   const openExplorer = async (mode: "query" | "system") => {
     setExplorerMode(mode);
@@ -261,6 +322,11 @@ export function QueryPanel(): React.JSX.Element {
     setStatus("idle");
     setQuery("");
     setExpandedDerivationIds({});
+    setLlmOnlyAnswer(null);
+    setLlmOnlyError(null);
+    setIsLlmOnlyLoading(false);
+    setIsLlmOnlyExpanded(false);
+    setIsGraphRagExpanded(false);
   };
 
   const toggleDerivationDetail = (nodeId: string) => {
@@ -293,53 +359,127 @@ export function QueryPanel(): React.JSX.Element {
         <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
           <div className="mb-2 flex items-center justify-between">
             <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Quality Gate</h3>
-            <span className="text-xs text-slate-500">Antwortqualität</span>
+            <span className={`rounded-full px-2 py-1 text-[11px] font-semibold ${getQualityStateClasses(overallQualityState)}`}>
+              {getOverallQualityLabel(overallQualityState)}
+            </span>
           </div>
           <div className="grid gap-2 text-xs text-slate-700 sm:grid-cols-2">
-            <p>
-              Referenzen: <span className="font-semibold">{references.length}</span>
-            </p>
-            <p>
-              Kontext-Tokens: <span className="font-semibold">{viewModel?.contextTokens ?? 0}</span>
-            </p>
-            <p>
-              Knoten-Typen:{" "}
-              <span className="font-semibold">
-                {new Set(references.map((reference) => reference.nodeType)).size}
-              </span>
-            </p>
-            <p>
-              Ableitungsdetails: <span className="font-semibold">{derivationDetails.length}</span>
-            </p>
+            {qualitySignals.map((signal) => (
+              <p key={signal.label} className="flex items-center gap-1.5">
+                <span className={`h-2.5 w-2.5 rounded-full ${getQualityDotClasses(signal.state)}`} />
+                <span>{signal.label}:</span>
+                <span className="font-semibold">{signal.value}</span>
+              </p>
+            ))}
+          </div>
+        </section>
+
+        <section className="rounded-xl border border-slate-200 bg-white p-3">
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">LLM-only vs GraphRAG</h3>
+            <span className="text-xs text-slate-500">Warum der Graph hilft</span>
+          </div>
+          <div className="grid gap-2 text-xs text-slate-700 sm:grid-cols-2">
+            <div className="rounded-md border border-slate-200 bg-slate-50 p-2">
+              <p className="font-semibold text-slate-800">Nur LLM</p>
+              {isLlmOnlyLoading ? (
+                <p className="mt-1">Lade LLM-only Antwort…</p>
+              ) : llmOnlyError ? (
+                <p className="mt-1 text-rose-700">{llmOnlyError}</p>
+              ) : llmOnlyAnswer ? (
+                <>
+                  <p className="mt-1 leading-6">
+                    {isLlmOnlyExpanded ? llmOnlyAnswer.main : truncatePreview(llmOnlyAnswer.main, 260)}
+                  </p>
+                  {shouldShowPreviewToggle(llmOnlyAnswer.main, 260) ? (
+                    <button
+                      type="button"
+                      className="mt-1 text-xs font-semibold text-sky-700 underline decoration-sky-300 underline-offset-2"
+                      onClick={() => setIsLlmOnlyExpanded((current) => !current)}
+                    >
+                      {isLlmOnlyExpanded ? "Weniger anzeigen" : "Mehr anzeigen"}
+                    </button>
+                  ) : null}
+                  <p className="mt-1 text-[11px] text-slate-500">
+                    {llmOnlyAnswer.nextSteps.length} Schritte, ohne Graph-Belege.
+                  </p>
+                </>
+              ) : (
+                <p className="mt-1">Noch keine LLM-only Antwort vorhanden.</p>
+              )}
+            </div>
+            <div className="rounded-md border border-sky-200 bg-sky-50 p-2">
+              <p className="font-semibold text-slate-800">GraphRAG</p>
+              <p className="mt-1 leading-6">
+                {isGraphRagExpanded ? mainAnswer : truncatePreview(mainAnswer, 260)}
+              </p>
+              {shouldShowPreviewToggle(mainAnswer, 260) ? (
+                <button
+                  type="button"
+                  className="mt-1 text-xs font-semibold text-sky-700 underline decoration-sky-300 underline-offset-2"
+                  onClick={() => setIsGraphRagExpanded((current) => !current)}
+                >
+                  {isGraphRagExpanded ? "Weniger anzeigen" : "Mehr anzeigen"}
+                </button>
+              ) : null}
+              <p className="mt-1 text-[11px] text-slate-500">
+                {references.length} Referenzen, {derivationDetails.length} Details, {viewModel?.contextTokens ?? 0} Tokens.
+              </p>
+            </div>
           </div>
         </section>
 
         <section className="rounded-xl border border-slate-200 bg-white p-3">
           <div className="mb-2 flex items-center justify-between">
             <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Session Memory</h3>
-            <span className="text-xs text-slate-500">lokal gespeichert</span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-500">lokal gespeichert</span>
+              <button
+                type="button"
+                className="rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700 hover:bg-slate-50"
+                onClick={() => setIsSessionMemoryExpanded((current) => !current)}
+              >
+                {isSessionMemoryExpanded ? "Einklappen" : "Ausklappen"}
+              </button>
+              <button
+                type="button"
+                className="rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700 hover:bg-slate-50"
+                onClick={() => {
+                  setSessionHistory([]);
+                  try {
+                    window.localStorage.removeItem(SESSION_HISTORY_KEY);
+                  } catch {
+                    // Ignore browser restrictions.
+                  }
+                }}
+              >
+                Verlauf löschen
+              </button>
+            </div>
           </div>
-          {sessionHistory.length > 0 ? (
-            <ul className="space-y-2">
-              {sessionHistory.map((entry) => (
-                <li key={`${entry.createdAt}-${entry.query}`} className="rounded-lg border border-slate-100 bg-slate-50 p-2">
-                  <button
-                    type="button"
-                    className="w-full text-left text-sm font-medium text-slate-800 underline decoration-slate-300 underline-offset-2"
-                    onClick={() => setQuery(entry.query)}
-                  >
-                    {entry.query}
-                  </button>
-                  <p className="mt-1 text-xs text-slate-600">{entry.answerPreview}...</p>
-                  <p className="mt-1 text-[11px] text-slate-500">
-                    {new Date(entry.createdAt).toLocaleString("de-DE")} · {entry.referenceCount} Referenzen
-                  </p>
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-slate-600">Noch keine lokalen Verlaufsdaten vorhanden.</p>
-          )}
+          {isSessionMemoryExpanded ? (
+            sessionHistory.length > 0 ? (
+              <ul className="space-y-2">
+                {sessionHistory.map((entry) => (
+                  <li key={`${entry.createdAt}-${entry.query}`} className="rounded-lg border border-slate-100 bg-slate-50 p-2">
+                    <button
+                      type="button"
+                      className="w-full text-left text-sm font-medium text-slate-800 underline decoration-slate-300 underline-offset-2"
+                      onClick={() => void runQuery(entry.query, false)}
+                    >
+                      {entry.query}
+                    </button>
+                    <p className="mt-1 text-xs text-slate-600">{entry.answerPreview}...</p>
+                    <p className="mt-1 text-[11px] text-slate-500">
+                      {new Date(entry.createdAt).toLocaleString("de-DE")} · {entry.referenceCount} Referenzen
+                    </p>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <p className="text-sm text-slate-600">Noch keine lokalen Verlaufsdaten vorhanden.</p>
+            )
+          ) : null}
         </section>
 
         <AnswerCard
@@ -600,4 +740,88 @@ function getDerivationPreviewText(text: string, isExpanded: boolean): string {
   }
 
   return compact;
+}
+
+function truncatePreview(text: string, maxLength: number): string {
+  const compact = text.replace(/\s+/g, " ").trim();
+  if (compact.length <= maxLength) {
+    return compact;
+  }
+  return `${compact.slice(0, Math.max(0, maxLength - 3)).trim()}...`;
+}
+
+function shouldShowPreviewToggle(text: string, maxLength: number): boolean {
+  return text.replace(/\s+/g, " ").trim().length > maxLength;
+}
+
+function buildQualitySignals(
+  referenceCount: number,
+  contextTokens: number,
+  nodeTypeCount: number,
+  derivationCount: number,
+): QualitySignal[] {
+  return [
+    {
+      label: "Referenzen",
+      value: String(referenceCount),
+      state: referenceCount >= 3 ? "green" : referenceCount >= 1 ? "yellow" : "red",
+    },
+    {
+      label: "Kontext-Tokens",
+      value: String(contextTokens),
+      state: contextTokens >= 200 ? "green" : contextTokens >= 80 ? "yellow" : "red",
+    },
+    {
+      label: "Knoten-Typen",
+      value: String(nodeTypeCount),
+      state: nodeTypeCount >= 3 ? "green" : nodeTypeCount >= 2 ? "yellow" : "red",
+    },
+    {
+      label: "Ableitungsdetails",
+      value: String(derivationCount),
+      state: derivationCount >= 2 ? "green" : derivationCount >= 1 ? "yellow" : "red",
+    },
+  ];
+}
+
+function getOverallQualityState(signals: QualitySignal[]): QualitySignalState {
+  const redCount = signals.filter((signal) => signal.state === "red").length;
+  const greenCount = signals.filter((signal) => signal.state === "green").length;
+  if (redCount >= 2) {
+    return "red";
+  }
+  if (greenCount >= 3 && redCount === 0) {
+    return "green";
+  }
+  return "yellow";
+}
+
+function getOverallQualityLabel(state: QualitySignalState): string {
+  if (state === "green") {
+    return "stark";
+  }
+  if (state === "yellow") {
+    return "mittel";
+  }
+  return "schwach";
+}
+
+function getQualityDotClasses(state: QualitySignalState): string {
+  if (state === "green") {
+    return "bg-emerald-500";
+  }
+  if (state === "yellow") {
+    return "bg-amber-500";
+  }
+  return "bg-rose-500";
+}
+
+function getQualityStateClasses(state: QualitySignalState): string {
+  if (state === "green") {
+    return "bg-emerald-100 text-emerald-800";
+  }
+  if (state === "yellow") {
+    return "bg-amber-100 text-amber-800";
+  }
+  return "bg-rose-100 text-rose-800";
 }

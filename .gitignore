@@ -2,3 +2,5 @@ input/*
 output/*
 .pnpm-store/*
 .playwright-cli/*
+node_modules/*
+apps/web/node_modules/*

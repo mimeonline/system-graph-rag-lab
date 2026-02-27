@@ -201,9 +201,37 @@ export function buildHomeGraphModel(
           },
         ];
 
+  const answerNode: HomeGraphNode = {
+    id: "answer",
+    label: "Antwort",
+    compactLabel: "Antwort",
+    shortDescription: "Abgeleitete Antwort auf Basis der relevanten Konzepte und Belege.",
+    longDescription: viewModel?.answer.main ?? "Abgeleitete Antwort auf Basis der relevanten Konzepte und Belege.",
+    kind: "reference",
+    nodeType: "Answer",
+    x: 50,
+    y: 96,
+  };
+  const answerEdges: HomeGraphEdge[] =
+    evidenceNodes.length > 0
+      ? evidenceNodes.map((node, index) => ({
+          id: `answer-link-${node.id}`,
+          source: node.id,
+          target: answerNode.id,
+          label: `3 Ableiten ${index + 1}`,
+        }))
+      : [
+          {
+            id: "answer-link-fallback",
+            source: referenceNodes[referenceNodes.length - 1].id,
+            target: answerNode.id,
+            label: "3 Ableiten",
+          },
+        ];
+
   return {
-    nodes: [queryNode, ...referenceNodes, ...evidenceNodes],
-    edges: [...queryEdges, ...evidenceEdges],
+    nodes: [queryNode, ...referenceNodes, ...evidenceNodes, answerNode],
+    edges: [...queryEdges, ...evidenceEdges, ...answerEdges],
     isFallback: false,
     caption: `Aktuelle Frage: ${limitedReferences.length} relevante Konzepte führen zur Antwortbegründung.`,
   };
