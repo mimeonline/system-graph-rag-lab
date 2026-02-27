@@ -333,6 +333,7 @@ export function GraphPreview({
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const cyRef = useRef<Core | null>(null);
+  const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
   const [layoutMode, setLayoutMode] = useState<GraphLayoutMode>(initialLayout);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [fullscreenHeightPx, setFullscreenHeightPx] = useState<number | null>(null);
@@ -374,6 +375,10 @@ export function GraphPreview({
     };
     document.addEventListener("fullscreenchange", handler);
     return () => document.removeEventListener("fullscreenchange", handler);
+  }, []);
+
+  useEffect(() => {
+    setPortalContainer(wrapperRef.current);
   }, []);
 
   useEffect(() => {
@@ -521,7 +526,6 @@ export function GraphPreview({
       wheelSensitivity: 0.18,
     });
     const activeLayout = cy.layout(buildLayout(layoutMode, nodeCount));
-    activeLayout.run();
 
     const cancelPulse = runInitialNodePulse(cy);
 
@@ -595,11 +599,27 @@ export function GraphPreview({
     if (layoutMode === "force") {
       cy.one("layoutstop", () => {
         withCySafely(cy, (activeCy) => {
-          resolveRenderedNodeOverlaps(activeCy, 26, 30);
+          resolveRenderedNodeOverlaps(activeCy, 44, 56);
+          // Run a second pass after paint to account for final label bounds.
+          window.setTimeout(() => {
+            withCySafely(activeCy, (stableCy) => {
+              resolveRenderedNodeOverlaps(stableCy, 44, 36);
+              stableCy.fit(undefined, 30);
+            });
+          }, 40);
+          // Third pass: catches delayed text metrics in some browsers.
+          window.setTimeout(() => {
+            withCySafely(activeCy, (stableCy) => {
+              resolveRenderedNodeOverlaps(stableCy, 44, 18);
+              stableCy.fit(undefined, 30);
+            });
+          }, 150);
           activeCy.fit(undefined, 30);
         });
       });
     }
+
+    activeLayout.run();
 
     const resizeObserver = new ResizeObserver(() => {
       withCySafely(cy, (activeCy) => {
@@ -675,7 +695,7 @@ export function GraphPreview({
               <SelectTrigger className="h-9 w-full bg-white text-sm md:w-[240px]">
                 <SelectValue />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent portalContainer={portalContainer}>
                 <SelectItem value="force">Force</SelectItem>
                 <SelectItem value="hierarchy-vertical">Hierarchy Vertical</SelectItem>
                 <SelectItem value="hierarchy-horizontal">Hierarchy Horizontal</SelectItem>
