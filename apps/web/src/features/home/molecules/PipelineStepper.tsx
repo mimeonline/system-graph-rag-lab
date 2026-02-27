@@ -1,3 +1,4 @@
+import { motion } from "framer-motion";
 import type { QueryPanelStatus } from "@/components/organisms/query-panel-status";
 
 type PipelineStepperProps = {
@@ -39,6 +40,7 @@ function getActiveStep(status: QueryPanelStatus): number {
  */
 export function PipelineStepper({ status }: PipelineStepperProps): React.JSX.Element {
   const activeStep = getActiveStep(status);
+  const progress = (activeStep / STEPS.length) * 100;
 
   return (
     <section className="space-y-3 rounded-xl border border-sky-200/70 bg-gradient-to-br from-sky-50 to-indigo-50 p-4 sm:p-5">
@@ -46,14 +48,26 @@ export function PipelineStepper({ status }: PipelineStepperProps): React.JSX.Ele
         <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-700">Guided Mode</h3>
         <p className="text-xs font-semibold text-slate-600">Lernpfad sichtbar</p>
       </div>
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-sky-100">
+        <motion.div
+          className="h-full rounded-full bg-gradient-to-r from-sky-500 to-indigo-500"
+          initial={false}
+          animate={{ width: `${progress}%` }}
+          transition={{ type: "spring", stiffness: 140, damping: 24 }}
+        />
+      </div>
       <ol className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         {STEPS.map((step, index) => {
           const number = index + 1;
           const isActive = number <= activeStep;
 
           return (
-            <li
+            <motion.li
               key={step.id}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.04, duration: 0.28 }}
+              whileHover={{ y: -1 }}
               className={`rounded-lg border px-3 py-2 transition-colors ${
                 isActive
                   ? "border-sky-300 bg-white text-slate-900"
@@ -62,7 +76,7 @@ export function PipelineStepper({ status }: PipelineStepperProps): React.JSX.Ele
             >
               <p className="overflow-hidden text-ellipsis whitespace-nowrap text-[10px] font-semibold uppercase tracking-[0.08em] sm:text-[11px]">{`${number}. ${step.label}`}</p>
               <p className="mt-1 text-xs">{step.detail}</p>
-            </li>
+            </motion.li>
           );
         })}
       </ol>

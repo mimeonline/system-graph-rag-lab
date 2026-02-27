@@ -1,9 +1,11 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+import { motion } from "framer-motion";
 import type { HomeGraphModel, HomeGraphNode } from "@/features/home/graph-view-model";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type GraphPreviewProps = {
   model: HomeGraphModel;
+  variant?: "default" | "expanded";
 };
 
 const NODE_STYLE_BY_KIND: Record<HomeGraphNode["kind"], string> = {
@@ -13,12 +15,14 @@ const NODE_STYLE_BY_KIND: Record<HomeGraphNode["kind"], string> = {
 };
 
 const GRAPH_HEIGHT_PX = 400;
+const EXPANDED_GRAPH_HEIGHT_PX = 560;
 const MIN_CANVAS_WIDTH_PX = 280;
 
 /**
  * Lightweight graph preview without external rendering dependencies.
  */
-export function GraphPreview({ model }: GraphPreviewProps): React.JSX.Element {
+export function GraphPreview({ model, variant = "default" }: GraphPreviewProps): React.JSX.Element {
+  const graphHeightPx = variant === "expanded" ? EXPANDED_GRAPH_HEIGHT_PX : GRAPH_HEIGHT_PX;
   const canvasRef = useRef<HTMLDivElement | null>(null);
   const [canvasWidth, setCanvasWidth] = useState(0);
 
@@ -41,10 +45,10 @@ export function GraphPreview({ model }: GraphPreviewProps): React.JSX.Element {
     () =>
       model.nodes.map((node) => ({
         node,
-        point: getNodePoint(node, canvasWidth),
-        frame: getNodeFrame(node, canvasWidth),
+        point: getNodePoint(node, canvasWidth, graphHeightPx),
+        frame: getNodeFrame(node, canvasWidth, graphHeightPx),
       })),
-    [model.nodes, canvasWidth],
+    [model.nodes, canvasWidth, graphHeightPx],
   );
   const nodesById = new Map(positionedNodes.map((item) => [item.node.id, item]));
 
@@ -59,8 +63,11 @@ export function GraphPreview({ model }: GraphPreviewProps): React.JSX.Element {
 
       <p className="text-sm text-slate-600">{model.caption}</p>
 
-      <div className="relative min-h-[400px] overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 via-sky-50/40 to-indigo-50/40">
-        <div ref={canvasRef} className="relative h-[400px] w-full">
+      <div
+        className="relative overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 via-sky-50/40 to-indigo-50/40"
+        style={{ minHeight: `${graphHeightPx}px` }}
+      >
+        <div ref={canvasRef} className="relative w-full" style={{ height: `${graphHeightPx}px` }}>
           <div className="pointer-events-none absolute -left-10 top-10 h-24 w-24 rounded-full bg-sky-200/30 blur-2xl" />
           <div className="pointer-events-none absolute -right-8 bottom-8 h-20 w-20 rounded-full bg-indigo-200/30 blur-2xl" />
 
@@ -90,11 +97,15 @@ export function GraphPreview({ model }: GraphPreviewProps): React.JSX.Element {
           </svg>
 
           <TooltipProvider delayDuration={120}>
-            <div className="relative h-[400px] w-full">
+            <div className="relative w-full" style={{ height: `${graphHeightPx}px` }}>
               {positionedNodes.map(({ node, frame }, index) => (
                 <Tooltip key={node.id}>
                   <TooltipTrigger asChild>
-                    <div
+                    <motion.div
+                      initial={{ opacity: 0, y: 8, scale: 0.98 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ delay: index * 0.06, duration: 0.26 }}
+                      whileHover={{ scale: 1.03 }}
                       className={`absolute rounded-lg border px-2 py-1.5 text-center font-medium shadow-sm transition duration-500 ease-out hover:scale-[1.03] sm:px-3 ${NODE_STYLE_BY_KIND[node.kind]} animate-[fade-in-up_420ms_ease-out_forwards] opacity-0`}
                       style={{
                         left: `${frame.left}px`,
@@ -108,13 +119,13 @@ export function GraphPreview({ model }: GraphPreviewProps): React.JSX.Element {
                       }}
                     >
                       {fitNodeLabel(node.compactLabel ?? node.label, frame.width)}
-                    </div>
+                    </motion.div>
                   </TooltipTrigger>
                   <TooltipContent>{getNodeTooltipText(node)}</TooltipContent>
                 </Tooltip>
               ))}
 
-              {model.edges.map((edge) => {
+              {model.edges.map((edge, index) => {
                 const source = nodesById.get(edge.source);
                 const target = nodesById.get(edge.target);
                 if (!source || !target) {
@@ -126,7 +137,10 @@ export function GraphPreview({ model }: GraphPreviewProps): React.JSX.Element {
                 return (
                   <Tooltip key={`${edge.id}-label`}>
                     <TooltipTrigger asChild>
-                      <span
+                      <motion.span
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: index * 0.06 + 0.08, duration: 0.2 }}
                         className="absolute -translate-x-1/2 -translate-y-1/2 rounded bg-slate-50/90 px-1.5 py-0.5 text-[11px] font-medium text-slate-600"
                         style={{
                           left: `${placement.x}px`,
@@ -134,7 +148,7 @@ export function GraphPreview({ model }: GraphPreviewProps): React.JSX.Element {
                         }}
                       >
                         {edge.label}
-                      </span>
+                      </motion.span>
                     </TooltipTrigger>
                     <TooltipContent>{getEdgeTooltipText(edge.label)}</TooltipContent>
                   </Tooltip>
@@ -169,7 +183,11 @@ function fitNodeLabel(label: string, width: number): string {
   return `${compact.slice(0, Math.max(3, maxChars - 3))}...`;
 }
 
-function getNodePoint(node: HomeGraphNode, canvasWidth: number): { x: number; y: number } {
+function getNodePoint(
+  node: HomeGraphNode,
+  canvasWidth: number,
+  graphHeightPx: number,
+): { x: number; y: number } {
   const effectiveWidth = Math.max(canvasWidth, MIN_CANVAS_WIDTH_PX);
   const sidePaddingPx = getResponsiveSidePadding(effectiveWidth);
   const rawX = (effectiveWidth * node.x) / 100;
@@ -177,12 +195,16 @@ function getNodePoint(node: HomeGraphNode, canvasWidth: number): { x: number; y:
     effectiveWidth - sidePaddingPx,
     Math.max(sidePaddingPx, rawX),
   );
-  const y = (GRAPH_HEIGHT_PX * node.y) / 100;
+  const y = (graphHeightPx * node.y) / 100;
 
   return { x, y };
 }
 
-function getNodeFrame(node: HomeGraphNode, canvasWidth: number): {
+function getNodeFrame(
+  node: HomeGraphNode,
+  canvasWidth: number,
+  graphHeightPx: number,
+): {
   left: number;
   top: number;
   width: number;
@@ -190,7 +212,7 @@ function getNodeFrame(node: HomeGraphNode, canvasWidth: number): {
   centerX: number;
   centerY: number;
 } {
-  const point = getNodePoint(node, canvasWidth);
+  const point = getNodePoint(node, canvasWidth, graphHeightPx);
   const effectiveWidth = Math.max(canvasWidth, MIN_CANVAS_WIDTH_PX);
   const size = getResponsiveNodeSize(node.kind, effectiveWidth);
   const horizontalInset = 6;

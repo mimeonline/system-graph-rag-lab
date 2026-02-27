@@ -2,6 +2,7 @@
 
 import type { FormEvent } from "react";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { QueryInput } from "@/components/molecules/query-input";
 import { GraphPreview } from "@/components/molecules/graph-preview";
@@ -35,6 +36,7 @@ export function QueryPanel(): React.JSX.Element {
   const [viewModel, setViewModel] = useState<QueryViewModel | null>(null);
   const [status, setStatus] = useState<QueryPanelStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [showExpandedGraph, setShowExpandedGraph] = useState(false);
 
   const statusHint = getStatusHint(status, errorMessage);
   const helperText = statusHint.statusText;
@@ -130,9 +132,34 @@ export function QueryPanel(): React.JSX.Element {
       </section>
 
       <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-        <h2 className="text-base font-semibold text-slate-900">Kontext und Tools</h2>
+        <div className="flex items-center justify-between gap-3">
+          <h2 className="text-base font-semibold text-slate-900">Kontext und Tools</h2>
+          <button
+            type="button"
+            onClick={() => setShowExpandedGraph((value) => !value)}
+            className="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700 transition hover:bg-sky-100"
+          >
+            {showExpandedGraph ? "Graph schließen" : "Graph groß anzeigen"}
+          </button>
+        </div>
 
         <GraphPreview model={graphModel} />
+
+        <AnimatePresence initial={false}>
+          {showExpandedGraph ? (
+            <motion.section
+              key="expanded-graph"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.22 }}
+              className="space-y-3 rounded-xl border border-sky-200 bg-sky-50/50 p-3"
+            >
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-sky-700">Graph im Fokus</p>
+              <GraphPreview model={graphModel} variant="expanded" />
+            </motion.section>
+          ) : null}
+        </AnimatePresence>
 
         <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
           <div className="flex items-center justify-between">
