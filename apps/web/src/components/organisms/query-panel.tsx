@@ -4,7 +4,7 @@ import type { FormEvent } from "react";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { QueryInput } from "@/components/molecules/query-input";
+import { QueryInput, type QuerySuggestionGroup } from "@/components/molecules/query-input";
 import { GraphPreview } from "@/components/molecules/graph-preview";
 import { AnswerCard } from "@/components/organisms/answer-card";
 import { ActionCard } from "@/components/organisms/action-card";
@@ -20,12 +20,34 @@ import { buildQueryViewModel, type QueryViewModel } from "@/features/query/view-
 
 const DEFAULT_QUERY =
   "Wo verlieren wir im Alltag Zeit, weil Aufgaben zwischen Teams hin und her gehen?";
-const QUERY_SUGGESTIONS = [
-  "Wo verlieren wir im Alltag Zeit, weil Aufgaben zwischen Teams hin und her gehen?",
-  "Warum gibt es trotz neuer Tools immer noch so viele Abstimmungen?",
-  "Was passiert, wenn wir schneller liefern wollen als unser Betrieb mitkommt?",
-  "Welche Nebenwirkungen hat es, wenn jedes Team nur lokal optimiert?",
-  "Wie bekommen wir mehr Stabilität, ohne Releases komplett auszubremsen?",
+const QUERY_SUGGESTION_GROUPS: QuerySuggestionGroup[] = [
+  {
+    category: "Teamarbeit & Übergaben",
+    questions: [
+      "Wo verlieren wir im Alltag Zeit, weil Aufgaben zwischen Teams hin und her gehen?",
+      "Warum gibt es trotz neuer Tools immer noch so viele Abstimmungen?",
+      "Wie reduzieren wir Rückfragen bei Übergaben zwischen Teams?",
+      "Welche Informationen fehlen typischerweise am Übergabepunkt?",
+    ],
+  },
+  {
+    category: "Lieferfähigkeit & Betrieb",
+    questions: [
+      "Was passiert, wenn wir schneller liefern wollen als unser Betrieb mitkommt?",
+      "Wie bekommen wir mehr Stabilität, ohne Releases komplett auszubremsen?",
+      "Woran merken wir früh, dass unser System überlastet läuft?",
+      "Wie vermeiden wir, dass Notfallarbeit den Plan dauerhaft verdrängt?",
+    ],
+  },
+  {
+    category: "Steuerung & Prioritäten",
+    questions: [
+      "Welche Nebenwirkungen hat es, wenn jedes Team nur lokal optimiert?",
+      "Warum kippen Prioritäten ständig, obwohl wir klare Ziele haben?",
+      "Wie erkennen wir Regeln oder Anreize, die falsches Verhalten fördern?",
+      "Wo lohnt ein kleiner Hebel mit großer Wirkung am meisten?",
+    ],
+  },
 ];
 
 /**
@@ -104,7 +126,7 @@ export function QueryPanel(): React.JSX.Element {
 
         <QueryInput
           query={query}
-          suggestions={QUERY_SUGGESTIONS}
+          suggestionGroups={QUERY_SUGGESTION_GROUPS}
           onSuggestionSelect={setQuery}
           onQueryChange={setQuery}
           onSubmit={handleSubmit}

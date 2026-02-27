@@ -2,11 +2,25 @@
 
 import type { FormEvent } from "react";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+
+export type QuerySuggestionGroup = {
+  category: string;
+  questions: string[];
+};
 
 type QueryInputProps = {
   query: string;
   onQueryChange: (value: string) => void;
-  suggestions: string[];
+  suggestionGroups: QuerySuggestionGroup[];
   onSuggestionSelect: (value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
   helperText?: string;
@@ -21,7 +35,7 @@ const DEFAULT_HELPER_TEXT = "Wähle eine Frage oder schreibe eine eigene. Halte 
  */
 export function QueryInput({
   query,
-  suggestions,
+  suggestionGroups,
   onSuggestionSelect,
   onSubmit,
   onQueryChange,
@@ -33,18 +47,23 @@ export function QueryInput({
     <form className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5" onSubmit={onSubmit}>
       <div className="space-y-2">
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Hilfreiche Fragen</p>
-        <div className="flex flex-wrap gap-2">
-          {suggestions.map((suggestion) => (
-            <button
-              key={suggestion}
-              type="button"
-              className="rounded-full border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs text-slate-700 transition hover:border-sky-300 hover:bg-sky-50 hover:text-sky-800"
-              onClick={() => onSuggestionSelect(suggestion)}
-            >
-              {suggestion}
-            </button>
-          ))}
-        </div>
+        <Select onValueChange={onSuggestionSelect}>
+          <SelectTrigger className="w-full bg-slate-50 text-left text-sm text-slate-700">
+            <SelectValue placeholder="Frage aus Kategorie wählen…" />
+          </SelectTrigger>
+          <SelectContent>
+            {suggestionGroups.map((group) => (
+              <SelectGroup key={group.category}>
+                <SelectLabel>{group.category}</SelectLabel>
+                {group.questions.map((question) => (
+                  <SelectItem key={question} value={question}>
+                    {question}
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
 
       <label className="block space-y-2" htmlFor="query">
