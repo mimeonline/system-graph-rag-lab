@@ -4,7 +4,15 @@ import { type SeedEdge, type SeedNode, type SeedSourceType } from "@/features/se
 
 export type RuntimeSeedReadNode = Pick<
   SeedNode,
-  "id" | "nodeType" | "title" | "name" | "summary" | "sourceType" | "sourceFile"
+  | "id"
+  | "nodeType"
+  | "title"
+  | "name"
+  | "summary"
+  | "shortDescription"
+  | "longDescription"
+  | "sourceType"
+  | "sourceFile"
 >;
 
 export type RuntimeSeedReadEdge = Pick<
@@ -97,6 +105,8 @@ export async function readSeedDatasetForRuntime(
             n.title AS title,
             n.name AS name,
             n.summary AS summary,
+            coalesce(n.shortDescription, n.summary) AS shortDescription,
+            coalesce(n.longDescription, n.summary) AS longDescription,
             n.sourceType AS sourceType,
             n.sourceFile AS sourceFile
           ORDER BY id ASC
@@ -136,6 +146,11 @@ export async function readSeedDatasetForRuntime(
           title: typeof record.get("title") === "string" ? record.get("title") : undefined,
           name: typeof record.get("name") === "string" ? record.get("name") : undefined,
           summary: assertNonEmptyString(record.get("summary"), "nodes.summary"),
+          shortDescription: assertNonEmptyString(
+            record.get("shortDescription"),
+            "nodes.shortDescription",
+          ),
+          longDescription: assertNonEmptyString(record.get("longDescription"), "nodes.longDescription"),
           sourceType,
           sourceFile: assertNonEmptyString(record.get("sourceFile"), "nodes.sourceFile"),
         } satisfies RuntimeSeedReadNode;

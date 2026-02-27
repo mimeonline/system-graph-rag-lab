@@ -40,11 +40,21 @@ function formatEmbedding(vector: number[]): string {
 }
 
 /**
- * Builds the embedding input text from node label and summary.
+ * Builds the embedding input text from node label and descriptions.
  */
-function buildEmbeddingText(node: { title?: string; name?: string; summary: string }): string {
+function buildEmbeddingText(node: {
+  title?: string;
+  name?: string;
+  shortDescription?: string;
+  longDescription?: string;
+  summary: string;
+}): string {
   const label = node.title ?? node.name ?? "";
-  return `${label}\n${node.summary}`.trim();
+  const description =
+    node.longDescription?.trim() ||
+    node.shortDescription?.trim() ||
+    node.summary;
+  return `${label}\n${description}`.trim();
 }
 
 /**

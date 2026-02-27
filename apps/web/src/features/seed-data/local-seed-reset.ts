@@ -39,6 +39,8 @@ const NODE_CREATE_QUERY: Record<SeedNode["nodeType"], string> = {
       id: row.id,
       title: row.title,
       summary: row.summary,
+      shortDescription: row.shortDescription,
+      longDescription: row.longDescription,
       embedding: row.embedding,
       sourceType: row.sourceType,
       sourceFile: row.sourceFile
@@ -50,6 +52,8 @@ const NODE_CREATE_QUERY: Record<SeedNode["nodeType"], string> = {
       id: row.id,
       title: row.title,
       summary: row.summary,
+      shortDescription: row.shortDescription,
+      longDescription: row.longDescription,
       embedding: row.embedding,
       sourceType: row.sourceType,
       sourceFile: row.sourceFile
@@ -61,6 +65,8 @@ const NODE_CREATE_QUERY: Record<SeedNode["nodeType"], string> = {
       id: row.id,
       name: row.name,
       summary: row.summary,
+      shortDescription: row.shortDescription,
+      longDescription: row.longDescription,
       sourceType: row.sourceType,
       sourceFile: row.sourceFile
     })
@@ -71,6 +77,8 @@ const NODE_CREATE_QUERY: Record<SeedNode["nodeType"], string> = {
       id: row.id,
       title: row.title,
       summary: row.summary,
+      shortDescription: row.shortDescription,
+      longDescription: row.longDescription,
       sourceType: row.sourceType,
       sourceFile: row.sourceFile
     })
@@ -81,6 +89,8 @@ const NODE_CREATE_QUERY: Record<SeedNode["nodeType"], string> = {
       id: row.id,
       title: row.title,
       summary: row.summary,
+      shortDescription: row.shortDescription,
+      longDescription: row.longDescription,
       embedding: row.embedding,
       sourceType: row.sourceType,
       sourceFile: row.sourceFile

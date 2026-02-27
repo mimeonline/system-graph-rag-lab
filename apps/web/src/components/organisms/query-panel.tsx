@@ -78,6 +78,7 @@ export function QueryPanel(): React.JSX.Element {
   const [viewModel, setViewModel] = useState<QueryViewModel | null>(null);
   const [status, setStatus] = useState<QueryPanelStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isQuestionSelectionLocked, setIsQuestionSelectionLocked] = useState(false);
   const [isExplorerOpen, setIsExplorerOpen] = useState(false);
   const [explorerMode, setExplorerMode] = useState<"query" | "system">("query");
   const [systemGraphModel, setSystemGraphModel] = useState<HomeGraphModel | null>(null);
@@ -119,6 +120,7 @@ export function QueryPanel(): React.JSX.Element {
       const viewModel = buildQueryViewModel(payload, trimmedQuery);
       setViewModel(viewModel);
       setStatus(viewModel.references.length === 0 ? "empty" : "success");
+      setIsQuestionSelectionLocked(true);
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Unerwarteter Fehler während der Anfrage.";
@@ -193,6 +195,14 @@ export function QueryPanel(): React.JSX.Element {
     }
   };
 
+  const handleResetQuestionSession = () => {
+    setIsQuestionSelectionLocked(false);
+    setViewModel(null);
+    setErrorMessage(null);
+    setStatus("idle");
+    setQuery("");
+  };
+
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(330px,37%)]">
       <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
@@ -206,9 +216,11 @@ export function QueryPanel(): React.JSX.Element {
           onSuggestionSelect={setQuery}
           onQueryChange={setQuery}
           onSubmit={handleSubmit}
+          onResetQuestionSession={handleResetQuestionSession}
           helperText={helperText}
           nextAction={statusAction}
           isSubmitting={status === "loading"}
+          isQuestionSelectionLocked={isQuestionSelectionLocked}
         />
 
         <AnswerCard
@@ -416,7 +428,12 @@ export function QueryPanel(): React.JSX.Element {
               {explorerMode === "system" && isSystemGraphLoading ? (
                 <p className="text-sm text-slate-600">System-Graph wird geladen…</p>
               ) : explorerGraphModel ? (
-                <GraphPreview model={explorerGraphModel} variant="expanded" interactive />
+                <GraphPreview
+                  model={explorerGraphModel}
+                  variant="expanded"
+                  interactive
+                  initialLayout={explorerMode === "system" ? "force" : "hierarchy-vertical"}
+                />
               ) : (
                 <p className="text-sm text-slate-600">Kein Graph verfügbar.</p>
               )}

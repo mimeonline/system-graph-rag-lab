@@ -42,13 +42,26 @@ export function buildQueryViewModel(
     answer: response.answer,
     references: response.references.map((reference) => ({
       ...reference,
-      tools: reference.toolLinks,
+      tools: reference.toolLinks.map((tool) => ({
+        ...tool,
+        label: normalizeToolLabel(tool.label),
+      })),
     })),
     contextElements: response.context.elements ?? [],
     contextTokens: response.meta.contextTokens,
     derivationDetails: buildDerivationDetails(response.context.elements ?? []),
     nextSteps: response.answer.nextSteps,
   };
+}
+
+function normalizeToolLabel(label: string): string {
+  const trimmed = label.trim();
+  if (trimmed.length === 0) {
+    return trimmed;
+  }
+
+  const collapsed = trimmed.replace(/^\s*(tool\s*:\s*)+/i, "Tool: ");
+  return collapsed;
 }
 
 /**

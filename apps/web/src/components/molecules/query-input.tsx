@@ -23,9 +23,11 @@ type QueryInputProps = {
   suggestionGroups: QuerySuggestionGroup[];
   onSuggestionSelect: (value: string) => void;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  onResetQuestionSession: () => void;
   helperText?: string;
   nextAction?: string;
   isSubmitting: boolean;
+  isQuestionSelectionLocked: boolean;
 };
 
 const DEFAULT_HELPER_TEXT = "Wähle eine Frage oder schreibe eine eigene. Halte sie konkret und kurz.";
@@ -38,16 +40,18 @@ export function QueryInput({
   suggestionGroups,
   onSuggestionSelect,
   onSubmit,
+  onResetQuestionSession,
   onQueryChange,
   helperText,
   nextAction,
   isSubmitting,
+  isQuestionSelectionLocked,
 }: QueryInputProps): React.JSX.Element {
   return (
     <form className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5" onSubmit={onSubmit}>
       <div className="space-y-2">
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Hilfreiche Fragen</p>
-        <Select onValueChange={onSuggestionSelect}>
+        <Select onValueChange={onSuggestionSelect} disabled={isQuestionSelectionLocked}>
           <SelectTrigger className="w-full bg-slate-50 text-left text-sm text-slate-700">
             <SelectValue placeholder="Frage aus Kategorie wählen…" />
           </SelectTrigger>
@@ -64,6 +68,11 @@ export function QueryInput({
             ))}
           </SelectContent>
         </Select>
+        {isQuestionSelectionLocked ? (
+          <p className="text-xs text-slate-600">
+            Fragenauswahl gesperrt. Für eine neue Frage bitte zuerst zurücksetzen.
+          </p>
+        ) : null}
       </div>
 
       <label className="block space-y-2" htmlFor="query">
@@ -81,13 +90,25 @@ export function QueryInput({
           Nächste Aktion: {nextAction}
         </p>
       )}
-      <Button
-        type="submit"
-        className="w-full bg-sky-600 shadow-sm transition hover:bg-sky-700 sm:w-auto"
-        disabled={isSubmitting}
-      >
-        {isSubmitting ? "Antwort wird geladen…" : "Antwort analysieren"}
-      </Button>
+      <div className="flex flex-wrap items-center gap-2">
+        <Button
+          type="submit"
+          className="w-full bg-sky-600 shadow-sm transition hover:bg-sky-700 sm:w-auto"
+          disabled={isSubmitting}
+        >
+          {isSubmitting ? "Antwort wird geladen…" : "Antwort analysieren"}
+        </Button>
+        {isQuestionSelectionLocked ? (
+          <Button
+            type="button"
+            variant="secondary"
+            className="w-full sm:w-auto"
+            onClick={onResetQuestionSession}
+          >
+            Neue Frage starten
+          </Button>
+        ) : null}
+      </div>
     </form>
   );
 }
