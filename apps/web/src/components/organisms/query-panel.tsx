@@ -16,8 +16,13 @@ import {
 } from "@/components/organisms/query-panel-status";
 import { PipelineStepper } from "@/features/home/molecules/PipelineStepper";
 import { buildHomeGraphModel, type HomeGraphModel } from "@/features/home/graph-view-model";
-import type { QuerySuccessResponse } from "@/features/query/contracts";
+import type { QueryContextElement, QuerySuccessResponse, QueryReference } from "@/features/query/contracts";
 import { buildQueryViewModel, type QueryViewModel } from "@/features/query/view-model";
+import {
+  buildGraphRagPromptMessages,
+  buildLlmOnlyPromptMessages,
+  type PromptMessage,
+} from "@/features/query/prompt-templates";
 
 const QueryInput = dynamic(
   () => import("@/components/molecules/query-input").then((module) => module.QueryInput),
@@ -57,6 +62,9 @@ type PersistedAnalysisState = {
   llmOnlyError: string | null;
   isQuestionSelectionLocked: boolean;
   status: QueryPanelStatus;
+  isLlmOnlyExpanded?: boolean;
+  isGraphRagExpanded?: boolean;
+  isSessionMemoryExpanded?: boolean;
 };
 
 type PersistedSessionSnapshot = {
@@ -134,6 +142,7 @@ export function QueryPanel(): React.JSX.Element {
   const [explorerMode, setExplorerMode] = useState<"query" | "system">("query");
   const [systemGraphModel, setSystemGraphModel] = useState<HomeGraphModel | null>(null);
   const [isSystemGraphLoading, setIsSystemGraphLoading] = useState(false);
+  const [isSelectionHighlightEnabled, setIsSelectionHighlightEnabled] = useState(true);
   const [expandedDerivationIds, setExpandedDerivationIds] = useState<Record<string, boolean>>({});
   const [sessionHistory, setSessionHistory] = useState<SessionHistoryEntry[]>([]);
   const [sessionSnapshots, setSessionSnapshots] = useState<PersistedSessionSnapshot[]>([]);
@@ -203,6 +212,11 @@ export function QueryPanel(): React.JSX.Element {
         }
         setLlmOnlyError(typeof parsed.llmOnlyError === "string" ? parsed.llmOnlyError : null);
         setIsQuestionSelectionLocked(parsed.isQuestionSelectionLocked === true);
+        setIsLlmOnlyExpanded(parsed.isLlmOnlyExpanded === true);
+        setIsGraphRagExpanded(parsed.isGraphRagExpanded === true);
+        if (typeof parsed.isSessionMemoryExpanded === "boolean") {
+          setIsSessionMemoryExpanded(parsed.isSessionMemoryExpanded);
+        }
         if (parsed.status === "success" || parsed.status === "empty") {
           setStatus(parsed.status);
         }
@@ -245,6 +259,9 @@ export function QueryPanel(): React.JSX.Element {
       llmOnlyError,
       isQuestionSelectionLocked,
       status,
+      isLlmOnlyExpanded,
+      isGraphRagExpanded,
+      isSessionMemoryExpanded,
     };
     const hasPayload =
       query.trim().length > 0 ||
@@ -268,6 +285,9 @@ export function QueryPanel(): React.JSX.Element {
     query,
     status,
     viewModel,
+    isLlmOnlyExpanded,
+    isGraphRagExpanded,
+    isSessionMemoryExpanded,
   ]);
 
   /**
@@ -414,6 +434,15 @@ export function QueryPanel(): React.JSX.Element {
     derivationDetails.length,
   );
   const overallQualityState = getOverallQualityState(qualitySignals);
+  const graphRagPromptPreview = formatPromptMessagesForDisplay(
+    buildGraphRagPromptMessages(query, references, viewModel?.contextElements ?? []),
+  );
+  const llmOnlyPromptPreview = formatPromptMessagesForDisplay(buildLlmOnlyPromptMessages(query));
+  const graphRagContextPayloadPreview = buildGraphContextPayloadPreview(
+    query,
+    references,
+    viewModel?.contextElements ?? [],
+  );
 
   const openExplorer = async (mode: "query" | "system") => {
     setExplorerMode(mode);
@@ -538,6 +567,49 @@ export function QueryPanel(): React.JSX.Element {
 
         <section className="rounded-xl border border-slate-200 bg-white p-3">
           <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Node-Auswahl fürs LLM</h3>
+            <span className="text-xs text-slate-500">Retrieval-Transparenz</span>
+          </div>
+          <p className="text-xs leading-6 text-slate-700">
+            Das System wählt zuerst semantisch passende Knoten über den Graph-Retrieval-Score aus, erweitert bei Bedarf über
+            Nachbarn (Hop) und übergibt nur diese Auswahl als Kontext an das LLM.
+          </p>
+          {references.length > 0 ? (
+            <ul className="mt-2 space-y-1 rounded-md border border-slate-200 bg-slate-50 p-2">
+              {references.slice(0, 3).map((reference) => (
+                <li key={reference.nodeId} className="text-xs text-slate-700">
+                  <span className="font-semibold">{reference.title}</span>{" "}
+                  <span className="text-slate-500">
+                    ({reference.nodeType}, Score {reference.score.toFixed(3)}, Hop {reference.hop})
+                  </span>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="mt-2 text-xs text-slate-500">Nach dem ersten Lauf siehst du hier die tatsächlich ausgewählten Nodes.</p>
+          )}
+        </section>
+
+        <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">RAG vs GraphRAG</h3>
+            <span className="text-xs text-slate-500">3 Kernunterschiede</span>
+          </div>
+          <ul className="space-y-1 text-xs leading-6 text-slate-700">
+            <li>
+              <span className="font-semibold text-slate-800">Kontextform:</span> Klassisches RAG liefert primär Textabschnitte; GraphRAG liefert zusätzlich Beziehungen zwischen Knoten.
+            </li>
+            <li>
+              <span className="font-semibold text-slate-800">Nachvollziehbarkeit:</span> Bei GraphRAG ist die Herleitung über Knoten und Kanten sichtbar, nicht nur über Textausschnitte.
+            </li>
+            <li>
+              <span className="font-semibold text-slate-800">Mehrhop-Logik:</span> GraphRAG kann Nachbarn gezielt über Hops einbeziehen und dadurch Ursachenketten strukturierter abbilden.
+            </li>
+          </ul>
+        </section>
+
+        <section className="rounded-xl border border-slate-200 bg-white p-3">
+          <div className="mb-2 flex items-center justify-between">
             <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">LLM-only vs GraphRAG</h3>
             <span className="text-xs text-slate-500">Warum der Graph hilft</span>
           </div>
@@ -591,6 +663,33 @@ export function QueryPanel(): React.JSX.Element {
               </p>
             </div>
           </div>
+          <details className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-2">
+            <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[0.1em] text-slate-600">
+              Prompt-Inspector (Read only)
+            </summary>
+            <div className="mt-2 grid gap-2 sm:grid-cols-2">
+              <div className="rounded-md border border-slate-200 bg-white p-2">
+                <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">Nur LLM Prompt</p>
+                <pre className="max-h-44 overflow-auto whitespace-pre-wrap text-[11px] leading-5 text-slate-700">
+                  {llmOnlyPromptPreview}
+                </pre>
+              </div>
+              <div className="rounded-md border border-slate-200 bg-white p-2">
+                <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">GraphRAG Prompt</p>
+                <pre className="max-h-44 overflow-auto whitespace-pre-wrap text-[11px] leading-5 text-slate-700">
+                  {graphRagPromptPreview}
+                </pre>
+              </div>
+            </div>
+            <div className="mt-2 rounded-md border border-slate-200 bg-white p-2">
+              <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">
+                GraphRAG Kontext-Paket an das LLM
+              </p>
+              <pre className="max-h-44 overflow-auto whitespace-pre-wrap text-[11px] leading-5 text-slate-700">
+                {graphRagContextPayloadPreview}
+              </pre>
+            </div>
+          </details>
         </section>
 
         <section className="rounded-xl border border-slate-200 bg-white p-3">
@@ -852,6 +951,19 @@ export function QueryPanel(): React.JSX.Element {
                   >
                     Gesamtgraph
                   </button>
+                  {explorerMode === "system" ? (
+                    <button
+                      type="button"
+                      onClick={() => setIsSelectionHighlightEnabled((current) => !current)}
+                      className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
+                        isSelectionHighlightEnabled
+                          ? "border border-indigo-300 bg-indigo-50 text-indigo-800"
+                          : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                      }`}
+                    >
+                      Beleg-Knoten hervorheben: {isSelectionHighlightEnabled ? "An" : "Aus"}
+                    </button>
+                  ) : null}
                   <button
                     type="button"
                     onClick={() => setIsExplorerOpen(false)}
@@ -869,6 +981,11 @@ export function QueryPanel(): React.JSX.Element {
                   variant="expanded"
                   interactive
                   initialLayout={explorerMode === "system" ? "force" : "hierarchy-vertical"}
+                  highlightNodeIds={
+                    explorerMode === "system" && isSelectionHighlightEnabled
+                      ? references.slice(0, 3).map((reference) => reference.nodeId)
+                      : []
+                  }
                 />
               ) : (
                 <p className="text-sm text-slate-600">Kein Graph verfügbar.</p>
@@ -918,6 +1035,36 @@ function truncatePreview(text: string, maxLength: number): string {
 
 function shouldShowPreviewToggle(text: string, maxLength: number): boolean {
   return text.replace(/\s+/g, " ").trim().length > maxLength;
+}
+
+function formatPromptMessagesForDisplay(messages: PromptMessage[]): string {
+  return messages
+    .map((message) => `[${message.role.toUpperCase()}]\n${message.content}`)
+    .join("\n\n");
+}
+
+function buildGraphContextPayloadPreview(
+  query: string,
+  references: QueryReference[],
+  contextElements: QueryContextElement[],
+): string {
+  const payload = {
+    query,
+    references: references.map((reference) => ({
+      title: reference.title,
+      nodeType: reference.nodeType,
+      citation: reference.citation,
+      explanationUrl: reference.explanationUrl ?? null,
+    })),
+    contextSummaries: contextElements.map((element) => ({
+      title: element.title,
+      summary: element.summary,
+      longDescription: element.longDescription ?? null,
+      source: element.source.publicReference.citation,
+    })),
+  };
+
+  return JSON.stringify(payload, null, 2);
 }
 
 function buildQualitySignals(

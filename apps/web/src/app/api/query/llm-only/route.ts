@@ -1,5 +1,6 @@
 import { parseQueryRequest } from "@/features/query/schemas";
 import { getQueryRuntimeEnv } from "@/lib/env";
+import { buildLlmOnlyPromptMessages } from "@/features/query/prompt-templates";
 
 const OPENAI_CHAT_ENDPOINT = "https://api.openai.com/v1/chat/completions";
 const OPENAI_MAX_COMPLETION_TOKENS = 900;
@@ -65,23 +66,7 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const query = parsed.data.query.trim();
-  const messages = [
-    {
-      role: "system",
-      content:
-        "Du bist ein hilfreicher Assistent. Gib eine verständliche Antwort in Alltagssprache. Kein Graph- oder Quellenkontext verfügbar.",
-    },
-    {
-      role: "user",
-      content: [
-        `Frage: ${query}`,
-        "Antworte ausschließlich als JSON mit den Feldern main, coreRationale, nextSteps.",
-        "main: 120-220 Wörter.",
-        "coreRationale: kurze Begründung ohne Quellenverweise.",
-        "nextSteps: 2-4 konkrete Schritte.",
-      ].join("\n\n"),
-    },
-  ];
+  const messages = buildLlmOnlyPromptMessages(query);
 
   const completionResponse = await fetch(OPENAI_CHAT_ENDPOINT, {
     method: "POST",

@@ -15,6 +15,7 @@ import {
   type RetrievalResult,
 } from "@/features/query/retrieval";
 import { buildStructuredAnswer } from "@/features/query/answer";
+import { buildGraphRagPromptMessages } from "@/features/query/prompt-templates";
 
 type QueryHandlerResult = {
   status: number;
@@ -154,65 +155,6 @@ class OpenAiUpstreamError extends Error {
         ? retryable
         : status === 429 || (status !== undefined && status >= 500);
   }
-}
-
-/**
- * Formats ranked references as numbered lines for the LLM prompt.
- */
-function formatReferenceList(references: QueryReference[]): string {
-  if (references.length === 0) {
-    return "Keine Referenzen verfügbar.";
-  }
-
-  return references
-    .map((reference, index) => {
-      const explanation = reference.explanationUrl ? `, URL: ${reference.explanationUrl}` : "";
-      return `${index + 1}. ${reference.title} (${reference.nodeType}) | Quelle: ${reference.citation}${explanation}`;
-    })
-    .join("\n");
-}
-
-/**
- * Formats context summaries as numbered lines for the LLM prompt.
- */
-function formatContextSummaries(contextElements: QueryContextElement[]): string {
-  if (contextElements.length === 0) {
-    return "Keine Kontextzusammenfassungen verfügbar.";
-  }
-
-  return contextElements
-    .map((element, index) => `${index + 1}. ${element.title}: ${element.summary}`)
-    .join("\n");
-}
-
-/**
- * Builds a minimal system and user message pair for OpenAI chat completion.
- */
-function buildOpenAiMessages(
-  query: string,
-  references: QueryReference[],
-  contextElements: QueryContextElement[],
-): Array<{ role: "system" | "user"; content: string }> {
-  const referenceList = formatReferenceList(references);
-  const contextSummaries = formatContextSummaries(contextElements);
-
-  const systemContent =
-    "Du bist ein System-Thinking-Assistent. Antworte klar in Alltagssprache, aber nur auf Basis des bereitgestellten Kontexts.";
-  const userContent = [
-    `Frage: ${query}`,
-    `Referenzen:\n${referenceList}`,
-    `Kontextzusammenfassungen:\n${contextSummaries}`,
-    "Nutze **nur** die oben genannten Referenzen und Kontextinformationen und gib keine zusätzlichen externen Fakten an.",
-    "Antworte ausschließlich mit validem JSON mit den Feldern \"main\", \"coreRationale\" und \"nextSteps\".",
-    "\"main\": 120-220 Wörter, leicht verständlich, mit 3 Teilen: Lage, Erklärung der Zusammenhänge, konkrete Konsequenz im Alltag.",
-    "\"coreRationale\": erkläre knapp die Nachvollziehbarkeit mit Verweisen [1], [2], [3] auf die obigen Referenzen.",
-    "\"nextSteps\": Array mit 2-4 konkreten, umsetzbaren nächsten Schritten.",
-  ].join("\n\n");
-
-  return [
-    { role: "system", content: systemContent },
-    { role: "user", content: userContent },
-  ];
 }
 
 /**
@@ -432,7 +374,7 @@ async function fetchOpenAiAnswer(options: {
   contextElements: QueryContextElement[];
 }): Promise<OpenAiAnswer> {
   const { apiKey, model, query, references, contextElements } = options;
-  const messages = buildOpenAiMessages(query, references, contextElements);
+  const messages = buildGraphRagPromptMessages(query, references, contextElements);
 
   async function requestCompletion(maxCompletionTokens: number): Promise<OpenAiChatPayload> {
     const requestPayload = {

@@ -21,6 +21,7 @@ type GraphPreviewProps = {
   variant?: "default" | "expanded";
   interactive?: boolean;
   initialLayout?: GraphLayoutMode;
+  highlightNodeIds?: string[];
 };
 
 type PersistedExplorerSettings = {
@@ -534,6 +535,7 @@ export function GraphPreview({
   variant = "default",
   interactive = false,
   initialLayout = "hierarchy-vertical",
+  highlightNodeIds = [],
 }: GraphPreviewProps): React.JSX.Element {
   const baseGraphHeightPx = GRAPH_HEIGHT_PX_BY_VARIANT[variant];
   const wrapperRef = useRef<HTMLDivElement | null>(null);
@@ -855,6 +857,12 @@ export function GraphPreview({
           },
         },
         {
+          selector: ".selection-muted",
+          style: {
+            opacity: 0.2,
+          },
+        },
+        {
           selector: ".focus-node",
           style: {
             "border-width": 3,
@@ -863,7 +871,23 @@ export function GraphPreview({
           },
         },
         {
+          selector: ".selection-focus-node",
+          style: {
+            "border-width": 3,
+            "border-color": "#0f4f94",
+            opacity: 1,
+          },
+        },
+        {
           selector: ".focus-edge",
+          style: {
+            width: 3,
+            "line-color": "#4f87c2",
+            opacity: 1,
+          },
+        },
+        {
+          selector: ".selection-focus-edge",
           style: {
             width: 3,
             "line-color": "#4f87c2",
@@ -947,6 +971,27 @@ export function GraphPreview({
       });
     };
 
+    const applyReferenceSelectionHighlight = () => {
+      withCySafely(cy, (activeCy) => {
+        activeCy.elements().removeClass("selection-muted");
+        activeCy.elements().removeClass("selection-focus-node");
+        activeCy.elements().removeClass("selection-focus-edge");
+        if (highlightNodeIds.length === 0) {
+          return;
+        }
+        const highlightedNodeSet = new Set(highlightNodeIds);
+        const highlightedNodes = activeCy.nodes().filter((node) => highlightedNodeSet.has(String(node.id())));
+        if (highlightedNodes.length === 0) {
+          return;
+        }
+        const highlightedNeighborhood = highlightedNodes.closedNeighborhood();
+        activeCy.elements().addClass("selection-muted");
+        highlightedNeighborhood.removeClass("selection-muted");
+        highlightedNodes.addClass("selection-focus-node");
+        highlightedNodes.connectedEdges().addClass("selection-focus-edge");
+      });
+    };
+
     cy.on("tap", "node", (event) => {
       const node = event.target;
       clearFocus();
@@ -996,6 +1041,7 @@ export function GraphPreview({
           window.setTimeout(() => {
             withCySafely(activeCy, (stableCy) => {
               resolveRenderedNodeOverlaps(stableCy, 44, 36);
+              applyReferenceSelectionHighlight();
               stableCy.fit(undefined, 30);
               setMiniMap(buildMiniMapSnapshot(stableCy));
             });
@@ -1004,10 +1050,12 @@ export function GraphPreview({
           window.setTimeout(() => {
             withCySafely(activeCy, (stableCy) => {
               resolveRenderedNodeOverlaps(stableCy, 44, 18);
+              applyReferenceSelectionHighlight();
               stableCy.fit(undefined, 30);
               setMiniMap(buildMiniMapSnapshot(stableCy));
             });
           }, 150);
+          applyReferenceSelectionHighlight();
           activeCy.fit(undefined, 30);
           setMiniMap(buildMiniMapSnapshot(activeCy));
         });
@@ -1015,6 +1063,7 @@ export function GraphPreview({
     }
 
     activeLayout.run();
+    applyReferenceSelectionHighlight();
     withCySafely(cy, (activeCy) => {
       setMiniMap(buildMiniMapSnapshot(activeCy));
     });
@@ -1022,6 +1071,7 @@ export function GraphPreview({
     const resizeObserver = new ResizeObserver(() => {
       withCySafely(cy, (activeCy) => {
         activeCy.resize();
+        applyReferenceSelectionHighlight();
         activeCy.fit(undefined, 20);
         setMiniMap(buildMiniMapSnapshot(activeCy));
       });
@@ -1052,7 +1102,7 @@ export function GraphPreview({
       });
       setTooltip(null);
     };
-  }, [elements, layoutMode, nodeCount]);
+  }, [elements, layoutMode, nodeCount, highlightNodeIds]);
 
   const handleFit = () => {
     withCySafely(cyRef.current, (activeCy) => {

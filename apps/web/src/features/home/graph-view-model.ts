@@ -164,7 +164,9 @@ export function buildHomeGraphModel(
     y: 20,
   };
 
-  const evidenceNodes: HomeGraphNode[] = derivationDetails.slice(0, 2).map((detail, index) => ({
+  const evidenceNodes: HomeGraphNode[] = derivationDetails
+    .slice(0, Math.min(3, referenceNodes.length))
+    .map((detail, index) => ({
     id: `evidence-${detail.nodeId}`,
     label: detail.label,
     compactLabel: toCompactLabel(detail.label),
@@ -173,7 +175,7 @@ export function buildHomeGraphModel(
     url: detail.sourceUrl,
     kind: "evidence",
     nodeType: "Evidence",
-    x: derivationDetails.length === 1 ? 50 : 33 + index * 34,
+    x: derivationDetails.length === 1 ? 50 : 24 + index * 26,
     y: 88,
   }));
 
@@ -212,7 +214,7 @@ export function buildHomeGraphModel(
     x: 50,
     y: 96,
   };
-  const answerEdges: HomeGraphEdge[] =
+  const answerEdgesFromEvidence: HomeGraphEdge[] =
     evidenceNodes.length > 0
       ? evidenceNodes.map((node, index) => ({
           id: `answer-link-${node.id}`,
@@ -220,6 +222,21 @@ export function buildHomeGraphModel(
           target: answerNode.id,
           label: `3 Ableiten ${index + 1}`,
         }))
+      : [];
+  const referencedIdsWithEvidence = new Set(
+    evidenceEdges.map((edge) => edge.source),
+  );
+  const answerEdgesFromUnpairedReferences: HomeGraphEdge[] = referenceNodes
+    .filter((referenceNode) => !referencedIdsWithEvidence.has(referenceNode.id))
+    .map((referenceNode, index) => ({
+      id: `answer-link-direct-${referenceNode.id}`,
+      source: referenceNode.id,
+      target: answerNode.id,
+      label: `3 Ableiten direkt ${index + 1}`,
+    }));
+  const answerEdges: HomeGraphEdge[] =
+    answerEdgesFromEvidence.length > 0 || answerEdgesFromUnpairedReferences.length > 0
+      ? [...answerEdgesFromEvidence, ...answerEdgesFromUnpairedReferences]
       : [
           {
             id: "answer-link-fallback",
