@@ -1,84 +1,65 @@
 # User Flows
 
-## Journey 1 Erstes Erfolgserlebnis
+## Journey 1 Public Readiness verstehen
 ### Ziel
-1. Nutzer versteht in einem Durchlauf die Kernaussage und die stützenden Bezüge.
+1. Nutzer erkennt vor der ersten Anfrage, dass die Public Plattform vorbereitet ist und wie mit Secrets umgegangen wird.
 
 ### Trigger
-1. Nutzer öffnet die Public Demo mit einer konkreten Systemfrage.
+1. Nutzer oeffnet die Public Demo Startseite.
 
 ### Schritte
-1. Nutzer liest Titel, Subline und den kurzen Hilfetext unter der Eingabe.
-2. Nutzer gibt eine Frage ein und wählt Antwort anzeigen.
-3. Im Antwortbereich erscheint inline der Loading Zustand.
-4. Der gleiche Bereich zeigt danach die Hauptantwort.
-5. Darunter erscheinen die wichtigen Bezüge.
-6. Nutzer öffnet bei Bedarf die Herleitung.
+1. Nutzer liest Titel, Subline und den kompakten Plattform-Statusblock oberhalb der Eingabe.
+2. Nutzer sieht den Status `Setup bereit` oder `Setup in Vorbereitung` als Klartext.
+3. Nutzer liest den Secret-Hinweis, dass Schluessel nicht im Repository liegen.
+4. Nutzer startet mit einer Frage den Hauptfluss.
 
 ### Ergebnis
-1. Nutzer versteht die Kernaussage und erkennt die stützenden Bezüge ohne Kontextwechsel.
-
-### Varianten
-1. Nutzer startet mit der vorgeschlagenen Beispielfrage.
-2. Nutzer startet direkt mit einer eigenen Frage.
-3. Loading dauert länger, der Zustand bleibt ruhig im Antwortbereich sichtbar.
-
-### Fehlerpfad
-1. Bei Empty, Error oder Rate Limit wechselt der Ablauf in Journey 3 Recovery.
+1. Nutzer vertraut dem Betriebsrahmen, bevor eine Anfrage gesendet wird.
 
 ### Erfolgskriterium
-1. Nutzer kann die Kernaussage und mindestens einen stützenden Bezug benennen.
+1. Nutzer kann den aktuellen Plattformstatus und die Secret-Hygiene-Regel benennen.
 
-## Journey 2 Plausibilitätsprüfung
+## Journey 2 Frage senden und Antwort einordnen
 ### Ziel
-1. Nutzer bewertet die Belastbarkeit der Antwort ohne visuelle Überlastung.
+1. Nutzer bekommt Hauptantwort und Bezuege ohne Ablenkung durch Infrastrukturdetails.
 
 ### Trigger
-1. Nutzer möchte die Belastbarkeit der Antwort prüfen.
+1. Nutzer sendet eine konkrete Systemfrage.
 
 ### Schritte
-1. Nutzer liest zuerst die Hauptantwort vollständig.
-2. Nutzer prüft die wichtigen Bezüge auf fachliche Passung.
-3. Nutzer öffnet die Herleitung nur bei Bedarf.
-4. Nutzer entscheidet, ob die Aussage für den aktuellen Zweck plausibel genug ist.
+1. Im Antwortbereich erscheint `Loading` inline.
+2. Nach Abschluss erscheint die Hauptantwort im selben Bereich.
+3. Darunter erscheinen wichtige Bezuege.
+4. Optional oeffnet Nutzer die Herleitung.
+5. Plattform-Status bleibt als leiser Kontextblock sichtbar, aber nicht dominant.
 
 ### Ergebnis
-1. Nutzer kann die Antwort einordnen, ohne von Detailtiefe überlastet zu werden.
-
-### Varianten
-1. Hauptantwort plus Bezüge reichen für die Entscheidung.
-2. Die Herleitung dient als zweite Prüfebene.
-3. Nutzer präzisiert die Frage für einen zweiten Lauf.
-
-### Fehlerpfad
-1. Wenn Bezüge unklar bleiben, präzisiert der Nutzer die Frage und startet erneut.
+1. Der inhaltliche Fluss bleibt stabil, waehrend Infrastrukturvertrauen bestehen bleibt.
 
 ### Erfolgskriterium
-1. Nutzer kann klar benennen, ob Antwort und Bezüge zusammenpassen.
+1. Nutzer kann die Kernaussage und mindestens einen Bezug wiedergeben.
 
-## Journey 3 Recovery bei Unsicherheit
+## Journey 3 Recovery bei Betriebsgrenzen
 ### Ziel
-1. Nutzer bleibt orientiert und kann mit einer klaren Aktion fortsetzen.
+1. Nutzer kann bei Stoerungen sofort eine naechste sinnvolle Aktion ausfuehren.
 
 ### Trigger
-1. Im Antwortbereich erscheint inline ein Empty, Error oder Rate Limit Zustand.
+1. Der Antwortbereich zeigt `Empty`, `Error` oder `Rate Limit`.
 
 ### Schritte
-1. Nutzer erkennt den Zustand direkt am Ort der erwarteten Antwort.
-2. Nutzer liest Titel, kurze Erklärung und eine empfohlene Aktion.
-3. Nutzer führt die empfohlene Aktion aus.
-4. Nutzer startet den nächsten Versuch.
+1. Nutzer erkennt den Zustand direkt im Antwortbereich.
+2. Nutzer liest eine kurze Ursache in Klartext.
+3. Nutzer fuehrt genau eine empfohlene Aktion aus.
+4. Optional liest Nutzer im Plattform-Statusblock den stabilen Betriebsrahmen.
+
+### Zustandslogik
+1. `Loading`: Anfrage wird verarbeitet, Aktion ist warten.
+2. `Empty`: kein ausreichend passender Kontext gefunden, Aktion ist Frage praezisieren.
+3. `Error`: Anfrage konnte nicht verarbeitet werden, Aktion ist erneut senden.
+4. `Rate Limit`: Anfragekontingent kurzzeitig erreicht, Aktion ist kurz warten und erneut senden.
 
 ### Ergebnis
-1. Nutzer bleibt orientiert und setzt den Fluss ohne zusätzliche Navigation fort.
-
-### Varianten
-1. Empty: Nutzer präzisiert die Frage.
-2. Error: Nutzer versucht es erneut.
-3. Rate Limit: Nutzer wartet kurz und sendet dann erneut.
-
-### Fehlerpfad
-1. Bei wiederholtem Error beendet der Nutzer den Versuch und startet später neu.
+1. Nutzer bleibt orientiert und setzt den Fluss ohne Seitenwechsel fort.
 
 ### Erfolgskriterium
-1. Nutzer findet ohne Umweg die nächste sinnvolle Aktion.
+1. Nutzer findet in jedem Zustand in unter zehn Sekunden die naechste Aktion.

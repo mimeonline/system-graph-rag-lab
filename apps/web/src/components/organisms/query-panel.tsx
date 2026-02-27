@@ -4,6 +4,8 @@ import type { FormEvent } from "react";
 import { useState } from "react";
 
 import { QueryInput } from "@/components/molecules/query-input";
+import { GraphPreview } from "@/components/molecules/graph-preview";
+import { buildHomeGraphModel } from "@/features/home/graph-view-model";
 import { buildQueryViewModel, type QueryViewModel } from "@/features/query/view-model";
 import type { QuerySuccessResponse } from "@/features/query/contracts";
 import {
@@ -88,6 +90,7 @@ export function QueryPanel(): React.JSX.Element {
   const coreRationale =
     viewModel?.answer.coreRationale ??
     "Hier wird der knappe P0-Kernnachweis angezeigt, sobald eine Antwort vorliegt.";
+  const graphModel = buildHomeGraphModel(viewModel, query);
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(300px,36%)]">
@@ -153,6 +156,8 @@ export function QueryPanel(): React.JSX.Element {
 
       <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="text-base font-semibold text-slate-900">Kontext und Tools</h2>
+
+        <GraphPreview model={graphModel} />
 
         <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
           <div className="flex items-center justify-between">

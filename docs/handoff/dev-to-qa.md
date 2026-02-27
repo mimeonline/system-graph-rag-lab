@@ -226,3 +226,63 @@ CALL db.index.vector.createNodeIndex(
 
 ### Genaue Testkommandos mit erwarteten Ergebnissen
 1. `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts src/components/organisms/query-panel-status.test.ts` Exit Code `0`.
+
+## E3 Frontend Nutzerfuehrung Startseite und Graph-Sichtbarkeit
+### Was ist fertig
+1. Die Startseite zeigt jetzt eine klare Erklaerung "So funktioniert GraphRAG" mit drei Schritten fuer Query, Graph-Kontext und Entscheidungsnutzen.
+2. Das QueryPanel besitzt eine sichtbare, responsive Graph-Ansicht ohne neue externe UI-Abhaengigkeiten.
+3. Die Graph-Ansicht nutzt vorhandene Query-Daten (`references`, `derivationDetails`) fuer Knoten/Kanten und zeigt ohne Query einen expliziten Fallback.
+4. Die Ableitungslogik ist als separater Helper (`src/features/home/graph-view-model.ts`) mit Tests implementiert.
+
+### Wie kann QA testen lokal inkl konkrete Startschritte
+1. `pnpm --dir apps/web dev` starten und die Startseite laden.
+2. Ohne Anfrage pruefen, dass die Graph-Ansicht sichtbar ist und den Fallback-Hinweis zeigt.
+3. Eine Query absenden und pruefen, dass der Graph auf `query-basiert` wechselt und Referenzknoten aus der Antwort zeigt.
+4. Mobile-Breite pruefen (z. B. DevTools iPhone-Viewport): Karten und Graph bleiben lesbar und ohne horizontalen Scroll-Zwang.
+
+### Genaue Testkommandos mit erwarteten Ergebnissen
+1. `pnpm --dir apps/web exec vitest run src/features/home/graph-view-model.test.ts src/features/query/view-model.test.ts` Exit Code `0`.
+2. `pnpm --dir apps/web lint` Exit Code `0`.
+
+## E3 Frontend Nutzerfuehrung Schnellfix Graph-Label-Overlap
+### Was ist fertig
+1. Node-Layer in  nutzt feste Hoehe  statt .
+2. Node-Breite wurde von  auf  reduziert.
+3. Scope blieb bei reinem UI-Layoutfix ohne neue Libraries.
+
+### Wie kann QA testen
+1. 
+> web@0.1.0 dev /Users/michaelmeierhoff/Code/projects/system-graph-rag-lab/apps/web
+> next dev
+
+ ELIFECYCLE  Command failed with exit code -35. starten.
+2. Fallback-Graph in der Home-Ansicht oeffnen.
+3. Pruefen, dass Labels im Screenshot-Fall nicht mehr ueberlagert werden.
+
+## E3 Frontend Nutzerfuehrung Schnellfix Graph-Label-Overlap
+### Was ist fertig
+1. Node-Layer in GraphPreview nutzt feste Hoehe h-[320px] statt h-full.
+2. Node-Breite wurde von w-[150px] auf w-[128px] reduziert.
+3. Scope blieb bei reinem UI-Layoutfix ohne neue Libraries.
+
+### Wie kann QA testen
+1. pnpm --dir apps/web dev starten.
+2. Fallback-Graph in der Home-Ansicht oeffnen.
+3. Pruefen, dass Labels im Screenshot-Fall nicht mehr ueberlagert werden.
+
+## E3 Frontend Nutzerfuehrung Finaler UX-Fix obere Graph-Ueberdeckung
+### Was ist fertig
+1. `buildHomeGraphModel` positioniert den Query-Knoten tiefer (`y=20`) und verschiebt Referenzknoten nach unten, damit der obere Bereich mehr Luft zu Edge-Labels erhaelt.
+2. `GraphPreview` rendert Kantenlinien und Kantenlabels getrennt, sodass Labels ueber den Nodes liegen und nicht mehr verdeckt werden.
+3. Label-Positionen erhalten einen normalisierten Seiten-Offset plus vertikalen Push im oberen Bereich.
+4. `src/features/home/graph-view-model.test.ts` wurde um Positions-Assertions erweitert.
+
+### Wie kann QA testen lokal inkl konkrete Startschritte
+1. `pnpm --dir apps/web dev` starten und die Home-Ansicht oeffnen.
+2. Ohne Query den Fallback-Graph pruefen: oberer Knoten und `retrieval`/`ranking` Labels muessen sichtbar getrennt sein.
+3. Mit Query-Daten pruefen: Labels liegen nicht unter den Knoten, besonders im oberen Drittel.
+4. Mobile Viewport (z. B. 390x844) und Desktop Viewport (z. B. 1440x900) gegenpruefen.
+
+### Genaue Testkommandos mit erwarteten Ergebnissen
+1. `cd apps/web && pnpm exec vitest run src/features/home/graph-view-model.test.ts` sollte Exit Code `0` liefern.
+2. Im aktuellen Dev-Run konnte der Test lokal nicht abgeschlossen werden wegen `fork: Resource temporarily unavailable` mit anschliessender `vitest`-Module-Resolution-Stoerung; QA bitte in stabiler Umgebung erneut ausfuehren.

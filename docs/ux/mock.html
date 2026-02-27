@@ -3,21 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>System GraphRAG Public MVP UX Mock</title>
+  <title>Public Plattform Setup UX Mock</title>
   <style>
     :root {
-      --bg: #f4f7fb;
+      --bg: #f3f6fb;
       --surface: #ffffff;
-      --line: #d6deea;
-      --text: #16253a;
-      --muted: #5b6d83;
-      --navy: #0c2345;
+      --line: #d7e0ec;
+      --text: #15263c;
+      --muted: #5f7289;
+      --navy: #0f2748;
       --primary: #1f66e5;
-      --loading: #245fdf;
-      --empty: #9a6502;
-      --error: #b4232f;
-      --rate: #1c6d52;
-      --max: 1180px;
+      --loading: #2a67df;
+      --empty: #9b6809;
+      --error: #b52735;
+      --rate: #246b53;
+      --max: 1160px;
       --radius: 12px;
       --font: "Manrope", "Avenir Next", "Segoe UI", sans-serif;
     }
@@ -26,25 +26,26 @@
 
     body {
       margin: 0;
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+      font-family: var(--font);
       background: var(--bg);
       color: var(--text);
-      font-family: var(--font);
       line-height: 1.45;
     }
 
-    .site-header {
-      width: 100%;
+    .header {
       background: var(--navy);
       color: #fff;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.16);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+    }
+
+    .header-inner,
+    .content,
+    .footer-inner {
+      width: min(var(--max), 100% - 2rem);
+      margin: 0 auto;
     }
 
     .header-inner {
-      width: min(var(--max), 100% - 2rem);
-      margin: 0 auto;
       min-height: 64px;
       display: flex;
       align-items: center;
@@ -53,37 +54,41 @@
     }
 
     .brand {
-      font-size: 1rem;
       font-weight: 700;
+      font-size: 1rem;
       letter-spacing: 0.01em;
     }
 
-    .header-links {
-      font-size: 0.88rem;
+    .header-note {
+      font-size: 0.85rem;
       color: rgba(255, 255, 255, 0.86);
     }
 
     .content {
-      width: min(var(--max), 100% - 2rem);
-      margin: 1.2rem auto 1.4rem;
       display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(300px, 36%);
-      gap: 1.2rem;
-      flex: 1 0 auto;
-      align-items: start;
+      grid-template-columns: minmax(0, 1fr) minmax(290px, 34%);
+      gap: 1rem;
+      margin-top: 1.15rem;
+      margin-bottom: 1.3rem;
     }
 
-    .panel {
+    .card {
       background: var(--surface);
       border: 1px solid var(--line);
       border-radius: var(--radius);
       padding: 1rem;
     }
 
-    .panel-title {
+    h1 {
       margin: 0;
-      font-size: 1.05rem;
-      font-weight: 700;
+      font-size: 1.24rem;
+      line-height: 1.25;
+    }
+
+    .subline {
+      margin: 0.36rem 0 0;
+      color: var(--muted);
+      font-size: 0.92rem;
     }
 
     .section {
@@ -93,9 +98,9 @@
     }
 
     .label {
-      margin: 0 0 0.45rem;
-      font-size: 0.78rem;
+      margin: 0 0 0.42rem;
       text-transform: uppercase;
+      font-size: 0.77rem;
       letter-spacing: 0.08em;
       color: var(--muted);
       font-weight: 700;
@@ -103,24 +108,30 @@
 
     textarea {
       width: 100%;
-      min-height: 92px;
-      border: 1px solid #c3cfdd;
+      min-height: 98px;
+      resize: vertical;
+      border: 1px solid #c4d1e0;
       border-radius: 10px;
-      padding: 0.72rem;
       font: inherit;
       color: var(--text);
+      padding: 0.7rem;
       background: #fff;
-      resize: vertical;
     }
 
     textarea:focus-visible,
     button:focus-visible,
     details summary:focus-visible {
-      outline: 3px solid #93b6ff;
+      outline: 3px solid #95b8ff;
       outline-offset: 2px;
     }
 
-    .ask-row {
+    .helper {
+      margin: 0.5rem 0 0;
+      font-size: 0.84rem;
+      color: var(--muted);
+    }
+
+    .btn-row {
       margin-top: 0.62rem;
       display: flex;
       justify-content: flex-end;
@@ -134,118 +145,133 @@
       font: inherit;
       font-weight: 700;
       padding: 0.64rem 1rem;
-      min-width: 156px;
-      cursor: default;
+      min-width: 160px;
     }
 
-    .answer {
+    .answer-text {
       margin: 0;
-      font-size: 0.98rem;
+      font-size: 0.97rem;
     }
 
-    .answer + .answer { margin-top: 0.55rem; }
+    .answer-text + .answer-text {
+      margin-top: 0.48rem;
+    }
 
-    .inline-state {
-      margin-top: 0.75rem;
+    .state {
+      margin-top: 0.7rem;
       border: 1px solid var(--line);
       border-left-width: 4px;
       border-radius: 10px;
-      padding: 0.55rem 0.62rem;
       background: #fff;
+      padding: 0.58rem 0.62rem;
     }
 
-    .inline-state h3 {
+    .state h3 {
       margin: 0;
       font-size: 0.87rem;
     }
 
-    .inline-state p {
-      margin: 0.18rem 0 0;
+    .state p {
+      margin: 0.22rem 0 0;
       font-size: 0.83rem;
       color: var(--muted);
     }
 
-    .state-loading { border-left-color: var(--loading); }
-    .state-empty { border-left-color: var(--empty); }
-    .state-error { border-left-color: var(--error); }
-    .state-rate { border-left-color: var(--rate); }
+    .loading { border-left-color: var(--loading); }
+    .empty { border-left-color: var(--empty); }
+    .error { border-left-color: var(--error); }
+    .rate { border-left-color: var(--rate); }
 
-    .ref-grid {
+    .refs {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.55rem;
     }
 
-    .ref-card {
+    .ref {
       border: 1px solid var(--line);
       border-radius: 10px;
-      background: #fcfdff;
-      padding: 0.55rem 0.6rem;
+      background: #fbfdff;
+      padding: 0.55rem;
     }
 
-    .ref-card strong {
+    .ref strong {
       display: block;
       font-size: 0.88rem;
       margin-bottom: 0.16rem;
     }
 
-    .ref-card span {
+    .ref span {
       display: block;
-      font-size: 0.82rem;
       color: var(--muted);
+      font-size: 0.82rem;
     }
 
     details {
       border: 1px solid var(--line);
       border-radius: 10px;
-      padding: 0.56rem 0.62rem;
-      background: #fcfdff;
+      background: #fbfdff;
+      padding: 0.55rem;
     }
 
     summary {
       font-size: 0.9rem;
       font-weight: 700;
-      cursor: default;
     }
 
-    .detail-list {
+    .steps {
       margin: 0.5rem 0 0;
       padding-left: 1.1rem;
       font-size: 0.84rem;
-      color: #2b3f57;
+      color: #2b425d;
     }
 
-    .site-footer {
-      width: 100%;
-      background: #0a1f3b;
+    .status-row {
+      display: grid;
+      grid-template-columns: 108px 1fr;
+      gap: 0.5rem;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .status-row:last-child { border-bottom: 0; }
+
+    .status-key {
+      margin: 0;
+      font-size: 0.77rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--muted);
+      font-weight: 700;
+    }
+
+    .status-value {
+      margin: 0;
+      font-size: 0.86rem;
+    }
+
+    .footer {
+      background: #0c203d;
       color: rgba(255, 255, 255, 0.86);
-      border-top: 1px solid #12335f;
-      margin-top: auto;
+      border-top: 1px solid #153760;
     }
 
     .footer-inner {
-      width: min(var(--max), 100% - 2rem);
-      margin: 0 auto;
-      min-height: 52px;
+      min-height: 50px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 1rem;
-      font-size: 0.82rem;
+      font-size: 0.81rem;
     }
 
-    .mobile-action {
+    .sticky {
       display: none;
     }
 
     @media (max-width: 920px) {
-      .content {
-        grid-template-columns: 1fr;
-      }
-
-      .ref-grid {
-        grid-template-columns: 1fr;
-      }
+      .content { grid-template-columns: 1fr; }
+      .refs { grid-template-columns: 1fr; }
     }
 
     @media (max-width: 780px) {
@@ -255,134 +281,137 @@
         width: min(760px, 100% - 1.2rem);
       }
 
-      .ask-row { display: none; }
+      .btn-row { display: none; }
 
-      .mobile-action {
-        display: block;
-        position: sticky;
+      .sticky {
+        position: fixed;
+        left: 0;
+        right: 0;
         bottom: 0;
-        width: 100%;
-        z-index: 5;
-        background: rgba(244, 247, 251, 0.96);
+        display: block;
+        padding: 0.58rem;
+        background: rgba(243, 246, 251, 0.98);
         border-top: 1px solid var(--line);
-        padding: 0.55rem 0.6rem calc(0.55rem + env(safe-area-inset-bottom));
       }
 
-      .mobile-action .btn {
+      .sticky .btn {
         width: 100%;
+        min-width: 0;
       }
 
-      .footer-inner {
-        min-height: 46px;
-        font-size: 0.78rem;
-      }
+      .footer { padding-bottom: 3.8rem; }
     }
   </style>
 </head>
 <body>
-  <header class="site-header">
+  <header class="header">
     <div class="header-inner">
-      <div class="brand">System GraphRAG Demo</div>
-      <div class="header-links">GitHub · Info</div>
+      <div class="brand">System GraphRAG Public Demo</div>
+      <div class="header-note">Public Plattform Setup E4-S5</div>
     </div>
   </header>
 
   <main class="content">
-    <section class="panel" aria-label="Panel A Antwort">
-      <h2 class="panel-title">Panel A: Antwort</h2>
+    <section class="card">
+      <h1>Public System GraphRAG Demo</h1>
+      <p class="subline">Stelle eine Frage und erhalte eine klare Hauptantwort mit nachvollziehbaren Bezuegen.</p>
 
-      <section class="section" aria-label="Frage">
-        <p class="label">Frage</p>
-        <textarea aria-label="Frage eingeben">Welche Trade offs entstehen bei eventgetriebener Architektur zwischen Entkopplung und operativer Komplexität?</textarea>
-        <div class="ask-row">
-          <button class="btn" type="button">Ask</button>
+      <div class="section">
+        <p class="label">Deine Frage</p>
+        <textarea>Welche Zielkonflikte entstehen zwischen Resilienz und Effizienz in verteilten Systemen?</textarea>
+        <p class="helper">Je konkreter die Frage, desto belastbarer sind Antwort und Bezuege.</p>
+        <div class="btn-row">
+          <button class="btn" type="button">Antwort anzeigen</button>
         </div>
-      </section>
+      </div>
 
-      <section class="section" aria-label="Antwort">
+      <div class="section">
         <p class="label">Antwort</p>
-        <p class="answer">Eventgetriebene Architekturen entkoppeln Teams und Services, verlagern aber Komplexität in Beobachtbarkeit, Fehlerbehandlung und Konsistenzregeln.</p>
-        <p class="answer">Für Architekturentscheidungen heißt das: weniger direkte Abhängigkeiten, aber höherer Bedarf an klaren Betriebsstandards.</p>
-        <p class="answer">Der wichtigste Zielkonflikt liegt zwischen Evolvierbarkeit und operativer Steuerbarkeit.</p>
-      </section>
+        <p class="answer-text">Resilienz erhoeht die Fehlertoleranz, steigert aber oft Koordinations- und Betriebsaufwand in Betrieb und Observability.</p>
+        <p class="answer-text">Effizienzoptimierung reduziert kurzfristig Kosten, kann jedoch Redundanzen abbauen und dadurch die Wiederherstellbarkeit verschlechtern.</p>
 
-      <section class="section" aria-label="Inline Zustände">
-        <p class="label">Zustände Inline im Antwortbereich</p>
-        <article class="inline-state state-loading" aria-label="Loading Zustand">
-          <h3>Loading</h3>
-          <p>Antwort wird gerade hergeleitet. Relevante Konzepte werden zusammengeführt.</p>
-        </article>
-        <article class="inline-state state-empty" aria-label="Empty Zustand">
-          <h3>Empty</h3>
-          <p>Zu dieser Formulierung konnten keine belastbaren Bezüge gefunden werden. Bitte Frage präzisieren.</p>
-        </article>
-        <article class="inline-state state-error" aria-label="Error Zustand">
-          <h3>Error</h3>
-          <p>Die Anfrage konnte aktuell nicht verarbeitet werden. Bitte erneut versuchen.</p>
-        </article>
-        <article class="inline-state state-rate" aria-label="Rate Limit Zustand">
-          <h3>Rate Limit</h3>
-          <p>Zu viele Anfragen in kurzer Zeit. Bitte kurz warten und dann erneut senden.</p>
-        </article>
-      </section>
-    </section>
+        <div class="state loading">
+          <h3>Loading: Antwort wird vorbereitet</h3>
+          <p>Relevante Inhalte werden zusammengestellt. Bitte kurz warten.</p>
+        </div>
 
-    <section class="panel" aria-label="Panel B Kontext">
-      <h2 class="panel-title">Panel B: Kontext</h2>
+        <div class="state empty">
+          <h3>Empty: Keine passende Antwort gefunden</h3>
+          <p>Fuer diese Formulierung wurde kein ausreichend passender Kontext gefunden. Aktion: Frage praezisieren.</p>
+        </div>
 
-      <section class="section" aria-label="Referenzkonzepte">
-        <p class="label">Referenzkonzepte</p>
-        <div class="ref-grid">
-          <article class="ref-card">
-            <strong>Loose Coupling</strong>
-            <span>Erklärt den Entkopplungsgewinn.</span>
+        <div class="state error">
+          <h3>Error: Antwort aktuell nicht verfuegbar</h3>
+          <p>Die Anfrage konnte nicht verarbeitet werden. Aktion: Erneut versuchen.</p>
+        </div>
+
+        <div class="state rate">
+          <h3>Rate Limit: Kurz warten</h3>
+          <p>Das Anfragekontingent ist voruebergehend erreicht. Aktion: In kurzer Zeit erneut senden.</p>
+        </div>
+      </div>
+
+      <div class="section">
+        <p class="label">Wichtige Bezuege</p>
+        <div class="refs">
+          <article class="ref">
+            <strong>Feedback Loops</strong>
+            <span>Verstaerkt Nebenwirkungen von lokalen Effizienzoptimierungen.</span>
           </article>
-          <article class="ref-card">
-            <strong>Observability</strong>
-            <span>Begründet den Betriebsaufwand.</span>
-          </article>
-          <article class="ref-card">
-            <strong>Eventual Consistency</strong>
-            <span>Zeigt Konsistenzfolgen asynchroner Flüsse.</span>
-          </article>
-          <article class="ref-card">
-            <strong>Operational Overhead</strong>
-            <span>Macht den Steuerungsaufwand sichtbar.</span>
+          <article class="ref">
+            <strong>Resilience Engineering</strong>
+            <span>Erfordert Redundanz und klare Wiederanlaufstrategien.</span>
           </article>
         </div>
-      </section>
+      </div>
 
-      <section class="section" aria-label="Herleitung Disclosure">
-        <p class="label">Herleitung</p>
+      <div class="section">
+        <p class="label">So wurde die Antwort hergeleitet</p>
         <details>
           <summary>Herleitung anzeigen</summary>
-          <ol class="detail-list">
-            <li>Retrieval Steps: Frage auf Schlüsselkonzepte gemappt.</li>
-            <li>Graph Hops: angrenzende Beziehungen für Kontext priorisiert.</li>
-            <li>Synthese: Antwort aus den stärksten Bezügen verdichtet.</li>
+          <ol class="steps">
+            <li>Frage in Systemmuster zerlegt.</li>
+            <li>Relevante Konzepte und Relationen priorisiert.</li>
+            <li>Ergebnis als knappe Abwaegung zusammengefasst.</li>
           </ol>
         </details>
-        <details>
-          <summary>Retrieval Details anzeigen</summary>
-          <ol class="detail-list">
-            <li>Top-K Kandidaten mit Relevanzprüfung ausgewählt.</li>
-            <li>Duplikate entfernt und Reihenfolge stabilisiert.</li>
-            <li>Nur die wichtigsten Bezüge für Erstkontakt sichtbar gemacht.</li>
-          </ol>
-        </details>
-      </section>
+      </div>
     </section>
+
+    <aside class="card">
+      <p class="label">Public Plattform Status</p>
+
+      <div class="status-row">
+        <p class="status-key">Setup Status</p>
+        <p class="status-value">Setup bereit fuer Public MVP</p>
+      </div>
+
+      <div class="status-row">
+        <p class="status-key">Deployment</p>
+        <p class="status-value">Public Deployment Ziel ist verknuepft.</p>
+      </div>
+
+      <div class="status-row">
+        <p class="status-key">Secrets</p>
+        <p class="status-value">Secrets liegen nur in Vercel und Aura, nie im Repository.</p>
+      </div>
+
+      <div class="status-row">
+        <p class="status-key">Nutzungsschutz</p>
+        <p class="status-value">Bei hoher Last kann eine kurze Wartezeit bis zur naechsten Anfrage auftreten.</p>
+      </div>
+    </aside>
   </main>
 
-  <div class="mobile-action" aria-label="Mobile Primary Action">
-    <button class="btn" type="button">Ask</button>
-  </div>
-
-  <footer class="site-footer">
+  <footer class="footer">
     <div class="footer-inner">
-      <span>System GraphRAG Public MVP</span>
-      <span>Ruhiges, professionelles Layout mit klarer Hierarchie</span>
+      <span>Story E4-S5: Public Plattform Setup vorbereiten</span>
+      <span>UX Mock fuer Architect Handoff</span>
     </div>
   </footer>
+
+  <div class="sticky">
+    <button class="btn" type="button">Antwort anzeigen</button>
+  </div>
 </body>
 </html>

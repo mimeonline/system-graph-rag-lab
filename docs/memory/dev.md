@@ -66,3 +66,20 @@
 2. QueryPanel zeigt neue Zone „Was bringt mir das jetzt?“ mit konkreten Next Steps aus dem Query-View-Model.
 3. Referenzkarten wurden granularisiert: Keyword-Mapping für „System Thinking Tools“, „Network Analysis“, „Stocks and Flows“ auf konkrete Toolnamen.
 4. Verifikation: `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts src/components/organisms/query-panel-status.test.ts` (Exit Code `0`).
+
+## Update E3 Frontend Nutzerfuehrung Graph-Verstaendnis
+1. HomeTemplate ergaenzt eine sichtbare Sektion "So funktioniert GraphRAG" mit drei klaren Schritten (Frage, Graph-Kontext, Handlungswert).
+2. QueryPanel zeigt eine neue responsive Graph-Ansicht ohne externe Libraries; Darstellung basiert auf einem leichten SVG-/CSS-Layer.
+3. Graph-Knoten und Kanten werden aus vorhandenen Query-Daten (`references`, `derivationDetails`) abgeleitet; ohne Daten wird ein expliziter Fallback-Graph angezeigt.
+4. Neue Ableitungslogik liegt in `src/features/home/graph-view-model.ts`; Tests in `src/features/home/graph-view-model.test.ts` sichern Fallback und Query-basiertes Modell.
+
+## Update E3 Graph Label Overlap Schnellfix
+1. apps/web/src/components/molecules/graph-preview.tsx verwendet fuer den Node-Layer jetzt h-[320px] statt h-full.
+2. Node-Breite ist reduziert auf w-[128px] vorher w-[150px] zur Entschaerfung von Label-Ueberlappung im Fallback.
+3. Keine neuen Libraries, keine Contract-Aenderung, reiner UI-Layoutfix.
+
+## Update E3 Finaler UX-Fix Graph obere Ueberdeckung
+1. Query-Knoten wurde im Home-Graph von y=14 auf y=20 abgesenkt; Referenzknoten wurden vertikal nach unten verschoben (y=54/56/66 je Layout), um den oberen Bereich klarer zu trennen.
+2. GraphPreview trennt jetzt Linien- und Label-Rendering in zwei SVG-Layern: Linien unter den Nodes, Labels darueber mit dynamischem Offset und Stroke-Hinterlegung fuer Lesbarkeit.
+3. `src/features/home/graph-view-model.test.ts` prueft die neuen Vertikalpositionen fuer Fallback- und Query-Graph.
+4. Geforderter Testlauf wurde gestartet, konnte aber lokal wegen Prozesslimit/Toolchain-Fehler (`fork: Resource temporarily unavailable`, nachfolgendes `vitest`-Module-Resolution-Problem) nicht erfolgreich abgeschlossen werden.

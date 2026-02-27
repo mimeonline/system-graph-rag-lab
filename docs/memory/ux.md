@@ -1,37 +1,31 @@
 # UX Memory
 
 ## UX Intent
-1. Erstkontakt bleibt ruhig, klar und selbsterklaerend.
-2. Hauptantwort bleibt visuell dominant.
-3. Bezuege und Herleitung unterstuetzen Nachvollziehbarkeit ohne Ueberladung.
+1. Public MVP braucht sichtbares Plattformvertrauen ohne Bruch im Frage-Antwort-Fluss.
+2. Antwort bleibt visuell dominant, Infrastruktur bleibt kontextuell.
+3. Zustandskommunikation muss kurz, eindeutig und aktionsorientiert sein.
 
-## Core User Journeys
-1. Frage stellen, Antwort lesen, Bezuege erfassen.
-2. Antwort plausibilisieren ueber Bezuege und optionale Herleitung.
-3. Bei Empty/Error/Rate-Limit mit klarer Folgeaktion fortsetzen.
-
-## Interaction Principles
-1. Reihenfolge bleibt stabil: Eingabe, Antwort, Bezuege, Herleitung.
-2. States erscheinen inline im Antwortbereich.
-3. Progressive Disclosure bleibt optional und zweistufig.
-4. Mobile Primary Action bleibt erreichbar ohne Inhaltsverdeckung.
-
-## Open UX Questions
-1. Welche Bezugsfelder sind stabil verpflichtend verfuegbar.
-2. Welche minimale Herleitungsstruktur ist fuer P0 robust.
-3. Wie wird `empty` technisch eindeutig von schwacher Antwort getrennt.
-
-## UX Risks
-1. Instabile Datenfelder destabilisieren Copy und Layout.
-2. Uneinheitliche State-Trigger erzeugen inkonsistente UX.
-3. Zu viele technische Details brechen den Erstkontakt.
+## Aktueller Stand E4-S5
+1. Alle UX-Artefakte wurden auf Public Plattform Setup ausgerichtet.
+2. Plattform-Statusblock mit vier festen Zeilen ist als Muster definiert.
+3. Inline States `Loading`, `Empty`, `Error`, `Rate Limit` sind durchgaengig spezifiziert.
 
 ## Entscheidungen
-1. States bleiben inline und nicht in dauerhaften Nebenflaechen.
-2. Hauptantwort bleibt vor Nebensignalen priorisiert.
-3. Disclosure nur dort, wo sie Verstaendlichkeit verbessert.
+1. Keine Verlagerung von States in Sidebar oder globale Banner.
+2. Keine technischen Detailtexte im Erstkontakt.
+3. Mobile nutzt gleiche Inhaltslogik wie Desktop plus Sticky Primaeraktion.
+
+## Offene UX Fragen
+1. Welche Runtime-Signale stehen stabil fuer Plattform-Statustexte bereit?
+2. Ob bei `rate_limit` eine konkrete Wartezeit angezeigt werden kann.
+3. Wie `empty` gegenueber `error` technisch robust getrennt wird.
+
+## UX Risiken
+1. Inkonsistentes Signal-Mapping kann falsche Nutzeraktionen ausloesen.
+2. Zu technische Statusformulierungen koennen Vertrauen statt Klarheit senken.
+3. Fehlende Trennung von `empty` und `error` erzeugt Recovery-Verwirrung.
 
 ## Next Instructions
-1. Offene Feldfragen mit Architect abstimmen.
-2. Handoffs auf konkrete Decisions und offene Fragen begrenzen.
-3. UX-Copy entlang derselben State-Definitionen konsistent halten.
+1. Architect-Mapping fuer Statussignale und State-Trennung abwarten.
+2. Danach Copy final auf reale Signale kalibrieren.
+3. Vor Dev-Start kurzen Konsistenzcheck zwischen Copy, Wireframe und Mock durchfuehren.

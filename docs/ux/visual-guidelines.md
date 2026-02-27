@@ -1,133 +1,54 @@
 # Visual Guidelines
 
-## Zweck
-1. Dieses Dokument operationalisiert den Light Theme Stil für konsistente UX Entscheidungen im MVP.
-2. Fokus bleibt auf ruhiger, hochwertiger und selbsterklärender Darstellung.
+## Ziel
+1. E4-S5 benoetigt sichtbares Plattformvertrauen ohne den Antwortfluss zu stoeren.
+2. Visuelle Sprache bleibt klar, ruhig und demo-tauglich fuer Public Publikum.
 
-## Visuelle Prinzipien
-1. Primärfokus liegt auf Frage und Hauptantwort.
-2. Sekundäre Information bleibt sichtbar, aber visuell untergeordnet.
-3. Detailtiefe wird erst über Disclosure geöffnet.
-4. Jede Fläche hat einen klaren Informationszweck.
+## Blickfuehrung
+### Primaer
+1. Titel und Eingabe sind der erste Fokus.
+2. Hauptantwort ist der zweite Fokus.
+3. Bezuege sind der dritte Fokus.
 
-## Farbrollen
-1. Hintergrundfarbe trägt Ruhe und trennt die App von der Browserfläche.
-2. Surface Farbe markiert interaktive und inhaltliche Karten.
-3. Primärtextfarbe trägt die Hauptleselast.
-4. Sekundärtextfarbe trägt Hilfen und Metaebenen.
-5. Brand Farbe markiert nur Primäraktion und aktive Hervorhebung.
-6. Statusfarben markieren Loading, Empty, Error und Rate Limit konsistent.
+### Sekundaer
+1. Plattform-Status liefert Vertrauen im Hintergrund.
+2. Herleitung ist optionale Vertiefung.
 
-## Flächennutzung und Dichte
-1. Weißraum steuert Lesetempo und Orientierung.
-2. Kartenflächen bleiben ruhig ohne dekorative Überladung.
-3. Erstkontakt bleibt ohne visuelle Reizspitzen.
-4. Wiederholte Muster nutzen gleiche Abstände und gleiche Kantenlogik.
+## Plattform-Status als Vertrauensflaeche
+1. Die Flaeche zeigt nur komprimierte Signale, keine technischen Interna.
+2. Jeder Eintrag besteht aus Label plus kurzem Klartext.
+3. Positive und neutrale Formulierungen vermeiden Alarmton.
+4. Bei fehlender Readiness wird neutral informiert, nicht dramatisiert.
 
-## Screen Komposition
-### Primäre Blickführung
-1. Erste Blickstation ist ruhiger full-width Header mit klarer Einordnung.
-2. Zweite Blickstation ist die zentrierte Content Area mit Titel und kurzer Subline.
-3. Dritte Blickstation ist Frageeingabe mit Primäraktion.
-4. Danach folgen Antwortbereich, wichtige Bezüge und Herleitung.
+## State Visualisierung
+### Loading
+1. Ruhige Flaeche mit blauer Akzentkante.
+2. Kein Spinner-Zwang, Text reicht fuer Orientierung.
 
-### Sekundäre Blickführung
-1. Zustände erscheinen inline im Antwortbereich.
-2. In Variante B unterstützt eine leise rechte Hilfespalte den Ablauf.
-3. Es gibt keine permanente Zustandsliste als Nebenfläche.
+### Empty
+1. Amber-Akzentkante fuer Suchluecke.
+2. Aktion bleibt Fragepraezisierung.
 
-## Layout Rhythmus
-### Vertikaler Ablauf
-1. Jeder Hauptabschnitt erhält klaren Einstieg über Label.
-2. Zwischen Abschnitten liegt ein konstanter Abstandsrhythmus.
-3. Inhaltliche Tiefe nimmt von oben nach unten zu.
+### Error
+1. Rote Akzentkante fuer Verarbeitungsfehler.
+2. Aktion bleibt erneuter Versuch.
 
-### Horizontale Ordnung
-1. Variante A bleibt einspaltig.
-2. Variante B trennt Kerninhalt links und kontextuelle Hilfe rechts.
-3. Mobile führt alle Inhalte nacheinander in einer Spalte.
+### Rate Limit
+1. Gruene Akzentkante fuer Betriebsgrenze.
+2. Aktion bleibt kurze Wartezeit und erneutes Senden.
 
-## Typografie Anwendung
-1. Titel bleibt prägnant und nüchtern.
-2. Hauptantwort nutzt höchste Lesbarkeit und ruhige Zeilenhöhe.
-3. Bezüge sind kürzer, leichter und klar untergeordnet.
-4. Zustandsaktionen sind deutlich und nicht alarmistisch.
+## Dichte und Rhythmus
+1. Ein Kartenmuster fuer alle Hauptsektionen.
+2. Konstante vertikale Abstaende im 8-Punkt-Rhythmus.
+3. Keine dekorative Ueberlagerung oder Badge-Flut.
 
-## Komponenten Verhalten visuell
-### Frageeingabe
-1. Eingabefeld hat ausreichende Höhe für komplexe Fragen.
-2. Primärbutton bleibt im Ruhezustand klar sichtbar.
-3. Hilfetext steht direkt unter der Eingabe und bleibt knapp.
+## Responsive Verhalten
+1. Desktop: Zwei-Spalten-Komposition mit linker Dominanz.
+2. Mobile: Eine Spalte, Plattform-Status vor Eingabe.
+3. Sticky Aktion auf Mobile bleibt immer erreichbar.
 
-### Antwortbereich
-1. Antworttext bleibt ohne konkurrierende Badges oder Deko.
-2. Loading, Empty, Error und Rate Limit erscheinen als Inline Zustände am selben Ort.
-3. Bei längeren Antworten wird Lesbarkeit über Absatzstruktur gesichert.
-
-### Wichtige Bezüge
-1. Bezüge erscheinen in homogener Listenstruktur.
-2. Jeder Eintrag enthält Name und knappen Bezug zur Antwort.
-3. Reihenfolge folgt wahrgenommener Relevanz.
-
-### Herleitung
-1. Disclosure signalisiert optionalen Detailgrad.
-2. Inhalt nutzt maximal drei kurze Schritte im P0.
-
-### Rechte Spalte Variante B
-1. Es ist immer nur ein Hilfeblock sichtbar.
-2. Der Hilfeblock passt zum aktuellen Zustand des Hauptflusses.
-3. Der Hilfeblock bleibt visuell sekundär.
-
-## Informationsgewichtung und Prioritäten
-1. Priorität 1: Frageeingabe und Primäraktion sind sofort verständlich.
-2. Priorität 2: Hauptantwort dominiert jede Ergebnisdarstellung.
-3. Priorität 3: Wichtige Bezüge stützen die Antwort ohne Überlagerung.
-4. Priorität 4: Herleitung bleibt kontrollierte Detailoffenlegung.
-5. Priorität 5: Zustände bleiben eindeutig, knapp und handlungsorientiert.
-
-## Accessibility Regeln
-### Kontrast und Lesbarkeit
-1. Primärtext erfüllt AA Kontrast auf allen Flächen.
-2. Statusfarbe wird immer mit Textlabel kombiniert.
-
-### Fokus und Interaktion
-1. Fokus ist auf allen interaktiven Elementen sichtbar.
-2. Fokusstil hat ausreichende Dicke und Kontrast.
-3. Interaktive Elemente bleiben ohne Maus nutzbar.
-
-### Tastatur
-1. Tab Reihenfolge folgt der visuellen Reihenfolge.
-2. Disclosure ist per Tastatur erreichbar und steuerbar.
-3. Primäraktion ist ohne Pointer eindeutig erreichbar.
-
-## Responsive Regeln
-### Desktop
-1. Variante A zeigt einen ruhigen Einspaltenfluss.
-2. Variante B zeigt eine sekundäre rechte Hilfespalte.
-3. Hauptfluss bleibt stets links priorisiert.
-
-### Mobile
-1. Einspaltiges Stapeln ohne Funktionsverlust.
-2. Primärbutton nutzt als Sticky Footer Bar volle Breite.
-3. Kartenabstände bleiben konsistent für schnelles Scannen.
-4. Kein horizontales Scrollen in Kernkomponenten.
-
-## Do und Dont
-### Do
-1. Nutze konsistente Labels, Abstände und Kartenstrukturen.
-2. Halte Statuskommunikation kurz mit genau einer Aktion.
-3. Stelle sichtbare Fokuszustände auf allen interaktiven Elementen sicher.
-4. Halte rechte Hilfespalte in Variante B klar sekundär.
-
-### Dont
-1. Keine konkurrierenden Primärfarben in Inhaltskarten.
-2. Keine zweite Primäraktion im selben Zustand.
-3. Keine Zustandsdarstellung nur über Farbe ohne Textlabel.
-4. Keine zusätzliche Detailtiefe oberhalb der Hauptantwort.
-
-## Konsistenz zu UX Artefakten
-1. User Flows definieren Trigger, Ablauf und Recovery.
-2. Informationsarchitektur definiert Hierarchie und Ordnungsprinzip.
-3. Wireframes definieren Layoutvariante A und B.
-4. UI Copy definiert die sichtbare Sprache.
-5. Mock zeigt die Hauptansicht in Variante B und die Inline Zustandslogik.
+## Konsistenzregeln
+1. Labels in UI Copy und Mock muessen identisch sein.
+2. State Namen `Loading`, `Empty`, `Error`, `Rate Limit` werden in allen Artefakten gleich verwendet.
+3. Plattform-Status bleibt in allen Varianten gleich strukturiert.
+4. Keine neue Information nur in einer einzelnen Darstellung einfuehren.

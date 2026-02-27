@@ -47,3 +47,8 @@
 2. Bei jedem Statuswechsel Story oder Epic im selben Run `backlog/progress.md` synchronisieren.
 3. Epic-Freigaben nur setzen, wenn QA-, Security- und DevOps-Gate fuer das Epic dokumentiert `Pass` sind.
 4. Nach PM-Abnahmen kurz im PM-Memory festhalten, welcher verdiktierte QA-Report die Entscheidung trug.
+
+## Strategic Memory
+1. Story E4-S5 Public Plattform Setup vorbereiten ist der aktive Next Story-Fokus; sie dokumentiert GitHub, Vercel, Neo4j Aura und Public Environment-Verkabelung als Voraussetzung fuer die weiteren E4-Stories.
+2. Die Story baut auf `docs/ops/vercel.md` und `apps/web/.env.example`; die Public-Variablen bleiben Vercel Secrets, in Repo nur Platzhalter.
+3. UX wird im naechsten Run eingebunden, sobald Infrastrukturziele stehen, damit die Demo-Kommunikation (Deployment-Status, rate-limit alerts) auf diese Dokumentation abgestimmt werden kann.
