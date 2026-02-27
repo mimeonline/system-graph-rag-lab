@@ -13,12 +13,7 @@ const NODE_STYLE_BY_KIND: Record<HomeGraphNode["kind"], string> = {
 };
 
 const GRAPH_HEIGHT_PX = 400;
-const GRAPH_SIDE_PADDING_PX = 68;
-const NODE_FRAME_BY_KIND: Record<HomeGraphNode["kind"], { width: number; height: number }> = {
-  query: { width: 120, height: 44 },
-  reference: { width: 118, height: 48 },
-  evidence: { width: 124, height: 56 },
-};
+const MIN_CANVAS_WIDTH_PX = 280;
 
 /**
  * Lightweight graph preview without external rendering dependencies.
@@ -112,7 +107,7 @@ export function GraphPreview({ model }: GraphPreviewProps): React.JSX.Element {
                         animationDelay: `${index * 90}ms`,
                       }}
                     >
-                      {shortLabel(node.compactLabel ?? node.label)}
+                      {fitNodeLabel(node.compactLabel ?? node.label, frame.width)}
                     </div>
                   </TooltipTrigger>
                   <TooltipContent>{getNodeTooltipText(node)}</TooltipContent>
@@ -162,12 +157,25 @@ function shortLabel(label: string): string {
   return `${sanitized.slice(0, 49)}...`;
 }
 
+function fitNodeLabel(label: string, width: number): string {
+  const base = shortLabel(label);
+  const compact = base.replace(/\s+/g, " ").trim();
+  const maxChars = width < 100 ? 12 : width < 110 ? 15 : 20;
+
+  if (compact.length <= maxChars) {
+    return compact;
+  }
+
+  return `${compact.slice(0, Math.max(3, maxChars - 3))}...`;
+}
+
 function getNodePoint(node: HomeGraphNode, canvasWidth: number): { x: number; y: number } {
-  const effectiveWidth = Math.max(canvasWidth, GRAPH_SIDE_PADDING_PX * 2);
+  const effectiveWidth = Math.max(canvasWidth, MIN_CANVAS_WIDTH_PX);
+  const sidePaddingPx = getResponsiveSidePadding(effectiveWidth);
   const rawX = (effectiveWidth * node.x) / 100;
   const x = Math.min(
-    effectiveWidth - GRAPH_SIDE_PADDING_PX,
-    Math.max(GRAPH_SIDE_PADDING_PX, rawX),
+    effectiveWidth - sidePaddingPx,
+    Math.max(sidePaddingPx, rawX),
   );
   const y = (GRAPH_HEIGHT_PX * node.y) / 100;
 
@@ -183,14 +191,20 @@ function getNodeFrame(node: HomeGraphNode, canvasWidth: number): {
   centerY: number;
 } {
   const point = getNodePoint(node, canvasWidth);
-  const size = NODE_FRAME_BY_KIND[node.kind];
+  const effectiveWidth = Math.max(canvasWidth, MIN_CANVAS_WIDTH_PX);
+  const size = getResponsiveNodeSize(node.kind, effectiveWidth);
+  const horizontalInset = 6;
+  const left = Math.min(
+    effectiveWidth - size.width - horizontalInset,
+    Math.max(horizontalInset, point.x - size.width / 2),
+  );
 
   return {
-    left: point.x - size.width / 2,
+    left,
     top: point.y - size.height / 2,
     width: size.width,
     height: size.height,
-    centerX: point.x,
+    centerX: left + size.width / 2,
     centerY: point.y,
   };
 }
@@ -212,6 +226,43 @@ function getNodeFontSize(
   }
 
   return minPx;
+}
+
+function getResponsiveSidePadding(canvasWidth: number): number {
+  return Math.max(24, Math.min(60, Math.round(canvasWidth * 0.1)));
+}
+
+function getResponsiveNodeSize(
+  kind: HomeGraphNode["kind"],
+  canvasWidth: number,
+): { width: number; height: number } {
+  if (canvasWidth < 360) {
+    if (kind === "query") {
+      return { width: 96, height: 40 };
+    }
+    if (kind === "evidence") {
+      return { width: 100, height: 52 };
+    }
+    return { width: 94, height: 44 };
+  }
+
+  if (canvasWidth < 420) {
+    if (kind === "query") {
+      return { width: 106, height: 42 };
+    }
+    if (kind === "evidence") {
+      return { width: 110, height: 54 };
+    }
+    return { width: 104, height: 46 };
+  }
+
+  if (kind === "query") {
+    return { width: 120, height: 44 };
+  }
+  if (kind === "evidence") {
+    return { width: 124, height: 56 };
+  }
+  return { width: 118, height: 48 };
 }
 
 function getEdgeEndpoints(

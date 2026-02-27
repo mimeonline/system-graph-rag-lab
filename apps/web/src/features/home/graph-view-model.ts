@@ -34,9 +34,9 @@ const REFERENCE_LAYOUT_BY_COUNT: Record<number, Array<{ x: number; y: number }>>
     { x: 74, y: 52 },
   ],
   3: [
-    { x: 18, y: 52 },
+    { x: 28, y: 52 },
     { x: 50, y: 60 },
-    { x: 82, y: 52 },
+    { x: 72, y: 52 },
   ],
 };
 
@@ -122,7 +122,7 @@ export function buildHomeGraphModel(
     return {
       id: reference.nodeId,
       label: typedLabel,
-      compactLabel: toCompactLabel(typedLabel),
+      compactLabel: toCompactLabel(reference.title),
       kind: "reference",
       x: fallbackPosition.x,
       y: fallbackPosition.y,

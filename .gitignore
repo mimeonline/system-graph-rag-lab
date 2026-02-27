@@ -1,2 +1,4 @@
 input/*
+output/*
 .pnpm-store/*
+.playwright-cli/*

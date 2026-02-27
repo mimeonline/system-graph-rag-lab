@@ -14,6 +14,9 @@ type EmbeddingResponse = {
   }>;
 };
 
+/**
+ * Validates that an env var value is present and returns a trimmed string.
+ */
 function assertNonEmpty(value: string | undefined, field: string): string {
   if (!value || value.trim().length === 0) {
     throw new Error(`Missing required env var: ${field}`);
@@ -22,19 +25,31 @@ function assertNonEmpty(value: string | undefined, field: string): string {
   return value.trim();
 }
 
+/**
+ * Escapes regex metacharacters so IDs can be matched literally in RegExp patterns.
+ */
 function escapeRegex(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
 
+/**
+ * Formats one embedding vector as a deterministic TypeScript array literal.
+ */
 function formatEmbedding(vector: number[]): string {
   return `[${vector.map((value) => Number(value.toFixed(8))).join(", ")}]`;
 }
 
+/**
+ * Builds the embedding input text from node label and summary.
+ */
 function buildEmbeddingText(node: { title?: string; name?: string; summary: string }): string {
   const label = node.title ?? node.name ?? "";
   return `${label}\n${node.summary}`.trim();
 }
 
+/**
+ * Requests embeddings for all inputs and validates response order and dimensions.
+ */
 async function fetchEmbeddings(options: {
   apiKey: string;
   model: string;
@@ -78,6 +93,9 @@ async function fetchEmbeddings(options: {
   return vectors as number[][];
 }
 
+/**
+ * Refreshes seed embeddings by calling OpenAI and replacing vectors in seed-data.ts.
+ */
 async function main(): Promise<void> {
   const apiKey = assertNonEmpty(process.env.OPENAI_API_KEY, "OPENAI_API_KEY");
   const model = process.env.OPENAI_EMBEDDINGS_MODEL?.trim() || "text-embedding-3-small";

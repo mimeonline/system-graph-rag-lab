@@ -13,7 +13,7 @@ type PipelineStep = {
 const STEPS: PipelineStep[] = [
   { id: "question", label: "Frage", detail: "Systemproblem formulieren" },
   { id: "retrieval", label: "Retrieval", detail: "Kontext priorisieren" },
-  { id: "graph", label: "Graph-Kontext", detail: "Knoten verknüpfen" },
+  { id: "graph", label: "Graph", detail: "Knoten verknüpfen" },
   { id: "synthesis", label: "Synthese", detail: "Antwort herleiten" },
   { id: "action", label: "Handlung", detail: "Nächste Schritte nutzen" },
 ];
@@ -46,7 +46,7 @@ export function PipelineStepper({ status }: PipelineStepperProps): React.JSX.Ele
         <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-700">Guided Mode</h3>
         <p className="text-xs font-semibold text-slate-600">Lernpfad sichtbar</p>
       </div>
-      <ol className="grid gap-2 sm:grid-cols-5">
+      <ol className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         {STEPS.map((step, index) => {
           const number = index + 1;
           const isActive = number <= activeStep;
@@ -60,7 +60,7 @@ export function PipelineStepper({ status }: PipelineStepperProps): React.JSX.Ele
                   : "border-slate-200 bg-white/70 text-slate-500"
               }`}
             >
-              <p className="text-[11px] font-semibold uppercase tracking-[0.14em]">{`${number}. ${step.label}`}</p>
+              <p className="overflow-hidden text-ellipsis whitespace-nowrap text-[10px] font-semibold uppercase tracking-[0.08em] sm:text-[11px]">{`${number}. ${step.label}`}</p>
               <p className="mt-1 text-xs">{step.detail}</p>
             </li>
           );
