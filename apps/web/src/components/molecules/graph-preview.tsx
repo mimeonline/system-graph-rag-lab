@@ -246,38 +246,52 @@ function resolveRenderedNodeOverlaps(cy: Core, minGap: number, maxIterations: nu
   }
 }
 
-function runInitialNodePulse(cy: Core): void {
+function runInitialNodePulse(cy: Core): () => void {
   const nodes = cy.nodes();
   if (nodes.length === 0) {
-    return;
+    return () => {};
   }
+  const timerIds: number[] = [];
 
   nodes.forEach((node, index) => {
     const targetWidth = Number(node.data("width")) || 116;
     const targetHeight = Number(node.data("height")) || 48;
-    const delay = Math.min(index * 8, 220);
+    const delay = Math.min(index * 18, 760);
 
     node.style({
-      width: targetWidth * 0.9,
-      height: targetHeight * 0.9,
+      width: targetWidth * 0.62,
+      height: targetHeight * 0.62,
+      "border-width": 0.7,
     });
 
-    setTimeout(() => {
+    const timerId = window.setTimeout(() => {
+      const isDestroyed = (cy as unknown as { destroyed?: () => boolean }).destroyed?.() ?? false;
+      if (isDestroyed || node.removed()) {
+        return;
+      }
       node.animate(
         {
           style: {
             width: targetWidth,
             height: targetHeight,
+            "border-width": 1.5,
           },
         },
         {
-          duration: 180,
+          duration: 360,
           easing: "ease-out-cubic",
           queue: false,
         },
       );
     }, delay);
+    timerIds.push(timerId);
   });
+
+  return () => {
+    for (const timerId of timerIds) {
+      window.clearTimeout(timerId);
+    }
+  };
 }
 
 /**
@@ -482,7 +496,7 @@ export function GraphPreview({
       wheelSensitivity: 0.18,
     });
 
-    runInitialNodePulse(cy);
+    const cancelPulse = runInitialNodePulse(cy);
 
     cy.on("mouseover", "node", (event) => {
       const position = event.renderedPosition ?? event.position;
@@ -561,6 +575,7 @@ export function GraphPreview({
 
     cyRef.current = cy;
     return () => {
+      cancelPulse();
       resizeObserver.disconnect();
       cy.removeAllListeners();
       cy.destroy();

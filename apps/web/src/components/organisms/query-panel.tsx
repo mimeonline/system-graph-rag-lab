@@ -3,8 +3,9 @@
 import type { FormEvent } from "react";
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import dynamic from "next/dynamic";
 
-import { QueryInput, type QuerySuggestionGroup } from "@/components/molecules/query-input";
+import type { QuerySuggestionGroup } from "@/components/molecules/query-input";
 import { GraphPreview } from "@/components/molecules/graph-preview";
 import { AnswerCard } from "@/components/organisms/answer-card";
 import { ActionCard } from "@/components/organisms/action-card";
@@ -17,6 +18,11 @@ import { PipelineStepper } from "@/features/home/molecules/PipelineStepper";
 import { buildHomeGraphModel, type HomeGraphModel } from "@/features/home/graph-view-model";
 import type { QuerySuccessResponse } from "@/features/query/contracts";
 import { buildQueryViewModel, type QueryViewModel } from "@/features/query/view-model";
+
+const QueryInput = dynamic(
+  () => import("@/components/molecules/query-input").then((module) => module.QueryInput),
+  { ssr: false },
+);
 
 const DEFAULT_QUERY =
   "Wo verlieren wir im Alltag Zeit, weil Aufgaben zwischen Teams hin und her gehen?";
