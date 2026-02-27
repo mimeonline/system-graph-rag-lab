@@ -24,9 +24,12 @@ const QueryInput = dynamic(
   { ssr: false },
 );
 const SESSION_HISTORY_KEY = "system-graph-rag-history-v1";
+const SESSION_ANALYSIS_KEY = "system-graph-rag-analysis-v1";
+const SESSION_SNAPSHOTS_KEY = "system-graph-rag-session-snapshots-v1";
 const SESSION_HISTORY_LIMIT = 8;
 
 type SessionHistoryEntry = {
+  sessionId: string;
   query: string;
   answerPreview: string;
   createdAt: string;
@@ -45,6 +48,25 @@ type LlmOnlyAnswer = {
   main: string;
   coreRationale: string;
   nextSteps: string[];
+};
+
+type PersistedAnalysisState = {
+  query: string;
+  viewModel: QueryViewModel | null;
+  llmOnlyAnswer: LlmOnlyAnswer | null;
+  llmOnlyError: string | null;
+  isQuestionSelectionLocked: boolean;
+  status: QueryPanelStatus;
+};
+
+type PersistedSessionSnapshot = {
+  sessionId: string;
+  query: string;
+  viewModel: QueryViewModel;
+  llmOnlyAnswer: LlmOnlyAnswer | null;
+  llmOnlyError: string | null;
+  status: "success" | "empty";
+  createdAt: string;
 };
 
 const DEFAULT_QUERY =
@@ -114,12 +136,14 @@ export function QueryPanel(): React.JSX.Element {
   const [isSystemGraphLoading, setIsSystemGraphLoading] = useState(false);
   const [expandedDerivationIds, setExpandedDerivationIds] = useState<Record<string, boolean>>({});
   const [sessionHistory, setSessionHistory] = useState<SessionHistoryEntry[]>([]);
+  const [sessionSnapshots, setSessionSnapshots] = useState<PersistedSessionSnapshot[]>([]);
   const [llmOnlyAnswer, setLlmOnlyAnswer] = useState<LlmOnlyAnswer | null>(null);
   const [isLlmOnlyLoading, setIsLlmOnlyLoading] = useState(false);
   const [llmOnlyError, setLlmOnlyError] = useState<string | null>(null);
   const [isLlmOnlyExpanded, setIsLlmOnlyExpanded] = useState(false);
   const [isGraphRagExpanded, setIsGraphRagExpanded] = useState(false);
   const [isSessionMemoryExpanded, setIsSessionMemoryExpanded] = useState(true);
+  const [didHydrateLocalState, setDidHydrateLocalState] = useState(false);
 
   const statusHint = getStatusHint(status, errorMessage);
   const helperText = statusHint.statusText;
@@ -129,14 +153,64 @@ export function QueryPanel(): React.JSX.Element {
     try {
       const raw = window.localStorage.getItem(SESSION_HISTORY_KEY);
       if (!raw) {
-        return;
-      }
-      const parsed = JSON.parse(raw) as SessionHistoryEntry[];
-      if (Array.isArray(parsed)) {
-        setSessionHistory(parsed.slice(0, SESSION_HISTORY_LIMIT));
+        setSessionHistory([]);
+      } else {
+        const parsed = JSON.parse(raw) as SessionHistoryEntry[];
+        if (Array.isArray(parsed)) {
+          setSessionHistory(
+            parsed
+              .slice(0, SESSION_HISTORY_LIMIT)
+              .map((entry, index) => ({
+                ...entry,
+                sessionId:
+                  typeof entry.sessionId === "string" && entry.sessionId.length > 0
+                    ? entry.sessionId
+                    : `${entry.createdAt ?? "legacy"}-${index}`,
+              })),
+          );
+        }
       }
     } catch {
       // Ignore malformed local storage payloads.
+    }
+
+    try {
+      const raw = window.localStorage.getItem(SESSION_SNAPSHOTS_KEY);
+      if (!raw) {
+        setSessionSnapshots([]);
+      } else {
+        const parsed = JSON.parse(raw) as PersistedSessionSnapshot[];
+        if (Array.isArray(parsed)) {
+          setSessionSnapshots(parsed.slice(0, SESSION_HISTORY_LIMIT));
+        }
+      }
+    } catch {
+      // Ignore malformed local storage payloads.
+    }
+
+    try {
+      const raw = window.localStorage.getItem(SESSION_ANALYSIS_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw) as PersistedAnalysisState;
+        if (typeof parsed.query === "string") {
+          setQuery(parsed.query);
+        }
+        if (parsed.viewModel) {
+          setViewModel(parsed.viewModel);
+        }
+        if (parsed.llmOnlyAnswer) {
+          setLlmOnlyAnswer(parsed.llmOnlyAnswer);
+        }
+        setLlmOnlyError(typeof parsed.llmOnlyError === "string" ? parsed.llmOnlyError : null);
+        setIsQuestionSelectionLocked(parsed.isQuestionSelectionLocked === true);
+        if (parsed.status === "success" || parsed.status === "empty") {
+          setStatus(parsed.status);
+        }
+      }
+    } catch {
+      // Ignore malformed persisted analysis payloads.
+    } finally {
+      setDidHydrateLocalState(true);
     }
   }, []);
 
@@ -147,6 +221,54 @@ export function QueryPanel(): React.JSX.Element {
       // Ignore storage quota/browser restrictions.
     }
   }, [sessionHistory]);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(
+        SESSION_SNAPSHOTS_KEY,
+        JSON.stringify(sessionSnapshots.slice(0, SESSION_HISTORY_LIMIT)),
+      );
+    } catch {
+      // Ignore storage quota/browser restrictions.
+    }
+  }, [sessionSnapshots]);
+
+  useEffect(() => {
+    if (!didHydrateLocalState || status === "loading") {
+      return;
+    }
+
+    const payload: PersistedAnalysisState = {
+      query,
+      viewModel,
+      llmOnlyAnswer,
+      llmOnlyError,
+      isQuestionSelectionLocked,
+      status,
+    };
+    const hasPayload =
+      query.trim().length > 0 ||
+      viewModel !== null ||
+      llmOnlyAnswer !== null ||
+      (llmOnlyError ?? "").trim().length > 0;
+    try {
+      if (hasPayload) {
+        window.localStorage.setItem(SESSION_ANALYSIS_KEY, JSON.stringify(payload));
+      } else {
+        window.localStorage.removeItem(SESSION_ANALYSIS_KEY);
+      }
+    } catch {
+      // Ignore storage quota/browser restrictions.
+    }
+  }, [
+    didHydrateLocalState,
+    isQuestionSelectionLocked,
+    llmOnlyAnswer,
+    llmOnlyError,
+    query,
+    status,
+    viewModel,
+  ]);
 
   /**
    * Loads GraphRAG and LLM-only answers for a query and updates UI state.
@@ -189,30 +311,51 @@ export function QueryPanel(): React.JSX.Element {
 
       const payload = (await graphResponse.json()) as QuerySuccessResponse;
       const viewModel = buildQueryViewModel(payload, trimmedQuery);
+      const resolvedStatus: "success" | "empty" = viewModel.references.length === 0 ? "empty" : "success";
+      let llmOnlyAnswerSnapshot: LlmOnlyAnswer | null = null;
+      let llmOnlyErrorSnapshot: string | null = null;
       setViewModel(viewModel);
-      setStatus(viewModel.references.length === 0 ? "empty" : "success");
+      setStatus(resolvedStatus);
       setIsQuestionSelectionLocked(true);
-      if (addToHistory) {
-        setSessionHistory((current) => {
-          const next: SessionHistoryEntry = {
-            query: trimmedQuery,
-            answerPreview: viewModel.answer.main.slice(0, 180),
-            createdAt: new Date().toISOString(),
-            referenceCount: viewModel.references.length,
-          };
-          return [next, ...current].slice(0, SESSION_HISTORY_LIMIT);
-        });
-      }
 
       if (llmOnlyResponse.ok) {
         const llmOnlyPayload = (await llmOnlyResponse.json()) as {
           status: "ok";
           answer: LlmOnlyAnswer;
         };
+        llmOnlyAnswerSnapshot = llmOnlyPayload.answer;
         setLlmOnlyAnswer(llmOnlyPayload.answer);
       } else {
         const llmErrorText = await llmOnlyResponse.text();
-        setLlmOnlyError(llmErrorText || "LLM-only Antwort konnte nicht geladen werden.");
+        llmOnlyErrorSnapshot = llmErrorText || "LLM-only Antwort konnte nicht geladen werden.";
+        setLlmOnlyError(llmOnlyErrorSnapshot);
+      }
+
+      if (addToHistory) {
+        const createdAt = new Date().toISOString();
+        const sessionId = `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+        setSessionHistory((current) => {
+          const next: SessionHistoryEntry = {
+            sessionId,
+            query: trimmedQuery,
+            answerPreview: viewModel.answer.main.slice(0, 180),
+            createdAt,
+            referenceCount: viewModel.references.length,
+          };
+          return [next, ...current].slice(0, SESSION_HISTORY_LIMIT);
+        });
+        setSessionSnapshots((current) => {
+          const next: PersistedSessionSnapshot = {
+            sessionId,
+            query: trimmedQuery,
+            viewModel,
+            llmOnlyAnswer: llmOnlyAnswerSnapshot,
+            llmOnlyError: llmOnlyErrorSnapshot,
+            status: resolvedStatus,
+            createdAt,
+          };
+          return [next, ...current].slice(0, SESSION_HISTORY_LIMIT);
+        });
       }
     } catch (error) {
       const message =
@@ -230,6 +373,25 @@ export function QueryPanel(): React.JSX.Element {
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     await runQuery(query, true);
+  };
+
+  const loadSessionFromStorage = (entry: SessionHistoryEntry) => {
+    const snapshot = sessionSnapshots.find((candidate) => candidate.sessionId === entry.sessionId);
+    if (!snapshot) {
+      setQuery(entry.query);
+      return;
+    }
+
+    setQuery(snapshot.query);
+    setViewModel(snapshot.viewModel);
+    setLlmOnlyAnswer(snapshot.llmOnlyAnswer);
+    setLlmOnlyError(snapshot.llmOnlyError);
+    setErrorMessage(null);
+    setStatus(snapshot.status);
+    setIsQuestionSelectionLocked(true);
+    setIsLlmOnlyLoading(false);
+    setIsLlmOnlyExpanded(false);
+    setIsGraphRagExpanded(false);
   };
 
   const references = viewModel?.references ?? [];
@@ -401,7 +563,9 @@ export function QueryPanel(): React.JSX.Element {
                     </button>
                   ) : null}
                   <p className="mt-1 text-[11px] text-slate-500">
-                    {llmOnlyAnswer.nextSteps.length} Schritte, ohne Graph-Belege.
+                    {llmOnlyAnswer.nextSteps.length > 0
+                      ? `${llmOnlyAnswer.nextSteps.length} Schritte, ohne Graph-Belege.`
+                      : "Keine Schritte geliefert (LLM-only)."}
                   </p>
                 </>
               ) : (
@@ -446,8 +610,10 @@ export function QueryPanel(): React.JSX.Element {
                 className="rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700 hover:bg-slate-50"
                 onClick={() => {
                   setSessionHistory([]);
+                  setSessionSnapshots([]);
                   try {
                     window.localStorage.removeItem(SESSION_HISTORY_KEY);
+                    window.localStorage.removeItem(SESSION_SNAPSHOTS_KEY);
                   } catch {
                     // Ignore browser restrictions.
                   }
@@ -461,11 +627,11 @@ export function QueryPanel(): React.JSX.Element {
             sessionHistory.length > 0 ? (
               <ul className="space-y-2">
                 {sessionHistory.map((entry) => (
-                  <li key={`${entry.createdAt}-${entry.query}`} className="rounded-lg border border-slate-100 bg-slate-50 p-2">
+                  <li key={entry.sessionId} className="rounded-lg border border-slate-100 bg-slate-50 p-2">
                     <button
                       type="button"
                       className="w-full text-left text-sm font-medium text-slate-800 underline decoration-slate-300 underline-offset-2"
-                      onClick={() => void runQuery(entry.query, false)}
+                      onClick={() => loadSessionFromStorage(entry)}
                     >
                       {entry.query}
                     </button>

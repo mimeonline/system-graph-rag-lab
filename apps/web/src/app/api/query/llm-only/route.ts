@@ -42,6 +42,10 @@ function toSafeString(value: unknown, fallback: string): string {
   return cleaned.length > 0 ? cleaned : fallback;
 }
 
+function toInlineText(value: string): string {
+  return value.replace(/\s+/g, " ").trim();
+}
+
 export async function POST(request: Request): Promise<Response> {
   const startedAt = Date.now();
   const parsed = parseQueryRequest(await request.json().catch(() => null));
@@ -104,14 +108,25 @@ export async function POST(request: Request): Promise<Response> {
   const payload = (await completionResponse.json()) as {
     choices?: Array<{ message?: { content?: string } }>;
   };
-  const content = payload.choices?.[0]?.message?.content ?? "";
+  const content = toInlineText(payload.choices?.[0]?.message?.content ?? "");
   const parsedJson = tryParseJson(content) ?? {};
+  const rawMain =
+    typeof parsedJson.main === "string" && parsedJson.main.trim().length > 0
+      ? parsedJson.main.trim()
+      : "";
+  const fallbackMainFromContent =
+    content.length > 0
+      ? content
+      : "LLM-only hat keine auswertbare Antwort geliefert. Bitte Anfrage erneut ausführen.";
 
   const body: LlmOnlyResponse = {
     status: "ok",
     answer: {
-      main: toSafeString(parsedJson.main, "Keine LLM-only Antwort verfügbar."),
-      coreRationale: toSafeString(parsedJson.coreRationale, "Keine Begründung verfügbar."),
+      main: rawMain.length > 0 ? rawMain : fallbackMainFromContent,
+      coreRationale: toSafeString(
+        parsedJson.coreRationale,
+        "Kurzbegründung konnte nicht strukturiert extrahiert werden.",
+      ),
       nextSteps: Array.isArray(parsedJson.nextSteps)
         ? parsedJson.nextSteps.filter((item): item is string => typeof item === "string")
         : [],
