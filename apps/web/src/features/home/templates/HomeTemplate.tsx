@@ -27,9 +27,9 @@ export function HomeTemplate(): React.JSX.Element {
       <SiteHeader />
 
       <main className="flex-1 px-4 py-5 sm:px-6 sm:py-6">
-        <div className="mx-auto grid w-full max-w-[1180px] gap-6">
+        <div className="mx-auto grid w-full max-w-[1180px] gap-8">
           <HeroLearningStage />
-          <section className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
+          <section className="rounded-2xl border border-slate-200/70 bg-white/55 p-4 sm:p-5">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
                 <h2 className="text-lg font-semibold text-slate-900">Proof statt Buzzword</h2>

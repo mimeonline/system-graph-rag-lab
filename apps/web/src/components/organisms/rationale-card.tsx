@@ -9,7 +9,7 @@ export function RationaleCard({ coreRationale }: RationaleCardProps): React.JSX.
   const { rationaleIntro, evidenceItems } = splitRationale(coreRationale);
 
   return (
-    <section className="order-4 space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5 lg:order-3">
+    <section className="order-4 space-y-4 rounded-xl border border-slate-200/70 bg-white/60 p-4 sm:p-5 lg:order-3">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
           Warum diese Antwort stimmt
@@ -20,7 +20,7 @@ export function RationaleCard({ coreRationale }: RationaleCardProps): React.JSX.
       {rationaleIntro && <p className="text-sm leading-6 text-slate-700">{rationaleIntro}</p>}
 
       {evidenceItems.length > 0 && (
-        <div className="space-y-2 rounded-lg border border-slate-200 bg-slate-50 p-3">
+        <div className="space-y-2 rounded-lg border border-slate-200/70 bg-slate-50/80 p-3">
           <p className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">Faktenbasis</p>
           <ol className="space-y-1.5">
             {evidenceItems.map((item) => (

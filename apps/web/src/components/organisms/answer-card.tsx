@@ -26,7 +26,7 @@ export function AnswerCard({ query, answer, contextTokens, status }: AnswerCardP
   const sections = toStructuredSections(answer);
 
   return (
-    <section className="order-2 space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5 lg:order-1">
+    <section className="order-2 space-y-4 rounded-xl border border-slate-200/70 bg-white/60 p-4 sm:p-5 lg:order-1">
       <div className="flex items-center justify-between gap-3">
         <div>
           <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Antwort</h3>
@@ -37,7 +37,7 @@ export function AnswerCard({ query, answer, contextTokens, status }: AnswerCardP
 
       <div className="space-y-2">
         {sections.map((section) => (
-          <article key={section.title} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2.5">
+          <article key={section.title} className="rounded-lg border border-slate-200/70 bg-slate-50/80 px-3 py-2.5">
             <h4 className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">{section.title}</h4>
             <p className="mt-1 text-sm leading-6 text-slate-700">{section.content}</p>
           </article>

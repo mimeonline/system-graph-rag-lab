@@ -8,7 +8,7 @@ type BlogFeaturedItemProps = {
 
 export function BlogFeaturedItem({ post }: BlogFeaturedItemProps): React.JSX.Element {
   return (
-    <article className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+    <article className="overflow-hidden rounded-xl border border-slate-200/70 bg-white/60">
       <div className="grid gap-0 md:grid-cols-[1.2fr_1fr]">
         <div className="p-5 sm:p-6">
           <div className="mb-2 flex flex-wrap items-center gap-2 text-xs text-slate-500">

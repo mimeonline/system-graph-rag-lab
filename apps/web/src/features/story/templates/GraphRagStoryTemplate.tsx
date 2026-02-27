@@ -228,7 +228,7 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
       <TrackedPageView page="/story/graphrag" />
       <SiteHeader />
       <main className="flex-1 px-4 py-5 sm:px-6 sm:py-6">
-        <div className="mx-auto w-full max-w-[1180px] space-y-4">
+        <div className="mx-auto w-full max-w-[1180px] space-y-6">
           <section className="space-y-3 pt-1">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-violet-700">GraphRAG Story</p>
             <h1 className="text-[2rem] font-semibold tracking-tight text-slate-950">{activeStep?.stepHeadline}</h1>
@@ -241,29 +241,29 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
           </section>
 
           <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_390px]">
-            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <section className="rounded-2xl border border-slate-200/70 bg-white/60 p-4">
               <GraphRagJourney3D step={activeStep} />
               <p className="mt-2 text-xs text-slate-500">
                 Hybrid-Ansicht: interaktive 3D-Kernbewegung plus Motion-Loop pro Schritt.
               </p>
             </section>
 
-            <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <section className="space-y-4 rounded-2xl border border-slate-200/70 bg-white/60 p-4">
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Aktueller Schritt</p>
               <h2 className="text-[1.15rem] font-semibold text-slate-900">{activeStep?.title}</h2>
               <p className="text-[0.92rem] leading-6 text-slate-700">{activeStep?.goal}</p>
 
-              <section className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <section className="rounded-lg border border-slate-200/70 bg-slate-50/80 p-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">Was war das Problem?</p>
                 <p className="mt-1 text-[0.9rem] leading-6 text-slate-700">{activeStep?.problemStatement}</p>
               </section>
 
-              <section className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <section className="rounded-lg border border-slate-200/70 bg-slate-50/80 p-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">Was verändert sich im Modell?</p>
                 <p className="mt-1 text-[0.9rem] leading-6 text-slate-700">{activeStep?.modelChange}</p>
               </section>
 
-              <section className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <section className="rounded-lg border border-slate-200/70 bg-slate-50/80 p-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">Was geht ins LLM?</p>
                 <p className="mt-1 text-[0.85rem] leading-6 text-slate-700">
                   <span className="font-semibold">Nodes:</span> {activeStep?.llmInputPreview.nodes.join(", ")}
@@ -276,7 +276,7 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
                 </p>
               </section>
 
-              <section className="rounded-lg border border-slate-200 bg-slate-50 p-3">
+              <section className="rounded-lg border border-slate-200/70 bg-slate-50/80 p-3">
                 <p className="text-xs font-semibold uppercase tracking-[0.1em] text-slate-500">Was ist der konkrete Nutzen?</p>
                 <p className="mt-1 text-[0.9rem] leading-6 text-slate-700">{activeStep?.valueStatement}</p>
               </section>
@@ -368,7 +368,7 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
             </section>
           </section>
 
-          <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+          <section className="rounded-2xl border border-slate-200/70 bg-white/60 p-4">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">LinkedIn-Teaser</p>
             <blockquote className="mt-2 rounded-md border-l-4 border-violet-300 bg-violet-50 px-4 py-3 text-sm leading-6 text-slate-800">
               &quot;GraphRAG macht aus Rohsignalen eine nachvollziehbare Entscheidungskette. Genau das erzeugt Vertrauen in komplexen Umgebungen.&quot;

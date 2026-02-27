@@ -529,7 +529,7 @@ export function QueryPanel(): React.JSX.Element {
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(330px,37%)]">
-      <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <section className="space-y-5 rounded-2xl border border-slate-200/70 bg-white/60 p-5 sm:p-6">
         <h2 className="text-base font-semibold text-slate-900">Antwortführung</h2>
 
         <PipelineStepper status={status} />
@@ -577,7 +577,7 @@ export function QueryPanel(): React.JSX.Element {
           </div>
         </section>
 
-        <section className="rounded-xl border border-slate-200 bg-white p-3">
+        <section className="rounded-xl border border-slate-200/70 bg-white/60 p-3">
           <div className="mb-2 flex items-center justify-between">
             <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Node-Auswahl fürs LLM</h3>
             <span className="text-xs text-slate-500">Retrieval-Transparenz</span>
@@ -620,7 +620,7 @@ export function QueryPanel(): React.JSX.Element {
           </ul>
         </section>
 
-        <section className="rounded-xl border border-slate-200 bg-white p-3">
+        <section className="rounded-xl border border-slate-200/70 bg-white/60 p-3">
           <div className="mb-2 flex items-center justify-between">
             <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">LLM-only vs GraphRAG</h3>
             <span className="text-xs text-slate-500">Warum der Graph hilft</span>
@@ -704,7 +704,7 @@ export function QueryPanel(): React.JSX.Element {
           </details>
         </section>
 
-        <section className="rounded-xl border border-slate-200 bg-white p-3">
+        <section className="rounded-xl border border-slate-200/70 bg-white/60 p-3">
           <div className="mb-2 flex items-center justify-between">
             <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Session Memory</h3>
             <div className="flex items-center gap-2">
@@ -777,7 +777,7 @@ export function QueryPanel(): React.JSX.Element {
         <RationaleCard coreRationale={coreRationale} />
       </section>
 
-      <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+      <section className="space-y-5 rounded-2xl border border-slate-200/70 bg-white/60 p-5 sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-base font-semibold text-slate-900">Kontext und Tools</h2>
           <div className="flex items-center gap-2">
@@ -800,7 +800,7 @@ export function QueryPanel(): React.JSX.Element {
 
         <GraphPreview model={graphModel} />
 
-        <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+        <section className="space-y-4 rounded-xl border border-slate-200/70 bg-white/60 p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
               Referenzkonzepte
@@ -865,7 +865,7 @@ export function QueryPanel(): React.JSX.Element {
           )}
         </section>
 
-        <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+        <section className="space-y-4 rounded-xl border border-slate-200/70 bg-white/60 p-4 sm:p-5">
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
               Herleitungsdetails

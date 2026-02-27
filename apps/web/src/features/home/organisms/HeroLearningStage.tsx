@@ -4,7 +4,7 @@ export function HeroLearningStage(): React.JSX.Element {
       <div className="pointer-events-none absolute -left-20 top-0 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
       <div className="pointer-events-none absolute -right-16 bottom-0 h-48 w-48 rounded-full bg-indigo-300/20 blur-3xl" />
 
-      <div className="relative z-10 space-y-4">
+      <div className="relative z-10 space-y-5">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-800">System GraphRAG</p>
         <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
           Verstehen, warum GraphRAG bessere Entscheidungen ermöglicht
@@ -14,7 +14,7 @@ export function HeroLearningStage(): React.JSX.Element {
           konkrete nächste Schritte.
         </p>
 
-        <section className="rounded-2xl border border-sky-200/80 bg-white/80 p-4">
+        <section className="rounded-2xl border border-sky-200/70 bg-white/65 p-4">
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-sky-800">
             Warum nicht nur LLM direkt?
           </p>
@@ -30,7 +30,7 @@ export function HeroLearningStage(): React.JSX.Element {
             Use Case, um den Unterschied zwischen LLM-only und GraphRAG zu zeigen.
           </p>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-slate-200 bg-white p-3">
+            <div className="rounded-xl border border-slate-200/70 bg-white/70 p-3">
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Nur LLM</p>
               <ul className="mt-2 space-y-1 text-sm text-slate-700">
                 <li>Antwort oft plausibel, aber Herkunft bleibt unklar.</li>
@@ -50,15 +50,15 @@ export function HeroLearningStage(): React.JSX.Element {
         </section>
 
         <ul className="grid gap-3 pt-1 sm:grid-cols-3">
-          <li className="rounded-xl border border-white/70 bg-white/75 p-3 text-sm text-slate-700 shadow-sm">
+          <li className="rounded-xl border border-white/70 bg-white/70 p-3 text-sm text-slate-700">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-600">Lernen</p>
             <p className="mt-1">Der Pipeline-Weg macht sichtbar, wie aus Frage und Kontext eine Antwort entsteht.</p>
           </li>
-          <li className="rounded-xl border border-white/70 bg-white/75 p-3 text-sm text-slate-700 shadow-sm">
+          <li className="rounded-xl border border-white/70 bg-white/70 p-3 text-sm text-slate-700">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-600">Verstehen</p>
             <p className="mt-1">Kernnachweis und Referenzen zeigen sofort, worauf sich die Antwort stützt.</p>
           </li>
-          <li className="rounded-xl border border-white/70 bg-white/75 p-3 text-sm text-slate-700 shadow-sm">
+          <li className="rounded-xl border border-white/70 bg-white/70 p-3 text-sm text-slate-700">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-600">Handeln</p>
             <p className="mt-1">Empfohlene Folgeschritte übersetzen Einsichten in direkt nutzbare Aktionen.</p>
           </li>

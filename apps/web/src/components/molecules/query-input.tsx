@@ -48,7 +48,7 @@ export function QueryInput({
   isQuestionSelectionLocked,
 }: QueryInputProps): React.JSX.Element {
   return (
-    <form className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5" onSubmit={onSubmit}>
+    <form className="space-y-4 rounded-xl border border-slate-200/70 bg-white/60 p-4 sm:p-5" onSubmit={onSubmit}>
       <div className="space-y-2">
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Hilfreiche Fragen</p>
         <Select onValueChange={onSuggestionSelect} disabled={isQuestionSelectionLocked}>

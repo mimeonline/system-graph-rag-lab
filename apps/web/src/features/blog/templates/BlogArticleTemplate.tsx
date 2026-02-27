@@ -22,8 +22,8 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
       <TrackedPageView page={`/blog/${frontmatter.slug}`} />
       <SiteHeader />
       <main className="flex-1 px-4 py-5 sm:px-6 sm:py-6">
-        <div className="mx-auto grid w-full max-w-[1180px] gap-4 lg:grid-cols-[minmax(0,1fr)_280px]">
-          <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+        <div className="mx-auto grid w-full max-w-[1180px] gap-6 lg:grid-cols-[minmax(0,1fr)_280px]">
+          <article className="rounded-2xl border border-slate-200/70 bg-white/60 p-5">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-sky-700">Artikel</p>
             <h1 className="mt-2 text-[2rem] font-semibold tracking-tight text-slate-950">{frontmatter.title}</h1>
             <p className="mt-2 max-w-[72ch] text-[0.95rem] leading-7 text-slate-700">{frontmatter.excerpt}</p>
@@ -80,7 +80,7 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
           </article>
 
           <aside className="space-y-4">
-            <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+            <section className="rounded-2xl border border-slate-200/70 bg-white/60 p-4">
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Inhaltsverzeichnis</p>
               <ul className="mt-2 space-y-1">
                 {toc.map((item) => (
@@ -92,14 +92,14 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                 ))}
               </ul>
             </section>
-            <section className="rounded-2xl border border-sky-200 bg-sky-50 p-4 shadow-sm">
+            <section className="rounded-2xl border border-sky-200/80 bg-sky-50/75 p-4">
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-sky-700">Was bringt mir das?</p>
               <p className="mt-2 text-sm leading-6 text-slate-800">
                 Du kannst diesen Artikel direkt als Grundlage für einen Medium-Post oder LinkedIn-Thread verwenden.
               </p>
             </section>
             {frontmatter.diagramImages && frontmatter.diagramImages.length > 0 ? (
-              <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+              <section className="rounded-2xl border border-slate-200/70 bg-white/60 p-4">
                 <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Grafiken</p>
                 <div className="mt-2 space-y-2">
                   {frontmatter.diagramImages.map((image) => (

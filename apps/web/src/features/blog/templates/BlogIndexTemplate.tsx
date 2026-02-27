@@ -68,7 +68,7 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
           {listPosts.length > 0 ? (
             <section className="space-y-3">
               <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Weitere Artikel</p>
-              <div className="divide-y divide-slate-200 rounded-xl border border-slate-200 bg-white">
+              <div className="divide-y divide-slate-200 rounded-xl border border-slate-200/70 bg-white/60">
                 {listPosts.map((post) => (
                   <BlogListRow key={post.slug} post={post} />
                 ))}
