@@ -556,10 +556,19 @@ export function GraphPreview({
   const [fullscreenHeightPx, setFullscreenHeightPx] = useState<number | null>(null);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string; isNode?: boolean } | null>(null);
   const [didLoadSettings, setDidLoadSettings] = useState(false);
+  const [isAdvancedControlsOpen, setIsAdvancedControlsOpen] = useState(false);
+  const [edgeFilterQuery, setEdgeFilterQuery] = useState("");
   const edgeLabels = useMemo(
     () => [...new Set(model.edges.map((edge) => edge.label))].sort((a, b) => a.localeCompare(b)),
     [model.edges],
   );
+  const filteredEdgeLabels = useMemo(() => {
+    const needle = edgeFilterQuery.trim().toLowerCase();
+    if (!needle) {
+      return edgeLabels;
+    }
+    return edgeLabels.filter((label) => label.toLowerCase().includes(needle));
+  }, [edgeFilterQuery, edgeLabels]);
   const presetModel = useMemo(() => applyGraphPreset(model, presetMode), [model, presetMode]);
   const filteredByEdgeModel = useMemo(() => {
     const filteredEdges = presetModel.edges.filter((edge) => enabledEdgeLabels.has(edge.label));
@@ -917,7 +926,6 @@ export function GraphPreview({
       userZoomingEnabled: true,
       boxSelectionEnabled: false,
       autoungrabify: false,
-      wheelSensitivity: 0.18,
     });
     const activeLayout = cy.layout(buildLayout(layoutMode, nodeCount));
 
@@ -1124,6 +1132,19 @@ export function GraphPreview({
     await element.requestFullscreen();
   };
 
+  const handleMiniMapJump = (x: number, y: number) => {
+    withCySafely(cyRef.current, (activeCy) => {
+      const zoom = activeCy.zoom();
+      const width = containerRef.current?.clientWidth ?? 0;
+      const height = containerRef.current?.clientHeight ?? 0;
+      activeCy.pan({
+        x: width / 2 - x * zoom,
+        y: height / 2 - y * zoom,
+      });
+      setMiniMap(buildMiniMapSnapshot(activeCy));
+    });
+  };
+
   return (
     <section
       ref={wrapperRef}
@@ -1141,7 +1162,7 @@ export function GraphPreview({
       <p className="text-sm text-slate-600">{model.caption}</p>
 
       {interactive ? (
-        <div className="space-y-2 rounded-lg border border-slate-200 bg-slate-50 p-2">
+        <div className="sticky top-2 z-10 space-y-2 rounded-lg border border-slate-200 bg-slate-50/95 p-2 backdrop-blur-sm">
           <div className="grid gap-2 md:grid-cols-[minmax(160px,220px)_minmax(170px,240px)_auto_auto] md:items-center">
             <div className="space-y-1">
               <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
@@ -1187,85 +1208,131 @@ export function GraphPreview({
               {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
             </Button>
           </div>
-          <div className="grid gap-2 md:grid-cols-[auto_auto_auto] md:items-center">
+          <div className="flex items-center justify-between">
+            <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+              Erweiterte Filter
+            </span>
             <button
               type="button"
-              disabled={!supportsPathToAnswer}
-              onClick={() => setPathToAnswerMode((current) => !current)}
-              className={`rounded-md border px-3 py-2 text-xs font-semibold transition ${
-                pathToAnswerMode
-                  ? "border-indigo-300 bg-indigo-50 text-indigo-800"
-                  : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
-              } disabled:cursor-not-allowed disabled:opacity-50`}
+              onClick={() => setIsAdvancedControlsOpen((current) => !current)}
+              className="rounded-md border border-slate-300 bg-white px-2 py-1 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
             >
-              Pfad zur Antwort {pathToAnswerMode ? "an" : "aus"}
+              {isAdvancedControlsOpen ? "Weniger" : "Mehr"}
             </button>
-            <button
-              type="button"
-              disabled={!selectedNodeDetails}
-              onClick={() =>
-                setPinnedNodeId((current) =>
-                  current === (selectedNodeDetails?.node.id ?? null) ? null : (selectedNodeDetails?.node.id ?? null),
-                )
-              }
-              className={`rounded-md border px-3 py-2 text-xs font-semibold transition ${
-                pinnedNodeId ? "border-amber-300 bg-amber-50 text-amber-800" : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
-              } disabled:cursor-not-allowed disabled:opacity-50`}
-            >
-              {pinnedNodeId ? "Pin lösen" : "Node pinnen"}
-            </button>
-            <div className="flex items-center gap-1 rounded-md border border-slate-300 bg-white p-1">
-              <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">Kontext</span>
-              <button
-                type="button"
-                onClick={() => setContextHopMode("1")}
-                className={`rounded px-2 py-1 text-xs font-semibold ${contextHopMode === "1" ? "bg-sky-100 text-sky-800" : "text-slate-600"}`}
-              >
-                1-Hop
-              </button>
-              <button
-                type="button"
-                onClick={() => setContextHopMode("2")}
-                className={`rounded px-2 py-1 text-xs font-semibold ${contextHopMode === "2" ? "bg-sky-100 text-sky-800" : "text-slate-600"}`}
-              >
-                2-Hop
-              </button>
-            </div>
           </div>
-          {edgeLabels.length > 0 ? (
-            <div className="space-y-1">
-              <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-                Kantenfilter
-              </span>
-              <div className="flex flex-wrap gap-1.5">
-                {edgeLabels.map((label) => {
-                  const enabled = enabledEdgeLabels.has(label);
-                  return (
-                    <button
-                      key={label}
-                      type="button"
-                      onClick={() =>
-                        setEnabledEdgeLabels((current) => {
-                          const next = new Set(current);
-                          if (next.has(label)) {
-                            next.delete(label);
-                          } else {
-                            next.add(label);
-                          }
-                          return next;
-                        })
-                      }
-                      className={`rounded-full border px-2 py-1 text-[11px] font-semibold transition ${
-                        enabled
-                          ? "border-sky-300 bg-sky-50 text-sky-800"
-                          : "border-slate-300 bg-white text-slate-500"
-                      }`}
-                    >
-                      {label}
-                    </button>
-                  );
-                })}
+          {isAdvancedControlsOpen ? (
+            <div className="space-y-2 rounded-md border border-slate-200 bg-white p-2">
+              <div className="grid gap-2 md:grid-cols-[auto_auto_auto] md:items-center">
+                <button
+                  type="button"
+                  disabled={!supportsPathToAnswer}
+                  onClick={() => setPathToAnswerMode((current) => !current)}
+                  className={`rounded-md border px-3 py-2 text-xs font-semibold transition ${
+                    pathToAnswerMode
+                      ? "border-indigo-300 bg-indigo-50 text-indigo-800"
+                      : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                  } disabled:cursor-not-allowed disabled:opacity-50`}
+                >
+                  Pfad zur Antwort {pathToAnswerMode ? "an" : "aus"}
+                </button>
+                <button
+                  type="button"
+                  disabled={!selectedNodeDetails}
+                  onClick={() =>
+                    setPinnedNodeId((current) =>
+                      current === (selectedNodeDetails?.node.id ?? null)
+                        ? null
+                        : (selectedNodeDetails?.node.id ?? null),
+                    )
+                  }
+                  className={`rounded-md border px-3 py-2 text-xs font-semibold transition ${
+                    pinnedNodeId
+                      ? "border-amber-300 bg-amber-50 text-amber-800"
+                      : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                  } disabled:cursor-not-allowed disabled:opacity-50`}
+                >
+                  {pinnedNodeId ? "Pin lösen" : "Node pinnen"}
+                </button>
+                <div className="flex items-center gap-1 rounded-md border border-slate-300 bg-white p-1">
+                  <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">
+                    Kontext
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => setContextHopMode("1")}
+                    className={`rounded px-2 py-1 text-xs font-semibold ${contextHopMode === "1" ? "bg-sky-100 text-sky-800" : "text-slate-600"}`}
+                  >
+                    1-Hop
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setContextHopMode("2")}
+                    className={`rounded px-2 py-1 text-xs font-semibold ${contextHopMode === "2" ? "bg-sky-100 text-sky-800" : "text-slate-600"}`}
+                  >
+                    2-Hop
+                  </button>
+                </div>
               </div>
+              {edgeLabels.length > 0 ? (
+                <div className="space-y-1">
+                  <div className="flex flex-wrap items-center justify-between gap-2">
+                    <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                      Kantenfilter
+                    </span>
+                    <div className="flex items-center gap-1">
+                      <button
+                        type="button"
+                        onClick={() => setEnabledEdgeLabels(new Set(edgeLabels))}
+                        className="rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700 hover:bg-slate-50"
+                      >
+                        Alle
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setEnabledEdgeLabels(new Set())}
+                        className="rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700 hover:bg-slate-50"
+                      >
+                        Keine
+                      </button>
+                    </div>
+                  </div>
+                  <input
+                    value={edgeFilterQuery}
+                    onChange={(event) => setEdgeFilterQuery(event.target.value)}
+                    placeholder="Kante suchen..."
+                    className="h-8 w-full rounded-md border border-slate-300 bg-white px-2 text-xs text-slate-700"
+                  />
+                  <div className="flex max-h-[112px] flex-wrap gap-1.5 overflow-auto pr-1">
+                    {filteredEdgeLabels.map((label) => {
+                      const enabled = enabledEdgeLabels.has(label);
+                      return (
+                        <button
+                          key={label}
+                          type="button"
+                          onClick={() =>
+                            setEnabledEdgeLabels((current) => {
+                              const next = new Set(current);
+                              if (next.has(label)) {
+                                next.delete(label);
+                              } else {
+                                next.add(label);
+                              }
+                              return next;
+                            })
+                          }
+                          className={`rounded-full border px-2 py-1 text-[11px] font-semibold transition ${
+                            enabled
+                              ? "border-sky-300 bg-sky-50 text-sky-800"
+                              : "border-slate-300 bg-white text-slate-500"
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              ) : null}
             </div>
           ) : null}
         </div>
@@ -1329,7 +1396,7 @@ export function GraphPreview({
             <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Mini-Map</p>
             {miniMap && miniMap.nodes.length > 0 ? (
               <div className="h-[128px] w-full md:h-[140px]">
-                <MiniMapView snapshot={miniMap} />
+                <MiniMapView snapshot={miniMap} onJump={handleMiniMapJump} />
               </div>
             ) : (
               <p className="text-xs text-slate-500">Lade Übersicht…</p>
@@ -1526,7 +1593,13 @@ function getCollapsibleDescriptionText(text: string | undefined, expanded: boole
   return truncateText(compact, 180);
 }
 
-function MiniMapView({ snapshot }: { snapshot: MiniMapSnapshot }): React.JSX.Element {
+function MiniMapView({
+  snapshot,
+  onJump,
+}: {
+  snapshot: MiniMapSnapshot;
+  onJump: (x: number, y: number) => void;
+}): React.JSX.Element {
   const width = 200;
   const height = 150;
   const xs = snapshot.nodes.map((node) => node.x);
@@ -1540,13 +1613,24 @@ function MiniMapView({ snapshot }: { snapshot: MiniMapSnapshot }): React.JSX.Ele
   const pad = 10;
   const toX = (x: number) => pad + ((x - minX) / spanX) * (width - pad * 2);
   const toY = (y: number) => pad + ((y - minY) / spanY) * (height - pad * 2);
+  const fromX = (x: number) => minX + ((x - pad) / (width - pad * 2)) * spanX;
+  const fromY = (y: number) => minY + ((y - pad) / (height - pad * 2)) * spanY;
   const nodeById = new Map(snapshot.nodes.map((node) => [node.id, node]));
 
   return (
     <svg
       viewBox={`0 0 ${width} ${height}`}
       preserveAspectRatio="xMidYMid meet"
-      className="block h-full w-full rounded-md border border-slate-200 bg-white"
+      className="block h-full w-full cursor-crosshair rounded-md border border-slate-200 bg-white"
+      onClick={(event) => {
+        const svg = event.currentTarget;
+        const rect = svg.getBoundingClientRect();
+        const relativeX = ((event.clientX - rect.left) / Math.max(rect.width, 1)) * width;
+        const relativeY = ((event.clientY - rect.top) / Math.max(rect.height, 1)) * height;
+        const mappedX = fromX(Math.max(pad, Math.min(width - pad, relativeX)));
+        const mappedY = fromY(Math.max(pad, Math.min(height - pad, relativeY)));
+        onJump(mappedX, mappedY);
+      }}
     >
       {snapshot.edges.map((edge, index) => {
         const source = nodeById.get(edge.source);

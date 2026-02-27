@@ -448,7 +448,7 @@ export function QueryPanel(): React.JSX.Element {
     setExplorerMode(mode);
     setIsExplorerOpen(true);
 
-    if (mode !== "system" || isSystemGraphLoading) {
+    if (mode !== "system" || isSystemGraphLoading || systemGraphModel) {
       return;
     }
 
@@ -546,6 +546,18 @@ export function QueryPanel(): React.JSX.Element {
           isSubmitting={status === "loading"}
           isQuestionSelectionLocked={isQuestionSelectionLocked}
         />
+        {status === "loading" ? (
+          <section className="rounded-xl border border-sky-200 bg-sky-50 p-3">
+            <div className="mb-1 flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Antwortaufbau</h3>
+              <span className="text-xs text-sky-700">läuft</span>
+            </div>
+            <p className="text-xs leading-6 text-slate-700">
+              Retrieval {"->"} Graph-Kontext {"->"} Synthese. Die Antwort wird gerade aus ausgewählten Knoten und
+              Belegen aufgebaut.
+            </p>
+          </section>
+        ) : null}
 
         <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
           <div className="mb-2 flex items-center justify-between">
@@ -973,23 +985,36 @@ export function QueryPanel(): React.JSX.Element {
                   </button>
                 </div>
               </div>
-              {explorerMode === "system" && isSystemGraphLoading ? (
-                <p className="text-sm text-slate-600">System-Graph wird geladen…</p>
-              ) : explorerGraphModel ? (
-                <GraphPreview
-                  model={explorerGraphModel}
-                  variant="expanded"
-                  interactive
-                  initialLayout={explorerMode === "system" ? "force" : "hierarchy-vertical"}
-                  highlightNodeIds={
-                    explorerMode === "system" && isSelectionHighlightEnabled
-                      ? references.slice(0, 3).map((reference) => reference.nodeId)
-                      : []
-                  }
-                />
-              ) : (
-                <p className="text-sm text-slate-600">Kein Graph verfügbar.</p>
-              )}
+              <div className="min-h-[700px]">
+                {explorerGraphModel ? (
+                  <div className="relative">
+                    <GraphPreview
+                      model={explorerGraphModel}
+                      variant="expanded"
+                      interactive
+                      initialLayout={explorerMode === "system" ? "force" : "hierarchy-vertical"}
+                      highlightNodeIds={
+                        explorerMode === "system" && isSelectionHighlightEnabled
+                          ? references.slice(0, 3).map((reference) => reference.nodeId)
+                          : []
+                      }
+                    />
+                    {explorerMode === "system" && isSystemGraphLoading ? (
+                      <div className="pointer-events-none absolute right-3 top-3 rounded-md border border-slate-200 bg-white/95 px-2 py-1 text-xs font-semibold text-slate-600 shadow-sm">
+                        System-Graph wird geladen…
+                      </div>
+                    ) : null}
+                  </div>
+                ) : (
+                  <div className="flex min-h-[700px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50">
+                    <p className="text-sm text-slate-600">
+                      {explorerMode === "system" && isSystemGraphLoading
+                        ? "System-Graph wird geladen…"
+                        : "Kein Graph verfügbar."}
+                    </p>
+                  </div>
+                )}
+              </div>
             </motion.div>
           </motion.div>
         ) : null}
