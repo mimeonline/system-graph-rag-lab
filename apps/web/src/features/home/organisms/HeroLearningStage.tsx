@@ -14,6 +14,30 @@ export function HeroLearningStage(): React.JSX.Element {
           konkrete nächste Schritte.
         </p>
 
+        <section className="rounded-2xl border border-sky-200/80 bg-white/80 p-4">
+          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-sky-800">
+            Warum nicht nur LLM direkt?
+          </p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-xl border border-slate-200 bg-white p-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Nur LLM</p>
+              <ul className="mt-2 space-y-1 text-sm text-slate-700">
+                <li>Antwort oft plausibel, aber Herkunft bleibt unklar.</li>
+                <li>Weniger stabil bei komplexen Fragen mit mehreren Ursachen.</li>
+                <li>Schwerer zu prüfen, ob Schlussfolgerungen belastbar sind.</li>
+              </ul>
+            </div>
+            <div className="rounded-xl border border-sky-200 bg-sky-50/70 p-3">
+              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-sky-800">Mit GraphRAG</p>
+              <ul className="mt-2 space-y-1 text-sm text-slate-800">
+                <li>Antwort basiert auf konkreten Knoten, Kanten und Quellen.</li>
+                <li>Herleitung ist im Graph sichtbar statt nur im Fließtext.</li>
+                <li>Referenzen und Belege machen die Antwort überprüfbar.</li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
         <ul className="grid gap-3 pt-1 sm:grid-cols-3">
           <li className="rounded-xl border border-white/70 bg-white/75 p-3 text-sm text-slate-700 shadow-sm">
             <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-600">Lernen</p>
