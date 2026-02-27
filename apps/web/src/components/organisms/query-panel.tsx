@@ -1,7 +1,7 @@
 "use client";
 
 import type { FormEvent } from "react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import dynamic from "next/dynamic";
 
@@ -23,6 +23,15 @@ const QueryInput = dynamic(
   () => import("@/components/molecules/query-input").then((module) => module.QueryInput),
   { ssr: false },
 );
+const SESSION_HISTORY_KEY = "system-graph-rag-history-v1";
+const SESSION_HISTORY_LIMIT = 8;
+
+type SessionHistoryEntry = {
+  query: string;
+  answerPreview: string;
+  createdAt: string;
+  referenceCount: number;
+};
 
 const DEFAULT_QUERY =
   "Wo verlieren wir im Alltag Zeit, weil Aufgaben zwischen Teams hin und her gehen?";
@@ -90,10 +99,34 @@ export function QueryPanel(): React.JSX.Element {
   const [systemGraphModel, setSystemGraphModel] = useState<HomeGraphModel | null>(null);
   const [isSystemGraphLoading, setIsSystemGraphLoading] = useState(false);
   const [expandedDerivationIds, setExpandedDerivationIds] = useState<Record<string, boolean>>({});
+  const [sessionHistory, setSessionHistory] = useState<SessionHistoryEntry[]>([]);
 
   const statusHint = getStatusHint(status, errorMessage);
   const helperText = statusHint.statusText;
   const statusAction = statusHint.nextAction;
+
+  useEffect(() => {
+    try {
+      const raw = window.localStorage.getItem(SESSION_HISTORY_KEY);
+      if (!raw) {
+        return;
+      }
+      const parsed = JSON.parse(raw) as SessionHistoryEntry[];
+      if (Array.isArray(parsed)) {
+        setSessionHistory(parsed.slice(0, SESSION_HISTORY_LIMIT));
+      }
+    } catch {
+      // Ignore malformed local storage payloads.
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      window.localStorage.setItem(SESSION_HISTORY_KEY, JSON.stringify(sessionHistory.slice(0, SESSION_HISTORY_LIMIT)));
+    } catch {
+      // Ignore storage quota/browser restrictions.
+    }
+  }, [sessionHistory]);
 
   /**
    * Submits the current query to the API and updates panel state from the response.
@@ -128,6 +161,15 @@ export function QueryPanel(): React.JSX.Element {
       setViewModel(viewModel);
       setStatus(viewModel.references.length === 0 ? "empty" : "success");
       setIsQuestionSelectionLocked(true);
+      setSessionHistory((current) => {
+        const next: SessionHistoryEntry = {
+          query: trimmedQuery,
+          answerPreview: viewModel.answer.main.slice(0, 180),
+          createdAt: new Date().toISOString(),
+          referenceCount: viewModel.references.length,
+        };
+        return [next, ...current].slice(0, SESSION_HISTORY_LIMIT);
+      });
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "Unerwarteter Fehler während der Anfrage.";
@@ -168,7 +210,14 @@ export function QueryPanel(): React.JSX.Element {
       const payload = (await response.json()) as {
         status: "ok";
         graph: {
-          nodes: Array<{ id: string; label: string; nodeType: string; description: string }>;
+          nodes: Array<{
+            id: string;
+            label: string;
+            nodeType: string;
+            shortDescription: string;
+            longDescription: string;
+            url?: string;
+          }>;
           edges: Array<{ id: string; source: string; target: string; label: string }>;
         };
       };
@@ -180,7 +229,9 @@ export function QueryPanel(): React.JSX.Element {
           id: node.id,
           label: `${node.nodeType}: ${node.label}`,
           compactLabel: node.label,
-          description: node.description,
+          shortDescription: node.shortDescription,
+          longDescription: node.longDescription,
+          url: node.url,
           kind: node.nodeType === "Problem" ? "evidence" : "reference",
           nodeType: node.nodeType,
           x: 0,
@@ -238,6 +289,58 @@ export function QueryPanel(): React.JSX.Element {
           isSubmitting={status === "loading"}
           isQuestionSelectionLocked={isQuestionSelectionLocked}
         />
+
+        <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Quality Gate</h3>
+            <span className="text-xs text-slate-500">Antwortqualität</span>
+          </div>
+          <div className="grid gap-2 text-xs text-slate-700 sm:grid-cols-2">
+            <p>
+              Referenzen: <span className="font-semibold">{references.length}</span>
+            </p>
+            <p>
+              Kontext-Tokens: <span className="font-semibold">{viewModel?.contextTokens ?? 0}</span>
+            </p>
+            <p>
+              Knoten-Typen:{" "}
+              <span className="font-semibold">
+                {new Set(references.map((reference) => reference.nodeType)).size}
+              </span>
+            </p>
+            <p>
+              Ableitungsdetails: <span className="font-semibold">{derivationDetails.length}</span>
+            </p>
+          </div>
+        </section>
+
+        <section className="rounded-xl border border-slate-200 bg-white p-3">
+          <div className="mb-2 flex items-center justify-between">
+            <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Session Memory</h3>
+            <span className="text-xs text-slate-500">lokal gespeichert</span>
+          </div>
+          {sessionHistory.length > 0 ? (
+            <ul className="space-y-2">
+              {sessionHistory.map((entry) => (
+                <li key={`${entry.createdAt}-${entry.query}`} className="rounded-lg border border-slate-100 bg-slate-50 p-2">
+                  <button
+                    type="button"
+                    className="w-full text-left text-sm font-medium text-slate-800 underline decoration-slate-300 underline-offset-2"
+                    onClick={() => setQuery(entry.query)}
+                  >
+                    {entry.query}
+                  </button>
+                  <p className="mt-1 text-xs text-slate-600">{entry.answerPreview}...</p>
+                  <p className="mt-1 text-[11px] text-slate-500">
+                    {new Date(entry.createdAt).toLocaleString("de-DE")} · {entry.referenceCount} Referenzen
+                  </p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-slate-600">Noch keine lokalen Verlaufsdaten vorhanden.</p>
+          )}
+        </section>
 
         <AnswerCard
           query={viewModel?.query ?? query}
@@ -413,7 +516,7 @@ export function QueryPanel(): React.JSX.Element {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.985 }}
               transition={{ duration: 0.18 }}
-              className="max-h-[92vh] w-full max-w-[1120px] overflow-x-hidden overflow-y-auto rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl sm:p-4"
+              className="max-h-[94dvh] w-full max-w-[1120px] overflow-x-hidden overflow-y-auto rounded-2xl border border-slate-200 bg-white p-3 pb-5 shadow-2xl sm:p-4 sm:pb-6"
               onClick={(event) => event.stopPropagation()}
             >
               <div className="mb-3 flex flex-wrap items-center justify-between gap-2">

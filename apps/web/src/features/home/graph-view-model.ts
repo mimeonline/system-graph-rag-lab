@@ -6,7 +6,9 @@ export type HomeGraphNode = {
   id: string;
   label: string;
   compactLabel?: string;
-  description?: string;
+  shortDescription?: string;
+  longDescription?: string;
+  url?: string;
   kind: HomeGraphNodeKind;
   nodeType?: string;
   x: number;
@@ -52,9 +54,7 @@ export function buildHomeGraphModel(
   const references = viewModel?.references ?? [];
   const derivationDetails = viewModel?.derivationDetails ?? [];
   const contextElements = viewModel?.contextElements ?? [];
-  const contextSummaryByNodeId = new Map(
-    contextElements.map((element) => [element.nodeId, element.summary]),
-  );
+  const contextByNodeId = new Map(contextElements.map((element) => [element.nodeId, element]));
   const cleanedQuery = currentQuery.trim();
 
   if (references.length === 0) {
@@ -66,7 +66,8 @@ export function buildHomeGraphModel(
           id: "query-fallback",
           label: cleanedQuery.length > 0 ? cleanedQuery : "Frage",
           compactLabel: "Frage",
-          description: "Ausgangsfrage für die Analyse.",
+          shortDescription: "Ausgangsfrage für die Analyse.",
+          longDescription: "Ausgangsfrage für die Analyse.",
           kind: "query",
           nodeType: "Query",
           x: 50,
@@ -76,7 +77,8 @@ export function buildHomeGraphModel(
           id: "top-concept-fallback",
           label: "Top-Konzept",
           compactLabel: "Konzept",
-          description: "Relevantes Konzept zur Einordnung der Frage.",
+          shortDescription: "Relevantes Konzept zur Einordnung der Frage.",
+          longDescription: "Relevantes Konzept zur Einordnung der Frage.",
           kind: "reference",
           nodeType: "Concept",
           x: 24,
@@ -86,7 +88,8 @@ export function buildHomeGraphModel(
           id: "evidence-fallback",
           label: "Beleg",
           compactLabel: "Beleg",
-          description: "Quelle oder Fakt zur Begründung.",
+          shortDescription: "Quelle oder Fakt zur Begründung.",
+          longDescription: "Quelle oder Fakt zur Begründung.",
           kind: "evidence",
           nodeType: "Evidence",
           x: 58,
@@ -96,7 +99,8 @@ export function buildHomeGraphModel(
           id: "answer-fallback",
           label: "Antwort",
           compactLabel: "Antwort",
-          description: "Abgeleitete Antwort aus Konzept und Beleg.",
+          shortDescription: "Abgeleitete Antwort aus Konzept und Beleg.",
+          longDescription: "Abgeleitete Antwort aus Konzept und Beleg.",
           kind: "reference",
           nodeType: "Answer",
           x: 78,
@@ -132,12 +136,15 @@ export function buildHomeGraphModel(
     const fallbackPosition = referenceLayout[Math.min(index, referenceLayout.length - 1)];
     const referenceTypeLabel = toReferenceTypeLabel(reference.nodeType);
     const typedLabel = `${referenceTypeLabel}: ${reference.title}`;
+    const context = contextByNodeId.get(reference.nodeId);
 
     return {
       id: reference.nodeId,
       label: typedLabel,
       compactLabel: toCompactLabel(reference.title),
-      description: contextSummaryByNodeId.get(reference.nodeId),
+      shortDescription: context?.summary,
+      longDescription: context?.longDescription ?? context?.summary,
+      url: context?.source.publicReference.url ?? reference.explanationUrl,
       kind: "reference",
       nodeType: reference.nodeType,
       x: fallbackPosition.x,
@@ -149,7 +156,8 @@ export function buildHomeGraphModel(
     id: "query",
     label: viewModel?.query ?? (cleanedQuery.length > 0 ? cleanedQuery : FALLBACK_QUERY),
     compactLabel: "Frage",
-    description: "Aktuelle Nutzerfrage als Ausgangspunkt.",
+    shortDescription: "Aktuelle Nutzerfrage als Ausgangspunkt.",
+    longDescription: "Aktuelle Nutzerfrage als Ausgangspunkt.",
     kind: "query",
     nodeType: "Query",
     x: 50,
@@ -160,7 +168,9 @@ export function buildHomeGraphModel(
     id: `evidence-${detail.nodeId}`,
     label: detail.label,
     compactLabel: toCompactLabel(detail.label),
-    description: detail.summary,
+    shortDescription: contextByNodeId.get(detail.nodeId)?.summary ?? detail.summary,
+    longDescription: detail.summary,
+    url: detail.sourceUrl,
     kind: "evidence",
     nodeType: "Evidence",
     x: derivationDetails.length === 1 ? 50 : 33 + index * 34,

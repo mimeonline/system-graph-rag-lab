@@ -7,6 +7,12 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 type GraphLayoutMode = "force" | "hierarchy-vertical" | "hierarchy-horizontal";
+type GraphPresetMode = "all" | "concepts-tools" | "archetypes" | "problems-interventions";
+
+type MiniMapSnapshot = {
+  nodes: Array<{ id: string; x: number; y: number; nodeType: string }>;
+  edges: Array<{ source: string; target: string }>;
+};
 
 type GraphPreviewProps = {
   model: HomeGraphModel;
@@ -17,7 +23,7 @@ type GraphPreviewProps = {
 
 const GRAPH_HEIGHT_PX_BY_VARIANT: Record<NonNullable<GraphPreviewProps["variant"]>, number> = {
   default: 400,
-  expanded: 640,
+  expanded: 560,
 };
 
 const NODE_SIZE_BY_KIND: Record<HomeGraphNode["kind"], { width: number; height: number }> = {
@@ -86,7 +92,9 @@ function toElements(model: HomeGraphModel): ElementDefinition[] {
         id: node.id,
         label: fitNodeLabel(node.compactLabel ?? node.label),
         fullLabel: node.label,
-        description: node.description,
+        shortDescription: node.shortDescription,
+        longDescription: node.longDescription,
+        url: node.url,
         kind: node.kind,
         nodeType: normalizeNodeType(node),
         width: size.width,
@@ -105,6 +113,82 @@ function toElements(model: HomeGraphModel): ElementDefinition[] {
   }));
 
   return [...nodes, ...edges];
+}
+
+function shouldIncludeNodeByPreset(node: HomeGraphNode, preset: GraphPresetMode): boolean {
+  if (preset === "all") {
+    return true;
+  }
+
+  const nodeType = normalizeNodeType(node);
+  const label = `${node.label} ${node.compactLabel ?? ""}`.toLowerCase();
+
+  if (preset === "concepts-tools") {
+    return nodeType === "concept" || nodeType === "tool" || nodeType === "query" || nodeType === "evidence";
+  }
+
+  if (preset === "archetypes") {
+    return (
+      label.includes("archetype") ||
+      label.includes("trap") ||
+      nodeType === "query" ||
+      nodeType === "evidence"
+    );
+  }
+
+  if (preset === "problems-interventions") {
+    return (
+      nodeType === "problem" ||
+      nodeType === "tool" ||
+      label.includes("leverage") ||
+      label.includes("policy") ||
+      nodeType === "query" ||
+      nodeType === "evidence"
+    );
+  }
+
+  return true;
+}
+
+function applyGraphPreset(model: HomeGraphModel, preset: GraphPresetMode): HomeGraphModel {
+  const allowedNodeIds = new Set(
+    model.nodes.filter((node) => shouldIncludeNodeByPreset(node, preset)).map((node) => node.id),
+  );
+  const filteredEdges = model.edges.filter(
+    (edge) => allowedNodeIds.has(edge.source) && allowedNodeIds.has(edge.target),
+  );
+  const connectedNodeIds = new Set<string>();
+  for (const edge of filteredEdges) {
+    connectedNodeIds.add(edge.source);
+    connectedNodeIds.add(edge.target);
+  }
+  const filteredNodes = model.nodes.filter(
+    (node) => connectedNodeIds.has(node.id) || node.kind === "query",
+  );
+
+  if (filteredNodes.length === 0) {
+    return model;
+  }
+
+  return {
+    ...model,
+    nodes: filteredNodes,
+    edges: filteredEdges,
+  };
+}
+
+function buildMiniMapSnapshot(cy: Core): MiniMapSnapshot {
+  const nodes = cy.nodes().map((node) => ({
+    id: String(node.id()),
+    x: Number(node.position("x")),
+    y: Number(node.position("y")),
+    nodeType: String(node.data("nodeType") ?? node.data("kind") ?? "reference"),
+  }));
+  const edges = cy.edges().map((edge) => ({
+    source: String(edge.data("source") ?? ""),
+    target: String(edge.data("target") ?? ""),
+  }));
+  return { nodes, edges };
 }
 
 function buildLayout(mode: GraphLayoutMode, nodeCount: number): cytoscape.LayoutOptions {
@@ -335,31 +419,79 @@ export function GraphPreview({
   const cyRef = useRef<Core | null>(null);
   const [portalContainer, setPortalContainer] = useState<HTMLElement | null>(null);
   const [layoutMode, setLayoutMode] = useState<GraphLayoutMode>(initialLayout);
+  const [presetMode, setPresetMode] = useState<GraphPresetMode>("all");
+  const [enabledEdgeLabels, setEnabledEdgeLabels] = useState<Set<string>>(new Set());
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
+  const [miniMap, setMiniMap] = useState<MiniMapSnapshot | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [fullscreenHeightPx, setFullscreenHeightPx] = useState<number | null>(null);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string; isNode?: boolean } | null>(null);
-  const nodeCount = model.nodes.length;
+  const edgeLabels = useMemo(
+    () => [...new Set(model.edges.map((edge) => edge.label))].sort((a, b) => a.localeCompare(b)),
+    [model.edges],
+  );
+  const presetModel = useMemo(() => applyGraphPreset(model, presetMode), [model, presetMode]);
+  const filteredModel = useMemo(() => {
+    const filteredEdges = presetModel.edges.filter((edge) => enabledEdgeLabels.has(edge.label));
+    const allowedNodeIds = new Set<string>();
+    for (const edge of filteredEdges) {
+      allowedNodeIds.add(edge.source);
+      allowedNodeIds.add(edge.target);
+    }
+    const filteredNodes = presetModel.nodes.filter(
+      (node) => allowedNodeIds.has(node.id) || node.kind === "query",
+    );
+    return {
+      ...presetModel,
+      nodes: filteredNodes.length > 0 ? filteredNodes : presetModel.nodes,
+      edges: filteredEdges,
+    };
+  }, [presetModel, enabledEdgeLabels]);
+  const nodeCount = filteredModel.nodes.length;
   const forceSeedPositions = useMemo(
-    () => (layoutMode === "force" ? computeForceSeedPositions(model.nodes) : null),
-    [layoutMode, model.nodes],
+    () => (layoutMode === "force" ? computeForceSeedPositions(filteredModel.nodes) : null),
+    [layoutMode, filteredModel.nodes],
   );
   const elements = useMemo(() => {
     if (!forceSeedPositions) {
-      return toElements(model);
+      return toElements(filteredModel);
     }
 
-    const nodesWithSeed = model.nodes.map((node) => ({
+    const nodesWithSeed = filteredModel.nodes.map((node) => ({
       ...node,
       x: forceSeedPositions.get(node.id)?.x ?? node.x,
       y: forceSeedPositions.get(node.id)?.y ?? node.y,
     }));
 
-    return toElements({ ...model, nodes: nodesWithSeed });
-  }, [model, forceSeedPositions]);
+    return toElements({ ...filteredModel, nodes: nodesWithSeed });
+  }, [filteredModel, forceSeedPositions]);
   const visibleLegendItems = useMemo(() => {
-    const presentTypes = new Set(model.nodes.map((node) => normalizeNodeType(node)));
+    const presentTypes = new Set(filteredModel.nodes.map((node) => normalizeNodeType(node)));
     return NODE_TYPE_LEGEND.filter((entry) => presentTypes.has(entry.key));
-  }, [model.nodes]);
+  }, [filteredModel.nodes]);
+  const selectedNodeDetails = useMemo(() => {
+    if (!selectedNodeId) {
+      return null;
+    }
+    const node = filteredModel.nodes.find((entry) => entry.id === selectedNodeId);
+    if (!node) {
+      return null;
+    }
+
+    const incoming = filteredModel.edges.filter((edge) => edge.target === selectedNodeId);
+    const outgoing = filteredModel.edges.filter((edge) => edge.source === selectedNodeId);
+    const neighborIds = new Set<string>();
+    for (const edge of incoming) {
+      neighborIds.add(edge.source);
+    }
+    for (const edge of outgoing) {
+      neighborIds.add(edge.target);
+    }
+    const neighbors = filteredModel.nodes.filter((entry) => neighborIds.has(entry.id));
+
+    return { node, incoming, outgoing, neighbors };
+  }, [filteredModel.edges, filteredModel.nodes, selectedNodeId]);
   const graphHeightPx = isFullscreen
     ? Math.max(520, (fullscreenHeightPx ?? 900) - (interactive ? 190 : 140))
     : baseGraphHeightPx;
@@ -367,6 +499,15 @@ export function GraphPreview({
   useEffect(() => {
     setLayoutMode(initialLayout);
   }, [initialLayout]);
+
+  useEffect(() => {
+    setEnabledEdgeLabels(new Set(edgeLabels));
+  }, [edgeLabels]);
+
+  useEffect(() => {
+    setSelectedNodeId(null);
+    setIsDescriptionExpanded(false);
+  }, [model]);
 
   useEffect(() => {
     const handler = () => {
@@ -535,12 +676,12 @@ export function GraphPreview({
         return;
       }
       const fullLabel = String(event.target.data("fullLabel") ?? "");
-      const description = String(event.target.data("description") ?? "");
+      const shortDescription = String(event.target.data("shortDescription") ?? "");
       const nodeType = String(event.target.data("nodeType") ?? event.target.data("kind") ?? "");
       setTooltip({
         x: position.x + 14,
         y: position.y - 12,
-        text: getNodeTooltipText(nodeType, fullLabel, description),
+        text: getNodeTooltipText(nodeType, fullLabel, shortDescription),
         isNode: true,
       });
     });
@@ -588,11 +729,16 @@ export function GraphPreview({
         node.addClass("focus-node");
         node.connectedEdges().addClass("focus-edge");
       });
+
+      setSelectedNodeId(String(node.id()));
+      setIsDescriptionExpanded(false);
     });
 
     cy.on("tap", (event) => {
       if (event.target === cy) {
         clearFocus();
+        setSelectedNodeId(null);
+        setIsDescriptionExpanded(false);
       }
     });
 
@@ -605,6 +751,7 @@ export function GraphPreview({
             withCySafely(activeCy, (stableCy) => {
               resolveRenderedNodeOverlaps(stableCy, 44, 36);
               stableCy.fit(undefined, 30);
+              setMiniMap(buildMiniMapSnapshot(stableCy));
             });
           }, 40);
           // Third pass: catches delayed text metrics in some browsers.
@@ -612,22 +759,34 @@ export function GraphPreview({
             withCySafely(activeCy, (stableCy) => {
               resolveRenderedNodeOverlaps(stableCy, 44, 18);
               stableCy.fit(undefined, 30);
+              setMiniMap(buildMiniMapSnapshot(stableCy));
             });
           }, 150);
           activeCy.fit(undefined, 30);
+          setMiniMap(buildMiniMapSnapshot(activeCy));
         });
       });
     }
 
     activeLayout.run();
+    withCySafely(cy, (activeCy) => {
+      setMiniMap(buildMiniMapSnapshot(activeCy));
+    });
 
     const resizeObserver = new ResizeObserver(() => {
       withCySafely(cy, (activeCy) => {
         activeCy.resize();
         activeCy.fit(undefined, 20);
+        setMiniMap(buildMiniMapSnapshot(activeCy));
       });
     });
     resizeObserver.observe(container);
+    cy.on("dragfree", "node", () => {
+      withCySafely(cy, (activeCy) => setMiniMap(buildMiniMapSnapshot(activeCy)));
+    });
+    cy.on("pan zoom", () => {
+      withCySafely(cy, (activeCy) => setMiniMap(buildMiniMapSnapshot(activeCy)));
+    });
 
     cyRef.current = cy;
     return () => {
@@ -673,7 +832,7 @@ export function GraphPreview({
     <section
       ref={wrapperRef}
       className={`space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5 ${
-        isFullscreen ? "h-screen w-screen overflow-auto rounded-none border-0 p-4 sm:p-6" : ""
+        isFullscreen ? "h-[100dvh] w-screen overflow-auto rounded-none border-0 p-4 sm:p-6" : ""
       }`}
     >
       <div className="flex items-center justify-between gap-3">
@@ -686,34 +845,88 @@ export function GraphPreview({
       <p className="text-sm text-slate-600">{model.caption}</p>
 
       {interactive ? (
-        <div className="grid gap-2 rounded-lg border border-slate-200 bg-slate-50 p-2 md:grid-cols-[minmax(190px,260px)_auto_auto] md:items-center">
-          <div className="space-y-1">
-            <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
-              Layout
-            </span>
-            <Select value={layoutMode} onValueChange={(value) => setLayoutMode(value as GraphLayoutMode)}>
-              <SelectTrigger className="h-9 w-full bg-white text-sm md:w-[240px]">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent portalContainer={portalContainer}>
-                <SelectItem value="force">Force</SelectItem>
-                <SelectItem value="hierarchy-vertical">Hierarchy Vertical</SelectItem>
-                <SelectItem value="hierarchy-horizontal">Hierarchy Horizontal</SelectItem>
-              </SelectContent>
-            </Select>
+        <div className="space-y-2 rounded-lg border border-slate-200 bg-slate-50 p-2">
+          <div className="grid gap-2 md:grid-cols-[minmax(160px,220px)_minmax(170px,240px)_auto_auto] md:items-center">
+            <div className="space-y-1">
+              <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                Layout
+              </span>
+              <Select value={layoutMode} onValueChange={(value) => setLayoutMode(value as GraphLayoutMode)}>
+                <SelectTrigger className="h-9 w-full bg-white text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent portalContainer={portalContainer}>
+                  <SelectItem value="force">Force</SelectItem>
+                  <SelectItem value="hierarchy-vertical">Hierarchy Vertical</SelectItem>
+                  <SelectItem value="hierarchy-horizontal">Hierarchy Horizontal</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-1">
+              <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                Preset View
+              </span>
+              <Select value={presetMode} onValueChange={(value) => setPresetMode(value as GraphPresetMode)}>
+                <SelectTrigger className="h-9 w-full bg-white text-sm">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent portalContainer={portalContainer}>
+                  <SelectItem value="all">Alle Knoten</SelectItem>
+                  <SelectItem value="concepts-tools">Konzepte + Tools</SelectItem>
+                  <SelectItem value="archetypes">Archetypen & Traps</SelectItem>
+                  <SelectItem value="problems-interventions">Probleme & Interventionen</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <Button type="button" variant="secondary" size="default" className="h-9 px-3" onClick={handleFit}>
+              Fit to Screen
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              size="default"
+              className="h-9 px-3"
+              onClick={handleToggleFullscreen}
+            >
+              {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+            </Button>
           </div>
-          <Button type="button" variant="secondary" size="default" className="h-9 px-3" onClick={handleFit}>
-            Fit to Screen
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            size="default"
-            className="h-9 px-3"
-            onClick={handleToggleFullscreen}
-          >
-            {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
-          </Button>
+          {edgeLabels.length > 0 ? (
+            <div className="space-y-1">
+              <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+                Kantenfilter
+              </span>
+              <div className="flex flex-wrap gap-1.5">
+                {edgeLabels.map((label) => {
+                  const enabled = enabledEdgeLabels.has(label);
+                  return (
+                    <button
+                      key={label}
+                      type="button"
+                      onClick={() =>
+                        setEnabledEdgeLabels((current) => {
+                          const next = new Set(current);
+                          if (next.has(label)) {
+                            next.delete(label);
+                          } else {
+                            next.add(label);
+                          }
+                          return next;
+                        })
+                      }
+                      className={`rounded-full border px-2 py-1 text-[11px] font-semibold transition ${
+                        enabled
+                          ? "border-sky-300 bg-sky-50 text-sky-800"
+                          : "border-slate-300 bg-white text-slate-500"
+                      }`}
+                    >
+                      {label}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
         </div>
       ) : null}
 
@@ -768,6 +981,135 @@ export function GraphPreview({
           ? "Drag zum Traversieren, Scroll zum Zoomen, Layout frei wechselbar."
           : "Drag zum Traversieren und Scroll zum Zoomen. Für Layoutwechsel den Graph Explorer öffnen."}
       </p>
+
+      {interactive ? (
+        <div className="grid items-start gap-3 lg:grid-cols-[200px_minmax(0,1fr)]">
+          <section className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50 p-2">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Mini-Map</p>
+            {miniMap && miniMap.nodes.length > 0 ? (
+              <div className="h-[128px] w-full md:h-[140px]">
+                <MiniMapView snapshot={miniMap} />
+              </div>
+            ) : (
+              <p className="text-xs text-slate-500">Lade Übersicht…</p>
+            )}
+          </section>
+          <section className="rounded-lg border border-slate-200 bg-white p-3">
+            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+              Node-Details
+            </p>
+            {selectedNodeDetails ? (
+              <div className="space-y-3">
+                <p className="text-sm font-semibold text-slate-900">
+                  {stripNodeTypePrefix(
+                    selectedNodeDetails.node.label,
+                    (selectedNodeDetails.node.nodeType ?? "").toLowerCase(),
+                  )}
+                </p>
+                <p className="text-xs text-slate-500">
+                  Typ: {selectedNodeDetails.node.nodeType ?? "Unbekannt"} · Nachbarn:{" "}
+                  {selectedNodeDetails.neighbors.length} · Eingehend: {selectedNodeDetails.incoming.length} ·
+                  Ausgehend: {selectedNodeDetails.outgoing.length}
+                </p>
+                <div className="rounded-md border border-slate-200 bg-slate-50 px-2 py-2 text-xs text-slate-700">
+                  <p className="font-semibold uppercase tracking-[0.1em] text-slate-500">Beschreibung</p>
+                  <p className="mt-1 leading-6">
+                    {getCollapsibleDescriptionText(
+                      selectedNodeDetails.node.longDescription?.trim() ||
+                        selectedNodeDetails.node.shortDescription?.trim(),
+                      isDescriptionExpanded,
+                    ) || "Keine Beschreibung verfügbar."}
+                  </p>
+                  {shouldShowDescriptionToggle(
+                    selectedNodeDetails.node.longDescription?.trim() ||
+                      selectedNodeDetails.node.shortDescription?.trim() ||
+                      "",
+                  ) ? (
+                    <button
+                      type="button"
+                      onClick={() => setIsDescriptionExpanded((current) => !current)}
+                      className="mt-1 text-xs font-semibold text-sky-700 underline decoration-sky-300 underline-offset-2"
+                    >
+                      {isDescriptionExpanded ? "Weniger anzeigen" : "Mehr anzeigen"}
+                    </button>
+                  ) : null}
+                </div>
+                <div className="grid gap-2 md:grid-cols-2">
+                  <div className="rounded-md border border-slate-200 bg-white px-2 py-2 text-xs text-slate-700">
+                    <p className="font-semibold uppercase tracking-[0.1em] text-slate-500">Quelle / Link</p>
+                    {selectedNodeDetails.node.url ? (
+                      <a
+                        className="mt-1 inline-block text-sky-700 underline decoration-sky-300 underline-offset-2"
+                        href={selectedNodeDetails.node.url}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                      >
+                        Link öffnen
+                      </a>
+                    ) : (
+                      <p className="mt-1 text-slate-500">Kein Link hinterlegt.</p>
+                    )}
+                  </div>
+                  <div className="rounded-md border border-slate-200 bg-white px-2 py-2 text-xs text-slate-700">
+                    <p className="font-semibold uppercase tracking-[0.1em] text-slate-500">Nachbarn</p>
+                    {selectedNodeDetails.neighbors.length > 0 ? (
+                      <p className="mt-1 leading-5">
+                        {selectedNodeDetails.neighbors
+                          .slice(0, 6)
+                          .map((neighbor) =>
+                            truncateText(
+                              stripNodeTypePrefix(
+                                neighbor.compactLabel ?? neighbor.label,
+                                (neighbor.nodeType ?? "").toLowerCase(),
+                              ),
+                              28,
+                            ),
+                          )
+                          .join(", ")}
+                        {selectedNodeDetails.neighbors.length > 6 ? ", ..." : ""}
+                      </p>
+                    ) : (
+                      <p className="mt-1 text-slate-500">Keine Nachbarn sichtbar.</p>
+                    )}
+                  </div>
+                </div>
+                <div className="grid gap-2 md:grid-cols-2">
+                  <div className="rounded-md border border-slate-200 bg-white px-2 py-2 text-xs text-slate-700">
+                    <p className="font-semibold uppercase tracking-[0.1em] text-slate-500">Eingehende Kanten</p>
+                    {selectedNodeDetails.incoming.length > 0 ? (
+                      <p className="mt-1 leading-5">
+                        {selectedNodeDetails.incoming
+                          .slice(0, 4)
+                          .map((edge) => edge.label)
+                          .join(", ")}
+                        {selectedNodeDetails.incoming.length > 4 ? ", ..." : ""}
+                      </p>
+                    ) : (
+                      <p className="mt-1 text-slate-500">Keine eingehenden Kanten.</p>
+                    )}
+                  </div>
+                  <div className="rounded-md border border-slate-200 bg-white px-2 py-2 text-xs text-slate-700">
+                    <p className="font-semibold uppercase tracking-[0.1em] text-slate-500">Ausgehende Kanten</p>
+                    {selectedNodeDetails.outgoing.length > 0 ? (
+                      <p className="mt-1 leading-5">
+                        {selectedNodeDetails.outgoing
+                          .slice(0, 4)
+                          .map((edge) => edge.label)
+                          .join(", ")}
+                        {selectedNodeDetails.outgoing.length > 4 ? ", ..." : ""}
+                      </p>
+                    ) : (
+                      <p className="mt-1 text-slate-500">Keine ausgehenden Kanten.</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <p className="text-sm text-slate-600">Klicke einen Knoten an, um die Langbeschreibung zu sehen.</p>
+            )}
+          </section>
+        </div>
+      ) : null}
     </section>
   );
 }
@@ -779,6 +1121,103 @@ function fitNodeLabel(label: string): string {
   }
 
   return `${compact.slice(0, 17)}...`;
+}
+
+function truncateText(text: string, maxLength: number): string {
+  const compact = text.replace(/\s+/g, " ").trim();
+  if (compact.length <= maxLength) {
+    return compact;
+  }
+  return `${compact.slice(0, Math.max(0, maxLength - 3)).trim()}...`;
+}
+
+function shouldShowDescriptionToggle(text: string): boolean {
+  return text.replace(/\s+/g, " ").trim().length > 180;
+}
+
+function getCollapsibleDescriptionText(text: string | undefined, expanded: boolean): string {
+  const compact = (text ?? "").replace(/\s+/g, " ").trim();
+  if (!compact) {
+    return "";
+  }
+  if (expanded || compact.length <= 180) {
+    return compact;
+  }
+  return truncateText(compact, 180);
+}
+
+function MiniMapView({ snapshot }: { snapshot: MiniMapSnapshot }): React.JSX.Element {
+  const width = 200;
+  const height = 150;
+  const xs = snapshot.nodes.map((node) => node.x);
+  const ys = snapshot.nodes.map((node) => node.y);
+  const minX = Math.min(...xs);
+  const maxX = Math.max(...xs);
+  const minY = Math.min(...ys);
+  const maxY = Math.max(...ys);
+  const spanX = Math.max(1, maxX - minX);
+  const spanY = Math.max(1, maxY - minY);
+  const pad = 10;
+  const toX = (x: number) => pad + ((x - minX) / spanX) * (width - pad * 2);
+  const toY = (y: number) => pad + ((y - minY) / spanY) * (height - pad * 2);
+  const nodeById = new Map(snapshot.nodes.map((node) => [node.id, node]));
+
+  return (
+    <svg
+      viewBox={`0 0 ${width} ${height}`}
+      preserveAspectRatio="xMidYMid meet"
+      className="block h-full w-full rounded-md border border-slate-200 bg-white"
+    >
+      {snapshot.edges.map((edge, index) => {
+        const source = nodeById.get(edge.source);
+        const target = nodeById.get(edge.target);
+        if (!source || !target) {
+          return null;
+        }
+        return (
+          <line
+            key={`${edge.source}-${edge.target}-${index}`}
+            x1={toX(source.x)}
+            y1={toY(source.y)}
+            x2={toX(target.x)}
+            y2={toY(target.y)}
+            stroke="#cbd5e1"
+            strokeWidth="1"
+          />
+        );
+      })}
+      {snapshot.nodes.map((node) => (
+        <circle
+          key={node.id}
+          cx={toX(node.x)}
+          cy={toY(node.y)}
+          r="3"
+          fill={miniMapNodeColor(node.nodeType)}
+          stroke="#334155"
+          strokeWidth="0.6"
+        />
+      ))}
+    </svg>
+  );
+}
+
+function miniMapNodeColor(nodeType: string): string {
+  switch (nodeType.toLowerCase()) {
+    case "tool":
+      return "#bbf7d0";
+    case "problem":
+      return "#fed7aa";
+    case "book":
+      return "#e9d5ff";
+    case "author":
+      return "#fde68a";
+    case "query":
+      return "#bfdbfe";
+    case "evidence":
+      return "#e2e8f0";
+    default:
+      return "#dbeafe";
+  }
 }
 
 function getNodeTooltipText(nodeTypeRaw: string, fullLabel: string, descriptionRaw?: string): string {

@@ -7,7 +7,9 @@ type FullGraphNode = {
   id: string;
   label: string;
   nodeType: string;
-  description: string;
+  shortDescription: string;
+  longDescription: string;
+  url?: string;
 };
 
 type FullGraphEdge = {
@@ -35,7 +37,9 @@ export async function GET(): Promise<Response> {
     id: node.id,
     label: node.title ?? node.name ?? node.id,
     nodeType: node.nodeType,
-    description: node.shortDescription ?? node.summary,
+    shortDescription: node.shortDescription ?? node.summary,
+    longDescription: node.longDescription ?? node.shortDescription ?? node.summary,
+    url: node.url ?? node.publicReference.url,
   }));
 
   const edges: FullGraphEdge[] = dataset.edges.map((edge) => ({
