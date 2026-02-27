@@ -139,27 +139,11 @@ export function QueryPanel(): React.JSX.Element {
             onClick={() => setShowExpandedGraph((value) => !value)}
             className="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700 transition hover:bg-sky-100"
           >
-            {showExpandedGraph ? "Graph schließen" : "Graph groß anzeigen"}
+            Graph groß anzeigen
           </button>
         </div>
 
         <GraphPreview model={graphModel} />
-
-        <AnimatePresence initial={false}>
-          {showExpandedGraph ? (
-            <motion.section
-              key="expanded-graph"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -6 }}
-              transition={{ duration: 0.22 }}
-              className="space-y-3 rounded-xl border border-sky-200 bg-sky-50/50 p-3"
-            >
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-sky-700">Graph im Fokus</p>
-              <GraphPreview model={graphModel} variant="expanded" />
-            </motion.section>
-          ) : null}
-        </AnimatePresence>
 
         <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
           <div className="flex items-center justify-between">
@@ -267,6 +251,41 @@ export function QueryPanel(): React.JSX.Element {
           )}
         </section>
       </section>
+
+      <AnimatePresence>
+        {showExpandedGraph ? (
+          <motion.div
+            key="graph-overlay"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/45 p-4 sm:p-6"
+            onClick={() => setShowExpandedGraph(false)}
+          >
+            <motion.div
+              initial={{ y: 16, scale: 0.98, opacity: 0 }}
+              animate={{ y: 0, scale: 1, opacity: 1 }}
+              exit={{ y: 10, scale: 0.98, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="max-h-[94vh] w-full max-w-5xl overflow-auto rounded-2xl border border-slate-200 bg-white p-4 shadow-2xl sm:p-6"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <p className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-600">Graph im Fokus</p>
+                <button
+                  type="button"
+                  onClick={() => setShowExpandedGraph(false)}
+                  className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+                >
+                  Schließen
+                </button>
+              </div>
+              <GraphPreview model={graphModel} variant="expanded" />
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }

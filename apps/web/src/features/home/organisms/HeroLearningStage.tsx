@@ -18,6 +18,17 @@ export function HeroLearningStage(): React.JSX.Element {
           <p className="text-xs font-semibold uppercase tracking-[0.14em] text-sky-800">
             Warum nicht nur LLM direkt?
           </p>
+          <p className="mt-2 text-sm leading-6 text-slate-700">
+            Ich nutze System Thinking als Beispiel für GraphRAG, weil es aus vielen vernetzten Konzepten
+            besteht, die man isoliert leicht missversteht. Genau hier zeigt GraphRAG seinen Mehrwert: Er
+            verbindet Begriffe, Beziehungen und Belege sichtbar zu einer nachvollziehbaren Antwort. Statt
+            nur einer plausiblen LLM-Antwort bekomme ich eine prüfbare Herleitung mit Quellen, Knoten und
+            Kanten.
+          </p>
+          <p className="mt-2 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-sm font-medium text-sky-900">
+            System Thinking ist kein lineares Thema, sondern ein Beziehungsnetz. Deshalb ist es der ideale
+            Use Case, um den Unterschied zwischen LLM-only und GraphRAG zu zeigen.
+          </p>
           <div className="mt-3 grid gap-3 sm:grid-cols-2">
             <div className="rounded-xl border border-slate-200 bg-white p-3">
               <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Nur LLM</p>
