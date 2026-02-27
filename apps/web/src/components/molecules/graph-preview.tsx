@@ -43,6 +43,7 @@ function toElements(model: HomeGraphModel): ElementDefinition[] {
         label: fitNodeLabel(node.compactLabel ?? node.label),
         fullLabel: node.label,
         kind: node.kind,
+        nodeType: normalizeNodeType(node),
         width: size.width,
         height: size.height,
       },
@@ -98,22 +99,44 @@ export function GraphPreview({
   variant = "default",
   interactive = false,
 }: GraphPreviewProps): React.JSX.Element {
-  const graphHeightPx = GRAPH_HEIGHT_PX_BY_VARIANT[variant];
+  const baseGraphHeightPx = GRAPH_HEIGHT_PX_BY_VARIANT[variant];
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const cyRef = useRef<Core | null>(null);
   const [layoutMode, setLayoutMode] = useState<GraphLayoutMode>("hierarchy-vertical");
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [fullscreenHeightPx, setFullscreenHeightPx] = useState<number | null>(null);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
   const elements = useMemo(() => toElements(model), [model]);
+  const graphHeightPx = isFullscreen
+    ? Math.max(520, (fullscreenHeightPx ?? 900) - (interactive ? 190 : 140))
+    : baseGraphHeightPx;
 
   useEffect(() => {
     const handler = () => {
       setIsFullscreen(Boolean(document.fullscreenElement));
+      setFullscreenHeightPx(window.innerHeight);
     };
     document.addEventListener("fullscreenchange", handler);
     return () => document.removeEventListener("fullscreenchange", handler);
   }, []);
+
+  useEffect(() => {
+    const onResize = () => {
+      if (!isFullscreen) {
+        return;
+      }
+      setFullscreenHeightPx(window.innerHeight);
+      const cy = cyRef.current;
+      if (cy) {
+        cy.resize();
+        cy.fit(undefined, 20);
+      }
+    };
+
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, [isFullscreen]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -162,6 +185,63 @@ export function GraphPreview({
           },
         },
         {
+          selector: "node[nodeType = 'concept']",
+          style: {
+            "background-color": "#e7f0ff",
+            "border-color": "#2d5f9b",
+          },
+        },
+        {
+          selector: "node[nodeType = 'tool']",
+          style: {
+            "background-color": "#e8f7ef",
+            "border-color": "#2f855a",
+          },
+        },
+        {
+          selector: "node[nodeType = 'problem']",
+          style: {
+            "background-color": "#fff1eb",
+            "border-color": "#c05621",
+          },
+        },
+        {
+          selector: "node[nodeType = 'book']",
+          style: {
+            "background-color": "#f3ecff",
+            "border-color": "#6b46c1",
+          },
+        },
+        {
+          selector: "node[nodeType = 'author']",
+          style: {
+            "background-color": "#fff7df",
+            "border-color": "#b7791f",
+          },
+        },
+        {
+          selector: ".muted",
+          style: {
+            opacity: 0.2,
+          },
+        },
+        {
+          selector: ".focus-node",
+          style: {
+            "border-width": 3,
+            "border-color": "#0f4f94",
+            opacity: 1,
+          },
+        },
+        {
+          selector: ".focus-edge",
+          style: {
+            width: 3,
+            "line-color": "#4f87c2",
+            opacity: 1,
+          },
+        },
+        {
           selector: "edge",
           style: {
             width: 2,
@@ -183,7 +263,7 @@ export function GraphPreview({
       userPanningEnabled: true,
       userZoomingEnabled: true,
       boxSelectionEnabled: false,
-      autoungrabify: true,
+      autoungrabify: false,
       wheelSensitivity: 0.18,
     });
 
@@ -222,6 +302,29 @@ export function GraphPreview({
     cy.on("mouseout", "node,edge", () => setTooltip(null));
     cy.on("pan zoom", () => setTooltip(null));
 
+    const clearFocus = () => {
+      cy.elements().removeClass("muted");
+      cy.elements().removeClass("focus-node");
+      cy.elements().removeClass("focus-edge");
+    };
+
+    cy.on("tap", "node", (event) => {
+      const node = event.target;
+      clearFocus();
+
+      const focusElements = node.closedNeighborhood();
+      cy.elements().addClass("muted");
+      focusElements.removeClass("muted");
+      node.addClass("focus-node");
+      node.connectedEdges().addClass("focus-edge");
+    });
+
+    cy.on("tap", (event) => {
+      if (event.target === cy) {
+        clearFocus();
+      }
+    });
+
     const resizeObserver = new ResizeObserver(() => {
       cy.resize();
       cy.fit(undefined, 20);
@@ -257,7 +360,12 @@ export function GraphPreview({
   };
 
   return (
-    <section ref={wrapperRef} className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+    <section
+      ref={wrapperRef}
+      className={`space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5 ${
+        isFullscreen ? "h-screen w-screen overflow-auto rounded-none border-0 p-4 sm:p-6" : ""
+      }`}
+    >
       <div className="flex items-center justify-between gap-3">
         <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Graph-Ansicht</h3>
         <span className="text-xs font-semibold text-slate-500">
@@ -268,9 +376,9 @@ export function GraphPreview({
       <p className="text-sm text-slate-600">{model.caption}</p>
 
       {interactive ? (
-        <div className="grid gap-2 rounded-lg border border-slate-200 bg-slate-50 p-2 sm:grid-cols-[1fr_auto_auto]">
+        <div className="grid gap-2 rounded-lg border border-slate-200 bg-slate-50 p-2 md:grid-cols-[minmax(190px,260px)_auto_auto] md:items-center">
           <Select value={layoutMode} onValueChange={(value) => setLayoutMode(value as GraphLayoutMode)}>
-            <SelectTrigger className="h-9 bg-white text-sm">
+            <SelectTrigger className="h-9 w-full bg-white text-sm md:w-[240px]">
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
@@ -348,4 +456,24 @@ function getEdgeTooltipText(label: string): string {
     return "Begründungs-Schritt zwischen zwei Elementen.";
   }
   return "Verbindung zwischen zwei Knoten im Herleitungsgraphen.";
+}
+
+function normalizeNodeType(node: HomeGraphNode): string {
+  const source = (node.nodeType ?? node.kind).toLowerCase();
+  if (source.includes("tool")) {
+    return "tool";
+  }
+  if (source.includes("problem")) {
+    return "problem";
+  }
+  if (source.includes("book")) {
+    return "book";
+  }
+  if (source.includes("author")) {
+    return "author";
+  }
+  if (source.includes("concept")) {
+    return "concept";
+  }
+  return source;
 }

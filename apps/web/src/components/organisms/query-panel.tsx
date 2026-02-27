@@ -2,19 +2,19 @@
 
 import type { FormEvent } from "react";
 import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 
 import { QueryInput, type QuerySuggestionGroup } from "@/components/molecules/query-input";
 import { GraphPreview } from "@/components/molecules/graph-preview";
 import { AnswerCard } from "@/components/organisms/answer-card";
 import { ActionCard } from "@/components/organisms/action-card";
 import { RationaleCard } from "@/components/organisms/rationale-card";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   getStatusHint,
   type QueryPanelStatus,
 } from "@/components/organisms/query-panel-status";
 import { PipelineStepper } from "@/features/home/molecules/PipelineStepper";
-import { buildHomeGraphModel } from "@/features/home/graph-view-model";
+import { buildHomeGraphModel, type HomeGraphModel } from "@/features/home/graph-view-model";
 import type { QuerySuccessResponse } from "@/features/query/contracts";
 import { buildQueryViewModel, type QueryViewModel } from "@/features/query/view-model";
 
@@ -48,6 +48,26 @@ const QUERY_SUGGESTION_GROUPS: QuerySuggestionGroup[] = [
       "Wo lohnt ein kleiner Hebel mit großer Wirkung am meisten?",
     ],
   },
+  {
+    category: "Kommunikation & Entscheidungen",
+    questions: [
+      "Warum drehen wir uns in Meetings oft im Kreis, obwohl alle informiert sind?",
+      "Wie treffen wir schneller Entscheidungen, ohne wichtige Perspektiven zu verlieren?",
+      "Welche Signale zeigen, dass Informationen im System verzerrt ankommen?",
+      "Wie verhindern wir, dass Entscheidungen später wieder zurückgerollt werden?",
+      "Wo entstehen Missverständnisse zwischen Fachbereich und Technik am häufigsten?",
+    ],
+  },
+  {
+    category: "Lernen & Verbesserung",
+    questions: [
+      "Warum wiederholen sich dieselben Probleme trotz Retrospektiven?",
+      "Wie bauen wir eine Lernschleife auf, die im Alltag wirklich genutzt wird?",
+      "Welche kleinen Experimente helfen uns, Ursachen statt Symptome zu testen?",
+      "Wie erkennen wir früh, ob eine Verbesserung wirklich systemisch wirkt?",
+      "Wie vermeiden wir Aktionismus und priorisieren wirksame Verbesserungen?",
+    ],
+  },
 ];
 
 /**
@@ -58,6 +78,10 @@ export function QueryPanel(): React.JSX.Element {
   const [viewModel, setViewModel] = useState<QueryViewModel | null>(null);
   const [status, setStatus] = useState<QueryPanelStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [isExplorerOpen, setIsExplorerOpen] = useState(false);
+  const [explorerMode, setExplorerMode] = useState<"query" | "system">("query");
+  const [systemGraphModel, setSystemGraphModel] = useState<HomeGraphModel | null>(null);
+  const [isSystemGraphLoading, setIsSystemGraphLoading] = useState(false);
 
   const statusHint = getStatusHint(status, errorMessage);
   const helperText = statusHint.statusText;
@@ -115,6 +139,59 @@ export function QueryPanel(): React.JSX.Element {
     viewModel?.answer.coreRationale ??
     "Hier wird der knappe P0-Kernnachweis angezeigt, sobald eine Antwort vorliegt.";
   const graphModel = buildHomeGraphModel(viewModel, query);
+  const explorerGraphModel = explorerMode === "system" ? systemGraphModel : graphModel;
+
+  const openExplorer = async (mode: "query" | "system") => {
+    setExplorerMode(mode);
+    setIsExplorerOpen(true);
+
+    if (mode !== "system" || systemGraphModel || isSystemGraphLoading) {
+      return;
+    }
+
+    setIsSystemGraphLoading(true);
+    try {
+      const response = await fetch("/api/graph/full", { cache: "no-store" });
+      if (!response.ok) {
+        throw new Error("System-Graph konnte nicht geladen werden.");
+      }
+
+      const payload = (await response.json()) as {
+        status: "ok";
+        graph: {
+          nodes: Array<{ id: string; label: string; nodeType: string }>;
+          edges: Array<{ id: string; source: string; target: string; label: string }>;
+        };
+      };
+
+      const fullGraph: HomeGraphModel = {
+        isFallback: false,
+        caption: `System Thinking Gesamtgraph: ${payload.graph.nodes.length} Knoten, ${payload.graph.edges.length} Kanten.`,
+        nodes: payload.graph.nodes.map((node) => ({
+          id: node.id,
+          label: `${node.nodeType}: ${node.label}`,
+          compactLabel: node.label,
+          kind: node.nodeType === "Problem" ? "evidence" : "reference",
+          nodeType: node.nodeType,
+          x: 0,
+          y: 0,
+        })),
+        edges: payload.graph.edges.map((edge) => ({
+          id: edge.id,
+          source: edge.source,
+          target: edge.target,
+          label: edge.label,
+        })),
+      };
+
+      setSystemGraphModel(fullGraph);
+    } catch (error) {
+      const message = error instanceof Error ? error.message : "System-Graph konnte nicht geladen werden.";
+      setErrorMessage(message);
+    } finally {
+      setIsSystemGraphLoading(false);
+    }
+  };
 
   return (
     <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(330px,37%)]">
@@ -155,22 +232,22 @@ export function QueryPanel(): React.JSX.Element {
       <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <div className="flex items-center justify-between gap-3">
           <h2 className="text-base font-semibold text-slate-900">Kontext und Tools</h2>
-          <Popover>
-            <PopoverTrigger asChild>
-              <button
-                type="button"
-                className="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700 transition hover:bg-sky-100"
-              >
-                Graph Explorer
-              </button>
-            </PopoverTrigger>
-            <PopoverContent align="end" className="space-y-3 p-3 sm:p-4">
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-                Traversierbarer Graph Explorer
-              </p>
-              <GraphPreview model={graphModel} variant="expanded" interactive />
-            </PopoverContent>
-          </Popover>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => void openExplorer("system")}
+              className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 transition hover:bg-indigo-100"
+            >
+              System Thinking Gesamtgraph
+            </button>
+            <button
+              type="button"
+              onClick={() => void openExplorer("query")}
+              className="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700 transition hover:bg-sky-100"
+            >
+              Graph Explorer
+            </button>
+          </div>
         </div>
 
         <GraphPreview model={graphModel} />
@@ -281,6 +358,72 @@ export function QueryPanel(): React.JSX.Element {
           )}
         </section>
       </section>
+
+      <AnimatePresence>
+        {isExplorerOpen ? (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.16 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/45 p-4"
+            onClick={() => setIsExplorerOpen(false)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.985 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 8, scale: 0.985 }}
+              transition={{ duration: 0.18 }}
+              className="max-h-[92vh] w-full max-w-[1120px] overflow-x-hidden overflow-y-auto rounded-2xl border border-slate-200 bg-white p-3 shadow-2xl sm:p-4"
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                  Traversierbarer Graph Explorer
+                </p>
+                <div className="flex items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setExplorerMode("query")}
+                    className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
+                      explorerMode === "query"
+                        ? "bg-sky-600 text-white"
+                        : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    Antwortgraph
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void openExplorer("system")}
+                    className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
+                      explorerMode === "system"
+                        ? "bg-indigo-600 text-white"
+                        : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                    }`}
+                  >
+                    Gesamtgraph
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setIsExplorerOpen(false)}
+                    className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
+                  >
+                    Schließen
+                  </button>
+                </div>
+              </div>
+              {explorerMode === "system" && isSystemGraphLoading ? (
+                <p className="text-sm text-slate-600">System-Graph wird geladen…</p>
+              ) : explorerGraphModel ? (
+                <GraphPreview model={explorerGraphModel} variant="expanded" interactive />
+              ) : (
+                <p className="text-sm text-slate-600">Kein Graph verfügbar.</p>
+              )}
+            </motion.div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
     </div>
   );
 }

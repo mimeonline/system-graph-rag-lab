@@ -7,6 +7,7 @@ export type HomeGraphNode = {
   label: string;
   compactLabel?: string;
   kind: HomeGraphNodeKind;
+  nodeType?: string;
   x: number;
   y: number;
 };
@@ -61,6 +62,7 @@ export function buildHomeGraphModel(
           label: cleanedQuery.length > 0 ? cleanedQuery : "Frage",
           compactLabel: "Frage",
           kind: "query",
+          nodeType: "Query",
           x: 50,
           y: 20,
         },
@@ -69,6 +71,7 @@ export function buildHomeGraphModel(
           label: "Top-Konzept",
           compactLabel: "Konzept",
           kind: "reference",
+          nodeType: "Concept",
           x: 24,
           y: 56,
         },
@@ -77,6 +80,7 @@ export function buildHomeGraphModel(
           label: "Beleg",
           compactLabel: "Beleg",
           kind: "evidence",
+          nodeType: "Evidence",
           x: 58,
           y: 70,
         },
@@ -85,6 +89,7 @@ export function buildHomeGraphModel(
           label: "Antwort",
           compactLabel: "Antwort",
           kind: "reference",
+          nodeType: "Answer",
           x: 78,
           y: 88,
         },
@@ -124,6 +129,7 @@ export function buildHomeGraphModel(
       label: typedLabel,
       compactLabel: toCompactLabel(reference.title),
       kind: "reference",
+      nodeType: reference.nodeType,
       x: fallbackPosition.x,
       y: fallbackPosition.y,
     };
@@ -134,6 +140,7 @@ export function buildHomeGraphModel(
     label: viewModel?.query ?? (cleanedQuery.length > 0 ? cleanedQuery : FALLBACK_QUERY),
     compactLabel: "Frage",
     kind: "query",
+    nodeType: "Query",
     x: 50,
     y: 20,
   };
@@ -143,6 +150,7 @@ export function buildHomeGraphModel(
     label: detail.label,
     compactLabel: toCompactLabel(detail.label),
     kind: "evidence",
+    nodeType: "Evidence",
     x: derivationDetails.length === 1 ? 50 : 33 + index * 34,
     y: 88,
   }));
