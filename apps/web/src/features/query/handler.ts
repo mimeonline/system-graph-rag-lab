@@ -110,6 +110,7 @@ function buildEmptySuccessResponse(
 }
 
 const OPENAI_CHAT_ENDPOINT = "https://api.openai.com/v1/chat/completions";
+const OPENAI_MAX_COMPLETION_TOKENS = 1200;
 
 type OpenAiAnswer = {
   main: string;
@@ -135,6 +136,7 @@ type OpenAiChatPayload = {
       refusal?: unknown;
     };
     text?: unknown;
+    finish_reason?: unknown;
   }>;
 };
 
@@ -414,43 +416,58 @@ async function fetchOpenAiAnswer(options: {
   contextElements: QueryContextElement[];
 }): Promise<OpenAiAnswer> {
   const { apiKey, model, query, references, contextElements } = options;
+  const messages = buildOpenAiMessages(query, references, contextElements);
 
-  const requestPayload = {
-    model,
-    max_completion_tokens: 400,
-    messages: buildOpenAiMessages(query, references, contextElements),
-  };
+  async function requestCompletion(maxCompletionTokens: number): Promise<OpenAiChatPayload> {
+    const requestPayload = {
+      model,
+      max_completion_tokens: maxCompletionTokens,
+      messages,
+    };
 
-  let response: Response;
-  try {
-    response = await fetch(OPENAI_CHAT_ENDPOINT, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
-      },
-      body: JSON.stringify(requestPayload),
-    });
-  } catch (error) {
-    const message =
-      error instanceof Error ? error.message : "Fehler bei der Verbindung zur OpenAI API.";
-    throw new OpenAiUpstreamError(`OpenAI API error: ${message}`, 0, true);
+    let response: Response;
+    try {
+      response = await fetch(OPENAI_CHAT_ENDPOINT, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${apiKey}`,
+        },
+        body: JSON.stringify(requestPayload),
+      });
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : "Fehler bei der Verbindung zur OpenAI API.";
+      throw new OpenAiUpstreamError(`OpenAI API error: ${message}`, 0, true);
+    }
+
+    if (!response.ok) {
+      const rawBody = await response.text();
+      const details = extractOpenAiErrorDetails(rawBody);
+      const composedMessage = buildOpenAiErrorMessage(response.status, rawBody, details);
+      const retryable = response.status === 429 || response.status >= 500;
+      throw new OpenAiUpstreamError(
+        composedMessage,
+        response.status,
+        retryable,
+      );
+    }
+
+    return (await response.json()) as OpenAiChatPayload;
   }
 
-  if (!response.ok) {
-    const rawBody = await response.text();
-    const details = extractOpenAiErrorDetails(rawBody);
-    const composedMessage = buildOpenAiErrorMessage(response.status, rawBody, details);
-    const retryable = response.status === 429 || response.status >= 500;
-    throw new OpenAiUpstreamError(
-      composedMessage,
-      response.status,
-      retryable,
-    );
+  let payload = await requestCompletion(OPENAI_MAX_COMPLETION_TOKENS);
+  let extracted = extractAssistantContent(payload);
+  const finishReason = payload.choices?.[0]?.finish_reason;
+  if (
+    !extracted.content &&
+    extracted.refusal === null &&
+    finishReason === "length"
+  ) {
+    payload = await requestCompletion(OPENAI_MAX_COMPLETION_TOKENS * 2);
+    extracted = extractAssistantContent(payload);
   }
 
-  const payload = (await response.json()) as OpenAiChatPayload;
-  const extracted = extractAssistantContent(payload);
   if (!extracted.content) {
     if (extracted.refusal) {
       throw new OpenAiUpstreamError(
@@ -460,11 +477,7 @@ async function fetchOpenAiAnswer(options: {
       );
     }
 
-    throw new OpenAiUpstreamError(
-      "OpenAI lieferte keine Assistant-Antwort.",
-      200,
-      false,
-    );
+    throw new OpenAiUpstreamError("OpenAI lieferte keine Assistant-Antwort.", 200, false);
   }
 
   return parseOpenAiJson(extracted.content);
