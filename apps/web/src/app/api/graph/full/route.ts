@@ -1,5 +1,8 @@
 import { createSeedDataset } from "@/features/seed-data/seed-data";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 type FullGraphNode = {
   id: string;
   label: string;

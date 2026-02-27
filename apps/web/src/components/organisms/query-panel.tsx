@@ -154,7 +154,7 @@ export function QueryPanel(): React.JSX.Element {
     setExplorerMode(mode);
     setIsExplorerOpen(true);
 
-    if (mode !== "system" || systemGraphModel || isSystemGraphLoading) {
+    if (mode !== "system" || isSystemGraphLoading) {
       return;
     }
 

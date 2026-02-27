@@ -796,19 +796,7 @@ function getNodeTooltipText(nodeTypeRaw: string, fullLabel: string, descriptionR
   if (nodeType === "evidence") {
     return `${cleanLabel}\nBeleg: Konkrete Quelle oder Fakt, der ein Konzept stützt.`;
   }
-  if (nodeType === "author") {
-    return `${cleanLabel}\nAuthor: Person hinter einem Werk oder Ansatz.`;
-  }
-  if (nodeType === "book") {
-    return `${cleanLabel}\nBook: Literaturquelle mit konzeptueller Einordnung.`;
-  }
-  if (nodeType === "tool") {
-    return `${cleanLabel}\nTool: Methode oder Werkzeug zur Anwendung im Systemdenken.`;
-  }
-  if (nodeType === "problem") {
-    return `${cleanLabel}\nProblem: Typisches Muster oder Herausforderung im System.`;
-  }
-  return `${cleanLabel}\nConcept: Relevanter Gedanke aus dem Graphen zur aktuellen Frage.`;
+  return cleanLabel;
 }
 
 function stripNodeTypePrefix(label: string, nodeType: string): string {

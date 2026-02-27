@@ -3200,12 +3200,8 @@ export function createCuratedSourceCatalog(): CuratedSourceEntry[] {
 }
 
 function normalizeShortDescription(node: RawSeedNode): string {
-  const summary = normalizeSummary(node.summary);
   if (typeof node.shortDescription === "string" && node.shortDescription.trim().length > 0) {
-    const shortDescription = toSingleSentence(node.shortDescription.trim());
-    if (normalizeForComparison(shortDescription) !== normalizeForComparison(summary)) {
-      return shortDescription;
-    }
+    return toSingleSentence(stripShortPrefix(node.shortDescription.trim()));
   }
 
   const label = (node.title ?? node.name ?? "Dieser Knoten").trim();
@@ -3261,14 +3257,8 @@ function toSingleSentence(value: string): string {
   return (match ? match[1] : compact).trim();
 }
 
-function normalizeForComparison(value: string): string {
-  return value
-    .toLowerCase()
-    .replace(/^kurz:\s*/i, "")
-    .replace(/^einordnung:\s*/i, "")
-    .replace(/\s+/g, " ")
-    .trim()
-    .replace(/[.!?]+$/g, "");
+function stripShortPrefix(value: string): string {
+  return value.replace(/^\s*kurz:\s*/i, "").trim();
 }
 
 /**
@@ -3393,13 +3383,6 @@ export function validateSeedDataset(dataset: SeedDataset): SeedValidationResult 
 
     if (!node.summary.trim()) {
       errors.push(`Node ${node.id} hat leeres Pflichtfeld summary.`);
-    }
-    if (
-      typeof node.summary === "string" &&
-      typeof node.shortDescription === "string" &&
-      normalizeForComparison(node.summary) === normalizeForComparison(node.shortDescription)
-    ) {
-      errors.push(`Node ${node.id} hat identische summary und shortDescription.`);
     }
     if (typeof node.url !== "string" || node.url.trim().length === 0) {
       errors.push(`Node ${node.id} hat leeres Pflichtfeld url.`);
