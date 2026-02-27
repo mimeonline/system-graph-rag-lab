@@ -28,6 +28,29 @@ const NODE_SIZE_BY_KIND: Record<HomeGraphNode["kind"], { width: number; height: 
 
 let dagreRegistered = false;
 
+function isCyActive(cy: Core | null | undefined): cy is Core {
+  if (!cy) {
+    return false;
+  }
+  try {
+    const destroyed = (cy as unknown as { destroyed?: () => boolean }).destroyed?.() ?? false;
+    return !destroyed;
+  } catch {
+    return false;
+  }
+}
+
+function withCySafely(cy: Core | null | undefined, action: (activeCy: Core) => void): void {
+  if (!isCyActive(cy)) {
+    return;
+  }
+  try {
+    action(cy);
+  } catch {
+    // Ignore race conditions while Cytoscape instance is being torn down.
+  }
+}
+
 const NODE_TYPE_LEGEND: Array<{
   key: string;
   label: string;
@@ -63,6 +86,7 @@ function toElements(model: HomeGraphModel): ElementDefinition[] {
         id: node.id,
         label: fitNodeLabel(node.compactLabel ?? node.label),
         fullLabel: node.label,
+        description: node.description,
         kind: node.kind,
         nodeType: normalizeNodeType(node),
         width: size.width,
@@ -88,9 +112,7 @@ function buildLayout(mode: GraphLayoutMode, nodeCount: number): cytoscape.Layout
     const denseGraph = nodeCount >= 40;
     return {
       name: "cose",
-      animate: true,
-      animationDuration: denseGraph ? 1100 : 850,
-      animationEasing: "ease-out-cubic",
+      animate: false,
       fit: true,
       padding: denseGraph ? 52 : 34,
       randomize: false,
@@ -112,8 +134,7 @@ function buildLayout(mode: GraphLayoutMode, nodeCount: number): cytoscape.Layout
     name: "dagre",
     rankDir: mode === "hierarchy-horizontal" ? "LR" : "TB",
     fit: true,
-    animate: true,
-    animationDuration: 260,
+    animate: false,
     nodeSep: 48,
     rankSep: 94,
     edgeSep: 20,
@@ -265,24 +286,29 @@ function runInitialNodePulse(cy: Core): () => void {
     });
 
     const timerId = window.setTimeout(() => {
-      const isDestroyed = (cy as unknown as { destroyed?: () => boolean }).destroyed?.() ?? false;
-      if (isDestroyed || node.removed()) {
-        return;
-      }
-      node.animate(
-        {
-          style: {
-            width: targetWidth,
-            height: targetHeight,
-            "border-width": 1.5,
+      try {
+        const isDestroyed = (cy as unknown as { destroyed?: () => boolean }).destroyed?.() ?? false;
+        const sameCy = node.cy() === cy;
+        if (isDestroyed || !sameCy || node.removed()) {
+          return;
+        }
+        node.animate(
+          {
+            style: {
+              width: targetWidth,
+              height: targetHeight,
+              "border-width": 1.5,
+            },
           },
-        },
-        {
-          duration: 360,
-          easing: "ease-out-cubic",
-          queue: false,
-        },
-      );
+          {
+            duration: 360,
+            easing: "ease-out-cubic",
+            queue: false,
+          },
+        );
+      } catch {
+        // Ignore race conditions from destroyed/replaced Cytoscape instances.
+      }
     }, delay);
     timerIds.push(timerId);
   });
@@ -356,11 +382,10 @@ export function GraphPreview({
         return;
       }
       setFullscreenHeightPx(window.innerHeight);
-      const cy = cyRef.current;
-      if (cy) {
-        cy.resize();
-        cy.fit(undefined, 20);
-      }
+      withCySafely(cyRef.current, (activeCy) => {
+        activeCy.resize();
+        activeCy.fit(undefined, 20);
+      });
     };
 
     window.addEventListener("resize", onResize);
@@ -488,13 +513,15 @@ export function GraphPreview({
           },
         },
       ],
-      layout: buildLayout(layoutMode, nodeCount),
+      layout: { name: "preset" },
       userPanningEnabled: true,
       userZoomingEnabled: true,
       boxSelectionEnabled: false,
       autoungrabify: false,
       wheelSensitivity: 0.18,
     });
+    const activeLayout = cy.layout(buildLayout(layoutMode, nodeCount));
+    activeLayout.run();
 
     const cancelPulse = runInitialNodePulse(cy);
 
@@ -504,11 +531,12 @@ export function GraphPreview({
         return;
       }
       const fullLabel = String(event.target.data("fullLabel") ?? "");
+      const description = String(event.target.data("description") ?? "");
       const nodeType = String(event.target.data("nodeType") ?? event.target.data("kind") ?? "");
       setTooltip({
         x: position.x + 14,
         y: position.y - 12,
-        text: getNodeTooltipText(nodeType, fullLabel),
+        text: getNodeTooltipText(nodeType, fullLabel, description),
         isNode: true,
       });
     });
@@ -538,20 +566,24 @@ export function GraphPreview({
     cy.on("pan zoom", () => setTooltip(null));
 
     const clearFocus = () => {
-      cy.elements().removeClass("muted");
-      cy.elements().removeClass("focus-node");
-      cy.elements().removeClass("focus-edge");
+      withCySafely(cy, (activeCy) => {
+        activeCy.elements().removeClass("muted");
+        activeCy.elements().removeClass("focus-node");
+        activeCy.elements().removeClass("focus-edge");
+      });
     };
 
     cy.on("tap", "node", (event) => {
       const node = event.target;
       clearFocus();
 
-      const focusElements = node.closedNeighborhood();
-      cy.elements().addClass("muted");
-      focusElements.removeClass("muted");
-      node.addClass("focus-node");
-      node.connectedEdges().addClass("focus-edge");
+      withCySafely(cy, (activeCy) => {
+        const focusElements = node.closedNeighborhood();
+        activeCy.elements().addClass("muted");
+        focusElements.removeClass("muted");
+        node.addClass("focus-node");
+        node.connectedEdges().addClass("focus-edge");
+      });
     });
 
     cy.on("tap", (event) => {
@@ -562,14 +594,18 @@ export function GraphPreview({
 
     if (layoutMode === "force") {
       cy.one("layoutstop", () => {
-        resolveRenderedNodeOverlaps(cy, 26, 30);
-        cy.fit(undefined, 30);
+        withCySafely(cy, (activeCy) => {
+          resolveRenderedNodeOverlaps(activeCy, 26, 30);
+          activeCy.fit(undefined, 30);
+        });
       });
     }
 
     const resizeObserver = new ResizeObserver(() => {
-      cy.resize();
-      cy.fit(undefined, 20);
+      withCySafely(cy, (activeCy) => {
+        activeCy.resize();
+        activeCy.fit(undefined, 20);
+      });
     });
     resizeObserver.observe(container);
 
@@ -577,15 +613,26 @@ export function GraphPreview({
     return () => {
       cancelPulse();
       resizeObserver.disconnect();
-      cy.removeAllListeners();
-      cy.destroy();
       cyRef.current = null;
+      try {
+        activeLayout.stop();
+      } catch {
+        // Ignore layout-stop races during teardown.
+      }
+      withCySafely(cy, (activeCy) => {
+        activeCy.stop();
+        activeCy.elements().stop();
+        activeCy.removeAllListeners();
+        activeCy.destroy();
+      });
       setTooltip(null);
     };
   }, [elements, layoutMode, nodeCount]);
 
   const handleFit = () => {
-    cyRef.current?.fit(undefined, 20);
+    withCySafely(cyRef.current, (activeCy) => {
+      activeCy.fit(undefined, 20);
+    });
   };
 
   const handleToggleFullscreen = async () => {
@@ -612,7 +659,7 @@ export function GraphPreview({
       <div className="flex items-center justify-between gap-3">
         <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Graph-Ansicht</h3>
         <span className="text-xs font-semibold text-slate-500">
-          {model.isFallback ? "Lernansicht" : "query-basiert"}
+          {model.isFallback ? "Lernansicht" : "Zur aktuellen Frage"}
         </span>
       </div>
 
@@ -714,9 +761,14 @@ function fitNodeLabel(label: string): string {
   return `${compact.slice(0, 17)}...`;
 }
 
-function getNodeTooltipText(nodeTypeRaw: string, fullLabel: string): string {
+function getNodeTooltipText(nodeTypeRaw: string, fullLabel: string, descriptionRaw?: string): string {
   const nodeType = nodeTypeRaw.toLowerCase();
   const cleanLabel = stripNodeTypePrefix(fullLabel, nodeType);
+  const description = descriptionRaw?.trim();
+
+  if (description && description.length > 0) {
+    return `${cleanLabel}\n${description}`;
+  }
 
   if (nodeType === "query") {
     return `${cleanLabel}\nFrage: Das ist dein Ausgangspunkt.`;

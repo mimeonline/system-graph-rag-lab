@@ -25,7 +25,19 @@ export function RationaleCard({ coreRationale }: RationaleCardProps): React.JSX.
           <ol className="space-y-1.5">
             {evidenceItems.map((item) => (
               <li key={item} className="text-sm leading-6 text-slate-700">
-                {item}
+                {(() => {
+                  const match = item.match(/^(\d+\)\s*[^:]+):\s*(.+)$/);
+                  if (!match) {
+                    return item;
+                  }
+
+                  return (
+                    <>
+                      <span className="font-semibold text-slate-900">{match[1]}:</span>{" "}
+                      <span>{match[2]}</span>
+                    </>
+                  );
+                })()}
               </li>
             ))}
           </ol>

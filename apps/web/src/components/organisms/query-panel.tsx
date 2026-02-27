@@ -89,6 +89,7 @@ export function QueryPanel(): React.JSX.Element {
   const [explorerMode, setExplorerMode] = useState<"query" | "system">("query");
   const [systemGraphModel, setSystemGraphModel] = useState<HomeGraphModel | null>(null);
   const [isSystemGraphLoading, setIsSystemGraphLoading] = useState(false);
+  const [expandedDerivationIds, setExpandedDerivationIds] = useState<Record<string, boolean>>({});
 
   const statusHint = getStatusHint(status, errorMessage);
   const helperText = statusHint.statusText;
@@ -167,7 +168,7 @@ export function QueryPanel(): React.JSX.Element {
       const payload = (await response.json()) as {
         status: "ok";
         graph: {
-          nodes: Array<{ id: string; label: string; nodeType: string }>;
+          nodes: Array<{ id: string; label: string; nodeType: string; description: string }>;
           edges: Array<{ id: string; source: string; target: string; label: string }>;
         };
       };
@@ -179,6 +180,7 @@ export function QueryPanel(): React.JSX.Element {
           id: node.id,
           label: `${node.nodeType}: ${node.label}`,
           compactLabel: node.label,
+          description: node.description,
           kind: node.nodeType === "Problem" ? "evidence" : "reference",
           nodeType: node.nodeType,
           x: 0,
@@ -207,6 +209,14 @@ export function QueryPanel(): React.JSX.Element {
     setErrorMessage(null);
     setStatus("idle");
     setQuery("");
+    setExpandedDerivationIds({});
+  };
+
+  const toggleDerivationDetail = (nodeId: string) => {
+    setExpandedDerivationIds((current) => ({
+      ...current,
+      [nodeId]: !current[nodeId],
+    }));
   };
 
   return (
@@ -345,12 +355,23 @@ export function QueryPanel(): React.JSX.Element {
           {hasDerivationDetails ? (
             <ul className="space-y-3">
               {derivationDetails.map((detail) => (
-                <li
-                  key={detail.nodeId}
-                  className="space-y-1 rounded-xl border border-slate-100 bg-slate-50 p-4 text-sm text-slate-900"
-                >
+                <li key={detail.nodeId} className="space-y-1 rounded-xl border border-slate-100 bg-slate-50 p-4 text-sm text-slate-900">
                   <div className="text-sm font-semibold text-slate-900">{detail.label}</div>
-                  <p className="text-sm leading-6 text-slate-700">{detail.summary}</p>
+                  <p className="text-sm leading-6 text-slate-700">
+                    {getDerivationPreviewText(
+                      detail.summary,
+                      expandedDerivationIds[detail.nodeId] === true,
+                    )}
+                  </p>
+                  {shouldShowDerivationToggle(detail.summary) ? (
+                    <button
+                      type="button"
+                      className="text-xs font-semibold text-sky-700 underline decoration-sky-300 underline-offset-2"
+                      onClick={() => toggleDerivationDetail(detail.nodeId)}
+                    >
+                      {expandedDerivationIds[detail.nodeId] ? "Weniger anzeigen" : "Mehr anzeigen"}
+                    </button>
+                  ) : null}
                   <div className="text-xs text-slate-600">
                     <span className="font-semibold uppercase tracking-[0.2em] text-slate-500">Quelle:</span>{" "}
                     {detail.sourceUrl ? (
@@ -449,4 +470,31 @@ export function QueryPanel(): React.JSX.Element {
       </AnimatePresence>
     </div>
   );
+}
+
+function shouldShowDerivationToggle(text: string): boolean {
+  const compact = text.replace(/\s+/g, " ").trim();
+  if (!compact) {
+    return false;
+  }
+  const sentenceCount = compact.split(/[.!?]+/).filter((part) => part.trim().length > 0).length;
+  return sentenceCount > 2 || compact.length > 240;
+}
+
+function getDerivationPreviewText(text: string, isExpanded: boolean): string {
+  const compact = text.replace(/\s+/g, " ").trim();
+  if (!compact || isExpanded) {
+    return compact;
+  }
+
+  const sentenceMatches = compact.match(/[^.!?]+[.!?]+/g);
+  if (sentenceMatches && sentenceMatches.length >= 2) {
+    return `${sentenceMatches.slice(0, 2).join(" ").trim()}...`;
+  }
+
+  if (compact.length > 240) {
+    return `${compact.slice(0, 237).trim()}...`;
+  }
+
+  return compact;
 }

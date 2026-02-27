@@ -44,6 +44,7 @@ export type QueryContextElement = {
   nodeType: QueryReference["nodeType"];
   title: string;
   summary: string;
+  longDescription?: string;
   source: QueryContextElementSource;
 };
 

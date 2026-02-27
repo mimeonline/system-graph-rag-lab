@@ -58,6 +58,7 @@ type QueryCandidate = {
   nodeType: QueryReference["nodeType"];
   title: string;
   summary: string;
+  shortSummary: string;
   sourceType: SeedSourceType;
   sourceFile: string;
   publicReference: PublicReference;
@@ -185,19 +186,22 @@ function buildNeighborMap(edges: SeedEdge[]): Map<string, string[]> {
  */
 function buildCandidateFromSeedNode(node: SeedNode, hop: number): QueryCandidate {
   const displayTitle = node.title ?? node.name ?? "Unbekannter Knoten";
-  const combinedText = `${displayTitle} ${node.summary}`;
+  const shortSummary = node.shortDescription ?? node.summary;
+  const descriptiveSummary = node.longDescription ?? shortSummary;
+  const combinedText = `${displayTitle} ${descriptiveSummary}`;
 
   return {
     nodeId: node.id,
     nodeType: node.nodeType as QueryReference["nodeType"],
     title: displayTitle,
-    summary: node.summary,
+    summary: descriptiveSummary,
+    shortSummary,
     sourceType: node.sourceType,
     sourceFile: node.sourceFile,
     publicReference: node.publicReference,
     hop,
     tokenSet: buildTokenSet(combinedText),
-    contextTokens: estimateTokenCount(displayTitle) + estimateTokenCount(node.summary),
+    contextTokens: estimateTokenCount(displayTitle) + estimateTokenCount(descriptiveSummary),
   };
 }
 
@@ -258,7 +262,8 @@ function buildContextElement(
     nodeId: candidate.nodeId,
     nodeType: candidate.nodeType,
     title: candidate.title,
-    summary: truncateSummary(candidate.summary),
+    summary: truncateSummary(candidate.shortSummary),
+    longDescription: candidate.summary,
     source: {
       kind: sourceKind,
       candidateId,

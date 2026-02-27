@@ -72,7 +72,7 @@ function buildDerivationDetails(elements: QueryContextElement[]): DerivationDeta
     nodeId: element.nodeId,
     nodeType: element.nodeType,
     label: `${index + 1}) ${element.title}`,
-    summary: element.summary,
+    summary: element.longDescription ?? element.summary,
     sourceLabel: element.source.publicReference.citation,
     sourceUrl: element.source.publicReference.url,
   }));
