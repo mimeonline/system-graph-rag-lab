@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #f8fbff;
+  --background: #f5f9ff;
   --foreground: #102037;
 }
 
@@ -18,7 +18,19 @@
 
 body {
   margin: 0;
-  background: var(--background);
+  background: radial-gradient(1200px 500px at 12% -10%, #d8e8ff 0%, transparent 60%),
+    radial-gradient(900px 420px at 90% 0%, #e8eeff 0%, transparent 58%), var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), sans-serif;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(0);
+  }
 }

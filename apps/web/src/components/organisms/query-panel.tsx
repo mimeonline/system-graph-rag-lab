@@ -5,24 +5,20 @@ import { useState } from "react";
 
 import { QueryInput } from "@/components/molecules/query-input";
 import { GraphPreview } from "@/components/molecules/graph-preview";
-import { buildHomeGraphModel } from "@/features/home/graph-view-model";
-import { buildQueryViewModel, type QueryViewModel } from "@/features/query/view-model";
-import type { QuerySuccessResponse } from "@/features/query/contracts";
+import { AnswerCard } from "@/components/organisms/answer-card";
+import { ActionCard } from "@/components/organisms/action-card";
+import { RationaleCard } from "@/components/organisms/rationale-card";
 import {
   getStatusHint,
   type QueryPanelStatus,
 } from "@/components/organisms/query-panel-status";
+import { PipelineStepper } from "@/features/home/molecules/PipelineStepper";
+import { buildHomeGraphModel } from "@/features/home/graph-view-model";
+import type { QuerySuccessResponse } from "@/features/query/contracts";
+import { buildQueryViewModel, type QueryViewModel } from "@/features/query/view-model";
 
 const DEFAULT_QUERY =
   "Welche Zielkonflikte entstehen zwischen Entkopplung und Betriebsaufwand in eventgetriebenen Systemen?";
-
-const STATUS_LABELS: Record<QueryPanelStatus, string> = {
-  idle: "idle",
-  loading: "wird geladen",
-  success: "aktiv",
-  error: "fehler",
-  empty: "leer",
-};
 
 /**
  * Renders the interactive query workflow and orchestrates API request state.
@@ -93,9 +89,11 @@ export function QueryPanel(): React.JSX.Element {
   const graphModel = buildHomeGraphModel(viewModel, query);
 
   return (
-    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(300px,36%)]">
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(330px,37%)]">
       <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
         <h2 className="text-base font-semibold text-slate-900">Antwortführung</h2>
+
+        <PipelineStepper status={status} />
 
         <QueryInput
           query={query}
@@ -106,52 +104,16 @@ export function QueryPanel(): React.JSX.Element {
           isSubmitting={status === "loading"}
         />
 
-        <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
-                Antwort
-              </h3>
-              <p className="text-xs text-slate-500">Aktuelle Frage: {viewModel?.query ?? query}</p>
-            </div>
-            <span
-              aria-live="polite"
-              className="rounded-full border border-slate-200 px-3 py-1 text-xs font-medium text-slate-500"
-            >
-              {STATUS_LABELS[status]}
-            </span>
-          </div>
-          <p className="text-sm leading-7 text-slate-700">{mainAnswer}</p>
-          <p className="text-xs text-slate-500">
-            Kontextbudget: {viewModel?.contextTokens ?? 0} Token (Schätzung der verwendeten Kontexte).
-          </p>
-        </section>
+        <AnswerCard
+          query={viewModel?.query ?? query}
+          answer={mainAnswer}
+          contextTokens={viewModel?.contextTokens ?? 0}
+          status={status}
+        />
 
-        <section className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
-              Was bringt mir das jetzt?
-            </h3>
-            <span className="text-xs font-semibold text-slate-500">nächste Schritte</span>
-          </div>
-          <ul className="space-y-2">
-            {nextSteps.map((step) => (
-              <li key={step} className="text-sm leading-6 text-slate-700">
-                {step}
-              </li>
-            ))}
-          </ul>
-        </section>
+        <ActionCard steps={nextSteps} />
 
-        <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
-          <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
-              Knapper P0-Kernnachweis
-            </h3>
-            <span className="text-xs font-semibold text-slate-500">core rationale</span>
-          </div>
-          <p className="text-sm leading-7 text-slate-700">{coreRationale}</p>
-        </section>
+        <RationaleCard coreRationale={coreRationale} />
       </section>
 
       <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
@@ -165,7 +127,9 @@ export function QueryPanel(): React.JSX.Element {
               Referenzkonzepte
             </h3>
             <span className="text-xs font-semibold text-slate-500">
-              {hasReferences ? `${references.length} Referenz${references.length > 1 ? "en" : ""}` : "bereit"}
+              {hasReferences
+                ? `${references.length} Referenz${references.length > 1 ? "en" : ""}`
+                : "Warten auf Antwort"}
             </span>
           </div>
           {hasReferences ? (

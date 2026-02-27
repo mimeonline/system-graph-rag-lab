@@ -43,8 +43,12 @@ export function QueryInput({
           Nächste Aktion: {nextAction}
         </p>
       )}
-      <Button type="submit" className="w-full sm:w-auto" disabled={isSubmitting}>
-        {isSubmitting ? "Antwort wird geladen…" : "Antwort anzeigen"}
+      <Button
+        type="submit"
+        className="w-full bg-sky-600 shadow-sm transition hover:bg-sky-700 sm:w-auto"
+        disabled={isSubmitting}
+      >
+        {isSubmitting ? "Antwort wird geladen…" : "Antwort analysieren"}
       </Button>
     </form>
   );

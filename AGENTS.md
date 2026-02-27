@@ -5,21 +5,22 @@ Ziel ist der Aufbau eines öffentlich erreichbaren, optisch hochwertigen GraphRA
 
 Das Projekt dient als:
 - Technischer Showcase
-- Lernplattform für Multi-Agent-Workflows
+- Lernplattform für strukturierte Main-Agent-Workflows
 - Referenz für spec-first, iteratives Arbeiten
 - Basis für fachlichen Content
 
 Repository-Dateien sind die Quelle der Wahrheit. Chat-Kontext ist nicht bindend.
 
 ## Arbeitsmodell
-Das System arbeitet rollenbasiert mit Subagents.
+Das System arbeitet im Main-Agent-Thread.
 
-Der Main-Agent ist ausschließlich:
+Der Main-Agent übernimmt:
 - Orchestrator
 - Reviewer
+- Umsetzer
 - Gatekeeper
 
-Der Main-Agent erzeugt keine Rollen-Artefakte selbst.
+Alle Artefakte werden direkt im Main-Agent-Thread erzeugt und gepflegt.
 
 ## Rollen und Scope
 Rollen im Projekt:
@@ -31,12 +32,12 @@ Rollen im Projekt:
 - DevOps
 - Security
 
-Jede Rolle arbeitet strikt in ihrem Scope und den erlaubten Schreibpfaden aus der jeweiligen `.codex/agents/<rolle>.toml`.
+Die Rollen dienen als Denkraster und Qualitäts-Scope innerhalb eines einzelnen Main-Agent-Runs.
 
-## Subagent-Pflicht
+## Rollenlauf im Main-Agent
 Wenn eine Aufgabe einer Rolle zugeordnet ist:
-- Es muss ein Subagent mit passendem `agent_type` gestartet werden.
-- Der Hauptagent darf diese Rollenarbeit nicht selbst ausführen.
+- Der Main-Agent bearbeitet sie direkt im selben Thread.
+- Die jeweiligen Rollen-Scope-Regeln bleiben inhaltlich verbindlich.
 
 Ein Rollenlauf ist nur vollständig, wenn:
 - relevante Inputs gelesen wurden
@@ -144,7 +145,7 @@ Nach jedem Story-Finish durch Dev gilt verbindlich:
 - Rollenpipeline kann verkürzt sein
 
 ### Process Mode
-- Strikte Rollenpipeline mit Subagents
+- Strikte Rollenpipeline im Main-Agent-Thread
 - Handoffs und Memory-Updates verpflichtend
 - QA nach jeder Story als Qualitätsgate
 - Security und DevOps pro Epic als Betriebs- und Risikogate

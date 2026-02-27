@@ -68,7 +68,7 @@ describe("buildHomeGraphModel", () => {
   it("returns fallback graph when no query data is available", () => {
     const model = buildHomeGraphModel(null, "");
     const queryNode = model.nodes.find((node) => node.id === "query-fallback");
-    const referenceNode = model.nodes.find((node) => node.id === "reference-fallback");
+    const referenceNode = model.nodes.find((node) => node.id === "top-concept-fallback");
 
     expect(model.isFallback).toBe(true);
     expect(model.nodes.length).toBeGreaterThanOrEqual(4);
@@ -88,8 +88,8 @@ describe("buildHomeGraphModel", () => {
     expect(model.nodes.some((node) => node.id === "query")).toBe(true);
     expect(model.nodes.some((node) => node.id === "concept:feedback-loops")).toBe(true);
     expect(model.edges.some((edge) => edge.source === "query")).toBe(true);
-    expect(model.caption).toContain("Referenzknoten");
+    expect(model.caption).toContain("relevante Konzepte");
     expect(queryNode?.y).toBe(20);
-    expect(feedbackNode?.y).toBe(56);
+    expect(feedbackNode?.y).toBe(54);
   });
 });

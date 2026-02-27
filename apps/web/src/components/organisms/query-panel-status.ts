@@ -8,25 +8,24 @@ export type QueryPanelStatusHint = {
 const STATUS_HINTS: Record<QueryPanelStatus, QueryPanelStatusHint> = {
   idle: {
     statusText:
-      "Formuliere eine Frage und sende sie ab, um Hauptantwort, Referenzen und Kernnachweis sichtbar zu machen.",
+      "Bereit: Formuliere eine präzise Frage, um Hauptantwort, Referenzen und Kernbegründung sichtbar zu machen.",
     nextAction: "Frage formulieren und absenden.",
   },
   loading: {
-    statusText: "Antwort wird vom Backend angefordert. Bitte einen Moment Geduld.",
-    nextAction: "Bitte nicht erneut absenden oder die Seite neu laden.",
+    statusText: "Analysiere Kontext: Relevante Knoten und Belege werden priorisiert.",
+    nextAction: "Bitte kurz warten und nicht erneut absenden.",
   },
   success: {
-    statusText: "Antwort verfügbar: Haupttext, Referenzen und Kernnachweis folgen unten.",
-    nextAction: "Antwort prüfen und ggf. weitere Fragen anschließen.",
+    statusText: "Antwort erstellt: Haupttext, Referenzen und Kernbegründung sind verfügbar.",
+    nextAction: "Ergebnis prüfen und bei Bedarf Anschlussfrage senden.",
   },
   error: {
-    statusText: "Beim Laden der Antwort ist ein Problem aufgetreten; bitte erneut senden.",
-    nextAction: "Fehler prüfen und die Anfrage erneut absenden.",
+    statusText: "Anfrage fehlgeschlagen: Die Antwort konnte nicht geladen werden.",
+    nextAction: "Fehler prüfen und Anfrage erneut senden.",
   },
   empty: {
-    statusText:
-      "Die Anfrage lieferte keine Referenzkonzepte oder Antwortdaten aus dem verfügbaren Kontext.",
-    nextAction: "Frage präziser formulieren oder Kontext ergänzen und erneut absenden.",
+    statusText: "Kein passender Kontext: Es wurden keine belastbaren Referenzknoten gefunden.",
+    nextAction: "Frage präzisieren oder Kontext erweitern und erneut senden.",
   },
 };
 

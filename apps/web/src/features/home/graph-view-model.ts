@@ -69,7 +69,7 @@ export function buildHomeGraphModel(
           label: "Top-Konzept",
           compactLabel: "Konzept",
           kind: "reference",
-          x: 22,
+          x: 24,
           y: 56,
         },
         {
@@ -94,19 +94,19 @@ export function buildHomeGraphModel(
           id: "fallback-step-1",
           source: "query-fallback",
           target: "top-concept-fallback",
-          label: "1 Frage klären",
+          label: "1 Klären",
         },
         {
           id: "fallback-step-2",
           source: "top-concept-fallback",
           target: "evidence-fallback",
-          label: "2 Beleg prüfen",
+          label: "2 Prüfen",
         },
         {
           id: "fallback-step-3",
           source: "evidence-fallback",
           target: "answer-fallback",
-          label: "3 Antwort ableiten",
+          label: "3 Ableiten",
         },
       ],
     };
@@ -120,7 +120,7 @@ export function buildHomeGraphModel(
     return {
       id: reference.nodeId,
       label: reference.title,
-      compactLabel: reference.title,
+      compactLabel: toCompactLabel(reference.title),
       kind: "reference",
       x: fallbackPosition.x,
       y: fallbackPosition.y,
@@ -139,7 +139,7 @@ export function buildHomeGraphModel(
   const evidenceNodes: HomeGraphNode[] = derivationDetails.slice(0, 2).map((detail, index) => ({
     id: `evidence-${detail.nodeId}`,
     label: detail.label,
-    compactLabel: detail.label,
+    compactLabel: toCompactLabel(detail.label),
     kind: "evidence",
     x: derivationDetails.length === 1 ? 50 : 35 + index * 30,
     y: 84,
@@ -175,4 +175,18 @@ export function buildHomeGraphModel(
     isFallback: false,
     caption: `Aktuelle Frage: ${limitedReferences.length} relevante Konzepte führen zur Antwortbegründung.`,
   };
+}
+
+function toCompactLabel(label: string): string {
+  const compact = label.replace(/\s+/g, " ").trim();
+  if (compact.length <= 20) {
+    return compact;
+  }
+
+  const twoWords = compact.split(" ").slice(0, 2).join(" ");
+  if (twoWords.length <= 20) {
+    return twoWords;
+  }
+
+  return `${compact.slice(0, 17)}...`;
 }
