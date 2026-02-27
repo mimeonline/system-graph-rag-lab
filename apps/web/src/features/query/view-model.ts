@@ -116,14 +116,14 @@ function buildToolsForReference(reference: QueryReference): string[] {
 function buildNextSteps(references: QueryReference[]): string[] {
   if (references.length === 0) {
     return [
-      "Frage enger formulieren und einen konkreten Zeitraum oder Kontext ergänzen.",
-      "Eine zweite Frage mit Fokus auf Ursache-Wirkung stellen.",
+      "Frag konkreter, zum Beispiel mit Team, Zeitraum oder Problemfall.",
+      "Stell danach eine zweite Frage: Was ist die wahrscheinlichste Ursache?",
     ];
   }
 
   return [
-    `Wähle zuerst ${references[0].title} und prüfe dort die stärkste Ursache-Wirkung-Kette.`,
-    "Übertrage die wichtigsten Punkte in ein Causal Loop Diagram für den Teamabgleich.",
-    "Leite daraus eine kleine nächste Experimentmaßnahme für die Architekturentscheidung ab.",
+    `Starte mit ${references[0].title} und prüfe den wichtigsten Ursache-Wirkung-Zusammenhang.`,
+    "Nimm die zwei wichtigsten Punkte ins nächste Teamgespräch mit.",
+    "Definiere einen kleinen nächsten Schritt und beobachte die Wirkung im Alltag.",
   ];
 }

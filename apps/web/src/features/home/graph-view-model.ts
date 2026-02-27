@@ -69,7 +69,7 @@ export function buildHomeGraphModel(
           label: "Top-Konzept",
           compactLabel: "Konzept",
           kind: "reference",
-          x: 24,
+          x: 21,
           y: 56,
         },
         {
@@ -77,7 +77,7 @@ export function buildHomeGraphModel(
           label: "Beleg",
           compactLabel: "Beleg",
           kind: "evidence",
-          x: 50,
+          x: 56,
           y: 56,
         },
         {

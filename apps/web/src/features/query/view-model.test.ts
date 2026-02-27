@@ -115,10 +115,10 @@ describe("buildQueryViewModel", () => {
     const viewModel = buildQueryViewModel(response, "Fallback-Frage");
 
     expect(viewModel.references).toHaveLength(0);
-    expect(viewModel.answer.main).toContain("keine Antwort");
-    expect(viewModel.answer.coreRationale).toContain("Bitte formuliere die Frage");
+    expect(viewModel.answer.main).toContain("keine verlässliche Antwort");
+    expect(viewModel.answer.coreRationale).toContain("Frage etwas konkreter");
     expect(viewModel.derivationDetails).toHaveLength(0);
-    expect(viewModel.nextSteps[0]).toContain("Frage enger formulieren");
+    expect(viewModel.nextSteps[0]).toContain("Frag konkreter");
   });
 
   it("zeigt konkrete Toolnamen bei groben Referenzlabels", () => {

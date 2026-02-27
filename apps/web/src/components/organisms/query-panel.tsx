@@ -18,7 +18,14 @@ import type { QuerySuccessResponse } from "@/features/query/contracts";
 import { buildQueryViewModel, type QueryViewModel } from "@/features/query/view-model";
 
 const DEFAULT_QUERY =
-  "Welche Zielkonflikte entstehen zwischen Entkopplung und Betriebsaufwand in eventgetriebenen Systemen?";
+  "Wo verlieren wir im Alltag Zeit, weil Aufgaben zwischen Teams hin und her gehen?";
+const QUERY_SUGGESTIONS = [
+  "Wo verlieren wir im Alltag Zeit, weil Aufgaben zwischen Teams hin und her gehen?",
+  "Warum gibt es trotz neuer Tools immer noch so viele Abstimmungen?",
+  "Was passiert, wenn wir schneller liefern wollen als unser Betrieb mitkommt?",
+  "Welche Nebenwirkungen hat es, wenn jedes Team nur lokal optimiert?",
+  "Wie bekommen wir mehr Stabilität, ohne Releases komplett auszubremsen?",
+];
 
 /**
  * Renders the interactive query workflow and orchestrates API request state.
@@ -97,6 +104,8 @@ export function QueryPanel(): React.JSX.Element {
 
         <QueryInput
           query={query}
+          suggestions={QUERY_SUGGESTIONS}
+          onSuggestionSelect={setQuery}
           onQueryChange={setQuery}
           onSubmit={handleSubmit}
           helperText={helperText}

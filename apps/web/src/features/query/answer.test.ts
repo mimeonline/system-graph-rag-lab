@@ -56,8 +56,8 @@ describe("buildStructuredAnswer", () => {
 
     expect(result.references).toHaveLength(0);
     expect(result.contextElements).toHaveLength(0);
-    expect(result.answer.main).toContain("keine Antwort");
-    expect(result.answer.coreRationale).toContain("Bitte formuliere die Frage");
+    expect(result.answer.main).toContain("keine verlässliche Antwort");
+    expect(result.answer.coreRationale).toContain("Frage etwas konkreter");
     expect(result.contextTokens).toBe(0);
   });
 
@@ -75,7 +75,7 @@ describe("buildStructuredAnswer", () => {
 
     expect(result.references).toHaveLength(MAX_REFERENCES_IN_RESPONSE);
     expect(result.contextElements).toEqual(finalContextElements);
-    expect(result.answer.main).toContain("Für \"Testfrage\"");
+    expect(result.answer.main).toContain("Kurzantwort zu \"Testfrage\"");
     expect(result.answer.coreRationale).toContain("1)");
     expect(result.answer.coreRationale).toContain(finalContextElements[0].summary);
     expect(result.contextTokens).toBe(computeExpectedContextTokens(finalContextElements));

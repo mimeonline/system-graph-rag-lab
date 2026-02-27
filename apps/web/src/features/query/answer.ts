@@ -71,10 +71,10 @@ export function buildStructuredAnswer({
 
   if (finalReferences.length === 0) {
     const fallbackMain = query
-      ? `Für "${query}" konnte aus dem vorliegenden Kontext keine Antwort generiert werden.`
-      : "Für die aktuelle Frage konnte aus dem Kontext keine Antwort generiert werden.";
+      ? `Auf "${query}" können wir gerade noch keine verlässliche Antwort geben.`
+      : "Wir können gerade noch keine verlässliche Antwort geben.";
     const fallbackRationale =
-      "Bitte formuliere die Frage präziser oder liefere mehr Kontext, damit relevante Konzepte identifiziert werden können.";
+      "Formuliere die Frage etwas konkreter. Hilfreich sind Team, Zeitraum oder ein konkreter Fall.";
 
     return {
       answer: {
@@ -89,7 +89,7 @@ export function buildStructuredAnswer({
 
   const quotedTitles = finalReferences.map((reference) => `«${reference.title}»`);
   const conceptList = formatConceptList(quotedTitles);
-  const main = `Für "${query}" liefern ${conceptList} Orientierung beim weiteren Vorgehen.`;
+  const main = `Kurzantwort zu "${query}": Diese Konzepte helfen dir am meisten weiter: ${conceptList}.`;
 
   const rationaleSegments =
     finalContextElements.length > 0
