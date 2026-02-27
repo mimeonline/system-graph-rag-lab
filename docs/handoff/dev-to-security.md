@@ -191,3 +191,18 @@ CALL db.index.vector.createNodeIndex(
 ### Bugfix-Note
 - Non-2xx-Antworten von OpenAI geparst; `error.message` enthält die upstream Message und `error.retryable` unterscheidet 4xx (non-retryable) von 5xx/429 (retryable).
 - Testkommando: `pnpm --dir apps/web test -- src/app/api/query/route.test.ts`.
+
+## E3 ux-demo-clarity-and-tool-granularity
+### Security Context
+1. Änderungen betreffen ausschließlich Frontend-Darstellung und View-Model-Mapping, ohne neue Endpoints oder zusätzliche Datenquellen.
+2. Die neue Tool-Granularität basiert auf statischem Keyword-Mapping im Client-View-Model und verarbeitet keine Secrets.
+
+### Sicherheitsrelevante Eingaben und Endpoints
+1. Unverändert bleibt nur das vorhandene Query-Eingabefeld und der bestehende Endpoint `POST /api/query`.
+
+### Gezielte Security-Prüfpunkte
+1. Verifizieren, dass keine zusätzlichen Requests neben `POST /api/query` ausgelöst werden.
+2. Prüfen, dass die neue „Was bringt mir das jetzt?“-Zone und Toollisten nur vorhandene Antwortdaten anzeigen.
+
+### Testkommando
+1. `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts src/components/organisms/query-panel-status.test.ts` Exit Code `0`.

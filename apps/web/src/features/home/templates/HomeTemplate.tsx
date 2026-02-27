@@ -19,15 +19,31 @@ import { QueryPanel } from "@/components/organisms/query-panel";
  */
 export function HomeTemplate(): React.JSX.Element {
   return (
-    <main className="min-h-screen bg-[linear-gradient(180deg,#f8fbff_0%,#eef4ff_100%)] px-6 py-16 sm:px-10">
-      <div className="mx-auto grid w-full max-w-4xl gap-10">
-        <SectionTitle
-          eyebrow="System GraphRAG"
-          title="Technisches MVP Grundgerüst"
-          description="Dieses Bootstrap liefert den stabilen Unterbau für Story-by-Story Umsetzung mit Next.js 16.1.6, TypeScript Strict, Tailwind und API-Skelett."
-        />
-        <QueryPanel />
-      </div>
-    </main>
+    <div className="flex min-h-screen flex-col bg-[#f4f7fb] text-slate-900">
+      <header className="border-b border-[#16335d] bg-[#0c2345] text-white">
+        <div className="mx-auto flex min-h-16 w-full max-w-[1180px] items-center justify-between gap-4 px-4 sm:px-6">
+          <p className="text-sm font-semibold tracking-[0.01em]">System GraphRAG Demo</p>
+          <p className="text-xs text-slate-200 sm:text-sm">GitHub · Info</p>
+        </div>
+      </header>
+
+      <main className="flex-1 px-4 py-5 sm:px-6 sm:py-6">
+        <div className="mx-auto grid w-full max-w-[1180px] gap-6">
+          <SectionTitle
+            eyebrow="System GraphRAG"
+            title="Technisches MVP Grundgerüst"
+            description="Dieses Bootstrap liefert den stabilen Unterbau für Story-by-Story Umsetzung mit Next.js 16.1.6, TypeScript Strict, Tailwind und API-Skelett."
+          />
+          <QueryPanel />
+        </div>
+      </main>
+
+      <footer className="border-t border-[#12335f] bg-[#0a1f3b] text-slate-200">
+        <div className="mx-auto flex min-h-[52px] w-full max-w-[1180px] items-center justify-between gap-4 px-4 text-xs sm:px-6">
+          <span>System GraphRAG Public MVP</span>
+          <span className="text-right">Ruhiges, professionelles Layout mit klarer Hierarchie</span>
+        </div>
+      </footer>
+    </div>
   );
 }

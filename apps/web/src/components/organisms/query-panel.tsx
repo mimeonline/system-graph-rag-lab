@@ -77,6 +77,9 @@ export function QueryPanel(): React.JSX.Element {
 
   const references = viewModel?.references ?? [];
   const derivationDetails = viewModel?.derivationDetails ?? [];
+  const nextSteps = viewModel?.nextSteps ?? [
+    "Frage absenden, damit konkrete Handlungsschritte generiert werden.",
+  ];
   const hasReferences = references.length > 0;
   const hasDerivationDetails = derivationDetails.length > 0;
   const mainAnswer =
@@ -87,104 +90,140 @@ export function QueryPanel(): React.JSX.Element {
     "Hier wird der knappe P0-Kernnachweis angezeigt, sobald eine Antwort vorliegt.";
 
   return (
-    <div className="grid gap-6">
-      <QueryInput
-        query={query}
-        onQueryChange={setQuery}
-        onSubmit={handleSubmit}
-        helperText={helperText}
-        nextAction={statusAction}
-        isSubmitting={status === "loading"}
-      />
+    <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(300px,36%)]">
+      <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <h2 className="text-base font-semibold text-slate-900">Antwortführung</h2>
 
-      <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
-              Hauptantwort
-            </h2>
-            <p className="text-xs text-slate-500">Aktuelle Frage: {viewModel?.query ?? query}</p>
+        <QueryInput
+          query={query}
+          onQueryChange={setQuery}
+          onSubmit={handleSubmit}
+          helperText={helperText}
+          nextAction={statusAction}
+          isSubmitting={status === "loading"}
+        />
+
+        <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
+                Antwort
+              </h3>
+              <p className="text-xs text-slate-500">Aktuelle Frage: {viewModel?.query ?? query}</p>
+            </div>
+            <span
+              aria-live="polite"
+              className="rounded-full border border-slate-200 px-3 py-1 text-xs font-medium text-slate-500"
+            >
+              {STATUS_LABELS[status]}
+            </span>
           </div>
-          <span
-            aria-live="polite"
-            className="rounded-full border border-slate-200 px-3 py-1 text-xs font-medium text-slate-500"
-          >
-            {STATUS_LABELS[status]}
-          </span>
-        </div>
-        <p className="text-sm leading-7 text-slate-700">{mainAnswer}</p>
-        <p className="text-xs text-slate-500">
-          Kontextbudget: {viewModel?.contextTokens ?? 0} Token (Schätzung der verwendeten Kontexte).
-        </p>
-      </section>
+          <p className="text-sm leading-7 text-slate-700">{mainAnswer}</p>
+          <p className="text-xs text-slate-500">
+            Kontextbudget: {viewModel?.contextTokens ?? 0} Token (Schätzung der verwendeten Kontexte).
+          </p>
+        </section>
 
-      <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
-            Referenzkonzepte
-          </h2>
-          <span className="text-xs font-semibold text-slate-500">
-            {hasReferences ? `${references.length} Referenz${references.length > 1 ? "en" : ""}` : "bereit"}
-          </span>
-        </div>
-        {hasReferences ? (
+        <section className="space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:p-5">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
+              Was bringt mir das jetzt?
+            </h3>
+            <span className="text-xs font-semibold text-slate-500">nächste Schritte</span>
+          </div>
           <ul className="space-y-2">
-            {references.map((reference) => (
-              <li
-                key={reference.nodeId}
-                className="flex items-center justify-between rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-900"
-              >
-                <span>{reference.title}</span>
-                <span className="text-xs font-normal uppercase tracking-[0.2em] text-slate-500">
-                  {reference.nodeType}
-                </span>
+            {nextSteps.map((step) => (
+              <li key={step} className="text-sm leading-6 text-slate-700">
+                {step}
               </li>
             ))}
           </ul>
-        ) : (
-          <p className="text-sm text-slate-600">
-            Nach erfolgreicher Antwort zeigen wir hier maximal drei Referenzkonzepte an.
-          </p>
-        )}
+        </section>
+
+        <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
+              Knapper P0-Kernnachweis
+            </h3>
+            <span className="text-xs font-semibold text-slate-500">core rationale</span>
+          </div>
+          <p className="text-sm leading-7 text-slate-700">{coreRationale}</p>
+        </section>
       </section>
 
-      <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
-            Knapper P0-Kernnachweis
-          </h2>
-          <span className="text-xs font-semibold text-slate-500">core rationale</span>
-        </div>
-        <p className="text-sm leading-7 text-slate-700">{coreRationale}</p>
-      </section>
+      <section className="space-y-4 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+        <h2 className="text-base font-semibold text-slate-900">Kontext und Tools</h2>
 
-      <section className="space-y-3 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
-            Herleitungsdetails
-          </h2>
-          <span className="text-xs font-semibold text-slate-500">kontextuelle Tiefe</span>
-        </div>
-        {hasDerivationDetails ? (
-          <ul className="space-y-3">
-            {derivationDetails.map((detail) => (
-              <li
-                key={detail.nodeId}
-                className="space-y-1 rounded-xl border border-slate-100 bg-slate-50 p-4 text-sm text-slate-900"
-              >
-                <div className="text-sm font-semibold text-slate-900">{detail.label}</div>
-                <p className="text-sm leading-6 text-slate-700">{detail.summary}</p>
-                <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
-                  Quelle: {detail.sourceFile}
-                </p>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="text-sm text-slate-600">
-            Nach erfolgreicher Antwort erscheinen hier die wichtigsten Kontextsummaries plus Quelle.
-          </p>
-        )}
+        <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
+              Referenzkonzepte
+            </h3>
+            <span className="text-xs font-semibold text-slate-500">
+              {hasReferences ? `${references.length} Referenz${references.length > 1 ? "en" : ""}` : "bereit"}
+            </span>
+          </div>
+          {hasReferences ? (
+            <ul className="space-y-2">
+              {references.map((reference) => (
+                <li
+                  key={reference.nodeId}
+                  className="space-y-2 rounded-xl border border-slate-100 bg-slate-50 px-4 py-3 text-slate-900"
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm font-medium">{reference.title}</span>
+                    <span className="text-xs font-normal uppercase tracking-[0.2em] text-slate-500">
+                      {reference.nodeType}
+                    </span>
+                  </div>
+                  <ul className="grid gap-1 sm:grid-cols-2">
+                    {reference.tools.map((tool) => (
+                      <li
+                        key={tool}
+                        className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs text-slate-700"
+                      >
+                        {tool}
+                      </li>
+                    ))}
+                  </ul>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-slate-600">
+              Nach erfolgreicher Antwort zeigen wir hier maximal drei Referenzkonzepte mit konkreten Tools an.
+            </p>
+          )}
+        </section>
+
+        <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+          <div className="flex items-center justify-between">
+            <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
+              Herleitungsdetails
+            </h3>
+            <span className="text-xs font-semibold text-slate-500">kontextuelle Tiefe</span>
+          </div>
+          {hasDerivationDetails ? (
+            <ul className="space-y-3">
+              {derivationDetails.map((detail) => (
+                <li
+                  key={detail.nodeId}
+                  className="space-y-1 rounded-xl border border-slate-100 bg-slate-50 p-4 text-sm text-slate-900"
+                >
+                  <div className="text-sm font-semibold text-slate-900">{detail.label}</div>
+                  <p className="text-sm leading-6 text-slate-700">{detail.summary}</p>
+                  <p className="text-xs font-medium uppercase tracking-[0.2em] text-slate-500">
+                    Quelle: {detail.sourceFile}
+                  </p>
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p className="text-sm text-slate-600">
+              Nach erfolgreicher Antwort erscheinen hier die wichtigsten Kontextsummaries plus Quelle.
+            </p>
+          )}
+        </section>
       </section>
     </div>
   );

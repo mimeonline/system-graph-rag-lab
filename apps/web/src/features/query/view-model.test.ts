@@ -103,6 +103,7 @@ describe("buildQueryViewModel", () => {
     expect(viewModel.derivationDetails[0].label).toBe("1) Konzept 1");
     expect(viewModel.derivationDetails[0].summary).toBe(contextElements[0].summary);
     expect(viewModel.derivationDetails[0].sourceFile).toBe(contextElements[0].source.sourceFile);
+    expect(viewModel.nextSteps.length).toBeGreaterThan(0);
   });
 
   it("setzt den Fallbacktext, wenn keine Referenzen vorliegen", () => {
@@ -117,5 +118,42 @@ describe("buildQueryViewModel", () => {
     expect(viewModel.answer.main).toContain("keine Antwort");
     expect(viewModel.answer.coreRationale).toContain("Bitte formuliere die Frage");
     expect(viewModel.derivationDetails).toHaveLength(0);
+    expect(viewModel.nextSteps[0]).toContain("Frage enger formulieren");
+  });
+
+  it("zeigt konkrete Toolnamen bei groben Referenzlabels", () => {
+    const references: QueryReference[] = [
+      {
+        nodeId: "concept:system-thinking-tools",
+        nodeType: "Concept",
+        title: "System Thinking Tools",
+        score: 1,
+        hop: 0,
+      },
+      {
+        nodeId: "concept:network-analysis",
+        nodeType: "Concept",
+        title: "Network Analysis",
+        score: 0.95,
+        hop: 0,
+      },
+      {
+        nodeId: "concept:stocks-and-flows",
+        nodeType: "Concept",
+        title: "Stocks and Flows",
+        score: 0.9,
+        hop: 0,
+      },
+    ];
+    const response = createSuccessResponse({
+      references,
+      contextElements: references.map(createContextElement),
+    });
+
+    const viewModel = buildQueryViewModel(response, "Welche Tools helfen beim Modellieren?");
+
+    expect(viewModel.references[0].tools).toContain("Tool: Causal Loop Diagram");
+    expect(viewModel.references[1].tools).toContain("Tool: Network Visualization");
+    expect(viewModel.references[2].tools).toContain("Tool: Stock and Flow Diagram");
   });
 });

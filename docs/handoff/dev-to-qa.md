@@ -216,3 +216,13 @@ CALL db.index.vector.createNodeIndex(
 ### Genaue Testkommandos mit erwarteten Ergebnissen
 1. `pnpm --dir apps/web test -- src/app/api/query/route.test.ts` → Exit Code `0`.
 2. `pnpm --dir apps/web test -- src/features/query/retrieval.test.ts` → Exit Code `0`.
+
+## E3 ux-demo-clarity-and-tool-granularity
+### Was ist fertig
+1. Home-Template nutzt jetzt eine klar erkennbare Seitenstruktur mit Header, zentraler Inhaltsbühne und Footer analog UX-Mock.
+2. Query-Ansicht ist als Panel A (Antwort) und Panel B (Kontext) aufgeteilt und bleibt auf Mobile einspaltig übersichtlich.
+3. Eine neue Zone „Was bringt mir das jetzt?“ liefert konkrete nächste Schritte direkt aus dem View-Model.
+4. Referenzkarten zeigen konkrete Toolnamen; grobe Labels wie „System Thinking Tools“, „Network Analysis“ und „Stocks and Flows“ werden auf konkrete Toollisten gemappt.
+
+### Genaue Testkommandos mit erwarteten Ergebnissen
+1. `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts src/components/organisms/query-panel-status.test.ts` Exit Code `0`.

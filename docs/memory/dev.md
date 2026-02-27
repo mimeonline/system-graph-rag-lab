@@ -60,3 +60,9 @@
 ## Recent Bugfixes
 - Laufzeit-ReferenceError `nextAction is not defined` in `QueryInput` behoben, indem die Prop explizit destructed wird und der `Nächste Aktion`-Hinweis nur mit vorhandenem Text rendert.
 - Test: `pnpm --dir apps/web exec vitest run src/components/organisms/query-panel-status.test.ts`
+
+## Update E3 ux-demo-clarity-and-tool-granularity
+1. Home/Query-Ansicht auf UX-Mock-Grundstruktur umgestellt: sichtbarer Header/Footer, klare Inhaltsbühne, 2-Panel-Layout auf Desktop und 1-Spalten-Layout auf Mobile.
+2. QueryPanel zeigt neue Zone „Was bringt mir das jetzt?“ mit konkreten Next Steps aus dem Query-View-Model.
+3. Referenzkarten wurden granularisiert: Keyword-Mapping für „System Thinking Tools“, „Network Analysis“, „Stocks and Flows“ auf konkrete Toolnamen.
+4. Verifikation: `pnpm --dir apps/web exec vitest run src/features/query/view-model.test.ts src/components/organisms/query-panel-status.test.ts` (Exit Code `0`).
