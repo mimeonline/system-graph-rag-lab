@@ -1,0 +1,211 @@
+---
+slug: lessons-learned-system-graph-rag-lab
+title: "Meine Erfahrungen beim Bau eines öffentlichen System-Thinking GraphRAG Labs"
+excerpt: "Ein öffentlicher MVP mit Vercel, Neo4j und OpenAI ist machbar, wenn man Scope, Datenqualität und UX-Nachvollziehbarkeit konsequent steuert."
+publishedAt: "2026-02-27"
+tags:
+  - Erfahrungen
+  - Public MVP
+  - GraphRAG
+readingTime: "16 min"
+featured: false
+heroImage: "/images/blog/public-mvp-timeline.png"
+diagramImages:
+  - "/images/blog/public-stack-architecture.png"
+linkedinHook: "Der größte Hebel im Public GraphRAG MVP war nicht nur das Modell, sondern die sichtbare Herleitung im UI."
+tldr: "Öffentlich bauen zwingt zu klaren Entscheidungen. Die wichtigsten Learnings: saubere Seed-Daten, transparente Herleitung, fokussierte Iteration und harte Qualitäts-Gates."
+---
+
+## Hook: Öffentlich bauen ist ein Qualitätsbooster
+
+Viele KI-Projekte sehen intern beeindruckend aus, aber scheitern im öffentlichen Einsatz. Warum? Weil Public-Umgebungen alles offenlegen: Inkonsistenzen, schlechte UX-Entscheidungen, unklare Begründungen und brüchige Betriebsabläufe.
+
+Genau deshalb ist ein öffentliches GraphRAG-Lab so wertvoll. Es zwingt dich, aus einer Demo ein belastbares Produktdenken zu machen.
+
+In diesem Artikel teile ich die wichtigsten Learnings aus dem Aufbau eines öffentlichen System-Thinking-Showcases auf Basis von Next.js, Neo4j und OpenAI.
+
+![Public MVP Timeline](/images/blog/public-mvp-timeline.png)
+
+## Learning 1: Scope-Disziplin schlägt Feature-Euphorie
+
+Das größte Risiko war nicht Technik, sondern Scope-Drift. Sobald die ersten Features sichtbar liefen, kamen laufend neue Ideen dazu. Das ist normal, aber gefährlich.
+
+Was geholfen hat:
+
+- klare Priorisierung nach Nutzerwirkung
+- kleine, überprüfbare Inkremente
+- sichtbare Qualitätskriterien pro Story
+
+Ohne diese Disziplin hätte der MVP schnell zu viele halbfertige Flächen gehabt.
+
+## Learning 2: Seed-Daten sind Produkt, nicht nur Testmaterial
+
+GraphRAG lebt von der Qualität seiner Knoten und Kanten. Schlechte Seed-Daten führen zu schwachen Antworten, egal wie gut das Modell ist.
+
+Ich musste früh lernen: Seed-Daten brauchen dieselbe Sorgfalt wie UI-Text oder API-Design.
+
+Wichtige Prinzipien dabei:
+
+1. eindeutige Node-Typen
+2. klare Beziehungssemantik
+3. nachvollziehbare Quellen pro Referenz
+4. inhaltlich sinnvolle Kurz- und Langbeschreibungen
+
+## Learning 3: Transparenz schlägt „Magie“
+
+Nutzer vertrauen KI-Antworten mehr, wenn sie den Entstehungsweg sehen können. Das klingt trivial, ist aber in der Umsetzung anspruchsvoll.
+
+Es reicht nicht, nur „Quellen“ unten anzuhängen. Du brauchst eine UI, die den Pfad zur Antwort sichtbar macht:
+
+- welche Knoten ausgewählt wurden
+- wie sie verbunden sind
+- welche Belege eingeflossen sind
+- wie daraus die Synthese entsteht
+
+Genau dieser Punkt war einer der größten Treiber für bessere Usability.
+
+## Learning 4: Graph-Visualisierung ist ein eigenes Produktproblem
+
+Viele unterschätzen die Visualisierung. „Wir zeigen einfach den Graphen“ klingt einfach. Praktisch war es einer der schwierigsten Teile:
+
+- Node-Überlappungen
+- unklare Kantenlabels
+- zu dichte Layouts
+- inkonsistente Tooltips
+
+Die Lösung kam über iterative UX-Arbeit: Layout-Presets, Zoom/Fit, Kontextfilter, Node-Details, Mini-Map und Fokusmodi.
+
+## Learning 5: Prompt-Transparenz ist kein Nice-to-have
+
+Ein wiederkehrendes Feedback war: „Was genau geht ans LLM?“ Das war ein zentraler Hinweis. Ohne Prompt-Transparenz bleibt der Prozess für Nutzer eine Black Box.
+
+Daraufhin wurde ein Prompt-Inspector eingeführt, der LLM-only vs GraphRAG sichtbar macht. Das half nicht nur im Verständnis, sondern auch bei der Qualitätsdiskussion im Team.
+
+## Learning 6: LLM-only Vergleich schafft sofort Klarheit
+
+Der direkte Vergleich zwischen LLM-only und GraphRAG war einer der stärksten didaktischen Hebel. Nicht theoretisch erklären, sondern nebeneinander zeigen:
+
+- Was fehlt ohne Graph?
+- Wo wird die Herleitung schwach?
+- Welche Teile sind mit GraphRAG belastbarer?
+
+Dadurch wurde der Mehrwert nicht behauptet, sondern erlebt.
+
+## Learning 7: Runtime-Stabilität braucht frühe Guardrails
+
+Ein öffentlicher MVP braucht mehr als funktionierenden Happy Path. Es braucht robuste Fehlerpfade und Runtime-Grenzen.
+
+Wichtige Guardrails:
+
+- saubere Fehlermeldungen statt stiller Ausfälle
+- Statusanzeigen im UI (loading, empty, error)
+- defensive Fallbacks im Retrieval
+- klare Local/Prod Trennung bei Daten und Schlüsseln
+
+Diese Arbeit wirkt „unsichtbar“, ist aber entscheidend für Vertrauen.
+
+## Learning 8: Dokumentation spart Zeit, wenn sie gezielt ist
+
+Viele Teams dokumentieren zu spät oder zu breit. In diesem Projekt war kurze, operative Doku mit klaren Handoffs hilfreich.
+
+Was funktioniert hat:
+
+- fokussierte Story-Artefakte
+- klarer Statusfluss
+- konkrete Test- und QA-Schritte
+
+Damit wurden Rückfragen reduziert und Iterationen beschleunigt.
+
+## Learning 9: Öffentliche Architektur muss erzählbar sein
+
+Die Technik war solide, aber die Außenwirkung entsteht erst, wenn du die Architektur verständlich erzählen kannst.
+
+Genau hier helfen Story-Seiten, Lab-Seiten und gute Blogartikel. Sie übersetzen technische Tiefe in eine Form, die Entscheider und Entwickler gleichermaßen abholt.
+
+![Public Stack Architecture](/images/blog/public-stack-architecture.png)
+
+## Learning 10: Iteration gewinnt gegen Perfektion
+
+Der MVP wurde nicht in einem großen Wurf „fertig“. Er wurde durch viele kleine, sichtbare Verbesserungen stabil.
+
+Das Entscheidende war ein pragmatischer Rhythmus:
+
+1. Problem sehen
+2. kleine Änderung umsetzen
+3. direkt prüfen
+4. nächste Engstelle angehen
+
+Diese Schleife war produktiver als große Refactor-Pläne ohne unmittelbare Wirkung.
+
+## Was ich beim nächsten Mal früher machen würde
+
+1. **Content-Design früher starten** statt erst nach Funktionsbau.
+2. **Vergleichsansichten früher einbauen** (z. B. LLM-only vs GraphRAG).
+3. **Git-basierte Projektchronik von Anfang an pflegen**, um Learnings schneller kommunizieren zu können.
+
+## Grenzen des Projekts
+
+Ein öffentlicher MVP bleibt ein MVP. Er hat Grenzen:
+
+- keine vollautomatische Content-Distribution
+- begrenzte redaktionelle Tiefe je Thema
+- kein vollständiges Enterprise-Betriebsmodell
+
+Diese Grenzen sind okay, solange sie transparent sind.
+
+## Konkrete Empfehlungen für ähnliche Projekte
+
+Wenn du selbst ein öffentliches KI-Projekt planst, starte mit diesen Prioritäten:
+
+1. klare Nutzerfrage
+2. begrenzter Scope
+3. nachvollziehbare Herleitung
+4. solide Runtime-Guardrails
+5. kontinuierliche UX-Iteration
+
+Damit bekommst du schneller ein Ergebnis, das nicht nur funktioniert, sondern überzeugt.
+
+## Fazit
+
+Der größte Lernpunkt war: **Technik allein macht keinen starken Showcase.** Entscheidend ist die Kombination aus belastbarer Architektur, guter Datenbasis, nachvollziehbarer UX und klarer Story.
+
+Öffentlich bauen erhöht den Druck, aber genau dieser Druck verbessert das Ergebnis. Wenn du den Prozess sauber strukturierst, wird aus einem technischen Experiment ein überzeugendes Produktsignal.
+
+## Vertiefung: Warum öffentliche Projekte stärkeres Produktdenken erzwingen
+
+In internen Projekten kann man vieles „mitdenken“. In öffentlichen Projekten muss man es sichtbar machen. Genau das verändert die Qualität der Entscheidungen.
+
+Sobald echte Nutzer oder potenzielle Kunden auf die Seite gehen, reichen implizite Annahmen nicht mehr. Jeder unklare Begriff, jeder fehlende Beleg und jede unruhige UI fällt sofort auf. Das wirkt anstrengend, ist aber ein riesiger Vorteil: Es zwingt zu präziser Kommunikation.
+
+Deshalb sind öffentliche Labs so wertvoll für Teams, die später produktionsnahe KI-Systeme bauen wollen. Sie trainieren nicht nur die Technik, sondern auch das Produktdenken unter realen Sichtbarkeitsbedingungen.
+
+## Redaktions-Framework für Medium und LinkedIn
+
+Ein wiederholbares Framework hat mir geholfen, Inhalte schneller in guter Qualität zu veröffentlichen:
+
+1. **Hook in einem Satz**  
+Worum geht es konkret und warum sollte jemand weiterlesen?
+2. **Alltagsproblem zuerst**  
+Nicht mit Architektur beginnen, sondern mit einem bekannten Schmerzpunkt.
+3. **Technik als Antwort auf das Problem**  
+Nicht abstrakt erklären, sondern am konkreten Problem festmachen.
+4. **Trade-offs explizit nennen**  
+Glaubwürdigkeit steigt, wenn Grenzen offen benannt werden.
+5. **Handlungsfähiger Abschluss**  
+Was kann der Leser morgen praktisch umsetzen?
+
+Mit diesem Rahmen entsteht aus einem technischen Erfahrungsbericht ein Inhalt, der auf Medium und LinkedIn gleichermaßen funktioniert.
+
+## Operative Checkliste für den nächsten Ausbau
+
+Für die nächste Ausbauphase ist diese Reihenfolge sinnvoll:
+
+- zuerst Lesbarkeit und visuelle Hierarchie
+- dann Story-Interaktion und narrative Tiefe
+- dann Content-Länge und Grafikqualität
+- zuletzt Distribution und Reichweite
+
+Warum diese Reihenfolge? Weil gute Distribution ohne klare Produkt- und Contentqualität nur mehr Reichweite auf mittelmäßige Inhalte erzeugt. Erst wenn Substanz und Darstellung sitzen, lohnt sich aggressivere Verbreitung.
+
+Genau diese Priorisierung hat im Projekt den Unterschied gemacht: Erst als Lesbarkeit, Herleitung und technische Stabilität zusammenpassten, wurde die Außenwirkung stark genug, um echte Gespräche mit interessierten Teams auszulösen.
+Dieser Zusammenhang ist kein Zufall, sondern ein reproduzierbares Muster in öffentlichen Tech-Showcases.

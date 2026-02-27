@@ -1,0 +1,532 @@
+[
+  {
+    "hash": "9d29161",
+    "date": "2026-02-27",
+    "subject": "feat(web): refine graph explorer controls and loading feedback"
+  },
+  {
+    "hash": "a8bb625",
+    "date": "2026-02-27",
+    "subject": "feat(web): improve GraphRAG explorer, prompts and comparison UX"
+  },
+  {
+    "hash": "e56481b",
+    "date": "2026-02-27",
+    "subject": "fix(web): persist session snapshots and harden llm-only fallback rendering"
+  },
+  {
+    "hash": "8f257d6",
+    "date": "2026-02-27",
+    "subject": "feat(web): add llm-only comparison, explorer controls, and collapsible session history"
+  },
+  {
+    "hash": "3aa4a72",
+    "date": "2026-02-27",
+    "subject": "feat(web): expand graph node details with links, neighbors, and collapsible descriptions"
+  },
+  {
+    "hash": "b82fca1",
+    "date": "2026-02-27",
+    "subject": "fix(web): align tooltip descriptions and refresh graph data flow"
+  },
+  {
+    "hash": "733e5b2",
+    "date": "2026-02-27",
+    "subject": "fix(web): improve graph explorer stability and readability"
+  },
+  {
+    "hash": "784b8ed",
+    "date": "2026-02-27",
+    "subject": "feat(web): refine graph descriptions and stabilize explorer interactions"
+  },
+  {
+    "hash": "93718e2",
+    "date": "2026-02-27",
+    "subject": "feat(web): improve seed references and fix select hydration mismatch"
+  },
+  {
+    "hash": "2cdaaa9",
+    "date": "2026-02-27",
+    "subject": "feat(web): refine graph explorer interactions and seed descriptions"
+  },
+  {
+    "hash": "670bf2d",
+    "date": "2026-02-27",
+    "subject": "feat(web): improve graph explorer layout and node interaction"
+  },
+  {
+    "hash": "1b85e94",
+    "date": "2026-02-27",
+    "subject": "feat: add popover graph explorer with layout controls"
+  },
+  {
+    "hash": "94f604f",
+    "date": "2026-02-27",
+    "subject": "feat: replace query chips with categorized dropdown"
+  },
+  {
+    "hash": "b59284e",
+    "date": "2026-02-27",
+    "subject": "feat: upgrade graph UX with cytoscape layout and tooltips"
+  },
+  {
+    "hash": "331c22e",
+    "date": "2026-02-27",
+    "subject": "feat: add motion-driven pipeline and expandable graph view"
+  },
+  {
+    "hash": "6cb901d",
+    "date": "2026-02-27",
+    "subject": "feat: clarify GraphRAG value proposition in hero"
+  },
+  {
+    "hash": "1a60056",
+    "date": "2026-02-27",
+    "subject": "fix: stabilize graph layout and document embedding flow"
+  },
+  {
+    "hash": "417a577",
+    "date": "2026-02-27",
+    "subject": "feat: improve graph readability and explainability UX"
+  },
+  {
+    "hash": "bfb7dbe",
+    "date": "2026-02-27",
+    "subject": "feat: make query output API-driven and refresh seed embeddings"
+  },
+  {
+    "hash": "f3c4439",
+    "date": "2026-02-27",
+    "subject": "feat: add guided question suggestions and simplify response copy"
+  },
+  {
+    "hash": "5e2fb4b",
+    "date": "2026-02-27",
+    "subject": "feat: update graph preview layout and home query UI"
+  },
+  {
+    "hash": "10769b2",
+    "date": "2026-02-27",
+    "subject": "chore: commit all changes"
+  },
+  {
+    "hash": "4c979c7",
+    "date": "2026-02-27",
+    "subject": "chore(repo): commit remaining local changes"
+  },
+  {
+    "hash": "cfae859",
+    "date": "2026-02-27",
+    "subject": "feat(ui): improve demo clarity and surface concrete tool guidance"
+  },
+  {
+    "hash": "7f672fe",
+    "date": "2026-02-27",
+    "subject": "fix(query): retry once when chat content is empty due to length"
+  },
+  {
+    "hash": "3dcffc5",
+    "date": "2026-02-27",
+    "subject": "fix(query): parse chat content arrays and refusal responses"
+  },
+  {
+    "hash": "fef466b",
+    "date": "2026-02-26",
+    "subject": "fix(query): improve openai 400 diagnostics and default vector index"
+  },
+  {
+    "hash": "78dc19a",
+    "date": "2026-02-26",
+    "subject": "feat(query): add semantic neo4j vector retrieval with graph fallback"
+  },
+  {
+    "hash": "3ed5940",
+    "date": "2026-02-26",
+    "subject": "test(query): cover openai integration success and upstream failure"
+  },
+  {
+    "hash": "6911dc5",
+    "date": "2026-02-26",
+    "subject": "docs(web): add JSDoc for app functions"
+  },
+  {
+    "hash": "5fd6c91",
+    "date": "2026-02-26",
+    "subject": "fix(query-input): define nextAction prop in component"
+  },
+  {
+    "hash": "b07ac73",
+    "date": "2026-02-26",
+    "subject": "chore(e3): accept epic after security and devops gates"
+  },
+  {
+    "hash": "f86e21d",
+    "date": "2026-02-26",
+    "subject": "chore(e3): pass devops epic gate"
+  },
+  {
+    "hash": "dcd0f0a",
+    "date": "2026-02-26",
+    "subject": "chore(e3): pass security epic gate"
+  },
+  {
+    "hash": "5245122",
+    "date": "2026-02-26",
+    "subject": "chore(e3-s3): accept story via pm and sync progress"
+  },
+  {
+    "hash": "5c23fc3",
+    "date": "2026-02-26",
+    "subject": "test(e3-s3): pass qa gate and sync qa artifacts"
+  },
+  {
+    "hash": "1e4a6a3",
+    "date": "2026-02-26",
+    "subject": "feat(e3-s3): add derivation details to query answer view"
+  },
+  {
+    "hash": "aa419a3",
+    "date": "2026-02-26",
+    "subject": "chore(e3-s2): accept story via pm and sync progress"
+  },
+  {
+    "hash": "fee6ed3",
+    "date": "2026-02-26",
+    "subject": "test(e3-s2): pass qa gate for ui status states"
+  },
+  {
+    "hash": "44246af",
+    "date": "2026-02-26",
+    "subject": "feat(e3-s2): add loading error empty status guidance in query ui"
+  },
+  {
+    "hash": "dbf6188",
+    "date": "2026-02-26",
+    "subject": "chore(e3-s1): accept story via pm and sync progress"
+  },
+  {
+    "hash": "4c386c0",
+    "date": "2026-02-26",
+    "subject": "test(e3-s1): pass qa gate and sync qa artifacts"
+  },
+  {
+    "hash": "cfa8cf6",
+    "date": "2026-02-26",
+    "subject": "feat(e3-s1): implement interactive query flow and answer view"
+  },
+  {
+    "hash": "8913e34",
+    "date": "2026-02-26",
+    "subject": "chore(e2): accept epic and sync progress"
+  },
+  {
+    "hash": "beea1d3",
+    "date": "2026-02-26",
+    "subject": "docs(devops): record epic e2 ops gate and observability guardrails"
+  },
+  {
+    "hash": "30d6006",
+    "date": "2026-02-26",
+    "subject": "docs(security): add epic e2 gate verdict and risk review"
+  },
+  {
+    "hash": "6ffac23",
+    "date": "2026-02-26",
+    "subject": "chore(e2-s4): accept story via pm and sync progress"
+  },
+  {
+    "hash": "602c86f",
+    "date": "2026-02-26",
+    "subject": "test(e2-s4): pass qa gate for reference expectation checks"
+  },
+  {
+    "hash": "1837e72",
+    "date": "2026-02-26",
+    "subject": "feat(e2-s4): enforce expected-reference quality with fallback hint"
+  },
+  {
+    "hash": "ee04f9b",
+    "date": "2026-02-26",
+    "subject": "chore(e2-s3): accept story via pm and sync progress"
+  },
+  {
+    "hash": "be41a16",
+    "date": "2026-02-26",
+    "subject": "test(e2-s3): pass qa gate and update qa evidence"
+  },
+  {
+    "hash": "bda6c9a",
+    "date": "2026-02-26",
+    "subject": "feat(e2-s3): compose structured answer with reference fallback"
+  },
+  {
+    "hash": "3209e2c",
+    "date": "2026-02-26",
+    "subject": "chore(e2-s2): accept story via pm and sync progress"
+  },
+  {
+    "hash": "e0130b6",
+    "date": "2026-02-26",
+    "subject": "test(e2-s2): pass qa gate and sync qa artifacts"
+  },
+  {
+    "hash": "6dec85e",
+    "date": "2026-02-26",
+    "subject": "feat(e2-s2): add deduplicated response context with source attribution"
+  },
+  {
+    "hash": "2f5a44b",
+    "date": "2026-02-26",
+    "subject": "chore: accept E2-S1 via PM and sync progress"
+  },
+  {
+    "hash": "8234f91",
+    "date": "2026-02-26",
+    "subject": "chore: pass E2-S1 QA gate and sync artifacts"
+  },
+  {
+    "hash": "7e8505f",
+    "date": "2026-02-26",
+    "subject": "feat: implement E2-S1 deterministic context candidate retrieval"
+  },
+  {
+    "hash": "87368c4",
+    "date": "2026-02-26",
+    "subject": "chore: optimize agent prompts and low-token orchestration docs"
+  },
+  {
+    "hash": "f762711",
+    "date": "2026-02-26",
+    "subject": "chore: remove live-progress policy and progress artifacts"
+  },
+  {
+    "hash": "d3b3a60",
+    "date": "2026-02-26",
+    "subject": "chore: finalize e1 closure after bug-0003 recheck and gate sync"
+  },
+  {
+    "hash": "c0e1bcb",
+    "date": "2026-02-26",
+    "subject": "chore: accept e1-s6 and set e1 epic blocked pending eval gate"
+  },
+  {
+    "hash": "e159b74",
+    "date": "2026-02-26",
+    "subject": "chore: pass e1 devops gate and add ops baseline artifacts"
+  },
+  {
+    "hash": "3fc0345",
+    "date": "2026-02-26",
+    "subject": "chore: pass e1 security recheck and close blockers"
+  },
+  {
+    "hash": "e101878",
+    "date": "2026-02-26",
+    "subject": "chore: re-pass e1-s6 qa after security-fix recheck"
+  },
+  {
+    "hash": "7316aaa",
+    "date": "2026-02-26",
+    "subject": "fix: harden e1-s6 reset guardrails for security findings"
+  },
+  {
+    "hash": "5db9903",
+    "date": "2026-02-26",
+    "subject": "chore: record e1 security fail and reopen e1-s6 as blocked"
+  },
+  {
+    "hash": "42c0880",
+    "date": "2026-02-26",
+    "subject": "chore: pass e1-s6 qa gate and sync artifacts"
+  },
+  {
+    "hash": "1f0891b",
+    "date": "2026-02-26",
+    "subject": "feat: deliver e1-s6 local neo4j reset and reseed workflow"
+  },
+  {
+    "hash": "3a12bd4",
+    "date": "2026-02-26",
+    "subject": "chore: accept e1-s4 and extend qa matrix for e1-s5/e1-s6"
+  },
+  {
+    "hash": "94ad3cf",
+    "date": "2026-02-26",
+    "subject": "docs: streamline role artifacts and resolve qa bug-0002"
+  },
+  {
+    "hash": "f0a889a",
+    "date": "2026-02-26",
+    "subject": "feat: add seed data quality check for e1-s4"
+  },
+  {
+    "hash": "d36c0eb",
+    "date": "2026-02-25",
+    "subject": "chore: finalize e1-s3 qa pass and pm acceptance"
+  },
+  {
+    "hash": "58ff3da",
+    "date": "2026-02-25",
+    "subject": "feat: stabilize neo4j runtime-read flow and story process"
+  },
+  {
+    "hash": "eb7f7ae",
+    "date": "2026-02-25",
+    "subject": "chore(backlog): split local E1 and public E4 tracks"
+  },
+  {
+    "hash": "8f9fa23",
+    "date": "2026-02-25",
+    "subject": "feat(e1-s3): add runtime seed read path and sync dev workflow rules"
+  },
+  {
+    "hash": "1aaa925",
+    "date": "2026-02-25",
+    "subject": "chore(process): align QA/PM status flow and accept E1-S2"
+  },
+  {
+    "hash": "4803cfc",
+    "date": "2026-02-25",
+    "subject": "feat: extend ontology with tool node type and enrich seed references"
+  },
+  {
+    "hash": "7314314",
+    "date": "2026-02-25",
+    "subject": "docs: refine E1 story flow and add function-level documentation"
+  },
+  {
+    "hash": "8af7111",
+    "date": "2026-02-25",
+    "subject": "process: introduce pass status and sync E1-S1 progress"
+  },
+  {
+    "hash": "aa3dc8d",
+    "date": "2026-02-25",
+    "subject": "chore: add role-based live progress tracking and refresh QA artifacts"
+  },
+  {
+    "hash": "27da9e5",
+    "date": "2026-02-25",
+    "subject": "docs: add subagent polling prompt template"
+  },
+  {
+    "hash": "1f8c78e",
+    "date": "2026-02-25",
+    "subject": "chore: sync epic progress rules and add qa artifacts"
+  },
+  {
+    "hash": "614c4f6",
+    "date": "2026-02-25",
+    "subject": "chore: align qa security and devops role configs"
+  },
+  {
+    "hash": "24caa54",
+    "date": "2026-02-25",
+    "subject": "feat(dev): implement e1-s1 ontology module and update story qa status"
+  },
+  {
+    "hash": "7002b34",
+    "date": "2026-02-25",
+    "subject": "chore: add local neo4j compose and sync devops docs"
+  },
+  {
+    "hash": "5d65384",
+    "date": "2026-02-25",
+    "subject": "chore: finalize dev bootstrap structure and pnpm migration"
+  },
+  {
+    "hash": "94e314f",
+    "date": "2026-02-25",
+    "subject": "chore: consolidate docs paths and finalize dev workflow artifacts"
+  },
+  {
+    "hash": "daad9d4",
+    "date": "2026-02-25",
+    "subject": "chore: enforce epic gates and progress workflow across roles"
+  },
+  {
+    "hash": "bc7ad6b",
+    "date": "2026-02-25",
+    "subject": "chore: refine dev and ux agent role boundaries"
+  },
+  {
+    "hash": "6570d51",
+    "date": "2026-02-25",
+    "subject": "chore: align architecture and ux docs for local dev and typescript"
+  },
+  {
+    "hash": "735ad2e",
+    "date": "2026-02-25",
+    "subject": "chore: harden architecture artifacts and sync agent guidelines"
+  },
+  {
+    "hash": "a1b63c2",
+    "date": "2026-02-25",
+    "subject": "chore(architecture): enforce arc42/deployment outputs and fix blackbox context diagram"
+  },
+  {
+    "hash": "acd41b6",
+    "date": "2026-02-25",
+    "subject": "chore(architect): enforce mermaid and tech-stack decisions in architecture outputs"
+  },
+  {
+    "hash": "229c2b9",
+    "date": "2026-02-25",
+    "subject": "feat(architecture): add bootstrap baseline and align graph scale targets"
+  },
+  {
+    "hash": "61af697",
+    "date": "2026-02-25",
+    "subject": "chore(ux): finalize hardening docs after mock rollback"
+  },
+  {
+    "hash": "fe8dd11",
+    "date": "2026-02-25",
+    "subject": "feat(ux): apply structured panel layout v2 to mock"
+  },
+  {
+    "hash": "07dd03a",
+    "date": "2026-02-25",
+    "subject": "chore(ux): harden layout constraints and align UX artifacts"
+  },
+  {
+    "hash": "2c4c4b8",
+    "date": "2026-02-25",
+    "subject": "feat(ux): add visual style artifacts and enforce mock in ux process"
+  },
+  {
+    "hash": "f54866e",
+    "date": "2026-02-25",
+    "subject": "feat(ux): bootstrap UX artifacts and tighten ux agent config"
+  },
+  {
+    "hash": "86dc8f8",
+    "date": "2026-02-25",
+    "subject": "chore(pm): standardize story scenario blocks and finalize hardening"
+  },
+  {
+    "hash": "4596064",
+    "date": "2026-02-25",
+    "subject": "chore(lab): rewrite prompt templates for practical bootstrap use"
+  },
+  {
+    "hash": "91bc941",
+    "date": "2026-02-25",
+    "subject": "chore(agents): add run modes across role configs"
+  },
+  {
+    "hash": "715d4d4",
+    "date": "2026-02-25",
+    "subject": "chore(pm): harden PM artifacts before UX handoff"
+  },
+  {
+    "hash": "5516950",
+    "date": "2026-02-25",
+    "subject": "chore(pm): normalize PM artifacts and memory"
+  },
+  {
+    "hash": "2e12930",
+    "date": "2026-02-25",
+    "subject": "Initial project commit"
+  }
+]

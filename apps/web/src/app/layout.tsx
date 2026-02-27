@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { SITE_NAME, withCanonical } from "@/config/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,8 +14,23 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "System GraphRAG Lab",
-  description: "Bootstrap fuer das technische MVP-Grundgeruest.",
+  metadataBase: new URL(withCanonical("/")),
+  title: SITE_NAME,
+  description:
+    "Öffentlicher GraphRAG Showcase mit System-Thinking-Demo, nachvollziehbarer Herleitung und Story-getriebener Produktdarstellung.",
+  openGraph: {
+    title: SITE_NAME,
+    description:
+      "Öffentlicher GraphRAG Showcase mit System-Thinking-Demo, nachvollziehbarer Herleitung und Story-getriebener Produktdarstellung.",
+    url: withCanonical("/"),
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_NAME,
+    description:
+      "Öffentlicher GraphRAG Showcase mit System-Thinking-Demo, nachvollziehbarer Herleitung und Story-getriebener Produktdarstellung.",
+  },
 };
 
 /**
