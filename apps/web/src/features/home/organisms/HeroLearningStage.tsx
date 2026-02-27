@@ -1,6 +1,6 @@
 export function HeroLearningStage(): React.JSX.Element {
   return (
-    <section className="relative overflow-hidden rounded-3xl border border-sky-200/70 bg-gradient-to-br from-[#eaf3ff] via-[#f6fbff] to-[#eef2ff] px-5 py-6 shadow-sm sm:px-8 sm:py-8">
+    <section className="relative overflow-hidden bg-gradient-to-br from-[#eaf3ff] via-[#f6fbff] to-[#eef2ff] px-5 py-6 sm:px-8 sm:py-8">
       <div className="pointer-events-none absolute -left-20 top-0 h-56 w-56 rounded-full bg-sky-300/20 blur-3xl" />
       <div className="pointer-events-none absolute -right-16 bottom-0 h-48 w-48 rounded-full bg-indigo-300/20 blur-3xl" />
 

@@ -16,12 +16,12 @@ export function MultiAgentLabTemplate({ events, caseStudy }: MultiAgentLabTempla
       <SiteHeader />
       <main className="flex-1 px-4 py-5 sm:px-6 sm:py-6">
         <div className="mx-auto w-full max-w-[1180px] space-y-4">
-          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="space-y-3 pt-1">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-amber-700">Multi-Agent Lab</p>
-            <h1 className="mt-2 text-[2rem] font-semibold tracking-tight text-slate-950">
+            <h1 className="text-[2rem] font-semibold tracking-tight text-slate-950">
               Zeitgeschichte aus echten Commits: Vom Multi-Agent-Experiment zum fokussierten Delivery-Flow
             </h1>
-            <p className="mt-2 max-w-[72ch] text-[0.96rem] leading-7 text-slate-700">
+            <p className="max-w-[72ch] text-[0.96rem] leading-7 text-slate-700">
               Diese Seite basiert auf der tatsächlichen Git-Historie. Commits werden thematisch geclustert und zu einer
               nachvollziehbaren Entscheidungs-Timeline kuratiert.
             </p>

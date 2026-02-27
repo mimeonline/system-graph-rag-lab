@@ -129,13 +129,13 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
       <SiteHeader />
       <main className="flex-1 px-4 py-5 sm:px-6 sm:py-6">
         <div className="mx-auto w-full max-w-[1180px] space-y-4">
-          <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <section className="space-y-3 pt-1">
             <p className="text-xs font-semibold uppercase tracking-[0.14em] text-violet-700">GraphRAG Story</p>
             <h1 className="mt-2 text-[2rem] font-semibold tracking-tight text-slate-950">Eine visuelle Reise von der Frage zur Entscheidung</h1>
             <p className="mt-2 max-w-[72ch] text-[0.96rem] leading-7 text-slate-700">
               Schritt für Schritt wird sichtbar, wie GraphRAG Kontext auswählt, Beziehungen nutzbar macht und daraus eine belastbare Entscheidung ableitet.
             </p>
-            <div className="mt-4 h-2 w-full overflow-hidden rounded-full bg-slate-200">
+            <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
               <div className="h-full rounded-full bg-gradient-to-r from-sky-500 to-violet-500" style={{ width: `${progress}%` }} />
             </div>
           </section>
