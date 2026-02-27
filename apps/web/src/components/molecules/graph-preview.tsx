@@ -3,15 +3,20 @@ import cytoscape, { type Core, type ElementDefinition } from "cytoscape";
 // @ts-expect-error cytoscape-dagre ships no types
 import dagre from "cytoscape-dagre";
 import type { HomeGraphModel, HomeGraphNode } from "@/features/home/graph-view-model";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+
+type GraphLayoutMode = "force" | "hierarchy-vertical" | "hierarchy-horizontal";
 
 type GraphPreviewProps = {
   model: HomeGraphModel;
   variant?: "default" | "expanded";
+  interactive?: boolean;
 };
 
 const GRAPH_HEIGHT_PX_BY_VARIANT: Record<NonNullable<GraphPreviewProps["variant"]>, number> = {
   default: 400,
-  expanded: 560,
+  expanded: 640,
 };
 
 const NODE_SIZE_BY_KIND: Record<HomeGraphNode["kind"], { width: number; height: number }> = {
@@ -56,29 +61,59 @@ function toElements(model: HomeGraphModel): ElementDefinition[] {
   return [...nodes, ...edges];
 }
 
-function buildLayout(variant: NonNullable<GraphPreviewProps["variant"]>): cytoscape.LayoutOptions {
+function buildLayout(mode: GraphLayoutMode): cytoscape.LayoutOptions {
+  if (mode === "force") {
+    return {
+      name: "cose",
+      animate: true,
+      animationDuration: 260,
+      fit: true,
+      padding: 20,
+      nodeRepulsion: 14000,
+      nodeOverlap: 20,
+      idealEdgeLength: 100,
+      edgeElasticity: 120,
+      gravity: 0.35,
+    } as unknown as cytoscape.LayoutOptions;
+  }
+
   return {
     name: "dagre",
-    rankDir: "TB",
+    rankDir: mode === "hierarchy-horizontal" ? "LR" : "TB",
     fit: true,
     animate: true,
-    animationDuration: 280,
-    nodeSep: variant === "expanded" ? 62 : 46,
-    rankSep: variant === "expanded" ? 104 : 82,
-    edgeSep: 24,
+    animationDuration: 260,
+    nodeSep: 48,
+    rankSep: 94,
+    edgeSep: 20,
     padding: 20,
   } as unknown as cytoscape.LayoutOptions;
 }
 
 /**
- * Renders the query graph via Cytoscape + Dagre for robust auto-layout on all widths.
+ * Cytoscape graph preview with optional explorer controls.
  */
-export function GraphPreview({ model, variant = "default" }: GraphPreviewProps): React.JSX.Element {
+export function GraphPreview({
+  model,
+  variant = "default",
+  interactive = false,
+}: GraphPreviewProps): React.JSX.Element {
   const graphHeightPx = GRAPH_HEIGHT_PX_BY_VARIANT[variant];
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const cyRef = useRef<Core | null>(null);
+  const [layoutMode, setLayoutMode] = useState<GraphLayoutMode>("hierarchy-vertical");
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const [tooltip, setTooltip] = useState<{ x: number; y: number; text: string } | null>(null);
   const elements = useMemo(() => toElements(model), [model]);
+
+  useEffect(() => {
+    const handler = () => {
+      setIsFullscreen(Boolean(document.fullscreenElement));
+    };
+    document.addEventListener("fullscreenchange", handler);
+    return () => document.removeEventListener("fullscreenchange", handler);
+  }, []);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -87,7 +122,6 @@ export function GraphPreview({ model, variant = "default" }: GraphPreviewProps):
     }
 
     ensureDagreRegistered();
-
     const cy = cytoscape({
       container,
       elements,
@@ -145,7 +179,7 @@ export function GraphPreview({ model, variant = "default" }: GraphPreviewProps):
           },
         },
       ],
-      layout: buildLayout(variant),
+      layout: buildLayout(layoutMode),
       userPanningEnabled: true,
       userZoomingEnabled: true,
       boxSelectionEnabled: false,
@@ -153,7 +187,7 @@ export function GraphPreview({ model, variant = "default" }: GraphPreviewProps):
       wheelSensitivity: 0.18,
     });
 
-    const updateTooltip = (event: cytoscape.EventObject, text: string): void => {
+    cy.on("mouseover", "node", (event) => {
       const position = event.renderedPosition ?? event.position;
       if (!position) {
         return;
@@ -161,18 +195,20 @@ export function GraphPreview({ model, variant = "default" }: GraphPreviewProps):
       setTooltip({
         x: position.x + 14,
         y: position.y - 12,
-        text,
+        text: getNodeTooltipText(String(event.target.data("kind") ?? "")),
       });
-    };
-
-    cy.on("mouseover", "node", (event) => {
-      const kind = String(event.target.data("kind") ?? "");
-      updateTooltip(event, getNodeTooltipText(kind));
     });
 
     cy.on("mouseover", "edge", (event) => {
-      const label = String(event.target.data("label") ?? "");
-      updateTooltip(event, getEdgeTooltipText(label));
+      const position = event.renderedPosition ?? event.position;
+      if (!position) {
+        return;
+      }
+      setTooltip({
+        x: position.x + 14,
+        y: position.y - 12,
+        text: getEdgeTooltipText(String(event.target.data("label") ?? "")),
+      });
     });
 
     cy.on("mousemove", "node,edge", (event) => {
@@ -180,24 +216,11 @@ export function GraphPreview({ model, variant = "default" }: GraphPreviewProps):
       if (!position) {
         return;
       }
-      setTooltip((current) =>
-        current
-          ? {
-              ...current,
-              x: position.x + 14,
-              y: position.y - 12,
-            }
-          : current,
-      );
+      setTooltip((current) => (current ? { ...current, x: position.x + 14, y: position.y - 12 } : null));
     });
 
-    cy.on("mouseout", "node,edge", () => {
-      setTooltip(null);
-    });
-
-    cy.on("pan zoom", () => {
-      setTooltip(null);
-    });
+    cy.on("mouseout", "node,edge", () => setTooltip(null));
+    cy.on("pan zoom", () => setTooltip(null));
 
     const resizeObserver = new ResizeObserver(() => {
       cy.resize();
@@ -213,10 +236,28 @@ export function GraphPreview({ model, variant = "default" }: GraphPreviewProps):
       cyRef.current = null;
       setTooltip(null);
     };
-  }, [elements, variant]);
+  }, [elements, layoutMode]);
+
+  const handleFit = () => {
+    cyRef.current?.fit(undefined, 20);
+  };
+
+  const handleToggleFullscreen = async () => {
+    const element = wrapperRef.current;
+    if (!element) {
+      return;
+    }
+
+    if (document.fullscreenElement) {
+      await document.exitFullscreen();
+      return;
+    }
+
+    await element.requestFullscreen();
+  };
 
   return (
-    <section className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+    <section ref={wrapperRef} className="space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
       <div className="flex items-center justify-between gap-3">
         <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Graph-Ansicht</h3>
         <span className="text-xs font-semibold text-slate-500">
@@ -225,6 +266,34 @@ export function GraphPreview({ model, variant = "default" }: GraphPreviewProps):
       </div>
 
       <p className="text-sm text-slate-600">{model.caption}</p>
+
+      {interactive ? (
+        <div className="grid gap-2 rounded-lg border border-slate-200 bg-slate-50 p-2 sm:grid-cols-[1fr_auto_auto]">
+          <Select value={layoutMode} onValueChange={(value) => setLayoutMode(value as GraphLayoutMode)}>
+            <SelectTrigger className="h-9 bg-white text-sm">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="force">Force</SelectItem>
+              <SelectItem value="hierarchy-vertical">Hierarchy Vertical</SelectItem>
+              <SelectItem value="hierarchy-horizontal">Hierarchy Horizontal</SelectItem>
+            </SelectContent>
+          </Select>
+          <Button type="button" variant="secondary" size="default" className="h-9 px-3" onClick={handleFit}>
+            Fit to Screen
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            size="default"
+            className="h-9 px-3"
+            onClick={handleToggleFullscreen}
+          >
+            {isFullscreen ? "Exit Fullscreen" : "Fullscreen"}
+          </Button>
+        </div>
+      ) : null}
+
       <div
         className="relative overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 via-sky-50/40 to-indigo-50/40"
         style={{ minHeight: `${graphHeightPx}px` }}
@@ -239,8 +308,11 @@ export function GraphPreview({ model, variant = "default" }: GraphPreviewProps):
           </div>
         ) : null}
       </div>
+
       <p className="text-xs text-slate-500">
-        Drag zum Verschieben, Scroll zum Zoomen. Knoten sind automatisch ohne Überlappung angeordnet.
+        {interactive
+          ? "Drag zum Traversieren, Scroll zum Zoomen, Layout frei wechselbar."
+          : "Drag zum Traversieren und Scroll zum Zoomen. Für Layoutwechsel den Graph Explorer öffnen."}
       </p>
     </section>
   );
