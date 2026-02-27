@@ -3,7 +3,6 @@ import type {
   QueryReference,
   QuerySuccessResponse,
 } from "@/features/query/contracts";
-import { buildStructuredAnswer } from "@/features/query/answer";
 
 export type QueryViewModel = {
   query: string;
@@ -24,35 +23,8 @@ export type DerivationDetail = {
 };
 
 export type QueryReferenceView = QueryReference & {
-  tools: string[];
+  tools: QuerySuccessResponse["references"][number]["toolLinks"];
 };
-
-const TOOL_HINTS_BY_KEYWORD: Array<{ keywords: string[]; tools: string[] }> = [
-  {
-    keywords: ["system thinking tools"],
-    tools: [
-      "Tool: Causal Loop Diagram",
-      "Tool: Behavior Over Time Graph",
-      "Tool: Iceberg Model",
-    ],
-  },
-  {
-    keywords: ["network analysis"],
-    tools: [
-      "Tool: Network Visualization",
-      "Tool: Centrality Mapping",
-      "Tool: Dependency Graph",
-    ],
-  },
-  {
-    keywords: ["stocks and flows", "stock and flow"],
-    tools: [
-      "Tool: Stock and Flow Diagram",
-      "Tool: Inflow Outflow Balance",
-      "Tool: Accumulation Curve",
-    ],
-  },
-];
 
 /**
  * Builds the UI-facing query view model from API response and submitted query.
@@ -64,23 +36,17 @@ export function buildQueryViewModel(
   const cleanedQuery = submittedQuery.trim();
   const effectiveQuery = cleanedQuery.length > 0 ? cleanedQuery : "Unbenannte Anfrage";
 
-  const structuredAnswer = buildStructuredAnswer({
-    query: effectiveQuery,
-    references: response.references,
-    contextElements: response.context.elements ?? [],
-  });
-
   return {
     query: effectiveQuery,
-    answer: structuredAnswer.answer,
-    references: structuredAnswer.references.map((reference) => ({
+    answer: response.answer,
+    references: response.references.map((reference) => ({
       ...reference,
-      tools: buildToolsForReference(reference),
+      tools: reference.toolLinks,
     })),
-    contextElements: structuredAnswer.contextElements,
-    contextTokens: structuredAnswer.contextTokens,
-    derivationDetails: buildDerivationDetails(structuredAnswer.contextElements),
-    nextSteps: buildNextSteps(structuredAnswer.references),
+    contextElements: response.context.elements ?? [],
+    contextTokens: response.meta.contextTokens,
+    derivationDetails: buildDerivationDetails(response.context.elements ?? []),
+    nextSteps: response.answer.nextSteps,
   };
 }
 
@@ -93,37 +59,6 @@ function buildDerivationDetails(elements: QueryContextElement[]): DerivationDeta
     nodeType: element.nodeType,
     label: `${index + 1}) ${element.title}`,
     summary: element.summary,
-    sourceFile: element.source.sourceFile,
+    sourceFile: element.source.publicReference.url ?? element.source.sourceFile,
   }));
-}
-
-function buildToolsForReference(reference: QueryReference): string[] {
-  const normalizedTitle = reference.title.toLowerCase();
-
-  for (const mapping of TOOL_HINTS_BY_KEYWORD) {
-    if (mapping.keywords.some((keyword) => normalizedTitle.includes(keyword))) {
-      return mapping.tools;
-    }
-  }
-
-  if (reference.nodeType === "Tool") {
-    return [`Tool: ${reference.title}`];
-  }
-
-  return ["Tool: Causal Mapping Canvas"];
-}
-
-function buildNextSteps(references: QueryReference[]): string[] {
-  if (references.length === 0) {
-    return [
-      "Frag konkreter, zum Beispiel mit Team, Zeitraum oder Problemfall.",
-      "Stell danach eine zweite Frage: Was ist die wahrscheinlichste Ursache?",
-    ];
-  }
-
-  return [
-    `Starte mit ${references[0].title} und prüfe den wichtigsten Ursache-Wirkung-Zusammenhang.`,
-    "Nimm die zwei wichtigsten Punkte ins nächste Teamgespräch mit.",
-    "Definiere einen kleinen nächsten Schritt und beobachte die Wirkung im Alltag.",
-  ];
 }

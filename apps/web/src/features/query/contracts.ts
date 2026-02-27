@@ -12,12 +12,20 @@ export type QueryRequest = {
   clientRequestId?: string;
 };
 
+export type QueryReferenceLink = {
+  label: string;
+  url: string;
+};
+
 export type QueryReference = {
   nodeId: string;
   nodeType: "Concept" | "Tool" | "Author" | "Book" | "Problem";
   title: string;
   score: number;
   hop: number;
+  citation: string;
+  explanationUrl?: string;
+  toolLinks: QueryReferenceLink[];
 };
 
 type ContextElementSourceKind = "candidate" | "extension";
@@ -50,6 +58,7 @@ export type QuerySuccessResponse = {
   answer: {
     main: string;
     coreRationale: string;
+    nextSteps: string[];
   };
   references: QueryReference[];
   context: QueryResponseContext;

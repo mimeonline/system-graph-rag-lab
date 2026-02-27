@@ -116,11 +116,13 @@ export function buildHomeGraphModel(
   const referenceLayout = REFERENCE_LAYOUT_BY_COUNT[limitedReferences.length] ?? REFERENCE_LAYOUT_BY_COUNT[3];
   const referenceNodes: HomeGraphNode[] = limitedReferences.map((reference, index) => {
     const fallbackPosition = referenceLayout[Math.min(index, referenceLayout.length - 1)];
+    const referenceTypeLabel = toReferenceTypeLabel(reference.nodeType);
+    const typedLabel = `${referenceTypeLabel}: ${reference.title}`;
 
     return {
       id: reference.nodeId,
-      label: reference.title,
-      compactLabel: toCompactLabel(reference.title),
+      label: typedLabel,
+      compactLabel: toCompactLabel(typedLabel),
       kind: "reference",
       x: fallbackPosition.x,
       y: fallbackPosition.y,
@@ -189,4 +191,19 @@ function toCompactLabel(label: string): string {
   }
 
   return `${compact.slice(0, 17)}...`;
+}
+
+function toReferenceTypeLabel(nodeType: string): string {
+  switch (nodeType) {
+    case "Book":
+      return "Buch";
+    case "Tool":
+      return "Tool";
+    case "Problem":
+      return "Problem";
+    case "Author":
+      return "Autor";
+    default:
+      return "Konzept";
+  }
 }

@@ -105,37 +105,39 @@ function stubOpenAiFetch(options: { embeddings?: FetchResponse; chat?: FetchResp
   vi.stubGlobal("fetch", vi.fn(async (input) => {
     const url = typeof input === "string" ? input : input.url;
     if (url.includes("/embeddings")) {
-      if (!options.embeddings) {
+      const embeddings = options.embeddings;
+      if (!embeddings) {
         throw new Error("Unexpected embeddings call.");
       }
 
-      const body = options.embeddings.json ?? {};
+      const body = embeddings.json ?? {};
       const textBody =
-        options.embeddings.text ??
+        embeddings.text ??
         (typeof body === "string" ? body : JSON.stringify(body, null, 0));
       return {
-        ok: options.embeddings.ok ?? true,
-        status: options.embeddings.status ?? 200,
-        statusText: options.embeddings.statusText ?? "OK",
-        json: async () => options.embeddings.json,
+        ok: embeddings.ok ?? true,
+        status: embeddings.status ?? 200,
+        statusText: embeddings.statusText ?? "OK",
+        json: async () => embeddings.json,
         text: async () => textBody,
       };
     }
 
     if (url.includes("/chat/completions")) {
-      if (!options.chat) {
+      const chat = options.chat;
+      if (!chat) {
         throw new Error("Unexpected chat call.");
       }
 
-      const body = options.chat.json ?? {};
+      const body = chat.json ?? {};
       const textBody =
-        options.chat.text ??
+        chat.text ??
         (typeof body === "string" ? body : JSON.stringify(body, null, 0));
       return {
-        ok: options.chat.ok ?? true,
-        status: options.chat.status ?? 200,
-        statusText: options.chat.statusText ?? "OK",
-        json: async () => options.chat.json,
+        ok: chat.ok ?? true,
+        status: chat.status ?? 200,
+        statusText: chat.statusText ?? "OK",
+        json: async () => chat.json,
         text: async () => textBody,
       };
     }
@@ -208,8 +210,8 @@ describe("POST /api/query", () => {
       state: string;
       references: unknown[];
       context: { elements: { source: { kind: string } }[] };
-      meta: { topK: number; hopDepth: number; retrievedNodeCount: number };
-      answer: { main: string; coreRationale: string };
+      meta: { topK: number; hopDepth: number; retrievedNodeCount: number; contextTokens: number };
+      answer: { main: string; coreRationale: string; nextSteps: string[] };
     };
 
     expect(response.status).toBe(200);

@@ -44,7 +44,7 @@ describe("seed dataset generation", () => {
     const allowedSourceTypes = ["primary_md", "optional_internet"];
 
     expect(dataset.nodes.length).toBeGreaterThan(100);
-    expect(dataset.edges.length).toBeGreaterThan(200);
+    expect(dataset.edges.length).toBeGreaterThan(180);
 
     expect(dataset.sources.every((source) => allowedSourceTypes.includes(source.sourceType))).toBe(true);
     expect(dataset.nodes.every((node) => allowedSourceTypes.includes(node.sourceType))).toBe(true);

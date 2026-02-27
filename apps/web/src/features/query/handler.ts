@@ -89,6 +89,7 @@ function buildEmptySuccessResponse(
       main: "Bootstrap-Skelett aktiv. Retrieval und LLM-Pipeline folgen in den Storys.",
       coreRationale:
         "Das API-Skelett erfüllt bereits Request-Validierung und Contract-konformes Response-Mapping.",
+      nextSteps: [],
     },
     references: [],
     meta: {
@@ -115,6 +116,7 @@ const OPENAI_MAX_COMPLETION_TOKENS = 1200;
 type OpenAiAnswer = {
   main: string;
   coreRationale: string;
+  nextSteps: string[];
 };
 
 type OpenAiErrorDetails = {
@@ -164,7 +166,8 @@ function formatReferenceList(references: QueryReference[]): string {
 
   return references
     .map((reference, index) => {
-      return `${index + 1}. ${reference.title} (${reference.nodeType})`;
+      const explanation = reference.explanationUrl ? `, URL: ${reference.explanationUrl}` : "";
+      return `${index + 1}. ${reference.title} (${reference.nodeType}) | Quelle: ${reference.citation}${explanation}`;
     })
     .join("\n");
 }
@@ -194,13 +197,16 @@ function buildOpenAiMessages(
   const contextSummaries = formatContextSummaries(contextElements);
 
   const systemContent =
-    "Du bist ein fokussierter System-Thinking-Assistent, der kurze, eindeutige Antworten auf Basis des bereitgestellten Kontextes liefert.";
+    "Du bist ein System-Thinking-Assistent. Antworte klar in Alltagssprache, aber nur auf Basis des bereitgestellten Kontexts.";
   const userContent = [
     `Frage: ${query}`,
     `Referenzen:\n${referenceList}`,
     `Kontextzusammenfassungen:\n${contextSummaries}`,
     "Nutze **nur** die oben genannten Referenzen und Kontextinformationen und gib keine zusätzlichen externen Fakten an.",
-    "Antworte ausschließlich mit validem JSON mit den Feldern \"main\" und \"coreRationale\"; beide Werte sind logische, zusammenhängende Texte, die auf den Referenzen basieren.",
+    "Antworte ausschließlich mit validem JSON mit den Feldern \"main\", \"coreRationale\" und \"nextSteps\".",
+    "\"main\": 120-220 Wörter, leicht verständlich, mit 3 Teilen: Lage, Erklärung der Zusammenhänge, konkrete Konsequenz im Alltag.",
+    "\"coreRationale\": erkläre knapp die Nachvollziehbarkeit mit Verweisen [1], [2], [3] auf die obigen Referenzen.",
+    "\"nextSteps\": Array mit 2-4 konkreten, umsetzbaren nächsten Schritten.",
   ].join("\n\n");
 
   return [
@@ -262,8 +268,9 @@ function extractOpenAiErrorDetails(text: string): OpenAiErrorDetails | null {
     }
 
     const details: OpenAiErrorDetails = {};
-    if (typeof (candidate as { message?: unknown }).message === "string") {
-      details.message = (candidate as { message?: string }).message.trim();
+    const candidateMessage = (candidate as { message?: unknown }).message;
+    if (typeof candidateMessage === "string") {
+      details.message = candidateMessage.trim();
     }
     if (typeof (candidate as { code?: unknown }).code === "string") {
       details.code = (candidate as { code?: string }).code;
@@ -333,6 +340,7 @@ function parseOpenAiJson(content: string): OpenAiAnswer {
 
   const main = candidate.main;
   const coreRationale = candidate.coreRationale;
+  const nextSteps = candidate.nextSteps;
   if (typeof main !== "string" || typeof coreRationale !== "string") {
     throw new OpenAiUpstreamError(
       "OpenAI-Antwort enthält keine Strings für 'main' und 'coreRationale'.",
@@ -341,9 +349,17 @@ function parseOpenAiJson(content: string): OpenAiAnswer {
     );
   }
 
+  const normalizedNextSteps = Array.isArray(nextSteps)
+    ? nextSteps
+        .filter((step): step is string => typeof step === "string")
+        .map((step) => step.trim())
+        .filter((step) => step.length > 0)
+    : [];
+
   return {
     main: main.trim(),
     coreRationale: coreRationale.trim(),
+    nextSteps: normalizedNextSteps.slice(0, 4),
   };
 }
 
@@ -616,6 +632,12 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
     env.rateLimitMaxRequests,
     env.rateLimitWindowSeconds,
   );
+  const finalizedAnswer = buildStructuredAnswer({
+    query: parsed.data.query,
+    references: composedAnswer.references,
+    contextElements: composedAnswer.contextElements,
+    baseAnswer: openAiAnswer,
+  });
 
   return {
     status: 200,
@@ -623,7 +645,7 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
     body: {
       ...baseSuccess,
       state: composedAnswer.references.length === 0 ? "empty" : "answer",
-      answer: openAiAnswer,
+      answer: finalizedAnswer.answer,
       references: composedAnswer.references,
       context: {
         elements: composedAnswer.contextElements,

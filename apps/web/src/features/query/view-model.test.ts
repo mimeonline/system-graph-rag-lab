@@ -8,7 +8,7 @@ import type {
 import { buildQueryViewModel } from "@/features/query/view-model";
 
 const TEST_PUBLIC_REFERENCE = {
-  kind: "book",
+  kind: "book" as const,
   citation: "Test Citation",
 };
 
@@ -19,6 +19,14 @@ function createReference(index: number): QueryReference {
     title: `Konzept ${index + 1}`,
     score: 1 - index * 0.01,
     hop: 0,
+    citation: "Test Citation",
+    explanationUrl: `https://example.org/concept-${index + 1}`,
+    toolLinks: [
+      {
+        label: `Tool Link ${index + 1}`,
+        url: `https://example.org/tool-${index + 1}`,
+      },
+    ],
   };
 }
 
@@ -55,6 +63,7 @@ function createSuccessResponse({
     answer: {
       main: "Basisantwort",
       coreRationale: "Basisrationale",
+      nextSteps: ["Schritt 1", "Schritt 2"],
     },
     references: finalReferences,
     context: {
@@ -82,11 +91,13 @@ describe("buildQueryViewModel", () => {
     const viewModel = buildQueryViewModel(response, "  Testfrage  ");
 
     expect(viewModel.query).toBe("Testfrage");
-    expect(viewModel.answer.main).toContain("Testfrage");
+    expect(viewModel.answer.main).toContain("Basisantwort");
+    expect(viewModel.answer.coreRationale).toContain("Basisrationale");
+    expect(viewModel.nextSteps).toEqual(["Schritt 1", "Schritt 2"]);
     expect(viewModel.references).toHaveLength(1);
   });
 
-  it("limits Referenzen auf drei Einträge und bildet rationale Abschnitte", () => {
+  it("maps references and derivation details from API response", () => {
     const references = Array.from({ length: 5 }, (_, index) => createReference(index));
     const contextElements = references.map(createContextElement);
     const response = createSuccessResponse({
@@ -96,17 +107,16 @@ describe("buildQueryViewModel", () => {
 
     const viewModel = buildQueryViewModel(response, "Kernfrage");
 
-    expect(viewModel.references).toHaveLength(3);
-    expect(viewModel.contextElements).toHaveLength(3);
-    expect(viewModel.answer.coreRationale).toContain("1)");
-    expect(viewModel.derivationDetails).toHaveLength(3);
+    expect(viewModel.references).toHaveLength(5);
+    expect(viewModel.contextElements).toHaveLength(5);
+    expect(viewModel.references[0].tools[0]?.label).toContain("Tool Link 1");
+    expect(viewModel.derivationDetails).toHaveLength(5);
     expect(viewModel.derivationDetails[0].label).toBe("1) Konzept 1");
     expect(viewModel.derivationDetails[0].summary).toBe(contextElements[0].summary);
-    expect(viewModel.derivationDetails[0].sourceFile).toBe(contextElements[0].source.sourceFile);
-    expect(viewModel.nextSteps.length).toBeGreaterThan(0);
+    expect(viewModel.derivationDetails[0].sourceFile).toBe("Test.md");
   });
 
-  it("setzt den Fallbacktext, wenn keine Referenzen vorliegen", () => {
+  it("maps empty states without injecting synthetic next steps", () => {
     const response = createSuccessResponse({
       references: [],
       contextElements: [],
@@ -115,13 +125,13 @@ describe("buildQueryViewModel", () => {
     const viewModel = buildQueryViewModel(response, "Fallback-Frage");
 
     expect(viewModel.references).toHaveLength(0);
-    expect(viewModel.answer.main).toContain("keine verlässliche Antwort");
-    expect(viewModel.answer.coreRationale).toContain("Frage etwas konkreter");
+    expect(viewModel.answer.main).toContain("Basisantwort");
+    expect(viewModel.answer.coreRationale).toContain("Basisrationale");
     expect(viewModel.derivationDetails).toHaveLength(0);
-    expect(viewModel.nextSteps[0]).toContain("Frag konkreter");
+    expect(viewModel.nextSteps).toEqual(["Schritt 1", "Schritt 2"]);
   });
 
-  it("zeigt konkrete Toolnamen bei groben Referenzlabels", () => {
+  it("keeps API provided links and citations", () => {
     const references: QueryReference[] = [
       {
         nodeId: "concept:system-thinking-tools",
@@ -129,6 +139,9 @@ describe("buildQueryViewModel", () => {
         title: "System Thinking Tools",
         score: 1,
         hop: 0,
+        citation: "System Thinking Tools Citation",
+        explanationUrl: "https://example.org/system-thinking-tools",
+        toolLinks: [{ label: "Tool: Causal Loop Diagram", url: "https://example.org/cld" }],
       },
       {
         nodeId: "concept:network-analysis",
@@ -136,6 +149,9 @@ describe("buildQueryViewModel", () => {
         title: "Network Analysis",
         score: 0.95,
         hop: 0,
+        citation: "Network Analysis Citation",
+        explanationUrl: "https://example.org/network-analysis",
+        toolLinks: [{ label: "Tool: Network Visualization", url: "https://example.org/network-vis" }],
       },
       {
         nodeId: "concept:stocks-and-flows",
@@ -143,6 +159,9 @@ describe("buildQueryViewModel", () => {
         title: "Stocks and Flows",
         score: 0.9,
         hop: 0,
+        citation: "Stocks and Flows Citation",
+        explanationUrl: "https://example.org/stocks-and-flows",
+        toolLinks: [{ label: "Tool: Stock and Flow Diagram", url: "https://example.org/sfd" }],
       },
     ];
     const response = createSuccessResponse({
@@ -152,8 +171,9 @@ describe("buildQueryViewModel", () => {
 
     const viewModel = buildQueryViewModel(response, "Welche Tools helfen beim Modellieren?");
 
-    expect(viewModel.references[0].tools).toContain("Tool: Causal Loop Diagram");
-    expect(viewModel.references[1].tools).toContain("Tool: Network Visualization");
-    expect(viewModel.references[2].tools).toContain("Tool: Stock and Flow Diagram");
+    expect(viewModel.references[0].tools[0]?.label).toContain("Causal Loop Diagram");
+    expect(viewModel.references[0].tools[0]?.url).toContain("/cld");
+    expect(viewModel.references[0].explanationUrl).toBeTruthy();
+    expect(viewModel.references[0].citation).toContain("System Thinking Tools Citation");
   });
 });

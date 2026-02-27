@@ -10,7 +10,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
-    "seed:local:reset-reseed": "tsx scripts/local-seed-reset-reseed.ts"
+    "seed:local:reset-reseed": "tsx scripts/local-seed-reset-reseed.ts",
+    "seed:embeddings:refresh": "tsx scripts/refresh-seed-embeddings.ts"
   },
   "dependencies": {
     "class-variance-authority": "^0.7.1",

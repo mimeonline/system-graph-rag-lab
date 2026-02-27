@@ -82,9 +82,7 @@ export function QueryPanel(): React.JSX.Element {
 
   const references = viewModel?.references ?? [];
   const derivationDetails = viewModel?.derivationDetails ?? [];
-  const nextSteps = viewModel?.nextSteps ?? [
-    "Frage absenden, damit konkrete Handlungsschritte generiert werden.",
-  ];
+  const nextSteps = viewModel?.nextSteps ?? [];
   const hasReferences = references.length > 0;
   const hasDerivationDetails = derivationDetails.length > 0;
   const mainAnswer =
@@ -120,7 +118,13 @@ export function QueryPanel(): React.JSX.Element {
           status={status}
         />
 
-        <ActionCard steps={nextSteps} />
+        <ActionCard
+          steps={
+            nextSteps.length > 0
+              ? nextSteps
+              : ["Noch keine Handlungsschritte verfügbar. Sende eine Frage, um konkrete Schritte zu erhalten."]
+          }
+        />
 
         <RationaleCard coreRationale={coreRationale} />
       </section>
@@ -154,13 +158,30 @@ export function QueryPanel(): React.JSX.Element {
                       {reference.nodeType}
                     </span>
                   </div>
+                  {reference.explanationUrl && (
+                    <p className="text-xs text-slate-600">
+                      <a
+                        className="font-medium text-sky-700 underline decoration-sky-300 underline-offset-2"
+                        href={reference.explanationUrl}
+                        target="_blank"
+                        rel="noreferrer noopener"
+                      >
+                        Erklärung öffnen
+                      </a>
+                    </p>
+                  )}
+                  <p className="text-xs text-slate-600">{reference.citation}</p>
                   <ul className="grid gap-1 sm:grid-cols-2">
                     {reference.tools.map((tool) => (
-                      <li
-                        key={tool}
-                        className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs text-slate-700"
-                      >
-                        {tool}
+                      <li key={tool.label} className="rounded-md border border-slate-200 bg-white px-2 py-1 text-xs">
+                        <a
+                          className="text-slate-700 underline decoration-slate-300 underline-offset-2"
+                          href={tool.url}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                        >
+                          {tool.label}
+                        </a>
                       </li>
                     ))}
                   </ul>

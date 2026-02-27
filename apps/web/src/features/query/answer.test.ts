@@ -13,6 +13,9 @@ function createReference(index: number): QueryReference {
     title: `Konzept ${index + 1}`,
     score: 1 - index * 0.01,
     hop: 0,
+    citation: "Test Citation",
+    explanationUrl: `https://example.org/concept-${index + 1}`,
+    toolLinks: [],
   };
 }
 
@@ -28,7 +31,7 @@ function createContextElement(reference: QueryReference) {
       sourceFile: "Test.md",
       sourceType: TEST_SOURCE_TYPE,
       publicReference: {
-        kind: "book",
+        kind: "book" as const,
         citation: "Test Citation",
         isbn: "0000000000",
       },
@@ -58,6 +61,7 @@ describe("buildStructuredAnswer", () => {
     expect(result.contextElements).toHaveLength(0);
     expect(result.answer.main).toContain("keine verlässliche Antwort");
     expect(result.answer.coreRationale).toContain("Frage etwas konkreter");
+    expect(result.answer.nextSteps).toEqual([]);
     expect(result.contextTokens).toBe(0);
   });
 
@@ -78,6 +82,7 @@ describe("buildStructuredAnswer", () => {
     expect(result.answer.main).toContain("Kurzantwort zu \"Testfrage\"");
     expect(result.answer.coreRationale).toContain("1)");
     expect(result.answer.coreRationale).toContain(finalContextElements[0].summary);
+    expect(result.answer.nextSteps).toEqual([]);
     expect(result.contextTokens).toBe(computeExpectedContextTokens(finalContextElements));
   });
 
@@ -90,6 +95,9 @@ describe("buildStructuredAnswer", () => {
         title: "Feedback Loops",
         score: 1,
         hop: 0,
+        citation: "Test Citation",
+        explanationUrl: "https://example.org/feedback",
+        toolLinks: [],
       },
       {
         nodeId: "problem:local_optimization",
@@ -97,6 +105,9 @@ describe("buildStructuredAnswer", () => {
         title: "Lokale Optimierung",
         score: 0.95,
         hop: 0,
+        citation: "Test Citation",
+        explanationUrl: "https://example.org/local-optimization",
+        toolLinks: [],
       },
       {
         nodeId: "concept:leverage_points",
@@ -104,6 +115,9 @@ describe("buildStructuredAnswer", () => {
         title: "Leverage Points",
         score: 0.9,
         hop: 0,
+        citation: "Test Citation",
+        explanationUrl: "https://example.org/leverage-points",
+        toolLinks: [],
       },
     ];
     const contextElements = references.map((reference) => createContextElement(reference));
@@ -128,6 +142,9 @@ describe("buildStructuredAnswer", () => {
         title: "Systemgrenze",
         score: 0.8,
         hop: 0,
+        citation: "Test Citation",
+        explanationUrl: "https://example.org/system-boundary",
+        toolLinks: [],
       },
       {
         nodeId: "concept:system_behavior",
@@ -135,6 +152,9 @@ describe("buildStructuredAnswer", () => {
         title: "Systemverhalten",
         score: 0.75,
         hop: 0,
+        citation: "Test Citation",
+        explanationUrl: "https://example.org/system-behavior",
+        toolLinks: [],
       },
       {
         nodeId: "concept:feedback_loops",
@@ -142,6 +162,9 @@ describe("buildStructuredAnswer", () => {
         title: "Feedback Loops",
         score: 0.7,
         hop: 0,
+        citation: "Test Citation",
+        explanationUrl: "https://example.org/feedback",
+        toolLinks: [],
       },
     ];
     const contextElements = references.map((reference) => createContextElement(reference));

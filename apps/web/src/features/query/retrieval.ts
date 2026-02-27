@@ -3,6 +3,7 @@ import { createSeedDataset } from "@/features/seed-data/seed-data";
 import type {
   CuratedSourceEntry,
   PublicReference,
+  SeedEdge,
   SeedNode,
   SeedSourceType,
 } from "@/features/seed-data/seed-data";
@@ -12,12 +13,14 @@ import {
   HOP_DEPTH,
   TOP_K,
   type QueryContextElement,
+  type QueryReferenceLink,
   type QueryReference,
 } from "@/features/query/contracts";
 
 const OPENAI_EMBEDDINGS_ENDPOINT = "https://api.openai.com/v1/embeddings";
 const GRAPH_VECTOR_SEARCH_LIMIT = TOP_K * 2;
 const GRAPH_NEIGHBOR_LIMIT_PER_CANDIDATE = 3;
+const TOOL_LINK_LIMIT_PER_REFERENCE = 3;
 const CONTEXT_SUMMARY_LIMIT = 280;
 const SOURCE_KEY_DELIMITER = "|";
 const DEFAULT_NEO4J_VECTOR_INDEX_NAME = "node_embedding_index";
@@ -84,6 +87,7 @@ class GraphIndexUnavailableError extends Error {
 const seedDataset = createSeedDataset();
 const SOURCE_LOOKUP = buildSourceLookup(seedDataset.sources);
 const SEED_NODE_LOOKUP = new Map(seedDataset.nodes.map((node) => [node.id, node]));
+const NEIGHBOR_IDS_BY_NODE_ID = buildNeighborMap(seedDataset.edges);
 const SEARCH_INDEX = seedDataset.nodes.map((node) => buildCandidateFromSeedNode(node, 0));
 
 /**
@@ -152,6 +156,28 @@ function buildSourceLookup(sources: CuratedSourceEntry[]): Map<string, CuratedSo
   }
 
   return lookup;
+}
+
+/**
+ * Builds undirected neighbor lists for node ids from seed edges.
+ */
+function buildNeighborMap(edges: SeedEdge[]): Map<string, string[]> {
+  const map = new Map<string, Set<string>>();
+  for (const edge of edges) {
+    if (!map.has(edge.fromNodeId)) {
+      map.set(edge.fromNodeId, new Set<string>());
+    }
+    if (!map.has(edge.toNodeId)) {
+      map.set(edge.toNodeId, new Set<string>());
+    }
+
+    map.get(edge.fromNodeId)?.add(edge.toNodeId);
+    map.get(edge.toNodeId)?.add(edge.fromNodeId);
+  }
+
+  return new Map(
+    [...map.entries()].map(([nodeId, neighbors]) => [nodeId, [...neighbors].sort()]),
+  );
 }
 
 /**
@@ -245,6 +271,73 @@ function buildContextElement(
 }
 
 /**
+ * Builds explanation and tool links for a reference from graph neighbors.
+ */
+function buildReferenceLinks(candidate: QueryCandidate): {
+  citation: string;
+  explanationUrl?: string;
+  toolLinks: QueryReferenceLink[];
+} {
+  const citation = candidate.publicReference.citation.trim();
+  const explanationUrl = candidate.publicReference.url;
+  const neighborIds = NEIGHBOR_IDS_BY_NODE_ID.get(candidate.nodeId) ?? [];
+  const toolLinks: QueryReferenceLink[] = [];
+
+  for (const neighborId of neighborIds) {
+    const neighbor = SEED_NODE_LOOKUP.get(neighborId);
+    if (!neighbor || neighbor.nodeType !== "Tool") {
+      continue;
+    }
+
+    const toolUrl = neighbor.publicReference.url;
+    if (!toolUrl) {
+      continue;
+    }
+
+    const toolTitle = neighbor.title ?? neighbor.name ?? neighbor.id;
+    toolLinks.push({
+      label: toolTitle,
+      url: toolUrl,
+    });
+
+    if (toolLinks.length >= TOOL_LINK_LIMIT_PER_REFERENCE) {
+      break;
+    }
+  }
+
+  if (candidate.nodeType === "Tool" && candidate.publicReference.url) {
+    const ownLabel = candidate.title;
+    if (!toolLinks.some((link) => link.label === ownLabel && link.url === candidate.publicReference.url)) {
+      toolLinks.unshift({
+        label: ownLabel,
+        url: candidate.publicReference.url,
+      });
+    }
+  }
+
+  return {
+    citation: citation.length > 0 ? citation : "Kuratierte Quelle",
+    explanationUrl,
+    toolLinks,
+  };
+}
+
+function buildReferenceFromCandidate(candidate: QueryCandidate, score: number): QueryReference {
+  const links = buildReferenceLinks(candidate);
+
+  return {
+    nodeId: candidate.nodeId,
+    nodeType: candidate.nodeType,
+    title: candidate.title,
+    score,
+    hop: candidate.hop,
+    citation: links.citation,
+    explanationUrl: links.explanationUrl,
+    toolLinks: links.toolLinks,
+  };
+}
+
+/**
  * Lexical fallback for when graph retrieval is unavailable.
  */
 function buildLexicalContextCandidates(query: string): RetrievalResult {
@@ -277,11 +370,7 @@ function buildLexicalContextCandidates(query: string): RetrievalResult {
     }
 
     references.push({
-      nodeId: candidate.entry.nodeId,
-      nodeType: candidate.entry.nodeType,
-      title: candidate.entry.title,
-      score: candidate.score,
-      hop: candidate.entry.hop,
+      ...buildReferenceFromCandidate(candidate.entry, candidate.score),
     });
 
     contextElements.push(buildContextElement(candidate.entry, "candidate", candidate.entry.nodeId));
@@ -394,11 +483,7 @@ async function buildGraphContextCandidates(query: string, env: QueryRuntimeEnv):
         }
 
         references.push({
-          nodeId: candidate.nodeId,
-          nodeType: candidate.nodeType,
-          title: candidate.title,
-          score: normalizeNumber(record.get("score")),
-          hop: 0,
+          ...buildReferenceFromCandidate(candidate, normalizeNumber(record.get("score"))),
         });
 
         contextElements.push(buildContextElement(candidate, "candidate", candidate.nodeId));

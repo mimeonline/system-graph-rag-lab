@@ -12,6 +12,7 @@ function createResponse(): QuerySuccessResponse {
     answer: {
       main: "Antwort",
       coreRationale: "Rationale",
+      nextSteps: [],
     },
     references: [
       {
@@ -20,6 +21,9 @@ function createResponse(): QuerySuccessResponse {
         title: "Feedback Loops",
         score: 1,
         hop: 0,
+        citation: "System Dynamics Basics",
+        explanationUrl: "https://example.org/feedback-loops",
+        toolLinks: [],
       },
       {
         nodeId: "concept:delays",
@@ -27,6 +31,9 @@ function createResponse(): QuerySuccessResponse {
         title: "Delays",
         score: 0.95,
         hop: 0,
+        citation: "System Dynamics Basics",
+        explanationUrl: "https://example.org/delays",
+        toolLinks: [],
       },
     ],
     context: {
@@ -90,6 +97,6 @@ describe("buildHomeGraphModel", () => {
     expect(model.edges.some((edge) => edge.source === "query")).toBe(true);
     expect(model.caption).toContain("relevante Konzepte");
     expect(queryNode?.y).toBe(20);
-    expect(feedbackNode?.y).toBe(54);
+    expect(feedbackNode?.y).toBe(56);
   });
 });

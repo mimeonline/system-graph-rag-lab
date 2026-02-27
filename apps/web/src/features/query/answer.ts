@@ -15,6 +15,7 @@ export type BuildStructuredAnswerInput = {
   query: string;
   references: QueryReference[];
   contextElements: QueryContextElement[];
+  baseAnswer?: QuerySuccessResponse["answer"];
 };
 
 export type BuildStructuredAnswerResult = {
@@ -63,6 +64,7 @@ export function buildStructuredAnswer({
   query,
   references,
   contextElements,
+  baseAnswer,
 }: BuildStructuredAnswerInput): BuildStructuredAnswerResult {
   const candidateReferences = references.slice(0, MAX_REFERENCES_IN_RESPONSE);
   const alignedCount = Math.min(candidateReferences.length, contextElements.length);
@@ -80,6 +82,7 @@ export function buildStructuredAnswer({
       answer: {
         main: fallbackMain,
         coreRationale: fallbackRationale,
+        nextSteps: [],
       },
       references: [],
       contextElements: [],
@@ -89,7 +92,7 @@ export function buildStructuredAnswer({
 
   const quotedTitles = finalReferences.map((reference) => `«${reference.title}»`);
   const conceptList = formatConceptList(quotedTitles);
-  const main = `Kurzantwort zu "${query}": Diese Konzepte helfen dir am meisten weiter: ${conceptList}.`;
+  const fallbackMain = `Kurzantwort zu "${query}": Diese Konzepte helfen dir am meisten weiter: ${conceptList}.`;
 
   const rationaleSegments =
     finalContextElements.length > 0
@@ -104,9 +107,20 @@ export function buildStructuredAnswer({
     finalReferences.map((reference) => reference.nodeId),
   );
   const expectationFallback = buildExpectationFallbackHint(query, matchedCount, expectedReferenceIds);
-  const coreRationale = expectationFallback
-    ? `${rationaleSegments.join(" ")} ${expectationFallback}`
-    : rationaleSegments.join(" ");
+  const traceText = rationaleSegments.join(" ");
+  const llmMain = sanitizeText(baseAnswer?.main);
+  const llmRationale = sanitizeText(baseAnswer?.coreRationale);
+  const nextSteps = Array.isArray(baseAnswer?.nextSteps)
+    ? baseAnswer.nextSteps
+        .filter((step): step is string => typeof step === "string")
+        .map((step) => step.trim())
+        .filter((step) => step.length > 0)
+        .slice(0, 4)
+    : [];
+  const main = llmMain ?? fallbackMain;
+  const coreRationaleBase = llmRationale ?? "Herleitung aus den ausgewählten Kontextstellen.";
+  const expectationText = expectationFallback ? ` ${expectationFallback}` : "";
+  const coreRationale = `${coreRationaleBase}\n\nNachvollziehbare Faktenbasis: ${traceText}${expectationText}`;
 
   const contextTokens = finalContextElements.reduce(
     (sum, element) => sum + estimateTokensFromText(element.title) + estimateTokensFromText(element.summary),
@@ -117,9 +131,19 @@ export function buildStructuredAnswer({
     answer: {
       main,
       coreRationale,
+      nextSteps,
     },
     references: finalReferences,
     contextElements: finalContextElements,
     contextTokens,
   };
+}
+
+function sanitizeText(value: string | undefined): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const cleaned = value.trim();
+  return cleaned.length > 0 ? cleaned : null;
 }
