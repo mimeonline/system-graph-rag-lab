@@ -123,6 +123,21 @@ type OpenAiErrorDetails = {
   param?: string;
 };
 
+type OpenAiMessageContentPart = {
+  text?: unknown;
+  type?: unknown;
+};
+
+type OpenAiChatPayload = {
+  choices?: Array<{
+    message?: {
+      content?: unknown;
+      refusal?: unknown;
+    };
+    text?: unknown;
+  }>;
+};
+
 class OpenAiUpstreamError extends Error {
   public readonly retryable: boolean;
 
@@ -330,6 +345,64 @@ function parseOpenAiJson(content: string): OpenAiAnswer {
   };
 }
 
+function extractAssistantContent(payload: OpenAiChatPayload): {
+  content: string | null;
+  refusal: string | null;
+} {
+  const choice = payload.choices?.[0];
+  const message = choice?.message;
+
+  const refusal =
+    typeof message?.refusal === "string" && message.refusal.trim().length > 0
+      ? message.refusal.trim()
+      : null;
+
+  const messageContent = message?.content;
+  if (typeof messageContent === "string") {
+    const trimmed = messageContent.trim();
+    return {
+      content: trimmed.length > 0 ? trimmed : null,
+      refusal,
+    };
+  }
+
+  if (Array.isArray(messageContent)) {
+    const chunks = messageContent
+      .map((part) => {
+        if (!isRecord(part)) {
+          return "";
+        }
+
+        const contentPart = part as OpenAiMessageContentPart;
+        if (typeof contentPart.text === "string") {
+          return contentPart.text;
+        }
+
+        return "";
+      })
+      .map((value) => value.trim())
+      .filter((value) => value.length > 0);
+
+    return {
+      content: chunks.length > 0 ? chunks.join("\n") : null,
+      refusal,
+    };
+  }
+
+  if (typeof choice?.text === "string") {
+    const trimmed = choice.text.trim();
+    return {
+      content: trimmed.length > 0 ? trimmed : null,
+      refusal,
+    };
+  }
+
+  return {
+    content: null,
+    refusal,
+  };
+}
+
 /**
  * Calls OpenAI chat completions and maps the assistant output to OpenAiAnswer.
  */
@@ -376,16 +449,25 @@ async function fetchOpenAiAnswer(options: {
     );
   }
 
-  const payload = (await response.json()) as {
-    choices?: Array<{ message?: { content?: string } }>;
-  };
+  const payload = (await response.json()) as OpenAiChatPayload;
+  const extracted = extractAssistantContent(payload);
+  if (!extracted.content) {
+    if (extracted.refusal) {
+      throw new OpenAiUpstreamError(
+        `OpenAI hat die Antwort verweigert: ${extracted.refusal}`,
+        200,
+        false,
+      );
+    }
 
-  const assistantContent = payload.choices?.[0]?.message?.content;
-  if (!assistantContent) {
-    throw new OpenAiUpstreamError("OpenAI lieferte keine Assistant-Antwort.", 200, true);
+    throw new OpenAiUpstreamError(
+      "OpenAI lieferte keine Assistant-Antwort.",
+      200,
+      false,
+    );
   }
 
-  return parseOpenAiJson(assistantContent);
+  return parseOpenAiJson(extracted.content);
 }
 
 /**
