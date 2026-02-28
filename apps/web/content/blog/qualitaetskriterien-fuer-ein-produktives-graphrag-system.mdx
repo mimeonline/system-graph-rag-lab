@@ -1,44 +1,245 @@
 ---
 slug: qualitaetskriterien-fuer-ein-produktives-graphrag-system
 title: "Qualitätskriterien für ein produktives GraphRAG-System"
-excerpt: "Welche Kriterien ein GraphRAG-System erfüllen muss, um im Betrieb belastbar zu sein."
+excerpt: "Produktiv wird GraphRAG erst, wenn klare Qualitäts-Gates Begriffe, Beziehungen, Belegpfade, Kontextsteuerung und Runtime-Stabilität absichern."
 publishedAt: "2026-02-28"
 tags:
   - Qualität
   - Architektur
   - Betrieb
-readingTime: "12 min"
+readingTime: "11 min"
 featured: false
-linkedinHook: "Placeholder: Kernbotschaft für LinkedIn folgt."
-tldr: "Placeholder: TL;DR folgt."
+heroImage: "/images/blog/graphrag-quality-hero.png"
+diagramImages:
+  - "/images/blog/graphrag-quality-diagram.png"
+linkedinHook: "Ein GraphRAG-System ist nicht produktiv, weil es einen Graphen hat, sondern weil es unter realen Bedingungen reproduzierbare Entscheidungsqualität liefert."
+tldr: "Entscheidend sind fünf Qualitätsdimensionen: Begriffsklarheit, Beziehungsdisziplin, Belegpfade, Kontextkontrolle und Runtime-Stabilität. Ohne diese Gates bleibt GraphRAG eine Demo."
 ---
 
 ## Kernthese
 
-Placeholder: Die zentrale Aussage des Artikels in 2 bis 4 Sätzen.
+Viele GraphRAG-Experimente scheitern nicht an der Idee, sondern an fehlenden Qualitätskriterien. Begriffe wachsen unkontrolliert, Beziehungen werden unscharf, Belege bleiben lose und Runtime-Effekte werden nicht systematisch überwacht.
+
+Ein produktives System braucht explizite Kriterien, an denen sich Architektur, Datenmodell und Betrieb messen lassen.
+
+![GraphRAG Quality Hero](/images/blog/graphrag-quality-hero.png)
 
 ## Problemkontext
 
-Placeholder: Ausgangslage, Entscheidungskontext und typische Fehlannahmen.
+Typische Fehlannahmen in frühen GraphRAG-Projekten:
 
-## Strukturelle Analyse
+- "Mehr Knoten erhöhen automatisch Qualität."
+- "Ein sichtbarer Graph reicht für Nachvollziehbarkeit."
+- "Wenn Antworten plausibel klingen, funktioniert das System."
+- "Seed-Daten kann man später aufräumen."
 
-Placeholder: Modell, Begriffe, Beziehungen und relevante Abgrenzungen.
+Diese Annahmen führen zu:
+
+- inkonsistenten Begriffssystemen
+- widersprüchlichen Beziehungstypen
+- instabilen Belegpfaden
+- schwer wartbaren Retrieval-Setups
+
+Produktivität entsteht nicht durch Funktionsumfang, sondern durch Disziplin. Genau deshalb ist ein Kriterienkatalog mehr als Dokumentation. Er ist der operative Vertrag zwischen Fachlichkeit, Engineering und Betrieb.
+
+## Die fünf Qualitätsdimensionen
+
+### 1. Begriffsklarheit
+
+Ein produktives GraphRAG-System braucht ein explizites, kontrolliertes Begriffsmodell.
+
+Prüfkriterien:
+
+- Sind zentrale Konzepte eindeutig definiert?
+- Existieren klare Node-Typen mit konsistenter Semantik?
+- Werden Begriffe über Zeit stabil verwendet?
+- Gibt es explizite Abgrenzungen zwischen ähnlichen Konzepten?
+
+Fehlende Begriffsklarheit führt zu Scheinkonsistenz. Das System wirkt strukturiert, ist aber semantisch diffus. In der Praxis zeigt sich das oft erst bei Nachfragen: dieselbe Bezeichnung wird in unterschiedlichen Kontexten unterschiedlich ausgelegt.
+
+### 2. Beziehungsdisziplin
+
+Beziehungen sind kein dekoratives Element, sondern die eigentliche Entscheidungslogik.
+
+Prüfkriterien:
+
+- Ist jeder Beziehungstyp klar definiert?
+- Gibt es eine begrenzte, kontrollierte Menge an Relationstypen?
+- Sind Ursache-Wirkungs-Ketten explizit modelliert?
+- Werden Beziehungen fachlich reviewt?
+
+Wenn Beziehungstypen unscharf sind ("ist verbunden mit"), verliert der Graph seinen Mehrwert. Saubere Beziehungstypen reduzieren Interpretationsspielraum und machen Diskussionen im Team deutlich präziser.
+
+### 3. Belegpfad-Transparenz
+
+GraphRAG unterscheidet sich strukturell erst dann von RAG, wenn Ableitungspfade sichtbar sind.
+
+Prüfkriterien:
+
+- Kann jede zentrale Aussage über einen expliziten Pfad nachvollzogen werden?
+- Ist klar, welcher Beleg welchen Argumentationsschritt trägt?
+- Sind Belege versionierbar und referenzierbar?
+- Bleibt der Belegpfad bei Anschlussfragen stabil?
+
+Eine Quellenliste reicht nicht. Entscheidend ist der nachvollziehbare Ableitungsweg. Ohne diesen Weg bleibt auch eine gut belegte Antwort schwer auditierbar.
+
+### 4. Kontextkontrolle
+
+Ein produktives System muss Retrieval und Kontextumfang aktiv steuern.
+
+Prüfkriterien:
+
+- Gibt es definierte Regeln für Kontextauswahl?
+- Sind Retrieval-Hops begrenzt oder bewusst gesteuert?
+- Wird Kontextüberladung gemessen?
+- Bleiben Antworten bei semantisch ähnlichen Fragen stabil?
+
+Kontextdisziplin ist ein Engineering-Thema, kein Zufallsprodukt. Viele Instabilitäten entstehen nicht im Modell, sondern im unkontrollierten Kontextwachstum.
+
+### 5. Runtime- und Betriebsstabilität
+
+Produktive Systeme müssen unter realen Bedingungen konsistent funktionieren.
+
+Prüfkriterien:
+
+- saubere Fehlerpfade statt stiller Ausfälle
+- Statusanzeigen für Retrieval und Synthese
+- Logging von Kontextpaketen
+- Trennung zwischen Seed-Daten, Test- und Produktivumgebung
+- Schutz vor unkontrollierter Kontexteskalation
+
+Ein GraphRAG-System ohne Guardrails wird im öffentlichen Betrieb schnell fragil. Produktivität zeigt sich daher nicht in einer Demo-Antwort, sondern in reproduzierbarer Qualität über viele Runs hinweg.
+
+![Fünf Qualitätsdimensionen als Betriebskreis](/images/blog/graphrag-quality-diagram.png)
 
 ## Praxisbezug
 
-Placeholder: Konkretes Beispiel aus Architektur-, Produkt- oder Organisationspraxis.
+Angenommen, ein Unternehmen nutzt GraphRAG zur Unterstützung von Architekturentscheidungen.
+
+Ein Prototyp liefert:
+
+- sichtbare Knoten
+- gute Texte
+- plausible Argumente
+
+Ein produktives System liefert zusätzlich:
+
+- stabile Begriffssysteme
+- reviewbare Beziehungsmodelle
+- explizite Belegketten
+- reproduzierbare Kontextpakete
+- messbare Qualitätsindikatoren
+
+Der Unterschied zeigt sich nicht im ersten Demo-Tag, sondern im dritten Review-Zyklus. Genau dort trennt sich "funktioniert" von "ist belastbar".
+
+## Messbare Qualitätsindikatoren
+
+Qualität muss beobachtbar sein.
+
+Beispielhafte Metriken:
+
+- **Pfadvollständigkeit**: Anteil zentraler Aussagen mit explizitem Belegpfad
+- **Antwortstabilität**: Varianz bei semantisch ähnlichen Nachfragen
+- **Review-Aufwand**: Zeit bis zur fachlichen Freigabe
+- **Begriffsdrift**: Anzahl semantischer Inkonsistenzen pro Iteration
+- **Kontextgröße vs. Antwortklarheit**: Verhältnis von Kontextumfang zu Kernargument
+
+Diese Indikatoren machen aus GraphRAG ein steuerbares System statt ein Demonstrationsobjekt.
+
+Wichtig ist, Metriken nicht isoliert zu betrachten. Eine steigende Pfadvollständigkeit bei gleichzeitig sinkender Antwortklarheit ist kein Erfolg, sondern ein Signal für Übermodellierung.
+
+## Betriebsmuster für nachhaltige Qualität
+
+Damit Qualität nicht nur konzeptionell bleibt, braucht es klare Betriebsroutinen:
+
+1. **Schema-Gate** vor neuen Node- oder Edge-Typen
+2. **Beleg-Gate** vor Freigabe kritischer Aussagen
+3. **Regression-Gate** bei Änderungen an Retrieval- oder Rankinglogik
+4. **Runtime-Gate** für Ausfälle, Timeouts und Fallback-Verhalten
+
+Diese Gates sind kein Bürokratie-Overhead, sondern reduzieren Folgekosten. Sie verhindern, dass fachliche Inkonsistenzen erst spät in produktiven Antworten sichtbar werden.
 
 ## Grenzen und Trade-offs
 
-Placeholder: Was der Ansatz nicht leistet und welche Kosten/Nebenwirkungen entstehen.
+Ein produktives GraphRAG-System erfordert:
+
+- kuratierte Seed-Daten
+- Modellierungsdisziplin
+- UX-Transparenz
+- kontinuierliche Pflege
+
+Kosten entstehen in:
+
+- initialem Strukturaufbau
+- Begriffsabstimmung zwischen Teams
+- Review-Prozessen
+- Wartung des Graphmodells
+
+GraphRAG lohnt sich nur dort, wo Entscheidungsbelastbarkeit relevant ist. Für einfache FAQ-Szenarien ist klassisches RAG oft ausreichend.
+
+Der entscheidende Punkt ist daher nicht "GraphRAG überall", sondern "GraphRAG dort, wo Begründbarkeit und Konsistenz betriebskritisch sind".
+
+## Typische Anti-Patterns im Produktionsaufbau
+
+In vielen Teams wiederholen sich dieselben Muster, wenn aus einem Showcase ein Produkt werden soll. Drei Anti-Patterns sind besonders häufig:
+
+### 1. Visualisierung vor Semantik
+
+Der Graph wird zuerst als Oberfläche gebaut, während Begriffe und Beziehungstypen noch unscharf sind. Das Ergebnis wirkt beeindruckend, liefert aber keine belastbare Herleitung.
+
+Gegenmaßnahme: Erst Semantik fixieren, dann visualisieren.
+
+### 2. Unbegrenzte Typenexpansion
+
+Bei jeder neuen Fachfrage entstehen neue Knoten- und Beziehungstypen. Das Modell wächst schnell, verliert aber Konsistenz.
+
+Gegenmaßnahme: Neue Typen nur über ein explizites Review-Gate einführen und bestehende Typen bevorzugt wiederverwenden.
+
+### 3. Fehlendes Betriebsfeedback
+
+Retrieval- und Antwortprobleme werden nur an Einzelfällen diskutiert, ohne systematisches Logging und Metrikbezug.
+
+Gegenmaßnahme: Jede produktive Anfrage als beobachtbaren Lauf behandeln, inklusive Kontextpaket, Pfadqualität und Fehlerzustand.
+
+Ein reifes GraphRAG-System erkennt man nicht daran, dass keine Fehler auftreten. Man erkennt es daran, dass Fehler sichtbar, einordbar und schnell behebbar sind.
+
+## Quick-Assessment fuer Teams
+
+Ein einfacher Selbsttest kann helfen, den Reifegrad schnell einzuordnen. Wenn zwei oder mehr Fragen mit \"Nein\" beantwortet werden, fehlt meist ein zentrales Qualitäts-Gate.
+
+- Können wir für kritische Antworten den Belegpfad in unter einer Minute nachvollziehen?
+- Sind die wichtigsten Beziehungstypen fachlich definiert und teamweit einheitlich verstanden?
+- Bleiben Antworten bei semantisch ähnlichen Nachfragen in der Kernaussage stabil?
+- Erfassen wir Kontextpakete und Fehlerpfade systematisch im Betrieb?
+
+Dieses Assessment ersetzt keine tiefere Evaluation, liefert aber früh ein klares Signal, ob das System bereits entscheidungsreif oder noch im Demo-Modus ist.
+
+Hilfreich ist, den Selbsttest quartalsweise mit denselben Beispielanfragen zu wiederholen. So wird sichtbar, ob die Qualitätsdisziplin mit wachsendem Daten- und Teamumfang stabil bleibt oder schleichend erodiert.
 
 ## Fazit
 
-Placeholder: Verdichtete Schlussfolgerung in 3 bis 5 Sätzen.
+GraphRAG wird produktiv, wenn es strukturelle Disziplin mit technischer Stabilität verbindet.
+
+Ein belastbares System zeichnet sich aus durch:
+
+- explizite Begriffe
+- kontrollierte Beziehungen
+- nachvollziehbare Belegpfade
+- gesteuerten Kontext
+- robuste Runtime-Guardrails
+
+Ohne diese Kriterien bleibt GraphRAG ein Visualisierungs-Experiment.
+
+Mit ihnen wird es zu einer skalierbaren Entscheidungsinfrastruktur.
+
+**Produktivität ist im GraphRAG kein UI-Effekt, sondern das Ergebnis messbarer Qualitätsdisziplin.**
+
+Wie Prompt-Transparenz diese Qualitätsdisziplin fuer Stakeholder sichtbar und diskutierbar macht, ist Gegenstand des nächsten Essays.
 
 ## Nächste Schritte
 
-1. Placeholder: Erster umsetzbarer Schritt.
-2. Placeholder: Zweiter umsetzbarer Schritt.
-3. Placeholder: Dritter umsetzbarer Schritt.
+1. Definiere 5 bis 10 Kernbegriffe und überprüfe deren Konsistenz über mehrere Antworten hinweg.
+2. Reduziere Beziehungstypen auf ein klar definiertes Set mit expliziter Semantik.
+3. Implementiere ein Logging des vollständigen Kontextpakets pro Anfrage.
+4. Miss Antwortstabilität bei leicht variierten Fragestellungen.
+5. Führe ein formales Review-Gate für neue Knoten- und Beziehungstypen ein.
