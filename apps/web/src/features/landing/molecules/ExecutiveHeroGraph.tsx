@@ -7,31 +7,24 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/comp
 const ELEMENTS: ElementDefinition[] = [
   {
     data: { id: "q", label: "Frage", kind: "question" },
-    position: { x: 240, y: 34 },
   },
   {
     data: { id: "c1", label: "Konzept", kind: "concept" },
-    position: { x: 80, y: 102 },
   },
   {
     data: { id: "c2", label: "Konzept", kind: "concept" },
-    position: { x: 240, y: 102 },
   },
   {
     data: { id: "c3", label: "Konzept", kind: "concept" },
-    position: { x: 400, y: 102 },
   },
   {
     data: { id: "e1", label: "Beleg", kind: "evidence" },
-    position: { x: 150, y: 172 },
   },
   {
     data: { id: "e2", label: "Beleg", kind: "evidence" },
-    position: { x: 330, y: 172 },
   },
   {
     data: { id: "w", label: "Entscheidung", kind: "impact" },
-    position: { x: 240, y: 236 },
   },
   { data: { id: "q-c1", source: "q", target: "c1", etype: "relevance" } },
   { data: { id: "q-c2", source: "q", target: "c2", etype: "relevance" } },
@@ -76,6 +69,41 @@ function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
 }
 
+function setDeterministicPositions(cy: Core, width: number, height: number): void {
+  const safeWidth = Math.max(width, 320);
+  const safeHeight = Math.max(height, 250);
+  const padX = Math.min(78, Math.max(48, safeWidth * 0.12));
+  const padY = Math.min(44, Math.max(24, safeHeight * 0.1));
+  const innerWidth = Math.max(120, safeWidth - padX * 2);
+  const innerHeight = Math.max(120, safeHeight - padY * 2);
+  const xCenter = padX + innerWidth * 0.5;
+  const yTop = padY + innerHeight * 0.04;
+  const yConcept = padY + innerHeight * 0.34;
+  const yEvidence = padY + innerHeight * 0.62;
+  const yBottom = padY + innerHeight * 0.9;
+
+  const positions: Record<string, { x: number; y: number }> = {
+    q: { x: xCenter, y: yTop },
+    c1: { x: safeWidth * 0.2, y: yConcept },
+    c2: { x: xCenter, y: yConcept },
+    c3: { x: safeWidth * 0.8, y: yConcept },
+    e1: { x: safeWidth * 0.35, y: yEvidence },
+    e2: { x: safeWidth * 0.65, y: yEvidence },
+    w: { x: xCenter, y: yBottom },
+  };
+
+  cy.batch(() => {
+    cy.nodes().unlock();
+    Object.entries(positions).forEach(([id, position]) => {
+      cy.$id(id).position(position);
+    });
+    cy.nodes().lock();
+  });
+  cy.resize();
+  cy.pan({ x: 0, y: 0 });
+  cy.zoom(1);
+}
+
 export function ExecutiveHeroGraph(): React.JSX.Element {
   const graphBoxRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -97,12 +125,12 @@ export function ExecutiveHeroGraph(): React.JSX.Element {
     const cy = cytoscape({
       container,
       elements: ELEMENTS,
-      layout: { name: "preset", fit: false },
+      layout: { name: "preset" },
       userZoomingEnabled: false,
       userPanningEnabled: false,
       boxSelectionEnabled: false,
       autoungrabify: true,
-      autolock: true,
+      autolock: false,
       wheelSensitivity: 0,
       minZoom: 1,
       maxZoom: 1,
@@ -206,8 +234,8 @@ export function ExecutiveHeroGraph(): React.JSX.Element {
       ],
     });
 
-    const fitGraph = () => {
-      if (!isCyActive(cy)) {
+    const applyPositions = () => {
+      if (!isCyActive(cy) || !container) {
         return;
       }
       const width = container.clientWidth;
@@ -215,35 +243,22 @@ export function ExecutiveHeroGraph(): React.JSX.Element {
       if (width <= 0 || height <= 0) {
         return;
       }
-      cy.resize();
-      cy.fit(undefined, 16);
-      cy.center();
+      setDeterministicPositions(cy, width, height);
     };
 
     const rafId = window.requestAnimationFrame(() => {
-      fitGraph();
+      applyPositions();
       window.requestAnimationFrame(() => {
-        fitGraph();
+        applyPositions();
       });
     });
 
-    const delayedFitTimer = window.setTimeout(() => {
-      fitGraph();
-    }, 120);
-
-    let postFontsFitTimer: number | null = null;
-    const fonts = document.fonts;
-    if (fonts?.ready) {
-      void fonts.ready.then(() => {
-        fitGraph();
-        postFontsFitTimer = window.setTimeout(() => {
-          fitGraph();
-        }, 0);
-      });
-    }
-
+    const handleResize = () => {
+      applyPositions();
+    };
+    window.addEventListener("resize", handleResize);
     const resizeObserver = new ResizeObserver(() => {
-      fitGraph();
+      applyPositions();
     });
     resizeObserver.observe(container);
     resizeObserver.observe(graphBox);
@@ -296,12 +311,9 @@ export function ExecutiveHeroGraph(): React.JSX.Element {
     cy.on("mouseout", "node", handleNodeMouseOut);
 
     return () => {
+      window.removeEventListener("resize", handleResize);
       resizeObserver.disconnect();
       window.cancelAnimationFrame(rafId);
-      window.clearTimeout(delayedFitTimer);
-      if (postFontsFitTimer) {
-        window.clearTimeout(postFontsFitTimer);
-      }
       cy.off("mouseover", "node", handleNodeMouseOver);
       cy.off("mouseout", "node", handleNodeMouseOut);
       if (timer) {
@@ -325,7 +337,7 @@ export function ExecutiveHeroGraph(): React.JSX.Element {
 
         <div
           ref={graphBoxRef}
-          className="relative w-full overflow-hidden rounded-xl border border-slate-200/80 bg-[#f7fafc] aspect-[16/10] min-h-[250px]"
+          className="relative h-[clamp(250px,38vh,360px)] w-full overflow-hidden rounded-xl border border-slate-200/80 bg-[#f7fafc]"
         >
           <div ref={containerRef} className="h-full w-full" aria-label="Kuratiertes, read-only Cytoscape Hero Graph" />
 
