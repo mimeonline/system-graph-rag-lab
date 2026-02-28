@@ -6,7 +6,7 @@ import { ExecutiveHeroGraph } from "@/features/landing/molecules/ExecutiveHeroGr
 
 export function ExecutiveLandingTemplate(): React.JSX.Element {
   return (
-    <div className="flex min-h-screen flex-col bg-[#f4f8ff] text-slate-900">
+    <div className="flex min-h-screen flex-col bg-white text-slate-900">
       <TrackedPageView page="/" />
       <SiteHeader />
 
@@ -66,112 +66,185 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
               </div>
               </div>
 
-              <div className="w-full max-w-[560px] self-start justify-self-center rounded-2xl border border-slate-200/75 bg-white/65 p-4 sm:p-5 lg:justify-self-end">
+              <div className="w-full max-w-[560px] self-start justify-self-center rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 lg:justify-self-end">
                 <ExecutiveHeroGraph />
               </div>
             </div>
           </section>
 
-          <section
-            id="rag-vs-graphrag"
-            className="space-y-4 rounded-2xl border border-slate-200/70 bg-white/60 p-4 sm:p-6"
-          >
-            <div className="space-y-1.5">
-              <h2 className="text-lg font-semibold text-slate-900">
-                RAG liefert Treffer. GraphRAG liefert Herleitung.
-              </h2>
-              <p className="text-sm text-slate-700">
-                Nicht mehr Kontext, sondern sichtbare Begründung: Konzepte, Belege und Ableitungspfad.
-              </p>
-            </div>
-            <div className="overflow-hidden rounded-xl border border-slate-200/80 bg-white/70">
-              <table className="w-full text-left text-sm">
-                <thead className="bg-slate-50/80">
-                  <tr className="text-slate-600">
-                    <th className="px-4 py-3 font-semibold">Dimension</th>
-                    <th className="px-4 py-3 font-semibold">RAG</th>
-                    <th className="px-4 py-3 font-semibold">GraphRAG</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-200/80 text-slate-700">
-                  <tr>
-                    <td className="px-4 py-3 font-medium text-slate-900">
-                      Auditierbarkeit
-                    </td>
-                    <td className="px-4 py-3">Quellen oft lose, Herleitung bleibt implizit</td>
-                    <td className="px-4 py-3">Belegpfade explizit, Entscheidung prüfbar</td>
-                  </tr>
-                  <tr>
-                    <td className="px-4 py-3 font-medium text-slate-900">
-                      Stabilität bei Nachfragen
-                    </td>
-                    <td className="px-4 py-3">driftet häufiger bei vernetzten Fragen</td>
-                    <td className="px-4 py-3">stabiler durch strukturierte Beziehungen</td>
-                  </tr>
-                  <tr>
-                    <td className="px-4 py-3 font-medium text-slate-900">
-                      Entscheidungsfähigkeit
-                    </td>
-                    <td className="px-4 py-3">Antwort im Fließtext</td>
-                    <td className="px-4 py-3">Ableitung als Pfad, leichter in Maßnahmen zu übersetzen</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <div className="grid gap-3 sm:grid-cols-2">
-              <div className="rounded-xl border border-slate-200/80 bg-white/75 p-3.5">
-                <h3 className="text-sm font-semibold text-slate-900">RAG reicht, wenn</h3>
-                <ul className="mt-2 space-y-1.5 text-sm text-slate-700">
-                  <li className="flex items-start gap-2">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-400" />
-                    <span>Fragen dokumentzentriert und linear sind</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-400" />
-                    <span>Du vor allem Textstellen + Zusammenfassung brauchst</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-400" />
-                    <span>Nachweis oder Audit keine harte Anforderung ist</span>
-                  </li>
-                </ul>
+          <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-slate-50 py-10 sm:py-12">
+            <div className="mx-auto w-full max-w-295 space-y-5 px-4 sm:px-6">
+              <div className="space-y-1.5">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">SYSTEMISCHE GRENZE</p>
+                <h2 className="text-lg font-semibold text-slate-900">
+                  Warum reine LLM-Antworten für Entscheidungen nicht ausreichen
+                </h2>
+                <p className="text-sm text-slate-700">
+                  LLM-Modelle liefern oft plausible Antworten.
+                  Was fehlt, ist eine sichtbare Herleitung, die geprüft, hinterfragt und verteidigt werden kann.
+                </p>
               </div>
 
-              <div className="rounded-xl border border-sky-200/80 bg-sky-50/70 p-3.5">
-                <h3 className="text-sm font-semibold text-slate-900">GraphRAG lohnt, wenn</h3>
-                <ul className="mt-2 space-y-1.5 text-sm text-slate-700">
-                  <li className="flex items-start gap-2">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
-                    <span>Ursachenketten, Abhängigkeiten oder Trade-offs entscheidend sind</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
-                    <span>Stakeholder die Herleitung sehen und prüfen wollen</span>
-                  </li>
-                  <li className="flex items-start gap-2">
-                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
-                    <span>Anschlussfragen konsistent beantwortet werden müssen</span>
-                  </li>
-                </ul>
+              <div className="grid gap-3.5 sm:grid-cols-2">
+                <div className="rounded-xl border border-slate-200 bg-white p-4">
+                  <h3 className="text-sm font-semibold text-slate-900">Nur LLM</h3>
+                  <ul className="mt-2.5 space-y-1.5 text-sm text-slate-700">
+                    <li className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-400" />
+                      <span>Argumentationspfad bleibt implizit</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-400" />
+                      <span>Quellenbezug oft lose oder generisch</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-400" />
+                      <span>Bei Nachfragen driftet die Begründung</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-400" />
+                      <span>Entscheidungen beruhen auf Text, nicht auf Struktur</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 bg-sky-50 p-4">
+                  <h3 className="text-sm font-semibold text-slate-900">Mit GraphRAG</h3>
+                  <ul className="mt-2.5 space-y-1.5 text-sm text-slate-700">
+                    <li className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                      <span>Konzepte und Beziehungen sind explizit modelliert</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                      <span>Belegpfade sind nachvollziehbar</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                      <span>Anschlussfragen bleiben strukturell konsistent</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                      <span>Entscheidungen sind prüfbar statt nur plausibel</span>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+
+              <p className="text-sm text-slate-600">
+                Für explorative Fragen reicht LLM-only oft aus. Für belastbare Architektur- oder
+                Produktentscheidungen braucht es sichtbare Struktur.
+              </p>
+            </div>
+          </section>
+
+          <section
+            id="rag-vs-graphrag"
+            className="relative left-1/2 right-1/2 -mx-[50vw] w-screen py-10 sm:py-12"
+          >
+            <div className="mx-auto w-full max-w-295 space-y-5 px-4 sm:px-6">
+              <div className="space-y-1.5">
+                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-700">VERGLEICH</p>
+                <h2 className="text-lg font-semibold text-slate-900">
+                  RAG liefert Treffer. GraphRAG liefert Herleitung.
+                </h2>
+                <p className="text-sm text-slate-700">
+                  Nicht mehr Kontext, sondern sichtbare Begründung: Konzepte, Belege und Ableitungspfad.
+                </p>
+              </div>
+              <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+                <table className="w-full text-left text-sm">
+                  <thead className="bg-slate-50">
+                    <tr className="text-slate-600">
+                      <th className="px-4 py-3 font-semibold">Dimension</th>
+                      <th className="px-4 py-3 font-semibold">RAG</th>
+                      <th className="px-4 py-3 font-semibold">GraphRAG</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-200 text-slate-700">
+                    <tr>
+                      <td className="px-4 py-3 font-medium text-slate-900">
+                        Auditierbarkeit
+                      </td>
+                      <td className="px-4 py-3">Quellen oft lose, Herleitung bleibt implizit</td>
+                      <td className="px-4 py-3">Belegpfade explizit, Entscheidung prüfbar</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 font-medium text-slate-900">
+                        Stabilität bei Nachfragen
+                      </td>
+                      <td className="px-4 py-3">driftet häufiger bei vernetzten Fragen</td>
+                      <td className="px-4 py-3">stabiler durch strukturierte Beziehungen</td>
+                    </tr>
+                    <tr>
+                      <td className="px-4 py-3 font-medium text-slate-900">
+                        Entscheidungsfähigkeit
+                      </td>
+                      <td className="px-4 py-3">Antwort im Fließtext</td>
+                      <td className="px-4 py-3">Ableitung als Pfad, leichter in Maßnahmen zu übersetzen</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <div className="grid gap-3.5 sm:grid-cols-2">
+                <div className="rounded-xl border border-slate-200 bg-white p-4">
+                  <h3 className="text-sm font-semibold text-slate-900">RAG reicht, wenn</h3>
+                  <ul className="mt-2.5 space-y-1.5 text-sm text-slate-700">
+                    <li className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-400" />
+                      <span>Fragen dokumentzentriert und linear sind</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-400" />
+                      <span>Du vor allem Textstellen + Zusammenfassung brauchst</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-400" />
+                      <span>Nachweis oder Audit keine harte Anforderung ist</span>
+                    </li>
+                  </ul>
+                </div>
+
+                <div className="rounded-xl border border-slate-200 bg-sky-50 p-4">
+                  <h3 className="text-sm font-semibold text-slate-900">GraphRAG lohnt, wenn</h3>
+                  <ul className="mt-2.5 space-y-1.5 text-sm text-slate-700">
+                    <li className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                      <span>Ursachenketten, Abhängigkeiten oder Trade-offs entscheidend sind</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                      <span>Stakeholder die Herleitung sehen und prüfen wollen</span>
+                    </li>
+                    <li className="flex items-start gap-2">
+                      <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                      <span>Anschlussfragen konsistent beantwortet werden müssen</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
           </section>
 
-          <section className="rounded-2xl border border-slate-200/80 bg-slate-50/85 px-4 py-8 text-center sm:px-6 sm:py-10">
-            <h2 className="text-lg font-semibold text-slate-900 sm:text-xl">
-              Von plausiblen Antworten zu prüfbaren Entscheidungen.
-            </h2>
-            <p className="mx-auto mt-2 max-w-[70ch] text-sm text-slate-700">
-              Öffne die Demo und verfolge live, wie Kontextknoten, Belege und Ableitungspfad zusammenspielen.
-            </p>
-            <TrackedLink
-              href="/demo"
-              label="Demo öffnen"
-              eventName="landing_cta_click"
-              payload={{ target: "/demo", surface: "closing-cta" }}
-              className="mt-5 inline-flex rounded-md bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700"
-            />
+          <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-slate-50 py-10 sm:py-12">
+            <div className="mx-auto w-full max-w-295 px-4 sm:px-6">
+              <div className="text-center">
+                <h2 className="text-lg font-semibold text-slate-900 sm:text-xl">
+                  Von plausiblen Antworten zu prüfbaren Entscheidungen.
+                </h2>
+                <p className="mx-auto mt-2 max-w-[70ch] text-sm text-slate-700">
+                  Öffne die Demo und verfolge live, wie Kontextknoten, Belege und Ableitungspfad zusammenspielen.
+                </p>
+                <TrackedLink
+                  href="/demo"
+                  label="Demo öffnen"
+                  eventName="landing_cta_click"
+                  payload={{ target: "/demo", surface: "closing-cta" }}
+                  className="mt-5 inline-flex rounded-md bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700"
+                />
+              </div>
+            </div>
           </section>
         </div>
       </main>

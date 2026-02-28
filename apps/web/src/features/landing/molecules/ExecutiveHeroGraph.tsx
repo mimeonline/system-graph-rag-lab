@@ -337,7 +337,7 @@ export function ExecutiveHeroGraph(): React.JSX.Element {
 
         <div
           ref={graphBoxRef}
-          className="relative h-[clamp(250px,38vh,360px)] w-full overflow-hidden rounded-xl border border-slate-200/80 bg-[#f7fafc]"
+          className="relative h-[clamp(250px,38vh,360px)] w-full overflow-hidden rounded-xl border border-slate-200 bg-[#f7fafc]"
         >
           <div ref={containerRef} className="h-full w-full" aria-label="Kuratiertes, read-only Cytoscape Hero Graph" />
 
