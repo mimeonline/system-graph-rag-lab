@@ -422,7 +422,7 @@ export function QueryPanel(): React.JSX.Element {
   const hasDerivationDetails = derivationDetails.length > 0;
   const mainAnswer =
     viewModel?.answer.main ??
-    "Sobald die Query gesendet wurde, erscheint hier die Hauptantwort.";
+    "Bereit zur Analyse. Stelle eine Frage und starte die Auswertung.";
   const coreRationale =
     viewModel?.answer.coreRationale ??
     "Hier wird der knappe P0-Kernnachweis angezeigt, sobald eine Antwort vorliegt.";
@@ -572,19 +572,29 @@ export function QueryPanel(): React.JSX.Element {
               <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
               <span>Quality Gate</span>
             </h3>
-            <span className={`rounded-full px-2 py-1 text-[11px] font-semibold ${getQualityStateClasses(overallQualityState)}`}>
-              {getOverallQualityLabel(overallQualityState)}
-            </span>
+            {status !== "idle" ? (
+              <span className={`rounded-full px-2 py-1 text-[11px] font-semibold ${getQualityStateClasses(overallQualityState)}`}>
+                {getOverallQualityLabel(overallQualityState)}
+              </span>
+            ) : null}
           </div>
-          <div className="grid gap-2 text-xs text-slate-700 sm:grid-cols-2">
-            {qualitySignals.map((signal) => (
-              <p key={signal.label} className="flex items-center gap-1.5">
-                <span className={`h-2.5 w-2.5 rounded-full ${getQualityDotClasses(signal.state)}`} />
-                <span>{signal.label}:</span>
-                <span className="font-semibold">{signal.value}</span>
-              </p>
-            ))}
-          </div>
+          {status === "idle" ? (
+            <p className="text-xs leading-6 text-slate-700">
+              Noch keine Analyse durchgeführt.
+              <br />
+              Sende eine Frage, um Bewertung, Referenzen und Kontextbudget zu sehen.
+            </p>
+          ) : (
+            <div className="grid gap-2 text-xs text-slate-700 sm:grid-cols-2">
+              {qualitySignals.map((signal) => (
+                <p key={signal.label} className="flex items-center gap-1.5">
+                  <span className={`h-2.5 w-2.5 rounded-full ${getQualityDotClasses(signal.state)}`} />
+                  <span>{signal.label}:</span>
+                  <span className="font-semibold">{signal.value}</span>
+                </p>
+              ))}
+            </div>
+          )}
         </section>
 
         <section className="rounded-xl border border-slate-200 bg-white p-3">
@@ -611,7 +621,9 @@ export function QueryPanel(): React.JSX.Element {
               ))}
             </ul>
           ) : (
-            <p className="mt-2 text-xs text-slate-500">Nach dem ersten Lauf siehst du hier die tatsächlich ausgewählten Nodes.</p>
+            <p className="mt-2 text-xs text-slate-500">
+              Noch keine Knoten ausgewählt. Nach dem ersten Lauf wird hier die tatsächliche Auswahl angezeigt.
+            </p>
           )}
         </section>
 
@@ -672,26 +684,32 @@ export function QueryPanel(): React.JSX.Element {
                   </p>
                 </>
               ) : (
-                <p className="mt-1">Noch keine LLM-only Antwort vorhanden.</p>
+                <p className="mt-1">Noch keine Anfrage gesendet. Sende eine Frage, um beide Varianten zu vergleichen.</p>
               )}
             </div>
             <div className="rounded-md border border-sky-200 bg-sky-50 p-2">
               <p className="font-semibold text-slate-800">GraphRAG</p>
-              <p className="mt-1 leading-6">
-                {isGraphRagExpanded ? mainAnswer : truncatePreview(mainAnswer, 260)}
-              </p>
-              {shouldShowPreviewToggle(mainAnswer, 260) ? (
-                <button
-                  type="button"
-                  className="mt-1 text-xs font-semibold text-sky-700 underline decoration-sky-300 underline-offset-2"
-                  onClick={() => setIsGraphRagExpanded((current) => !current)}
-                >
-                  {isGraphRagExpanded ? "Weniger anzeigen" : "Mehr anzeigen"}
-                </button>
-              ) : null}
-              <p className="mt-1 text-[11px] text-slate-500">
-                {references.length} Referenzen, {derivationDetails.length} Details, {viewModel?.contextTokens ?? 0} Tokens.
-              </p>
+              {status === "idle" ? (
+                <p className="mt-1">Noch keine Anfrage gesendet. Sende eine Frage, um beide Varianten zu vergleichen.</p>
+              ) : (
+                <>
+                  <p className="mt-1 leading-6">
+                    {isGraphRagExpanded ? mainAnswer : truncatePreview(mainAnswer, 260)}
+                  </p>
+                  {shouldShowPreviewToggle(mainAnswer, 260) ? (
+                    <button
+                      type="button"
+                      className="mt-1 text-xs font-semibold text-sky-700 underline decoration-sky-300 underline-offset-2"
+                      onClick={() => setIsGraphRagExpanded((current) => !current)}
+                    >
+                      {isGraphRagExpanded ? "Weniger anzeigen" : "Mehr anzeigen"}
+                    </button>
+                  ) : null}
+                  <p className="mt-1 text-[11px] text-slate-500">
+                    {references.length} Referenzen, {derivationDetails.length} Details, {viewModel?.contextTokens ?? 0} Tokens.
+                  </p>
+                </>
+              )}
             </div>
           </div>
           <details className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-2">

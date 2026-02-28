@@ -47,6 +47,27 @@ function toInlineText(value: string): string {
   return value.replace(/\s+/g, " ").trim();
 }
 
+function sanitizeStep(value: string): string {
+  return value.replace(/^[\s\-*•\d.)]+/, "").replace(/\s+/g, " ").trim();
+}
+
+function extractNextStepsFromText(text: string): string[] {
+  const candidates = text
+    .split(/\n+|(?<=[.!?])\s+/)
+    .map((part) => sanitizeStep(part))
+    .filter((part) => part.length >= 24);
+
+  return candidates.slice(0, 3);
+}
+
+function buildFallbackNextSteps(): string[] {
+  return [
+    "Formuliere die Frage präzise und benenne den konkreten Systemkontext.",
+    "Prüfe zwei bis drei zentrale Annahmen mit nachvollziehbaren Belegen.",
+    "Leite einen kleinen nächsten Schritt mit Verantwortlichkeit und Termin ab.",
+  ];
+}
+
 export async function POST(request: Request): Promise<Response> {
   const startedAt = Date.now();
   const parsed = parseQueryRequest(await request.json().catch(() => null));
@@ -104,6 +125,20 @@ export async function POST(request: Request): Promise<Response> {
       ? content
       : "LLM-only hat keine auswertbare Antwort geliefert. Bitte Anfrage erneut ausführen.";
 
+  const parsedNextSteps = Array.isArray(parsedJson.nextSteps)
+    ? parsedJson.nextSteps
+        .filter((item): item is string => typeof item === "string")
+        .map((item) => sanitizeStep(item))
+        .filter((item) => item.length > 0)
+    : [];
+  const inferredNextSteps = extractNextStepsFromText(rawMain.length > 0 ? rawMain : fallbackMainFromContent);
+  const resolvedNextSteps =
+    parsedNextSteps.length > 0
+      ? parsedNextSteps.slice(0, 3)
+      : inferredNextSteps.length > 0
+        ? inferredNextSteps
+        : buildFallbackNextSteps();
+
   const body: LlmOnlyResponse = {
     status: "ok",
     answer: {
@@ -112,9 +147,7 @@ export async function POST(request: Request): Promise<Response> {
         parsedJson.coreRationale,
         "Kurzbegründung konnte nicht strukturiert extrahiert werden.",
       ),
-      nextSteps: Array.isArray(parsedJson.nextSteps)
-        ? parsedJson.nextSteps.filter((item): item is string => typeof item === "string")
-        : [],
+      nextSteps: resolvedNextSteps,
     },
     meta: {
       latencyMs: Date.now() - startedAt,
