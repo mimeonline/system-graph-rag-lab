@@ -76,9 +76,14 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
             id="rag-vs-graphrag"
             className="space-y-4 rounded-2xl border border-slate-200/70 bg-white/60 p-4 sm:p-6"
           >
-            <h2 className="text-lg font-semibold text-slate-900">
-              RAG vs GraphRAG
-            </h2>
+            <div className="space-y-1.5">
+              <h2 className="text-lg font-semibold text-slate-900">
+                RAG liefert Treffer. GraphRAG liefert Herleitung.
+              </h2>
+              <p className="text-sm text-slate-700">
+                Nicht mehr Kontext, sondern sichtbare Begründung: Konzepte, Belege und Ableitungspfad.
+              </p>
+            </div>
             <div className="overflow-hidden rounded-xl border border-slate-200/80 bg-white/70">
               <table className="w-full text-left text-sm">
                 <thead className="bg-slate-50/80">
@@ -91,62 +96,82 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
                 <tbody className="divide-y divide-slate-200/80 text-slate-700">
                   <tr>
                     <td className="px-4 py-3 font-medium text-slate-900">
-                      Kontext
+                      Auditierbarkeit
                     </td>
-                    <td className="px-4 py-3">Textfragmente</td>
-                    <td className="px-4 py-3">Beziehungsnetz</td>
+                    <td className="px-4 py-3">Quellen oft lose, Herleitung bleibt implizit</td>
+                    <td className="px-4 py-3">Belegpfade explizit, Entscheidung prüfbar</td>
                   </tr>
                   <tr>
                     <td className="px-4 py-3 font-medium text-slate-900">
-                      Nachvollziehbarkeit
+                      Stabilität bei Nachfragen
                     </td>
-                    <td className="px-4 py-3">implizit</td>
-                    <td className="px-4 py-3">explizit</td>
+                    <td className="px-4 py-3">driftet häufiger bei vernetzten Fragen</td>
+                    <td className="px-4 py-3">stabiler durch strukturierte Beziehungen</td>
                   </tr>
                   <tr>
                     <td className="px-4 py-3 font-medium text-slate-900">
-                      Mehr Hop Kontext
+                      Entscheidungsfähigkeit
                     </td>
-                    <td className="px-4 py-3">eingeschränkt</td>
-                    <td className="px-4 py-3">kontrolliert</td>
-                  </tr>
-                  <tr>
-                    <td className="px-4 py-3 font-medium text-slate-900">
-                      Anschlussfragen
-                    </td>
-                    <td className="px-4 py-3">driftet häufiger</td>
-                    <td className="px-4 py-3">stabiler durch Struktur</td>
-                  </tr>
-                  <tr>
-                    <td className="px-4 py-3 font-medium text-slate-900">
-                      Entscheidungslogik
-                    </td>
-                    <td className="px-4 py-3">im Fließtext</td>
-                    <td className="px-4 py-3">als Pfad sichtbar</td>
+                    <td className="px-4 py-3">Antwort im Fließtext</td>
+                    <td className="px-4 py-3">Ableitung als Pfad, leichter in Maßnahmen zu übersetzen</td>
                   </tr>
                 </tbody>
               </table>
             </div>
+
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-slate-200/80 bg-white/75 p-3.5">
+                <h3 className="text-sm font-semibold text-slate-900">RAG reicht, wenn</h3>
+                <ul className="mt-2 space-y-1.5 text-sm text-slate-700">
+                  <li className="flex items-start gap-2">
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-400" />
+                    <span>Fragen dokumentzentriert und linear sind</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-400" />
+                    <span>Du vor allem Textstellen + Zusammenfassung brauchst</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-slate-400" />
+                    <span>Nachweis oder Audit keine harte Anforderung ist</span>
+                  </li>
+                </ul>
+              </div>
+
+              <div className="rounded-xl border border-sky-200/80 bg-sky-50/70 p-3.5">
+                <h3 className="text-sm font-semibold text-slate-900">GraphRAG lohnt, wenn</h3>
+                <ul className="mt-2 space-y-1.5 text-sm text-slate-700">
+                  <li className="flex items-start gap-2">
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                    <span>Ursachenketten, Abhängigkeiten oder Trade-offs entscheidend sind</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                    <span>Stakeholder die Herleitung sehen und prüfen wollen</span>
+                  </li>
+                  <li className="flex items-start gap-2">
+                    <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                    <span>Anschlussfragen konsistent beantwortet werden müssen</span>
+                  </li>
+                </ul>
+              </div>
+            </div>
           </section>
 
-          <section className="rounded-2xl border border-sky-200/80 bg-sky-50/75 p-4 sm:p-6">
-            <div className="flex flex-wrap items-center justify-between gap-3">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-sky-700">
-                  Nächster Schritt
-                </p>
-                <p className="mt-1 text-sm text-slate-800">
-                  Interaktive Demo öffnen und den Herleitungsweg live sehen.
-                </p>
-              </div>
-              <TrackedLink
-                href="/demo"
-                label="Interaktive Demo öffnen"
-                eventName="landing_cta_click"
-                payload={{ target: "/demo", surface: "footer-cta" }}
-                className="inline-flex rounded-md bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700"
-              />
-            </div>
+          <section className="rounded-2xl border border-slate-200/80 bg-slate-50/85 px-4 py-8 text-center sm:px-6 sm:py-10">
+            <h2 className="text-lg font-semibold text-slate-900 sm:text-xl">
+              Von plausiblen Antworten zu prüfbaren Entscheidungen.
+            </h2>
+            <p className="mx-auto mt-2 max-w-[70ch] text-sm text-slate-700">
+              Öffne die Demo und verfolge live, wie Kontextknoten, Belege und Ableitungspfad zusammenspielen.
+            </p>
+            <TrackedLink
+              href="/demo"
+              label="Demo öffnen"
+              eventName="landing_cta_click"
+              payload={{ target: "/demo", surface: "closing-cta" }}
+              className="mt-5 inline-flex rounded-md bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700"
+            />
           </section>
         </div>
       </main>
