@@ -7,43 +7,49 @@ export function HeroLearningStage(): React.JSX.Element {
       <div className="relative z-10 space-y-5">
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-800">System GraphRAG</p>
         <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
-          Verstehen, warum GraphRAG bessere Entscheidungen ermöglicht
+          System Thinking als Live-GraphRAG-Demo
         </h1>
         <p className="max-w-3xl text-base leading-7 text-slate-700">
-          Stelle eine präzise Frage, verfolge den Herleitungsweg im Graphen und überführe die Antwort in
-          konkrete nächste Schritte.
+          Diese Demo zeigt, wie aus einer systemischen Frage über Graph-Retrieval eine nachvollziehbare,
+          belegte Antwort entsteht.
         </p>
 
         <section className="rounded-2xl border border-sky-200/70 bg-white/65 p-4">
-          <p className="text-xs font-semibold uppercase tracking-[0.14em] text-sky-800">
-            Warum nicht nur LLM direkt?
-          </p>
-          <p className="mt-2 text-sm leading-6 text-slate-700">
-            Ich nutze System Thinking als Beispiel für GraphRAG, weil es aus vielen vernetzten Konzepten
-            besteht, die man isoliert leicht missversteht. Genau hier zeigt GraphRAG seinen Mehrwert: Er
-            verbindet Begriffe, Beziehungen und Belege sichtbar zu einer nachvollziehbaren Antwort. Statt
-            nur einer plausiblen LLM-Antwort bekomme ich eine prüfbare Herleitung mit Quellen, Knoten und
-            Kanten.
-          </p>
-          <p className="mt-2 rounded-lg border border-sky-200 bg-sky-50 px-3 py-2 text-sm font-medium text-sky-900">
-            System Thinking ist kein lineares Thema, sondern ein Beziehungsnetz. Deshalb ist es der ideale
-            Use Case, um den Unterschied zwischen LLM-only und GraphRAG zu zeigen.
-          </p>
-          <div className="mt-3 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-xl border border-slate-200/70 bg-white/70 p-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Nur LLM</p>
-              <ul className="mt-2 space-y-1 text-sm text-slate-700">
-                <li>Antwort oft plausibel, aber Herkunft bleibt unklar.</li>
-                <li>Weniger stabil bei komplexen Fragen mit mehreren Ursachen.</li>
-                <li>Schwerer zu prüfen, ob Schlussfolgerungen belastbar sind.</li>
-              </ul>
+          <div className="space-y-4">
+            <div className="space-y-1.5">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-sky-800">Warum System Thinking?</p>
+              <p className="text-sm leading-6 text-slate-700">
+                System Thinking eignet sich als Beispiel, weil es aus vernetzten Konzepten besteht.
+                Isolierte Textantworten führen hier schnell zu Vereinfachungen. Genau deshalb macht
+                GraphRAG den Unterschied sichtbar.
+              </p>
             </div>
-            <div className="rounded-xl border border-sky-200 bg-sky-50/70 p-3">
-              <p className="text-xs font-semibold uppercase tracking-[0.12em] text-sky-800">Mit GraphRAG</p>
-              <ul className="mt-2 space-y-1 text-sm text-slate-800">
-                <li>Antwort basiert auf konkreten Knoten, Kanten und Quellen.</li>
-                <li>Herleitung ist im Graph sichtbar statt nur im Fließtext.</li>
-                <li>Referenzen und Belege machen die Antwort überprüfbar.</li>
+
+            <div className="space-y-1.5">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">So nutzt du die Demo</p>
+              <ol className="space-y-1.5 text-sm text-slate-700">
+                <li>1. Formuliere oder wähle eine systemische Frage.</li>
+                <li>2. Sende die Anfrage.</li>
+                <li>3. Verfolge, welche Knoten, Belege und Beziehungen ins LLM gehen.</li>
+                <li>4. Prüfe Ableitung, Referenzen und nächste Schritte.</li>
+              </ol>
+            </div>
+
+            <div className="space-y-1.5">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">Was du erhältst</p>
+              <ul className="space-y-1.5 text-sm text-slate-700">
+                <li className="flex items-start gap-2">
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                  <span>sichtbaren Kontext</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                  <span>nachvollziehbare Belegpfade</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="mt-2 h-1.5 w-1.5 rounded-full bg-sky-600" />
+                  <span>strukturierte Folgeschritte</span>
+                </li>
               </ul>
             </div>
           </div>
@@ -51,16 +57,16 @@ export function HeroLearningStage(): React.JSX.Element {
 
         <ul className="grid gap-3 pt-1 sm:grid-cols-3">
           <li className="rounded-xl border border-white/70 bg-white/70 p-3 text-sm text-slate-700">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-600">Lernen</p>
-            <p className="mt-1">Der Pipeline-Weg macht sichtbar, wie aus Frage und Kontext eine Antwort entsteht.</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-600">Herleiten</p>
+            <p className="mt-1">Der Pipeline-Weg macht sichtbar, wie aus Frage, Kontext und Belegen eine belastbare Antwort entsteht.</p>
           </li>
           <li className="rounded-xl border border-white/70 bg-white/70 p-3 text-sm text-slate-700">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-600">Verstehen</p>
-            <p className="mt-1">Kernnachweis und Referenzen zeigen sofort, worauf sich die Antwort stützt.</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-600">Belegen</p>
+            <p className="mt-1">Kernnachweis und Referenzen zeigen transparent, worauf sich die Argumentation stützt.</p>
           </li>
           <li className="rounded-xl border border-white/70 bg-white/70 p-3 text-sm text-slate-700">
-            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-600">Handeln</p>
-            <p className="mt-1">Empfohlene Folgeschritte übersetzen Einsichten in direkt nutzbare Aktionen.</p>
+            <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-600">Umsetzen</p>
+            <p className="mt-1">Konkrete Folgeschritte übersetzen Einsichten in direkt handlungsfähige Maßnahmen.</p>
           </li>
         </ul>
       </div>

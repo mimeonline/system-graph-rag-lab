@@ -26,12 +26,12 @@ export function HomeTemplate(): React.JSX.Element {
     <div className="flex min-h-screen flex-col bg-white text-slate-900">
       <SiteHeader />
 
-      <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8">
-        <div className="mx-auto grid w-full max-w-295 gap-10">
-          <section className="space-y-4">
-            <HeroLearningStage />
-          </section>
+      <main className="flex-1">
+        <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen">
+          <HeroLearningStage />
+        </section>
 
+        <div className="mx-auto grid w-full max-w-295 gap-10 px-4 py-8 sm:px-6 sm:py-10">
           <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-slate-50 py-10 sm:py-12">
             <div className="mx-auto w-full max-w-295 px-4 sm:px-6">
               <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
