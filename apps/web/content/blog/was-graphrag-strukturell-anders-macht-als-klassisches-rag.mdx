@@ -1,44 +1,227 @@
 ---
 slug: was-graphrag-strukturell-anders-macht-als-klassisches-rag
 title: "Was GraphRAG strukturell anders macht als klassisches RAG"
-excerpt: "Welche strukturellen Unterschiede GraphRAG von klassischem RAG trennen und warum sie relevant sind."
+excerpt: "Nicht das Modell ist der Kernunterschied, sondern die Struktur des Kontexts: GraphRAG macht Begriffe, Beziehungen und Belegpfade explizit."
 publishedAt: "2026-02-28"
 tags:
   - GraphRAG
   - RAG
   - Struktur
-readingTime: "12 min"
+readingTime: "11 min"
 featured: false
-linkedinHook: "Placeholder: Kernbotschaft für LinkedIn folgt."
-tldr: "Placeholder: TL;DR folgt."
+heroImage: "/images/blog/graphrag-structure-hero.png"
+diagramImages:
+  - "/images/blog/graphrag-structure-diagram.png"
+linkedinHook: "Der strukturelle Unterschied zwischen RAG und GraphRAG entscheidet, ob eine Antwort nur plausibel wirkt oder als Entscheidungsgrundlage tragfähig ist."
+tldr: "Klassisches RAG liefert relevante Textstellen. GraphRAG liefert zusätzlich explizite Begriffe, Beziehungen und nachvollziehbare Belegpfade. Dadurch werden Antworten stabiler, überprüfbarer und anschlussfähiger."
 ---
-
-## Kernthese
-
-Placeholder: Die zentrale Aussage des Artikels in 2 bis 4 Sätzen.
 
 ## Problemkontext
 
-Placeholder: Ausgangslage, Entscheidungskontext und typische Fehlannahmen.
+Klassisches Retrieval-Augmented Generation (RAG) folgt einer linearen Logik:
+
+1. Anfrage formulieren
+2. Relevante Textabschnitte suchen
+3. Diese dem LLM als Kontext übergeben
+4. Antwort generieren
+
+Das funktioniert gut, solange Fragen dokumentenzentriert und relativ linear sind. Viele produktive Use Cases fallen in diese Kategorie: Support-Antworten, Richtlinien, Produktdokumentation, interne FAQ.
+
+Schwieriger wird es bei:
+
+- Ursachenketten
+- Abhängigkeiten zwischen Begriffen
+- Zielkonflikten
+- Mehrschritt-Argumentationen
+
+Hier stößt dokumentenbasiertes Retrieval an strukturelle Grenzen. Nicht weil es "schlecht" ist, sondern weil die Problemform nicht mehr linear ist.
+
+![RAG zu GraphRAG: Strukturübergang](/images/blog/graphrag-structure-hero.png)
 
 ## Strukturelle Analyse
 
-Placeholder: Modell, Begriffe, Beziehungen und relevante Abgrenzungen.
+### 1. Kontextform: Dokument vs. Begriff
+
+**RAG**
+Kontext besteht primär aus Textabschnitten. Relevanz wird meist über semantische Ähnlichkeit bestimmt.
+
+**GraphRAG**
+Kontext besteht aus expliziten Knoten und Kanten: Begriffe, Kategorien, Belege und ihre Beziehungen.
+
+Der Unterschied:
+RAG liefert Text.
+GraphRAG liefert Struktur.
+
+Diese Unterscheidung ist zentral. Text kann vieles enthalten, aber er ist nicht automatisch als Entscheidungsmodell organisiert. GraphRAG macht diese Organisation explizit.
+
+### 2. Beziehungsebene: Implizit vs. explizit
+
+Im klassischen RAG sind Beziehungen implizit im Text enthalten. Das LLM muss sie selbst rekonstruieren.
+
+GraphRAG modelliert Beziehungen explizit:
+
+- verursacht
+- beeinflusst
+- widerspricht
+- konkretisiert
+- gehört zu
+
+Diese Beziehungstypen reduzieren Interpretationsspielraum und erhöhen Konsistenz bei Folgefragen. Gleichzeitig zwingen sie zu begrifflicher Disziplin: Ein Team muss klar benennen, was genau mit "Einfluss" oder "Widerspruch" gemeint ist.
+
+### 3. Mehr-Hop-Logik
+
+RAG arbeitet primär dokumentenzentriert.
+GraphRAG kann gezielt über mehrere Hops navigieren:
+
+Begriff -> abhängiger Faktor -> Risiko -> Maßnahme
+
+Dadurch lassen sich Ursache-Wirkungs-Ketten systematischer abbilden. Für Architektur- und Organisationsentscheidungen ist das ein klarer Vorteil, weil relevante Zusammenhänge oft über mehrere Ebenen laufen.
+
+### 4. Belegpfad statt Quellenliste
+
+Klassisches RAG ergänzt oft Quellenangaben.
+GraphRAG kann den konkreten Ableitungspfad zeigen:
+
+Frage -> Konzept -> Beziehung -> Beleg -> Synthese
+
+Der Unterschied ist entscheidend:
+Nicht nur "woher kommt der Text?", sondern
+"wie wurde die Schlussfolgerung gebildet?"
+
+Diese Pfad-Logik macht Reviews deutlich effizienter. Teams diskutieren dann nicht abstrakt über "Antwortqualität", sondern konkret über einzelne Knoten, Kanten und Belege.
+
+### 5. Stabilität bei Anschlussfragen
+
+Bei leicht veränderten Fragestellungen kann klassisches RAG neue Dokumente selektieren. Die argumentative Basis verschiebt sich.
+
+GraphRAG bleibt stabiler, weil:
+
+- Kernbegriffe persistent modelliert sind,
+- Beziehungen strukturell verankert sind,
+- Anschlussfragen auf denselben Konzeptknoten aufsetzen.
+
+Das erhöht Konsistenz über mehrere Iterationen hinweg. Für Entscheidungsprozesse mit mehreren Stakeholdern ist genau diese Stabilität entscheidend.
 
 ## Praxisbezug
 
-Placeholder: Konkretes Beispiel aus Architektur-, Produkt- oder Organisationspraxis.
+Stell dir eine Architekturentscheidung vor:
+"Sollen wir Service X auslagern oder intern betreiben?"
+
+Mit klassischem RAG erhältst du:
+
+- Pro- und Contra-Argumente,
+- Referenzen aus ähnlichen Fällen,
+- Best Practices.
+
+Mit GraphRAG erhältst du zusätzlich:
+
+- explizite Abhängigkeiten (z. B. Compliance -> Datenhoheit -> Risiko),
+- sichtbar modellierte Trade-offs,
+- nachvollziehbare Belegpfade.
+
+Der Unterschied liegt nicht in der Menge der Information, sondern in ihrer strukturellen Anschlussfähigkeit.
+
+## Entscheidungsreife: Wann reicht RAG, wann lohnt GraphRAG?
+
+Nicht jede Frage braucht ein Graphmodell. Für lineare Informationsabfragen ist klassisches RAG meist schneller und günstiger.
+
+GraphRAG wird relevant, wenn mindestens zwei der folgenden Punkte zutreffen:
+
+- mehrere Fachdomänen sind betroffen,
+- Ursachenketten oder Nebenwirkungen spielen eine Rolle,
+- Entscheidungen müssen auditierbar dokumentiert werden,
+- Anschlussfragen sollen konsistent beantwortet werden,
+- Ergebnisse fließen in formale Freigabeprozesse.
+
+![Strukturexplizitheit über drei Reifegrade](/images/blog/graphrag-structure-diagram.png)
+
+Ein pragmischer Ansatz ist deshalb nicht "entweder oder", sondern eine gestufte Nutzung: RAG für lineare Fragen, GraphRAG für vernetzte Entscheidungslogik.
 
 ## Grenzen und Trade-offs
 
-Placeholder: Was der Ansatz nicht leistet und welche Kosten/Nebenwirkungen entstehen.
+GraphRAG ist kein Wundermittel.
+
+Typische Trade-offs:
+
+- höherer Modellierungsaufwand,
+- Bedarf an kuratierten Seed-Daten,
+- zusätzlicher Pflegeaufwand,
+- Komplexität im UI.
+
+Für einfache FAQ- oder Zusammenfassungs-Szenarien ist klassisches RAG oft ausreichend und effizienter.
+
+GraphRAG lohnt sich vor allem bei:
+
+- komplexen Entscheidungsketten,
+- interdisziplinären Kontexten,
+- Governance-relevanten Fragestellungen,
+- wiederkehrenden Review-Prozessen.
+
+Wichtig ist dabei die Erwartungshaltung: Der Mehrwert entsteht nicht automatisch durch "Graph" als Technologiebegriff, sondern durch saubere Begriffsarbeit und konsistente Beziehungstypen.
+
+## Implementierungsmuster für einen realistischen Start
+
+Ein häufiger Fehler ist der Versuch, sofort einen vollständigen Unternehmensgraphen zu bauen. Besser ist ein fokussierter Start mit engem Scope.
+
+Bewährtes Vorgehen:
+
+1. Entscheide dich für einen klar abgegrenzten Entscheidungsfall.
+2. Definiere 5 bis 10 Kernbegriffe als erste Knotenklassen.
+3. Definiere 4 bis 6 Beziehungstypen mit eindeutiger Semantik.
+4. Hinterlege zu jedem kritischen Knoten mindestens einen belastbaren Beleg.
+5. Evaluiere Antworten gegen dieselben Fragen im Vergleich LLM-only, RAG und GraphRAG.
+
+Diese Iteration liefert früh belastbare Lernwerte, ohne das Team in Modellierungsaufwand zu überziehen.
+
+## Organisatorischer Effekt
+
+Der strukturelle Unterschied zwischen RAG und GraphRAG wirkt nicht nur auf die Qualität einzelner Antworten, sondern auf die Zusammenarbeit im Team.
+
+Bei klassischem RAG wird die Diskussion oft textzentriert geführt: Wer hat welchen Absatz gesehen, welche Quelle wurde noch nicht berücksichtigt, welche Formulierung klingt plausibler? Das ist nützlich, aber schwer zu skalieren, wenn mehrere Rollen beteiligt sind.
+
+GraphRAG verschiebt diese Diskussion auf Modellelemente:
+
+- Welche Begriffe sind im Scope?
+- Welche Beziehung ist fachlich korrekt?
+- Welcher Beleg trägt welchen Schritt?
+
+Damit werden Reviews präziser. Produkt, Architektur und Fachbereich sprechen über dasselbe Strukturmodell statt über unterschiedliche Interpretationen einzelner Textstellen. Das reduziert Reibung in Abstimmungen und erhöht die Qualität von Entscheidungsprotokollen.
+
+## Was man messen sollte
+
+Wenn du GraphRAG in der Praxis bewertest, solltest du nicht nur auf \"Antwortqualität\" schauen. Entscheidender sind strukturbezogene Metriken:
+
+1. **Pfadvollständigkeit**  
+   Wie oft kann eine zentrale Schlussfolgerung über einen expliziten Belegpfad nachvollzogen werden?
+
+2. **Konsistenz über Nachfragen**  
+   Bleibt die Begründung bei semantisch ähnlichen Anschlussfragen stabil?
+
+3. **Review-Aufwand**  
+   Sinkt die Zeit bis zur Freigabe, weil Herleitung und Belege transparenter sind?
+
+4. **Konfliktauflösung**  
+   Werden fachliche Konflikte schneller auflösbar, weil Beziehungen explizit diskutiert werden können?
+
+Diese Perspektive hilft, GraphRAG als Entscheidungsinfrastruktur zu bewerten und nicht nur als Retrieval-Variante.
 
 ## Fazit
 
-Placeholder: Verdichtete Schlussfolgerung in 3 bis 5 Sätzen.
+Der Unterschied zwischen RAG und GraphRAG ist strukturell, nicht kosmetisch.
+
+RAG optimiert Dokument-Relevanz.
+GraphRAG optimiert Entscheidungsstruktur.
+
+Je höher Kontextkomplexität und Entscheidungswirkung, desto wichtiger wird explizite Modellierung von Begriffen, Beziehungen und Belegpfaden.
+
+Damit verschiebt sich der Fokus von "bessere Antwort" zu "belastbare Herleitung".
+
+**Wenn RAG Trefferqualität liefert, liefert GraphRAG Entscheidungsfähigkeit.**
+
+Wie man diese Kontextdisziplin praktisch steuert und warum weniger Kontext oft bessere Antworten erzeugt, ist Gegenstand des nächsten Essays.
 
 ## Nächste Schritte
 
-1. Placeholder: Erster umsetzbarer Schritt.
-2. Placeholder: Zweiter umsetzbarer Schritt.
-3. Placeholder: Dritter umsetzbarer Schritt.
+1. Prüfe, welche Entscheidungen in deinem Kontext echte Mehr-Hop-Abhängigkeiten enthalten.
+2. Identifiziere wiederkehrende Kernbegriffe und ihre Beziehungen.
+3. Beginne mit einem kleinen, klar abgegrenzten Modell statt einem vollständigen Unternehmensgraphen.
