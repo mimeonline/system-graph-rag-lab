@@ -24,6 +24,7 @@
     "cytoscape-dagre": "^2.5.0",
     "framer-motion": "^12.34.3",
     "gray-matter": "^4.0.3",
+    "lucide-react": "^0.575.0",
     "neo4j-driver": "^5.28.3",
     "next": "16.1.6",
     "next-mdx-remote": "^6.0.0",
