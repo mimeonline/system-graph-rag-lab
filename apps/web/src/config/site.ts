@@ -35,7 +35,7 @@ export const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Demo", href: "/demo" },
   { label: "GraphRAG Story", href: "/story/graphrag" },
-  { label: "Blog", href: "/blog" },
+  { label: "Graph Essays", href: "/blog" },
 ] as const;
 
 export function withCanonical(pathname: string): string {

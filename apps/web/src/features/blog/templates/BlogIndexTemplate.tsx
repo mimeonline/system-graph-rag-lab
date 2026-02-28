@@ -2,71 +2,159 @@ import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
 import { TrackedLink } from "@/components/molecules/tracked-link";
 import { TrackedPageView } from "@/components/molecules/tracked-page-view";
-import { PRIMARY_CTA } from "@/config/site";
 import type { BlogPostSummary } from "@/features/blog/contracts";
-import { BlogFeaturedItem } from "@/features/blog/molecules/blog-featured-item";
-import { BlogListRow } from "@/features/blog/molecules/blog-list-row";
+import { GraphEssaysSurface } from "@/features/blog/organisms/GraphEssaysSurface";
 
 type BlogIndexTemplateProps = {
   posts: BlogPostSummary[];
 };
 
+type GraphEssayEntry = {
+  title: string;
+  thesis: string;
+  slug: string;
+};
+
+type GraphEssayGroup = {
+  title: string;
+  entries: GraphEssayEntry[];
+};
+
+const ESSAY_GROUPS: GraphEssayGroup[] = [
+  {
+    title: "Problemraum",
+    entries: [
+      {
+        title: "Warum KI-Antworten für Entscheidungen nicht ausreichen",
+        thesis: "Plausibilität ersetzt keine nachvollziehbare Herleitung in entscheidungsrelevanten Kontexten.",
+        slug: "warum-ki-antworten-fuer-entscheidungen-nicht-ausreichen",
+      },
+    ],
+  },
+  {
+    title: "Struktur & Differenzierung",
+    entries: [
+      {
+        title: "Was GraphRAG strukturell anders macht als klassisches RAG",
+        thesis: "GraphRAG ergänzt Textretrieval um explizite Beziehungen und macht dadurch den Argumentationspfad sichtbar.",
+        slug: "was-graphrag-strukturell-anders-macht-als-klassisches-rag",
+      },
+      {
+        title: "Kontextdisziplin: Warum weniger Kontext oft bessere Antworten erzeugt",
+        thesis: "Gezielte Kontextauswahl reduziert Rauschen und erhöht die Belastbarkeit der Antwort.",
+        slug: "kontextdisziplin-warum-weniger-kontext-oft-bessere-antworten-erzeugt",
+      },
+    ],
+  },
+  {
+    title: "Qualitäts- & Architekturprinzipien",
+    entries: [
+      {
+        title: "Qualitätskriterien für ein produktives GraphRAG-System",
+        thesis: "Ein produktives System braucht klare Qualitätskriterien für Retrieval, Herleitung und Antwortstabilität.",
+        slug: "qualitaetskriterien-fuer-ein-produktives-graphrag-system",
+      },
+      {
+        title: "Prompt-Transparenz als Vertrauensfaktor",
+        thesis: "Transparente Prompt-Bausteine machen die Antwortentstehung prüfbar und diskutierbar.",
+        slug: "prompt-transparenz-als-vertrauensfaktor",
+      },
+    ],
+  },
+  {
+    title: "Organisation & Anwendung",
+    entries: [
+      {
+        title: "GraphRAG als Entscheidungs-Interface für Organisationen",
+        thesis: "GraphRAG verbindet Fachkontext, Belege und Entscheidungspfade in einer arbeitsfähigen Oberfläche.",
+        slug: "graphrag-als-entscheidungs-interface-fuer-organisationen",
+      },
+      {
+        title: "System Thinking als idealer Use Case für GraphRAG",
+        thesis: "System Thinking zeigt, warum relationale Kontextstruktur in komplexen Problemräumen entscheidend ist.",
+        slug: "system-thinking-als-idealer-use-case-fuer-graphrag",
+      },
+    ],
+  },
+  {
+    title: "Positionierung",
+    entries: [
+      {
+        title: "Von plausiblen Antworten zu prüfbaren Entscheidungen",
+        thesis: "Der Mehrwert entsteht, wenn Antworten nicht nur plausibel klingen, sondern belastbar überprüft werden können.",
+        slug: "von-plausiblen-antworten-zu-pruefbaren-entscheidungen",
+      },
+    ],
+  },
+];
+
 export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.Element {
-  const featuredPost = posts.find((post) => post.featured) ?? posts[0];
-  const listPosts = posts.filter((post) => post.slug !== featuredPost?.slug);
+  void posts.length;
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#f4f8ff] text-slate-900">
+    <div className="flex min-h-screen flex-col bg-white text-slate-900">
       <TrackedPageView page="/blog" />
       <SiteHeader />
-      <main className="flex-1 px-4 py-5 sm:px-6 sm:py-6">
-        <div className="mx-auto w-full max-w-[1180px] space-y-8">
-          <section className="space-y-4 pt-1">
-            <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-sky-700">Blog</p>
-            <h1 className="max-w-[20ch] text-[1.85rem] font-semibold tracking-tight text-slate-950 sm:text-[2.1rem]">
-              Praxisberichte über GraphRAG und Agent-Workflows
-            </h1>
-            <p className="max-w-[72ch] text-[0.95rem] leading-7 text-slate-700">
-              Klare Erfahrungsberichte statt Hype: was funktioniert, was nicht und wie man es produktiv einsetzt.
+      <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8">
+        <div className="mx-auto w-full max-w-295 space-y-10 sm:space-y-12">
+          <section className="space-y-5 pt-1">
+            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-700">Graph Essays</p>
+            <h1 className="max-w-[20ch] text-[2rem] font-semibold tracking-tight text-slate-950 sm:text-[2.45rem]">Graph Essays</h1>
+            <p className="max-w-[64ch] text-base leading-7 text-slate-700">
+              Strukturierte Argumente für nachvollziehbare KI-Entscheidungen.
+            </p>
+            <p className="max-w-[76ch] text-sm leading-7 text-slate-600 sm:text-base">
+              Die Essays sind als Argumentationsgraph angeordnet. Jeder Knoten steht für einen präzisen Beitrag im
+              Gesamtfluss von Problemraum bis Positionierung.
             </p>
             <div className="flex flex-wrap items-center gap-3">
               <TrackedLink
-                href={PRIMARY_CTA.href}
-                label={PRIMARY_CTA.label}
-                eventName="cta_click"
-                payload={{ surface: "blog-hero", priority: PRIMARY_CTA.priority }}
-                className="inline-flex rounded-md bg-sky-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-sky-700"
+                href="/demo"
+                label="Demo starten"
+                eventName="blog_hero_cta_click"
+                payload={{ target: "/demo" }}
+                className="inline-flex rounded-md bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700"
               />
-              <div className="flex flex-wrap items-center gap-2 text-sm text-slate-600">
-                <span className="font-medium text-slate-700">Direkt rein:</span>
-                <TrackedLink
-                  href="/story/graphrag"
-                  label="GraphRAG Story"
-                  eventName="blog_quicklink_click"
-                  payload={{ target: "story-graphrag" }}
-                  className="inline-flex items-center text-sky-700 underline decoration-sky-300 underline-offset-4 transition hover:text-sky-800"
-                />
-              </div>
+              <TrackedLink
+                href="/"
+                label="Zur Startseite"
+                eventName="blog_hero_cta_click"
+                payload={{ target: "/" }}
+                className="text-sm font-medium text-slate-600 underline decoration-slate-300 underline-offset-4 transition hover:text-slate-800"
+              />
             </div>
           </section>
 
-          {featuredPost ? (
-            <section className="space-y-4">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Featured Artikel</p>
-              <BlogFeaturedItem post={featuredPost} />
-            </section>
-          ) : null}
+          <section className="space-y-4">
+            <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-3">
+              <h2 className="text-sm font-semibold uppercase tracking-[0.15em] text-slate-600">Argumentationsfluss</h2>
+              <p className="text-xs text-slate-500">Problemraum → Struktur → Qualität → Organisation → Positionierung</p>
+            </div>
+            <GraphEssaysSurface />
+          </section>
 
-          {listPosts.length > 0 ? (
-            <section className="space-y-3">
-              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.18em] text-slate-500">Weitere Artikel</p>
-              <div className="divide-y divide-slate-200 rounded-xl border border-slate-200/70 bg-white/60">
-                {listPosts.map((post) => (
-                  <BlogListRow key={post.slug} post={post} />
-                ))}
-              </div>
-            </section>
-          ) : null}
+          <section className="space-y-4 border-t border-slate-200 pt-6">
+            <h2 className="text-sm font-semibold uppercase tracking-[0.15em] text-slate-600">Essays als Liste</h2>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {ESSAY_GROUPS.map((group) => (
+                <article key={group.title} className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
+                  <h3 className="text-sm font-semibold tracking-tight text-slate-900">{group.title}</h3>
+                  <ul className="mt-3 space-y-2">
+                    {group.entries.map((entry) => (
+                      <li key={entry.slug}>
+                        <a
+                          href={`/blog/${entry.slug}`}
+                          className="text-sm text-slate-700 underline decoration-slate-300 underline-offset-2 transition hover:text-slate-900 hover:decoration-slate-500"
+                        >
+                          {entry.title}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </article>
+              ))}
+            </div>
+          </section>
         </div>
       </main>
       <SiteFooter />
