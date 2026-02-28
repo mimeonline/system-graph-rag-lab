@@ -11,7 +11,8 @@ type TooltipSide = "top" | "bottom";
 
 type EssayClusterData = {
   id: string;
-  title: string;
+  titleDesktop: string;
+  titleMobile: string;
 };
 
 type EssayNodeData = {
@@ -30,12 +31,28 @@ type TooltipState = {
   side: TooltipSide;
 };
 
+const FLOATING_NODE_STYLE: Record<string, string | number> = {
+  "shadow-blur": 30,
+  "shadow-color": "#0f172a",
+  "shadow-opacity": 0.26,
+  "shadow-offset-x": 0,
+  "shadow-offset-y": 12,
+  "transition-property": "shadow-opacity, shadow-blur, border-color, background-color",
+  "transition-duration": "180ms",
+};
+
+const FLOATING_NODE_HOVER_STYLE: Record<string, string | number> = {
+  "shadow-opacity": 0.38,
+  "shadow-blur": 34,
+  "shadow-offset-y": 15,
+};
+
 const CLUSTERS: EssayClusterData[] = [
-  { id: "cluster-problem", title: "Problemraum" },
-  { id: "cluster-structure", title: "Struktur & Differenzierung" },
-  { id: "cluster-quality", title: "Qualitäts- & Architekturprinzipien" },
-  { id: "cluster-organization", title: "Organisation & Anwendung" },
-  { id: "cluster-positioning", title: "Positionierung" },
+  { id: "cluster-problem", titleDesktop: "Problemraum", titleMobile: "Problemraum" },
+  { id: "cluster-structure", titleDesktop: "Struktur", titleMobile: "Struktur" },
+  { id: "cluster-quality", titleDesktop: "Qualität", titleMobile: "Qualität" },
+  { id: "cluster-organization", titleDesktop: "Organisation", titleMobile: "Organisation" },
+  { id: "cluster-positioning", titleDesktop: "Positionierung", titleMobile: "Positionierung" },
 ];
 
 const ESSAYS: EssayNodeData[] = [
@@ -97,11 +114,17 @@ const ESSAYS: EssayNodeData[] = [
   },
 ];
 
-const FLOW_EDGES: ElementDefinition[] = [
-  { data: { id: "flow-problem-structure", source: "cluster-problem", target: "cluster-structure" } },
-  { data: { id: "flow-structure-quality", source: "cluster-structure", target: "cluster-quality" } },
-  { data: { id: "flow-quality-organization", source: "cluster-quality", target: "cluster-organization" } },
-  { data: { id: "flow-organization-positioning", source: "cluster-organization", target: "cluster-positioning" } },
+const ROUTE_EDGES: ElementDefinition[] = [
+  { data: { id: "route-1", source: "essay-problem-1", target: "essay-structure-1", lane: "main" } },
+  { data: { id: "route-2", source: "essay-structure-1", target: "essay-quality-1", lane: "main" } },
+  { data: { id: "route-3", source: "essay-quality-1", target: "essay-organization-1", lane: "main" } },
+  { data: { id: "route-4", source: "essay-organization-1", target: "essay-positioning-1", lane: "main" } },
+  { data: { id: "route-5", source: "essay-structure-1", target: "essay-structure-2", lane: "drill" } },
+  { data: { id: "route-6", source: "essay-quality-1", target: "essay-quality-2", lane: "drill" } },
+  { data: { id: "route-7", source: "essay-organization-1", target: "essay-organization-2", lane: "drill" } },
+  { data: { id: "route-8", source: "essay-structure-2", target: "essay-quality-2", lane: "bridge" } },
+  { data: { id: "route-9", source: "essay-quality-2", target: "essay-organization-2", lane: "bridge" } },
+  { data: { id: "route-10", source: "essay-organization-2", target: "essay-positioning-1", lane: "bridge" } },
 ];
 
 function isCyActive(cy: Core | null | undefined): cy is Core {
@@ -130,7 +153,7 @@ function buildElements(): ElementDefinition[] {
   const clusterNodes: ElementDefinition[] = CLUSTERS.map((cluster) => ({
     data: {
       id: cluster.id,
-      label: cluster.title,
+      clusterLabel: cluster.titleDesktop,
       kind: "cluster" as EssayNodeKind,
     },
   }));
@@ -147,7 +170,7 @@ function buildElements(): ElementDefinition[] {
     },
   }));
 
-  return [...clusterNodes, ...essayNodes, ...FLOW_EDGES];
+  return [...clusterNodes, ...essayNodes, ...ROUTE_EDGES];
 }
 
 function applyDeterministicPositions(cy: Core, mode: FlowMode, width: number, height: number): void {
@@ -186,6 +209,9 @@ function applyDeterministicPositions(cy: Core, mode: FlowMode, width: number, he
 
   cy.batch(() => {
     cy.nodes().unlock();
+    for (const cluster of CLUSTERS) {
+      cy.$id(cluster.id).data("clusterLabel", mode === "desktop" ? cluster.titleDesktop : cluster.titleMobile);
+    }
 
     for (const [essayId, placement] of Object.entries(essayPositionMap)) {
       const center = clusterCenter(placement.index);
@@ -249,22 +275,22 @@ export function GraphEssaysSurface(): React.JSX.Element {
         {
           selector: 'node[kind = "cluster"]',
           style: {
-            label: "data(label)",
-            "font-size": 10.5,
+            label: "data(clusterLabel)",
+            "font-size": 11,
             "font-weight": 700,
-            color: "#475569",
+            color: "#dbeafe",
             "text-valign": "top",
             "text-halign": "center",
             "text-margin-y": 12,
             "text-wrap": "wrap",
-            "text-max-width": "154px",
-            "background-color": "#dbeafe",
-            "background-opacity": 0.32,
+            "text-max-width": "160px",
+            "background-color": "#e7f0ff",
+            "background-opacity": 0.18,
             "border-width": 0,
             "padding": "12px",
             shape: "roundrectangle",
             "compound-sizing-wrt-labels": "exclude",
-            "min-width": "176px",
+            "min-width": "212px",
             "min-height": "148px",
             "z-compound-depth": "bottom",
             "events": "no",
@@ -285,31 +311,66 @@ export function GraphEssaysSurface(): React.JSX.Element {
             width: 168,
             height: 74,
             "border-width": 1.3,
-            "border-color": "#64748b",
-            "background-color": "#f8fafc",
+            "border-color": "#60a5fa",
+            "background-color": "#ffffff",
             "overlay-opacity": 0,
             "z-index": 20,
+            ...FLOATING_NODE_STYLE,
           },
         },
         {
           selector: 'node[kind = "essay"]:hover',
           style: {
             "border-color": "#2563eb",
-            "background-color": "#eef5ff",
+            "background-color": "#fefefe",
+            ...FLOATING_NODE_HOVER_STYLE,
           },
         },
         {
           selector: "edge",
           style: {
-            width: 1,
-            "line-color": "#94a3b8",
-            "line-opacity": 0.42,
-            "curve-style": "straight",
-            "target-arrow-shape": "none",
+            width: 1.2,
+            "line-color": "#cbd5e1",
+            "line-opacity": 0.45,
+            "curve-style": "bezier",
+            "target-arrow-shape": "triangle",
+            "target-arrow-color": "#93c5fd",
+            "arrow-scale": 0.74,
             "source-arrow-shape": "none",
             "overlay-opacity": 0,
             "events": "no",
             "z-index": 5,
+          },
+        },
+        {
+          selector: 'edge[lane = "main"]',
+          style: {
+            width: 1.8,
+            "line-color": "#dbeafe",
+            "line-opacity": 0.92,
+            "target-arrow-color": "#dbeafe",
+            "control-point-distances": [26],
+            "control-point-weights": [0.5],
+          },
+        },
+        {
+          selector: 'edge[lane = "drill"]',
+          style: {
+            width: 1.3,
+            "line-color": "#bfdbfe",
+            "line-opacity": 0.72,
+            "target-arrow-color": "#bfdbfe",
+          },
+        },
+        {
+          selector: 'edge[lane = "bridge"]',
+          style: {
+            width: 1.2,
+            "line-color": "#94a3b8",
+            "line-opacity": 0.5,
+            "target-arrow-color": "#94a3b8",
+            "line-style": "dashed",
+            "line-dash-pattern": [4, 4],
           },
         },
       ],
@@ -354,9 +415,11 @@ export function GraphEssaysSurface(): React.JSX.Element {
       const rendered = node.renderedPosition();
       const boxWidth = container.clientWidth;
       const boxHeight = container.clientHeight;
+      const offsetLeft = container.offsetLeft;
+      const offsetTop = container.offsetTop;
       const estimatedTooltipWidth = 320;
-      const left = clamp(rendered.x + 8, 10, Math.max(10, boxWidth - estimatedTooltipWidth - 10));
-      const top = clamp(rendered.y, 14, Math.max(14, boxHeight - 14));
+      const left = clamp(rendered.x + offsetLeft + 8, 10, Math.max(10, boxWidth + offsetLeft - estimatedTooltipWidth - 10));
+      const top = clamp(rendered.y + offsetTop, offsetTop + 14, Math.max(offsetTop + 14, boxHeight + offsetTop - 14));
       const side: TooltipSide = rendered.y < 92 ? "bottom" : "top";
 
       setTooltipState({
@@ -403,33 +466,49 @@ export function GraphEssaysSurface(): React.JSX.Element {
 
   return (
     <TooltipProvider delayDuration={70}>
-      <div className="space-y-3">
-        <div className="flex items-center justify-between">
-          <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Graph Surface</p>
-          <span className="rounded-full border border-slate-200 bg-white px-2 py-0.5 text-[11px] font-semibold text-slate-600">
-            read only
-          </span>
-        </div>
-
         <div
           ref={graphBoxRef}
-          className="relative h-[1240px] w-full overflow-hidden rounded-2xl border border-slate-200 bg-[#f7fafc] md:h-[clamp(420px,52vh,520px)]"
+          className="relative h-[1320px] w-full overflow-hidden rounded-2xl border border-slate-800 bg-[linear-gradient(180deg,#0b2b57_0%,#0c3a74_100%)] md:h-[clamp(460px,56vh,560px)]"
         >
-          <div ref={containerRef} className="h-full w-full" aria-label="Graph Essays Cytoscape Surface" />
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(110%_70%_at_18%_22%,rgba(147,197,253,0.22),transparent_70%),radial-gradient(90%_60%_at_78%_72%,rgba(96,165,250,0.2),transparent_75%)]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.07)_0%,rgba(255,255,255,0)_35%,rgba(15,23,42,0.2)_100%)]" />
+          <div className="flex h-full flex-col">
+          <div className="flex h-14 items-center justify-between border-b border-white/15 bg-[#0a1f3f]/55 px-4">
+            <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-200">Argumentationsfluss als Route</p>
+            <span className="rounded-full border border-slate-400/40 bg-white/5 px-2.5 py-1 text-[11px] font-semibold text-slate-200">
+              read only
+            </span>
+          </div>
 
-          <Tooltip open={tooltipState.open}>
-            <TooltipTrigger asChild>
-              <span
-                className="pointer-events-none absolute h-1 w-1"
-                style={{ left: `${tooltipState.x}px`, top: `${tooltipState.y}px` }}
-                aria-hidden
-              />
-            </TooltipTrigger>
-            <TooltipContent side={tooltipState.side} align="start" sideOffset={8} className="max-w-[320px]">
-              {tooltipState.text}
-            </TooltipContent>
-          </Tooltip>
+          <div className="relative flex-1">
+            <div ref={containerRef} className="h-full w-full" aria-label="Graph Essays Cytoscape Surface" />
+          </div>
+
+          <div className="flex min-h-14 items-center gap-2 border-t border-white/15 bg-white/92 px-4 py-2">
+            <span className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600">
+              Route als Story
+            </span>
+            <span className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600">
+              Dunkler Premium-Canvas
+            </span>
+            <span className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-600">
+              Knoten als Stops
+            </span>
+          </div>
         </div>
+
+        <Tooltip open={tooltipState.open}>
+          <TooltipTrigger asChild>
+            <span
+              className="pointer-events-none absolute h-1 w-1"
+              style={{ left: `${tooltipState.x}px`, top: `${tooltipState.y}px` }}
+              aria-hidden
+            />
+          </TooltipTrigger>
+          <TooltipContent side={tooltipState.side} align="start" sideOffset={8} className="max-w-[320px]">
+            {tooltipState.text}
+          </TooltipContent>
+        </Tooltip>
       </div>
     </TooltipProvider>
   );

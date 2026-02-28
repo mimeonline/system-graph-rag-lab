@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Variante A - Architect Blueprint</title>
+  <style>
+    :root { --bg:#f8fafc; --ink:#0f172a; --muted:#64748b; --line:#94a3b855; --node:#ffffff; --border:#64748b; --brand:#2563eb; }
+    body { margin:0; font-family:ui-sans-serif,system-ui; background:var(--bg); color:var(--ink); }
+    .wrap { max-width: 1500px; margin:0 auto; padding:28px 22px 40px; }
+    .eyebrow{font-size:12px; text-transform:uppercase; letter-spacing:.16em; color:#0369a1; font-weight:700}
+    h1 { margin:8px 0 8px; font-size:44px; letter-spacing:-.02em; }
+    p { margin:0 0 20px; color:#475569; max-width:80ch; line-height:1.6 }
+    .surface { border:1px solid #cbd5e1; border-radius:16px; background:#fff; padding:18px; }
+    .back { margin-top:14px; color:#334155; font-size:14px; }
+    a { color:inherit; }
+    @media (max-width: 900px) { h1{font-size:36px;} .surface{overflow:auto;} svg{min-width:1160px;} }
+  </style>
+</head>
+<body>
+<main class="wrap">
+  <div class="eyebrow">Variante A</div>
+  <h1>Architect Blueprint</h1>
+  <p>Eine durchgehende Argumentationsachse trägt den Fluss. Cluster sind typografisch markiert, die Nodes schweben als präzise Bausteine über und unter der Linie.</p>
+  <div class="surface">
+    <svg viewBox="0 0 1400 430" width="100%" height="430" role="img" aria-label="Graph Essays Blueprint">
+      <line x1="70" y1="214" x2="1330" y2="214" stroke="var(--line)" stroke-width="2" />
+      <g fill="#475569" font-size="12" font-weight="700" text-anchor="middle">
+        <text x="130" y="178">Problemraum</text><text x="390" y="178">Struktur</text><text x="650" y="178">Qualität</text><text x="910" y="178">Organisation</text><text x="1170" y="178">Positionierung</text>
+      </g>
+      <g stroke="var(--border)" fill="var(--node)">
+        <rect x="55" y="240" width="150" height="64" rx="10"/><rect x="315" y="120" width="150" height="64" rx="10"/><rect x="315" y="246" width="150" height="64" rx="10"/>
+        <rect x="575" y="120" width="150" height="64" rx="10"/><rect x="575" y="246" width="150" height="64" rx="10"/>
+        <rect x="835" y="120" width="150" height="64" rx="10"/><rect x="835" y="246" width="150" height="64" rx="10"/>
+        <rect x="1095" y="240" width="170" height="64" rx="10" stroke="var(--brand)" stroke-width="1.5"/>
+      </g>
+      <g fill="#0f172a" font-size="11" font-weight="600" text-anchor="middle">
+        <text x="130" y="268">KI-Antworten reichen</text><text x="130" y="282">für Entscheidungen nicht</text>
+        <text x="390" y="146">GraphRAG vs</text><text x="390" y="160">klassisches RAG</text>
+        <text x="390" y="273">Kontextdisziplin</text>
+        <text x="650" y="146">Qualitätskriterien</text><text x="650" y="160">für produktives System</text>
+        <text x="650" y="273">Prompt-Transparenz</text>
+        <text x="910" y="146">Entscheidungs-</text><text x="910" y="160">Interface</text>
+        <text x="910" y="267">System Thinking</text><text x="910" y="281">als Use Case</text>
+        <text x="1180" y="268">Von plausibel zu</text><text x="1180" y="282">prüfbar</text>
+      </g>
+    </svg>
+  </div>
+  <div class="back"><a href="index.html">Zurück zur Variantenübersicht</a></div>
+</main>
+</body>
+</html>

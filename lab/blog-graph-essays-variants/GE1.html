@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Graph Essays – UX Varianten (Route / Board / Clean)</title>
+  <style>
+    :root{
+      --ink:#0f172a;
+      --muted:#475569;
+      --accent:#2563eb;
+      --accent2:#1d4ed8;
+      --panel:#f8fafc;
+      --line:rgba(148,163,184,.55);
+      --line2:rgba(148,163,184,.28);
+      --card:#ffffff;
+      --cardBorder:rgba(37,99,235,.55);
+      --shadow: 0 10px 30px rgba(2,6,23,.06);
+      --shadow2: 0 16px 44px rgba(2,6,23,.10);
+      --r:16px;
+
+      /* Route map palette */
+      --navy:#0b2b57;
+      --navy2:#0c3a74;
+      --route:#e7f0ff;
+      --routeGlow:rgba(231,240,255,.65);
+
+      /* Board palette */
+      --band1:rgba(226,232,240,.62);
+      --band2:rgba(226,232,240,.52);
+      --band3:rgba(226,232,240,.42);
+      --band4:rgba(226,232,240,.34);
+      --band5:rgba(226,232,240,.28);
+
+      /* Clean palette */
+      --dark:#0b1220;
+      --dark2:#0f1b33;
+      --dLine:rgba(148,163,184,.22);
+      --dLine2:rgba(148,163,184,.14);
+      --dCard:rgba(255,255,255,.06);
+      --dCardBorder:rgba(148,163,184,.28);
+      --dText:rgba(248,250,252,.92);
+      --dMuted:rgba(203,213,225,.78);
+      --dAccent:rgba(96,165,250,.9);
+    }
+
+    *{box-sizing:border-box}
+    body{margin:0;font:14px/1.55 system-ui, -apple-system, Segoe UI, Roboto, Arial; color:var(--ink); background:linear-gradient(180deg, #ffffff 0%, #fbfdff 60%, #ffffff 100%);}
+
+    header{
+      padding:28px 20px 12px;
+      border-bottom:1px solid rgba(15,23,42,.06);
+      background:rgba(255,255,255,.86);
+      backdrop-filter:saturate(140%) blur(6px);
+      position:sticky; top:0; z-index:20;
+    }
+
+    .wrap{max-width:1200px; margin:0 auto;}
+    .kicker{letter-spacing:.14em; text-transform:uppercase; font-weight:800; font-size:12px; color:var(--accent);}
+    h1{margin:8px 0 8px; font-size:38px; letter-spacing:-.02em;}
+    .sub{color:var(--muted); max-width:76ch;}
+
+    .tabs{display:flex; gap:8px; margin-top:16px; flex-wrap:wrap}
+    .tab{border:1px solid rgba(15,23,42,.10); background:#fff; padding:10px 12px; border-radius:999px; cursor:pointer; font-weight:700; color:rgba(15,23,42,.75)}
+    .tab[aria-selected="true"]{border-color:rgba(37,99,235,.45); color:var(--ink); box-shadow:0 6px 18px rgba(37,99,235,.10)}
+
+    main{padding:26px 20px 44px}
+
+    .stage{
+      margin-top:18px;
+      border:1px solid rgba(15,23,42,.08);
+      border-radius:18px;
+      background:var(--panel);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+
+    .stageHead{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 14px;
+      background:rgba(255,255,255,.72);
+      border-bottom:1px solid rgba(15,23,42,.06);
+    }
+    .stageTitle{font-weight:900; letter-spacing:.10em; text-transform:uppercase; font-size:12px; color:rgba(15,23,42,.70)}
+    .badge{border:1px solid rgba(15,23,42,.12); padding:5px 10px; border-radius:999px; font-weight:700; font-size:12px; color:rgba(15,23,42,.72); background:#fff}
+
+    .canvas{
+      position:relative;
+      height:460px;
+      padding:26px;
+    }
+
+    /* Generic nodes */
+    .node{
+      position:absolute;
+      background:var(--card);
+      border:1px solid var(--cardBorder);
+      border-radius:14px;
+      padding:14px 14px;
+      width:220px;
+      box-shadow: 0 10px 24px rgba(2,6,23,.07);
+      font-weight:750;
+      font-size:13px;
+      line-height:1.25;
+      color:rgba(15,23,42,.92);
+    }
+    .node.small{width:210px; font-weight:720}
+    .node.focus{border-color:rgba(37,99,235,.86); box-shadow:0 16px 42px rgba(37,99,235,.16)}
+    .node .meta{display:block; margin-top:8px; font-weight:650; font-size:12px; color:rgba(71,85,105,.82)}
+
+    .clabel{
+      position:absolute;
+      font-size:12px;
+      font-weight:900;
+      color:rgba(15,23,42,.62);
+      letter-spacing:.02em;
+      white-space:nowrap;
+      text-transform:none;
+    }
+
+    .legend{display:flex; gap:10px; flex-wrap:wrap; padding:14px; border-top:1px solid rgba(15,23,42,.06); background:#fff}
+    .pill{padding:6px 10px; border-radius:999px; border:1px solid rgba(15,23,42,.10); color:rgba(15,23,42,.72); font-weight:700; font-size:12px}
+
+    svg.lines{position:absolute; inset:0; width:100%; height:100%; pointer-events:none}
+
+    /* ------------------------------ */
+    /* A) Executive Route Map (navy)   */
+    /* ------------------------------ */
+    .route{background:linear-gradient(180deg, var(--navy) 0%, var(--navy2) 100%);}
+    .route .stageHead{background:rgba(11,18,32,.55); border-bottom:1px solid rgba(148,163,184,.12)}
+    .route .stageTitle{color:rgba(226,232,240,.86)}
+    .route .badge{background:rgba(255,255,255,.06); color:rgba(226,232,240,.86); border-color:rgba(148,163,184,.22)}
+    .route .canvas{background:radial-gradient(900px 420px at 18% 25%, rgba(96,165,250,.14), transparent 70%), radial-gradient(780px 420px at 72% 70%, rgba(147,197,253,.12), transparent 75%);}
+
+    .route .routePath{
+      position:absolute; left:56px; right:56px; top:210px; height:18px;
+      border-radius:999px;
+      background:rgba(231,240,255,.18);
+      box-shadow: inset 0 0 0 1px rgba(231,240,255,.18);
+    }
+    .route .routeStroke{
+      position:absolute; left:70px; right:70px; top:217px; height:6px;
+      border-radius:999px;
+      background:rgba(231,240,255,.92);
+      box-shadow: 0 0 0 6px rgba(231,240,255,.08), 0 0 18px rgba(231,240,255,.18);
+    }
+    .route .stop{
+      position:absolute; top:208px; width:14px; height:14px; border-radius:999px;
+      background:rgba(231,240,255,.98);
+      box-shadow:0 0 0 6px rgba(231,240,255,.12);
+    }
+    .route .clabel{color:rgba(226,232,240,.86)}
+    .route .node{background:rgba(255,255,255,.95);}
+    .route .node{border-color:rgba(96,165,250,.55)}
+    .route .node.focus{border-color:rgba(96,165,250,.92); box-shadow:0 18px 46px rgba(96,165,250,.18)}
+
+    /* -------------------------------- */
+    /* B) Architectural Layer Board      */
+    /* -------------------------------- */
+    .board .canvas{background:linear-gradient(180deg, #ffffff 0%, #f8fafc 100%)}
+    .band{position:absolute; top:62px; bottom:62px; width:210px; border-radius:18px; border:1px solid rgba(148,163,184,.28)}
+    .b1{left:24px; background:var(--band1)}
+    .b2{left:250px; background:var(--band2)}
+    .b3{left:476px; background:var(--band3)}
+    .b4{left:702px; background:var(--band4)}
+    .b5{left:928px; background:var(--band5)}
+
+    .board .node{box-shadow:0 10px 26px rgba(2,6,23,.06)}
+    .board .node{border-color:rgba(37,99,235,.50)}
+
+    /* -------------------------------- */
+    /* C) Graph-native Clean (dark)      */
+    /* -------------------------------- */
+    .clean{background:linear-gradient(180deg, var(--dark) 0%, var(--dark2) 100%)}
+    .clean .stageHead{background:rgba(255,255,255,.04); border-bottom:1px solid rgba(148,163,184,.12)}
+    .clean .stageTitle{color:rgba(226,232,240,.86)}
+    .clean .badge{background:rgba(255,255,255,.06); color:rgba(226,232,240,.86); border-color:rgba(148,163,184,.22)}
+    .clean .canvas{background:radial-gradient(900px 520px at 20% 30%, rgba(96,165,250,.10), transparent 70%), radial-gradient(760px 520px at 78% 70%, rgba(37,99,235,.08), transparent 75%);}
+
+    .clean .clabel{color:rgba(203,213,225,.78)}
+    .clean .node{
+      background:var(--dCard);
+      border-color:var(--dCardBorder);
+      color:var(--dText);
+      box-shadow:none;
+      backdrop-filter: blur(8px);
+    }
+    .clean .node .meta{color:var(--dMuted)}
+    .clean .node.focus{border-color:rgba(96,165,250,.65); box-shadow:0 0 0 1px rgba(96,165,250,.22), 0 22px 54px rgba(2,6,23,.28)}
+
+    /* -------------------------------- */
+    /* D) Hybrid (Board + Clean cue)     */
+    /* -------------------------------- */
+    .hybrid .canvas{background:linear-gradient(180deg, #ffffff 0%, #f8fafc 80%, #ffffff 100%)}
+    .hybrid .hint{
+      position:absolute; left:22px; right:22px; top:210px; height:1px;
+      background:linear-gradient(90deg, rgba(37,99,235,.12), rgba(37,99,235,.26), rgba(37,99,235,.12));
+    }
+    .hybrid .node{border-color:rgba(37,99,235,.55)}
+    .hybrid .node.focus{border-color:rgba(37,99,235,.9); box-shadow:0 16px 44px rgba(37,99,235,.16)}
+
+    /* Responsive */
+    @media (max-width: 980px){
+      h1{font-size:32px}
+      .canvas{height:560px}
+      .node{width:210px}
+      .band{display:none}
+    }
+    @media (max-width: 720px){
+      .canvas{height:700px; padding:18px}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="kicker">Graph Essays</div>
+      <h1>Graph Essays</h1>
+      <div class="sub">Vier neue UX-Varianten inspiriert von Route Maps und Journey-Infografiken, aber im architektonisch-professionellen Stil. Mocks zeigen Look & Layout, nicht Cytoscape.</div>
+      <div class="tabs" role="tablist" aria-label="Varianten">
+        <button class="tab" role="tab" aria-selected="true" data-target="a">A Route Map</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="b">B Layer Board</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="c">C Clean Graph</button>
+        <button class="tab" role="tab" aria-selected="false" data-target="d">D Hybrid</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="wrap">
+
+      <!-- A: Executive Route Map -->
+      <section class="stage route" data-variant="a">
+        <div class="stageHead">
+          <div class="stageTitle">Argumentationsfluss als Route</div>
+          <div class="badge">read only</div>
+        </div>
+        <div class="canvas">
+          <div class="routePath"></div>
+          <div class="routeStroke"></div>
+          <div class="stop" style="left:160px"></div>
+          <div class="stop" style="left:386px"></div>
+          <div class="stop" style="left:612px"></div>
+          <div class="stop" style="left:838px"></div>
+          <div class="stop" style="left:1064px"></div>
+
+          <div class="clabel" style="left:118px; top:170px">Problemraum</div>
+          <div class="clabel" style="left:344px; top:170px">Struktur</div>
+          <div class="clabel" style="left:566px; top:170px">Qualität</div>
+          <div class="clabel" style="left:786px; top:170px">Organisation</div>
+          <div class="clabel" style="left:1006px; top:170px">Positionierung</div>
+
+          <svg class="lines" viewBox="0 0 1200 460" preserveAspectRatio="none">
+            <path d="M 180 220 C 260 140, 320 140, 400 220" stroke="rgba(231,240,255,.28)" stroke-width="1.2" fill="none" />
+            <path d="M 400 220 C 480 300, 540 300, 620 220" stroke="rgba(231,240,255,.28)" stroke-width="1.2" fill="none" />
+            <path d="M 620 220 C 700 140, 760 140, 840 220" stroke="rgba(231,240,255,.28)" stroke-width="1.2" fill="none" />
+            <path d="M 840 220 C 920 300, 980 300, 1060 220" stroke="rgba(231,240,255,.28)" stroke-width="1.2" fill="none" />
+          </svg>
+
+          <div class="node" style="left:60px; top:260px">Warum KI-Antworten für Entscheidungen nicht ausreichen<span class="meta">Startpunkt: Problem sichtbar machen</span></div>
+
+          <div class="node small" style="left:280px; top:95px">Was GraphRAG strukturell anders macht als klassisches RAG<span class="meta">Struktur als Herleitung</span></div>
+          <div class="node small" style="left:280px; top:305px">Kontextdisziplin: Warum weniger Kontext oft bessere Antworten erzeugt<span class="meta">Kontext als Ressource</span></div>
+
+          <div class="node small" style="left:500px; top:95px">Qualitätskriterien für ein produktives GraphRAG-System<span class="meta">Stabilität & Prüfbarkeit</span></div>
+          <div class="node small" style="left:500px; top:305px">Prompt-Transparenz als Vertrauensfaktor<span class="meta">Auditierbarkeit</span></div>
+
+          <div class="node small" style="left:720px; top:95px">GraphRAG als Entscheidungs-Interface für Organisationen<span class="meta">Umsetzung im Alltag</span></div>
+          <div class="node small" style="left:720px; top:305px">System Thinking als idealer Use Case für GraphRAG<span class="meta">Komplexität sichtbar</span></div>
+
+          <div class="node focus" style="left:940px; top:215px">Von plausiblen Antworten zu prüfbaren Entscheidungen<span class="meta">Ziel: belastbare Entscheidung</span></div>
+        </div>
+        <div class="legend">
+          <span class="pill">Route als Story</span>
+          <span class="pill">Dunkler Premium-Canvas</span>
+          <span class="pill">Knoten als Stops</span>
+        </div>
+      </section>
+
+      <!-- B: Architectural Layer Board -->
+      <section class="stage board" data-variant="b" hidden>
+        <div class="stageHead">
+          <div class="stageTitle">Phasen als Architektur-Bänder</div>
+          <div class="badge">read only</div>
+        </div>
+        <div class="canvas">
+          <div class="band b1"></div>
+          <div class="band b2"></div>
+          <div class="band b3"></div>
+          <div class="band b4"></div>
+          <div class="band b5"></div>
+
+          <div class="clabel" style="left:72px; top:38px">Problemraum</div>
+          <div class="clabel" style="left:290px; top:38px">Struktur</div>
+          <div class="clabel" style="left:516px; top:38px">Qualität</div>
+          <div class="clabel" style="left:742px; top:38px">Organisation</div>
+          <div class="clabel" style="left:968px; top:38px">Positionierung</div>
+
+          <svg class="lines" viewBox="0 0 1200 460" preserveAspectRatio="none">
+            <line x1="140" y1="238" x2="1020" y2="238" stroke="rgba(148,163,184,.30)" stroke-width="1" />
+            <line x1="250" y1="238" x2="360" y2="238" stroke="rgba(37,99,235,.16)" stroke-width="1" />
+            <line x1="476" y1="238" x2="586" y2="238" stroke="rgba(37,99,235,.16)" stroke-width="1" />
+            <line x1="702" y1="238" x2="812" y2="238" stroke="rgba(37,99,235,.16)" stroke-width="1" />
+            <line x1="928" y1="238" x2="1038" y2="238" stroke="rgba(37,99,235,.16)" stroke-width="1" />
+          </svg>
+
+          <div class="node" style="left:48px; top:210px">Warum KI-Antworten für Entscheidungen nicht ausreichen<span class="meta">Problemraum</span></div>
+
+          <div class="node small" style="left:274px; top:120px">Was GraphRAG strukturell anders macht als klassisches RAG<span class="meta">Struktur</span></div>
+          <div class="node small" style="left:274px; top:290px">Kontextdisziplin: Warum weniger Kontext oft bessere Antworten erzeugt<span class="meta">Struktur</span></div>
+
+          <div class="node small" style="left:500px; top:110px">Qualitätskriterien für ein produktives GraphRAG-System<span class="meta">Qualität</span></div>
+          <div class="node small" style="left:500px; top:295px">Prompt-Transparenz als Vertrauensfaktor<span class="meta">Qualität</span></div>
+
+          <div class="node small" style="left:726px; top:120px">GraphRAG als Entscheidungs-Interface für Organisationen<span class="meta">Organisation</span></div>
+          <div class="node small" style="left:726px; top:290px">System Thinking als idealer Use Case für GraphRAG<span class="meta">Organisation</span></div>
+
+          <div class="node focus" style="left:952px; top:210px">Von plausiblen Antworten zu prüfbaren Entscheidungen<span class="meta">Positionierung</span></div>
+        </div>
+        <div class="legend">
+          <span class="pill">Phasen als Zonen</span>
+          <span class="pill">Sehr kontrolliert</span>
+          <span class="pill">Klare Typografie</span>
+        </div>
+      </section>
+
+      <!-- C: Graph-native Clean -->
+      <section class="stage clean" data-variant="c" hidden>
+        <div class="stageHead">
+          <div class="stageTitle">Clean Graph Surface</div>
+          <div class="badge">read only</div>
+        </div>
+        <div class="canvas">
+          <div class="clabel" style="left:105px; top:170px">Problemraum</div>
+          <div class="clabel" style="left:325px; top:170px">Struktur</div>
+          <div class="clabel" style="left:545px; top:170px">Qualität</div>
+          <div class="clabel" style="left:765px; top:170px">Organisation</div>
+          <div class="clabel" style="left:985px; top:170px">Positionierung</div>
+
+          <svg class="lines" viewBox="0 0 1200 460" preserveAspectRatio="none">
+            <line x1="140" y1="230" x2="1060" y2="230" stroke="rgba(148,163,184,.18)" stroke-width="1" />
+            <path d="M 140 230 C 260 230, 280 230, 360 230" stroke="rgba(148,163,184,.12)" stroke-width="1" fill="none" />
+            <path d="M 360 230 C 480 230, 500 230, 580 230" stroke="rgba(148,163,184,.12)" stroke-width="1" fill="none" />
+            <path d="M 580 230 C 700 230, 720 230, 800 230" stroke="rgba(148,163,184,.12)" stroke-width="1" fill="none" />
+            <path d="M 800 230 C 920 230, 940 230, 1060 230" stroke="rgba(148,163,184,.12)" stroke-width="1" fill="none" />
+          </svg>
+
+          <div class="node" style="left:60px; top:260px">Warum KI-Antworten für Entscheidungen nicht ausreichen<span class="meta">Start</span></div>
+
+          <div class="node small" style="left:280px; top:110px">Was GraphRAG strukturell anders macht als klassisches RAG<span class="meta">Struktur</span></div>
+          <div class="node small" style="left:280px; top:310px">Kontextdisziplin: Warum weniger Kontext oft bessere Antworten erzeugt<span class="meta">Struktur</span></div>
+
+          <div class="node small" style="left:500px; top:110px">Qualitätskriterien für ein produktives GraphRAG-System<span class="meta">Qualität</span></div>
+          <div class="node small" style="left:500px; top:310px">Prompt-Transparenz als Vertrauensfaktor<span class="meta">Qualität</span></div>
+
+          <div class="node small" style="left:720px; top:110px">GraphRAG als Entscheidungs-Interface für Organisationen<span class="meta">Organisation</span></div>
+          <div class="node small" style="left:720px; top:310px">System Thinking als idealer Use Case für GraphRAG<span class="meta">Organisation</span></div>
+
+          <div class="node focus" style="left:940px; top:220px">Von plausiblen Antworten zu prüfbaren Entscheidungen<span class="meta">Outcome</span></div>
+        </div>
+        <div class="legend">
+          <span class="pill">Dark, technisch</span>
+          <span class="pill">Nur Struktur</span>
+          <span class="pill">Hover-ready Optik</span>
+        </div>
+      </section>
+
+      <!-- D: Hybrid -->
+      <section class="stage hybrid" data-variant="d" hidden>
+        <div class="stageHead">
+          <div class="stageTitle">Hybrid: Zonen + klare Achse</div>
+          <div class="badge">read only</div>
+        </div>
+        <div class="canvas">
+          <div class="hint"></div>
+
+          <div class="clabel" style="left:92px; top:60px">Problemraum</div>
+          <div class="clabel" style="left:312px; top:60px">Struktur</div>
+          <div class="clabel" style="left:532px; top:60px">Qualität</div>
+          <div class="clabel" style="left:752px; top:60px">Organisation</div>
+          <div class="clabel" style="left:972px; top:60px">Positionierung</div>
+
+          <svg class="lines" viewBox="0 0 1200 460" preserveAspectRatio="none">
+            <path d="M 170 230 C 260 210, 280 210, 390 230" stroke="rgba(37,99,235,.16)" stroke-width="1" fill="none" />
+            <path d="M 390 230 C 480 250, 500 250, 610 230" stroke="rgba(37,99,235,.16)" stroke-width="1" fill="none" />
+            <path d="M 610 230 C 700 210, 720 210, 830 230" stroke="rgba(37,99,235,.16)" stroke-width="1" fill="none" />
+            <path d="M 830 230 C 920 250, 940 250, 1050 230" stroke="rgba(37,99,235,.16)" stroke-width="1" fill="none" />
+          </svg>
+
+          <div class="node" style="left:60px; top:250px">Warum KI-Antworten für Entscheidungen nicht ausreichen<span class="meta">Problemraum</span></div>
+
+          <div class="node small" style="left:280px; top:120px">Was GraphRAG strukturell anders macht als klassisches RAG<span class="meta">Struktur</span></div>
+          <div class="node small" style="left:280px; top:300px">Kontextdisziplin: Warum weniger Kontext oft bessere Antworten erzeugt<span class="meta">Struktur</span></div>
+
+          <div class="node small" style="left:500px; top:110px">Qualitätskriterien für ein produktives GraphRAG-System<span class="meta">Qualität</span></div>
+          <div class="node small" style="left:500px; top:305px">Prompt-Transparenz als Vertrauensfaktor<span class="meta">Qualität</span></div>
+
+          <div class="node small" style="left:720px; top:120px">GraphRAG als Entscheidungs-Interface für Organisationen<span class="meta">Organisation</span></div>
+          <div class="node small" style="left:720px; top:300px">System Thinking als idealer Use Case für GraphRAG<span class="meta">Organisation</span></div>
+
+          <div class="node focus" style="left:940px; top:210px">Von plausiblen Antworten zu prüfbaren Entscheidungen<span class="meta">Positionierung</span></div>
+        </div>
+        <div class="legend">
+          <span class="pill">Zonen ohne Dominanz</span>
+          <span class="pill">Achse sichtbar</span>
+          <span class="pill">Sehr nahe am Produktlook</span>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <script>
+    const tabs = Array.from(document.querySelectorAll('.tab'));
+    const stages = Array.from(document.querySelectorAll('[data-variant]'));
+
+    function setVariant(id){
+      for(const t of tabs){
+        t.setAttribute('aria-selected', String(t.dataset.target === id));
+      }
+      for(const s of stages){
+        s.hidden = s.dataset.variant !== id;
+      }
+    }
+
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => setVariant(btn.dataset.target));
+    });
+  </script>
+</body>
+</html>
