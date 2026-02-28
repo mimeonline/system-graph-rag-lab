@@ -3,6 +3,7 @@ import { TrackedPageView } from "@/components/molecules/tracked-page-view";
 import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
 import { ExecutiveHeroGraph } from "@/features/landing/molecules/ExecutiveHeroGraph";
+import { LandingReveal } from "@/features/landing/molecules/LandingReveal";
 
 export function ExecutiveLandingTemplate(): React.JSX.Element {
   return (
@@ -12,7 +13,8 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
 
       <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8">
         <div className="mx-auto w-full max-w-295 space-y-12">
-          <section className="space-y-4">
+          <LandingReveal>
+            <section className="space-y-4">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-700">
               Executive Landing
             </p>
@@ -66,13 +68,15 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
               </div>
               </div>
 
-              <div className="w-full max-w-[560px] self-start justify-self-center rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 lg:justify-self-end">
+              <div className="w-full max-w-[560px] self-start justify-self-center rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-4 sm:p-5 lg:justify-self-end">
                 <ExecutiveHeroGraph />
               </div>
             </div>
-          </section>
+            </section>
+          </LandingReveal>
 
-          <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-slate-50 py-10 sm:py-12">
+          <LandingReveal>
+            <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-gradient-to-b from-slate-100 to-slate-50 py-10 sm:py-12">
             <div className="mx-auto w-full max-w-295 space-y-5 px-4 sm:px-6">
               <div className="space-y-1.5">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">SYSTEMISCHE GRENZE</p>
@@ -136,12 +140,14 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
                 Produktentscheidungen braucht es sichtbare Struktur.
               </p>
             </div>
-          </section>
+            </section>
+          </LandingReveal>
 
-          <section
-            id="rag-vs-graphrag"
-            className="relative left-1/2 right-1/2 -mx-[50vw] w-screen py-10 sm:py-12"
-          >
+          <LandingReveal>
+            <section
+              id="rag-vs-graphrag"
+              className="relative left-1/2 right-1/2 -mx-[50vw] w-screen py-10 sm:py-12"
+            >
             <div className="mx-auto w-full max-w-295 space-y-5 px-4 sm:px-6">
               <div className="space-y-1.5">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-700">VERGLEICH</p>
@@ -225,9 +231,11 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
                 </div>
               </div>
             </div>
-          </section>
+            </section>
+          </LandingReveal>
 
-          <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-slate-50 py-10 sm:py-12">
+          <LandingReveal>
+            <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-gradient-to-b from-slate-50 to-slate-100 py-10 sm:py-12">
             <div className="mx-auto w-full max-w-295 px-4 sm:px-6">
               <div className="text-center">
                 <h2 className="text-lg font-semibold text-slate-900 sm:text-xl">
@@ -245,7 +253,8 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
                 />
               </div>
             </div>
-          </section>
+            </section>
+          </LandingReveal>
         </div>
       </main>
 
