@@ -46,14 +46,6 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
                   payload={{ target: "story-graphrag" }}
                   className="inline-flex items-center text-sky-700 underline decoration-sky-300 underline-offset-4 transition hover:text-sky-800"
                 />
-                <span className="text-slate-400">·</span>
-                <TrackedLink
-                  href="/lab/multi-agent"
-                  label="Multi-Agent Lab"
-                  eventName="blog_quicklink_click"
-                  payload={{ target: "lab-multi-agent" }}
-                  className="inline-flex items-center text-sky-700 underline decoration-sky-300 underline-offset-4 transition hover:text-sky-800"
-                />
               </div>
             </div>
           </section>

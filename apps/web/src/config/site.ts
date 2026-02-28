@@ -34,9 +34,8 @@ export const SOCIAL_CTA: SiteCTA[] = [
 export const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Demo", href: "/demo" },
-  { label: "Blog", href: "/blog" },
   { label: "GraphRAG Story", href: "/story/graphrag" },
-  { label: "Multi-Agent Lab", href: "/lab/multi-agent" },
+  { label: "Blog", href: "/blog" },
 ] as const;
 
 export function withCanonical(pathname: string): string {
