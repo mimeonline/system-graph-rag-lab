@@ -1,26 +1,23 @@
 import type { Metadata } from "next";
 import { withCanonical } from "@/config/site";
-import { HomeTemplate } from "@/features/home/templates/HomeTemplate";
+import { ExecutiveLandingTemplate } from "@/features/landing/templates/ExecutiveLandingTemplate";
 
 export const metadata: Metadata = {
-  title: "System GraphRAG Lab | Public MVP",
+  title: "System GraphRAG Lab | Executive Landing",
   description:
-    "Live-Demo: Wie GraphRAG aus Frage, Kontext, Knoten und Belegen eine nachvollziehbare Antwort erzeugt.",
+    "Nachvollziehbare AI Entscheidungen mit GraphRAG: Knoten, Kanten und Belege statt Blackbox-Antworten.",
   alternates: {
     canonical: withCanonical("/"),
   },
   openGraph: {
-    title: "System GraphRAG Lab | Public MVP",
+    title: "System GraphRAG Lab | Executive Landing",
     description:
-      "Live-Demo: Wie GraphRAG aus Frage, Kontext, Knoten und Belegen eine nachvollziehbare Antwort erzeugt.",
+      "Nachvollziehbare AI Entscheidungen mit GraphRAG: Knoten, Kanten und Belege statt Blackbox-Antworten.",
     url: withCanonical("/"),
     type: "website",
   },
 };
 
-/**
- * Home route entry point that delegates rendering to the home feature template.
- */
 export default function Home(): React.JSX.Element {
-  return <HomeTemplate />;
+  return <ExecutiveLandingTemplate />;
 }
