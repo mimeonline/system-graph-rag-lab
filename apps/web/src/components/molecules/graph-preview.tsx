@@ -1339,17 +1339,19 @@ export function GraphPreview({
       ) : null}
 
       {visibleLegendItems.length > 0 ? (
-        <div className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 bg-slate-50 px-2 py-2">
-          <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Legende</span>
-          {visibleLegendItems.map((item) => (
-            <span
-              key={item.key}
-              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-2 py-1 text-xs text-slate-700"
-            >
-              <span className={`h-2.5 w-2.5 rounded-full border ${item.bgClass} ${item.borderClass}`} />
-              {item.label}
-            </span>
-          ))}
+        <div className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-2">
+          <span className="block px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Legende</span>
+          <div className="mt-1 flex items-center gap-2 whitespace-nowrap">
+            {visibleLegendItems.map((item) => (
+              <span
+                key={item.key}
+                className="inline-flex shrink-0 items-center gap-1 rounded-full border border-slate-200 bg-white px-1.5 py-0.5 text-[11px] text-slate-700"
+              >
+                <span className={`h-2 w-2 rounded-full border ${item.bgClass} ${item.borderClass}`} />
+                {item.label}
+              </span>
+            ))}
+          </div>
         </div>
       ) : null}
 

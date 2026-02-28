@@ -805,11 +805,11 @@ export function QueryPanel(): React.JSX.Element {
             <BookOpen className="h-4.5 w-4.5 text-sky-700" aria-hidden />
             <span>Kontext und Tools</span>
           </h2>
-          <div className="flex w-full flex-wrap gap-2">
+          <div className="flex w-full gap-2">
             <button
               type="button"
               onClick={() => void openExplorer("system")}
-              className="inline-flex items-center gap-1 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 transition hover:bg-indigo-100"
+              className="inline-flex flex-1 items-center justify-center gap-1 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 transition hover:bg-indigo-100"
             >
               <Network className="h-3.5 w-3.5" aria-hidden />
               System Thinking Gesamtgraph
@@ -817,7 +817,7 @@ export function QueryPanel(): React.JSX.Element {
             <button
               type="button"
               onClick={() => void openExplorer("query")}
-              className="inline-flex items-center gap-1 rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700 transition hover:bg-sky-100"
+              className="inline-flex flex-1 items-center justify-center gap-1 rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700 transition hover:bg-sky-100"
             >
               <Search className="h-3.5 w-3.5" aria-hidden />
               Graph Explorer
