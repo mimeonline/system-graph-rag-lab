@@ -608,12 +608,15 @@ export function GraphEssaysSurface(): React.JSX.Element {
 
   return (
     <TooltipProvider delayDuration={70}>
-      <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen overflow-hidden bg-[linear-gradient(180deg,#0b2b57_0%,#0c3a74_100%)] py-6 sm:py-8">
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(110%_70%_at_18%_22%,rgba(147,197,253,0.18),transparent_70%),radial-gradient(90%_60%_at_78%_72%,rgba(96,165,250,0.16),transparent_75%)]" />
-        <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0)_35%,rgba(15,23,42,0.24)_100%)]" />
+      <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen overflow-hidden bg-slate-100 py-6 sm:py-8">
 
-        <div className="relative mx-auto w-full max-w-[1520px] px-4 sm:px-6">
-          <div ref={graphBoxRef} className="relative h-[1260px] w-full overflow-hidden md:h-[640px]">
+        <div className="relative mx-auto w-full max-w-[1520px] px-4 md:px-16 lg:px-20 xl:px-24">
+          <div
+            ref={graphBoxRef}
+            className="relative h-[1260px] w-full overflow-hidden rounded-2xl border border-slate-200/10 bg-[linear-gradient(180deg,#0b2b57_0%,#0c3a74_100%)] shadow-[0_18px_45px_rgba(2,8,23,0.28)] md:h-[640px]"
+          >
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(110%_70%_at_18%_22%,rgba(147,197,253,0.18),transparent_70%),radial-gradient(90%_60%_at_78%_72%,rgba(96,165,250,0.16),transparent_75%)]" />
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0)_35%,rgba(15,23,42,0.24)_100%)]" />
             <div ref={containerRef} className="h-full w-full" aria-label="Graph Essays Cytoscape Surface" />
 
             <div className="absolute right-3 top-3 z-40 flex items-center gap-1 rounded-md border border-slate-300/35 bg-slate-950/35 p-1 backdrop-blur">
