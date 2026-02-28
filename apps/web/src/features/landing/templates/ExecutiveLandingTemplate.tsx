@@ -12,7 +12,7 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
       <SiteHeader />
 
       <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8">
-        <div className="mx-auto w-full max-w-295 space-y-12">
+        <div className="mx-auto w-full max-w-295 space-y-14">
           <LandingReveal>
             <section className="space-y-4">
             <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-700">
@@ -24,11 +24,11 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
                 Nachvollziehbare KI Entscheidungen mit GraphRAG
               </h1>
               <p className="max-w-[70ch] text-[1rem] leading-7 text-slate-700">
-                GraphRAG macht Herleitung prüfbar: Belege, Beziehungen und Ableitungspfad werden sichtbar.
-                Für Architektur und Produktentscheidungen, bei denen LLM Antworten ohne Struktur nicht ausreichen.
+                GraphRAG macht Herleitung prüfbar: Belege, Beziehungen und Ableitungspfad werden sichtbar
+                und machen Entscheidungen belastbarer.
               </p>
-              <p className="max-w-[70ch] text-sm leading-6 text-slate-600">
-                Interaktive Demo mit Neo4j, kontrolliertem Retrieval und expliziter Beziehungslogik.
+              <p className="max-w-[70ch] text-xs font-medium uppercase tracking-[0.08em] text-slate-500">
+                Vertrauen durch Nachvollziehbarkeit: Neo4j, kontrolliertes Retrieval, explizite Beziehungslogik.
               </p>
               <div className="flex flex-wrap items-center gap-3">
                 <TrackedLink
@@ -46,7 +46,7 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
                     target: "#rag-vs-graphrag",
                     surface: "hero-secondary",
                   }}
-                  className="inline-flex rounded-md border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
+                  className="inline-flex rounded-md border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-700"
                 />
               </div>
               <div className="space-y-2">
@@ -76,7 +76,7 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
           </LandingReveal>
 
           <LandingReveal>
-            <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-gradient-to-b from-slate-100 to-slate-50 py-10 sm:py-12">
+            <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-gradient-to-b from-slate-100 to-slate-50 py-12 sm:py-14">
             <div className="mx-auto w-full max-w-295 space-y-5 px-4 sm:px-6">
               <div className="space-y-1.5">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">SYSTEMISCHE GRENZE</p>
@@ -146,7 +146,7 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
           <LandingReveal>
             <section
               id="rag-vs-graphrag"
-              className="relative left-1/2 right-1/2 -mx-[50vw] w-screen py-10 sm:py-12"
+              className="relative left-1/2 right-1/2 -mx-[50vw] w-screen py-12 sm:py-14"
             >
             <div className="mx-auto w-full max-w-295 space-y-5 px-4 sm:px-6">
               <div className="space-y-1.5">
@@ -162,32 +162,32 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
                 <table className="w-full text-left text-sm">
                   <thead className="bg-slate-50">
                     <tr className="text-slate-600">
-                      <th className="px-4 py-3 font-semibold">Dimension</th>
-                      <th className="px-4 py-3 font-semibold">RAG</th>
-                      <th className="px-4 py-3 font-semibold">GraphRAG</th>
+                      <th className="px-4 py-2.5 font-semibold">Dimension</th>
+                      <th className="px-4 py-2.5 font-semibold">RAG</th>
+                      <th className="px-4 py-2.5 font-semibold">GraphRAG</th>
                     </tr>
                   </thead>
                   <tbody className="divide-y divide-slate-200 text-slate-700">
                     <tr>
-                      <td className="px-4 py-3 font-medium text-slate-900">
+                      <td className="px-4 py-2.5 font-medium text-slate-900">
                         Auditierbarkeit
                       </td>
-                      <td className="px-4 py-3">Quellen oft lose, Herleitung bleibt implizit</td>
-                      <td className="px-4 py-3">Belegpfade explizit, Entscheidung prüfbar</td>
+                      <td className="px-4 py-2.5"><span className="font-medium text-slate-900">Quellen oft lose</span>, Herleitung bleibt implizit</td>
+                      <td className="px-4 py-2.5"><span className="font-medium text-slate-900">Belegpfade explizit</span>, Entscheidung prüfbar</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-3 font-medium text-slate-900">
+                      <td className="px-4 py-2.5 font-medium text-slate-900">
                         Stabilität bei Nachfragen
                       </td>
-                      <td className="px-4 py-3">driftet häufiger bei vernetzten Fragen</td>
-                      <td className="px-4 py-3">stabiler durch strukturierte Beziehungen</td>
+                      <td className="px-4 py-2.5"><span className="font-medium text-slate-900">driftet häufiger</span> bei vernetzten Fragen</td>
+                      <td className="px-4 py-2.5"><span className="font-medium text-slate-900">stabiler</span> durch strukturierte Beziehungen</td>
                     </tr>
                     <tr>
-                      <td className="px-4 py-3 font-medium text-slate-900">
+                      <td className="px-4 py-2.5 font-medium text-slate-900">
                         Entscheidungsfähigkeit
                       </td>
-                      <td className="px-4 py-3">Antwort im Fließtext</td>
-                      <td className="px-4 py-3">Ableitung als Pfad, leichter in Maßnahmen zu übersetzen</td>
+                      <td className="px-4 py-2.5"><span className="font-medium text-slate-900">Antwort im Fließtext</span></td>
+                      <td className="px-4 py-2.5"><span className="font-medium text-slate-900">Ableitung als Pfad</span>, leichter in Maßnahmen zu übersetzen</td>
                     </tr>
                   </tbody>
                 </table>
@@ -235,7 +235,7 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
           </LandingReveal>
 
           <LandingReveal>
-            <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-gradient-to-b from-slate-50 to-slate-100 py-10 sm:py-12">
+            <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-gradient-to-b from-slate-50 to-slate-100 py-12 sm:py-14">
             <div className="mx-auto w-full max-w-295 px-4 sm:px-6">
               <div className="text-center">
                 <h2 className="text-lg font-semibold text-slate-900 sm:text-xl">
