@@ -1,0 +1,38 @@
+<svg width="1400" height="820" viewBox="0 0 1400 820" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1400" height="820" fill="#F8FAFC"/>
+  <text x="80" y="90" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="700" fill="#0F172A">Von plausibel zu prüfbar</text>
+  <text x="80" y="132" font-family="Inter, Arial, sans-serif" font-size="24" fill="#475569">Warum reine LLM-Antworten für Entscheidungen nicht ausreichen</text>
+
+  <rect x="80" y="190" width="560" height="500" rx="18" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="2"/>
+  <text x="120" y="248" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="700" fill="#0F172A">LLM-only</text>
+
+  <rect x="120" y="286" width="480" height="82" rx="12" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="146" y="337" font-family="Inter, Arial, sans-serif" font-size="24" fill="#334155">Antwort wirkt plausibel</text>
+
+  <rect x="120" y="388" width="480" height="82" rx="12" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="146" y="439" font-family="Inter, Arial, sans-serif" font-size="24" fill="#334155">Herleitung bleibt implizit</text>
+
+  <rect x="120" y="490" width="480" height="82" rx="12" fill="#F8FAFC" stroke="#E2E8F0"/>
+  <text x="146" y="541" font-family="Inter, Arial, sans-serif" font-size="24" fill="#334155">Nachfragen erzeugen Drift</text>
+
+  <circle cx="350" cy="650" r="12" fill="#EF4444"/>
+  <text x="372" y="658" font-family="Inter, Arial, sans-serif" font-size="22" fill="#475569">Entscheidungsrisiko hoch</text>
+
+  <rect x="760" y="190" width="560" height="500" rx="18" fill="#FFFFFF" stroke="#93C5FD" stroke-width="2"/>
+  <text x="800" y="248" font-family="Inter, Arial, sans-serif" font-size="32" font-weight="700" fill="#0F172A">Mit Struktur</text>
+
+  <rect x="800" y="286" width="480" height="82" rx="12" fill="#F8FAFC" stroke="#DBEAFE"/>
+  <text x="826" y="337" font-family="Inter, Arial, sans-serif" font-size="24" fill="#334155">Konzepte explizit modelliert</text>
+
+  <rect x="800" y="388" width="480" height="82" rx="12" fill="#F8FAFC" stroke="#DBEAFE"/>
+  <text x="826" y="439" font-family="Inter, Arial, sans-serif" font-size="24" fill="#334155">Belegpfade sind sichtbar</text>
+
+  <rect x="800" y="490" width="480" height="82" rx="12" fill="#F8FAFC" stroke="#DBEAFE"/>
+  <text x="826" y="541" font-family="Inter, Arial, sans-serif" font-size="24" fill="#334155">Anschlussfragen bleiben konsistent</text>
+
+  <circle cx="1030" cy="650" r="12" fill="#22C55E"/>
+  <text x="1052" y="658" font-family="Inter, Arial, sans-serif" font-size="22" fill="#475569">Entscheidungsrisiko sinkt</text>
+
+  <path d="M660 440H740" stroke="#94A3B8" stroke-width="3" stroke-dasharray="10 8"/>
+  <path d="M728 430L742 440L728 450" stroke="#94A3B8" stroke-width="3" fill="none"/>
+</svg>

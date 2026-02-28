@@ -10,6 +10,7 @@ type TrackedLinkProps = {
   payload?: Record<string, string | number | boolean>;
   className?: string;
   external?: boolean;
+  icon?: React.ReactNode;
 };
 
 export function TrackedLink({
@@ -19,6 +20,7 @@ export function TrackedLink({
   payload,
   className,
   external = false,
+  icon,
 }: TrackedLinkProps): React.JSX.Element {
   const handleClick = () => {
     trackLiteEvent(eventName, payload);
@@ -33,6 +35,7 @@ export function TrackedLink({
         target="_blank"
         rel="noreferrer noopener"
       >
+        {icon ? <span className="mr-1.5 inline-flex items-center">{icon}</span> : null}
         {label}
       </a>
     );
@@ -40,6 +43,7 @@ export function TrackedLink({
 
   return (
     <Link href={href} className={className} onClick={handleClick}>
+      {icon ? <span className="mr-1.5 inline-flex items-center">{icon}</span> : null}
       {label}
     </Link>
   );
