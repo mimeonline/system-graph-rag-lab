@@ -1,6 +1,5 @@
 import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
-import { TrackedLink } from "@/components/molecules/tracked-link";
 import { TrackedPageView } from "@/components/molecules/tracked-page-view";
 import type { BlogPostSummary } from "@/features/blog/contracts";
 import { GraphEssaysSurface } from "@/features/blog/organisms/GraphEssaysSurface";
@@ -95,45 +94,30 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
     <div className="flex min-h-screen flex-col bg-white text-slate-900">
       <TrackedPageView page="/blog" />
       <SiteHeader />
-      <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8">
-        <div className="mx-auto w-full max-w-295 space-y-10 sm:space-y-12">
-          <section className="space-y-5 pt-1">
-            <p className="text-xs font-semibold uppercase tracking-[0.16em] text-sky-700">Graph Essays</p>
-            <h1 className="max-w-[20ch] text-[2rem] font-semibold tracking-tight text-slate-950 sm:text-[2.45rem]">Graph Essays</h1>
-            <p className="max-w-[64ch] text-base leading-7 text-slate-700">
-              Strukturierte Argumente für nachvollziehbare KI-Entscheidungen.
+
+      <main className="flex-1">
+        <section className="mx-auto w-full max-w-295 px-4 py-8 sm:px-6 sm:py-10">
+          <div className="space-y-4">
+            <h1 className="max-w-[20ch] text-[2rem] font-semibold tracking-tight text-slate-950 sm:text-[2.4rem]">Graph Essays</h1>
+            <p className="max-w-[66ch] text-base leading-7 text-slate-700">
+              Wie aus KI-Antworten belastbare Entscheidungen werden.
             </p>
             <p className="max-w-[76ch] text-sm leading-7 text-slate-600 sm:text-base">
-              Die Essays sind als Argumentationsgraph angeordnet. Jeder Knoten steht für einen präzisen Beitrag im
-              Gesamtfluss von Problemraum bis Positionierung.
+              Die Beiträge sind als zusammenhängender Gedankengang dargestellt – vom Problem bis zur Einordnung. Jeder Knoten steht für einen wichtigen Schritt im Argument.
             </p>
-            <div className="flex flex-wrap items-center gap-3">
-              <TrackedLink
-                href="/demo"
-                label="Demo starten"
-                eventName="blog_hero_cta_click"
-                payload={{ target: "/demo" }}
-                className="inline-flex rounded-md bg-sky-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-700"
-              />
-              <TrackedLink
-                href="/"
-                label="Zur Startseite"
-                eventName="blog_hero_cta_click"
-                payload={{ target: "/" }}
-                className="text-sm font-medium text-slate-600 underline decoration-slate-300 underline-offset-4 transition hover:text-slate-800"
-              />
-            </div>
-          </section>
+          </div>
+        </section>
 
-          <section className="space-y-4">
-            <div className="flex items-center justify-between gap-4 border-b border-slate-200 pb-3">
-              <h2 className="text-sm font-semibold uppercase tracking-[0.15em] text-slate-600">Argumentationsfluss</h2>
-              <p className="text-xs text-slate-500">Problemraum → Struktur → Qualität → Organisation → Positionierung</p>
-            </div>
-            <GraphEssaysSurface />
-          </section>
+        <section className="space-y-3 pb-2">
+          <div className="mx-auto flex w-full max-w-295 items-end justify-between gap-4 px-4 sm:px-6">
+            <h2 className="text-sm font-semibold uppercase tracking-[0.15em] text-slate-500">Argumentationsfluss</h2>
+            <p className="text-xs text-slate-500">Problemraum → Struktur → Qualität → Organisation → Positionierung</p>
+          </div>
+          <GraphEssaysSurface />
+        </section>
 
-          <section className="space-y-4 border-t border-slate-200 pt-6">
+        <section className="mx-auto w-full max-w-295 px-4 pb-10 pt-8 sm:px-6 sm:pb-12">
+          <div className="space-y-4 border-t border-slate-200 pt-6">
             <h2 className="text-sm font-semibold uppercase tracking-[0.15em] text-slate-600">Essays als Liste</h2>
             <div className="grid gap-3 sm:grid-cols-2">
               {ESSAY_GROUPS.map((group) => (
@@ -154,9 +138,10 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
                 </article>
               ))}
             </div>
-          </section>
-        </div>
+          </div>
+        </section>
       </main>
+
       <SiteFooter />
     </div>
   );
