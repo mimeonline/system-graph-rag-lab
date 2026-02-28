@@ -59,12 +59,18 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
       <main className="flex-1">
         <section className="mx-auto w-full max-w-295 px-4 py-8 sm:px-6 sm:py-10">
           <div className="space-y-4">
-            <h1 className="max-w-[20ch] text-[2rem] font-semibold tracking-tight text-slate-950 sm:text-[2.4rem]">Graph Essays</h1>
+            <h1 className="max-w-[32ch] text-[2rem] font-semibold tracking-tight text-slate-950 sm:text-[2.4rem]">Variante B – Deutlich systemischer</h1>
             <p className="max-w-[66ch] text-base leading-7 text-slate-700">
-              Wie aus KI-Antworten belastbare Entscheidungen werden.
+              Wie aus KI-Antworten belastbare Entscheidungen werden
             </p>
             <p className="max-w-[76ch] text-sm leading-7 text-slate-600 sm:text-base">
-              Die Beiträge sind als zusammenhängender Gedankengang dargestellt – vom Problem bis zur Einordnung. Jeder Knoten steht für einen wichtigen Schritt im Argument.
+              Die Beiträge sind nicht als lose Artikel gedacht, sondern als explizites Denkmodell. Der Argumentationsfluss beginnt im Problemraum: Warum reichen plausible KI-Antworten allein nicht aus?
+            </p>
+            <p className="max-w-[76ch] text-sm leading-7 text-slate-600 sm:text-base">
+              Darauf folgt die strukturelle Differenzierung von GraphRAG, die Ableitung von Qualitätskriterien für produktive Systeme und schließlich die organisatorische Einordnung.
+            </p>
+            <p className="max-w-[76ch] text-sm leading-7 text-slate-600 sm:text-base">
+              Jeder Knoten steht für einen klar definierten Schritt im Argument. Zusammen entsteht eine prüfbare Linie vom Ausgangsproblem bis zur Positionierung.
             </p>
           </div>
         </section>

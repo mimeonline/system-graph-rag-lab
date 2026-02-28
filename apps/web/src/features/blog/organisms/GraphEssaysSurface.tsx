@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import cytoscape, { type Core, type ElementDefinition, type StylesheetCSS } from "cytoscape";
+import { Focus, MousePointer2 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type EssayNodeKind = "cluster" | "essay";
@@ -134,6 +135,8 @@ const ROUTE_EDGES: ElementDefinition[] = [
   { data: { id: "route-10", source: "essay-organization-2", target: "essay-positioning-1", lane: "bridge" } },
 ];
 
+const MIN_DESKTOP_CANVAS_WIDTH = 1020;
+
 function isCyActive(cy: Core | null | undefined): cy is Core {
   if (!cy) {
     return false;
@@ -197,25 +200,7 @@ function applyDeterministicPositions(cy: Core, mode: FlowMode, width: number, he
   const rightPad = mode === "desktop" ? clamp(safeWidth * 0.1, 150, 230) : safeWidth * 0.5;
 
   const desktopColumns = mode === "desktop"
-    ? (() => {
-        const usableWidth = safeWidth - leftPad - rightPad;
-        const centerX = safeWidth * 0.5;
-        const innerGap = clamp(usableWidth * 0.175, 210, 280);
-        const outerGap = clamp(usableWidth * 0.225, 250, 330);
-        const target = [
-          centerX - innerGap - outerGap,
-          centerX - innerGap,
-          centerX,
-          centerX + innerGap,
-          centerX + innerGap + outerGap,
-        ];
-        const minTarget = Math.min(...target);
-        const maxTarget = Math.max(...target);
-        const targetSpan = Math.max(1, maxTarget - minTarget);
-        const availableSpan = Math.max(1, safeWidth - leftPad - rightPad);
-        const scale = targetSpan > availableSpan ? availableSpan / targetSpan : 1;
-        return target.map((value) => leftPad + (value - minTarget) * scale);
-      })()
+    ? [0, 1, 2, 3, 4].map((index) => leftPad + ((safeWidth - leftPad - rightPad) / 4) * index)
     : [];
 
   const mobileTop = Math.max(120, safeHeight * 0.11);
@@ -466,7 +451,8 @@ export function GraphEssaysSurface(): React.JSX.Element {
       if (!isCyActive(cy) || !container) {
         return;
       }
-      const mode: FlowMode = window.innerWidth >= 980 ? "desktop" : "mobile";
+      const canvasWidth = container.clientWidth;
+      const mode: FlowMode = canvasWidth >= MIN_DESKTOP_CANVAS_WIDTH ? "desktop" : "mobile";
       applyDeterministicPositions(cy, mode, container.clientWidth, container.clientHeight);
       setTooltipState((current) => ({ ...current, open: false }));
     };
@@ -617,23 +603,28 @@ export function GraphEssaysSurface(): React.JSX.Element {
           >
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(110%_70%_at_18%_22%,rgba(147,197,253,0.18),transparent_70%),radial-gradient(90%_60%_at_78%_72%,rgba(96,165,250,0.16),transparent_75%)]" />
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0)_35%,rgba(15,23,42,0.24)_100%)]" />
+            <p className="pointer-events-none absolute left-3 top-3 z-40 inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-200/85 md:left-4 md:top-4">
+              <MousePointer2 className="h-3.5 w-3.5 text-slate-200/90" aria-hidden />
+              <span>Mit Maus verschiebbar, per Mausrad zoombar.</span>
+            </p>
             <div ref={containerRef} className="h-full w-full" aria-label="Graph Essays Cytoscape Surface" />
 
             <div className="absolute right-3 top-3 z-40 flex items-center gap-1 rounded-md border border-slate-300/35 bg-slate-950/35 p-1 backdrop-blur">
               <button
                 type="button"
-                className="rounded px-2 py-1 text-xs font-semibold text-slate-100 transition hover:bg-white/10"
+                className="inline-flex items-center gap-1 rounded px-2 py-1 text-xs font-semibold text-slate-100 transition hover:bg-white/10"
                 onClick={() => {
                   const cy = cyRef.current;
                   const container = containerRef.current;
                   if (!isCyActive(cy) || !container) {
                     return;
                   }
-                  const mode: FlowMode = window.innerWidth >= 980 ? "desktop" : "mobile";
+                  const mode: FlowMode = container.clientWidth >= MIN_DESKTOP_CANVAS_WIDTH ? "desktop" : "mobile";
                   applyDeterministicPositions(cy, mode, container.clientWidth, container.clientHeight);
                 }}
               >
-                Fit
+                <Focus className="h-3 w-3" aria-hidden />
+                <span>Fit</span>
               </button>
               <button
                 type="button"
