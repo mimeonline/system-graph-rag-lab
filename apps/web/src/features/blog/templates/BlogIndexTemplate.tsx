@@ -8,82 +8,43 @@ type BlogIndexTemplateProps = {
   posts: BlogPostSummary[];
 };
 
-type GraphEssayEntry = {
+type FlowStep = {
+  step: string;
   title: string;
-  thesis: string;
+  description: string;
   slug: string;
 };
 
-type GraphEssayGroup = {
-  title: string;
-  entries: GraphEssayEntry[];
-};
-
-const ESSAY_GROUPS: GraphEssayGroup[] = [
+const FLOW_STEPS: FlowStep[] = [
   {
+    step: "01",
     title: "Problemraum",
-    entries: [
-      {
-        title: "Warum KI-Antworten für Entscheidungen nicht ausreichen",
-        thesis: "Plausibilität ersetzt keine nachvollziehbare Herleitung in entscheidungsrelevanten Kontexten.",
-        slug: "warum-ki-antworten-fuer-entscheidungen-nicht-ausreichen",
-      },
-    ],
+    description: "Warum reine KI-Antworten nicht ausreichen",
+    slug: "warum-ki-antworten-fuer-entscheidungen-nicht-ausreichen",
   },
   {
-    title: "Struktur & Differenzierung",
-    entries: [
-      {
-        title: "Was GraphRAG strukturell anders macht als klassisches RAG",
-        thesis: "GraphRAG ergänzt Textretrieval um explizite Beziehungen und macht dadurch den Argumentationspfad sichtbar.",
-        slug: "was-graphrag-strukturell-anders-macht-als-klassisches-rag",
-      },
-      {
-        title: "Kontextdisziplin: Warum weniger Kontext oft bessere Antworten erzeugt",
-        thesis: "Gezielte Kontextauswahl reduziert Rauschen und erhöht die Belastbarkeit der Antwort.",
-        slug: "kontextdisziplin-warum-weniger-kontext-oft-bessere-antworten-erzeugt",
-      },
-    ],
+    step: "02",
+    title: "Struktur",
+    description: "Was GraphRAG strukturell anders macht",
+    slug: "was-graphrag-strukturell-anders-macht-als-klassisches-rag",
   },
   {
-    title: "Qualitäts- & Architekturprinzipien",
-    entries: [
-      {
-        title: "Qualitätskriterien für ein produktives GraphRAG-System",
-        thesis: "Ein produktives System braucht klare Qualitätskriterien für Retrieval, Herleitung und Antwortstabilität.",
-        slug: "qualitaetskriterien-fuer-ein-produktives-graphrag-system",
-      },
-      {
-        title: "Prompt-Transparenz als Vertrauensfaktor",
-        thesis: "Transparente Prompt-Bausteine machen die Antwortentstehung prüfbar und diskutierbar.",
-        slug: "prompt-transparenz-als-vertrauensfaktor",
-      },
-    ],
+    step: "03",
+    title: "Qualität",
+    description: "Welche Kriterien ein produktives System erfüllen muss",
+    slug: "qualitaetskriterien-fuer-ein-produktives-graphrag-system",
   },
   {
-    title: "Organisation & Anwendung",
-    entries: [
-      {
-        title: "GraphRAG als Entscheidungs-Interface für Organisationen",
-        thesis: "GraphRAG verbindet Fachkontext, Belege und Entscheidungspfade in einer arbeitsfähigen Oberfläche.",
-        slug: "graphrag-als-entscheidungs-interface-fuer-organisationen",
-      },
-      {
-        title: "System Thinking als idealer Use Case für GraphRAG",
-        thesis: "System Thinking zeigt, warum relationale Kontextstruktur in komplexen Problemräumen entscheidend ist.",
-        slug: "system-thinking-als-idealer-use-case-fuer-graphrag",
-      },
-    ],
+    step: "04",
+    title: "Organisation",
+    description: "Wie GraphRAG als Entscheidungs-Interface wirkt",
+    slug: "graphrag-als-entscheidungs-interface-fuer-organisationen",
   },
   {
+    step: "05",
     title: "Positionierung",
-    entries: [
-      {
-        title: "Von plausiblen Antworten zu prüfbaren Entscheidungen",
-        thesis: "Der Mehrwert entsteht, wenn Antworten nicht nur plausibel klingen, sondern belastbar überprüft werden können.",
-        slug: "von-plausiblen-antworten-zu-pruefbaren-entscheidungen",
-      },
-    ],
+    description: "Von plausiblen Antworten zu prüfbaren Entscheidungen",
+    slug: "von-plausiblen-antworten-zu-pruefbaren-entscheidungen",
   },
 ];
 
@@ -116,28 +77,40 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
           <GraphEssaysSurface />
         </section>
 
-        <section className="mx-auto w-full max-w-295 px-4 pb-10 pt-8 sm:px-6 sm:pb-12">
-          <div className="space-y-4 border-t border-slate-200 pt-6">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.15em] text-slate-600">Essays als Liste</h2>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {ESSAY_GROUPS.map((group) => (
-                <article key={group.title} className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
-                  <h3 className="text-sm font-semibold tracking-tight text-slate-900">{group.title}</h3>
-                  <ul className="mt-3 space-y-2">
-                    {group.entries.map((entry) => (
-                      <li key={entry.slug}>
-                        <a
-                          href={`/blog/${entry.slug}`}
-                          className="text-sm text-slate-700 underline decoration-slate-300 underline-offset-2 transition hover:text-slate-900 hover:decoration-slate-500"
-                        >
-                          {entry.title}
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
+        <section className="bg-slate-50 px-4 py-20 text-slate-900 sm:px-6">
+          <div className="mx-auto w-full max-w-[1100px] space-y-8">
+            <div className="space-y-3">
+              <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-[2rem]">Vom Problem zur Position</h2>
+              <p className="max-w-[72ch] text-sm leading-7 text-slate-600 sm:text-base">
+                Der Gedankengang folgt einer klaren Logik – von der Ausgangsfrage bis zur Einordnung.
+              </p>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-5">
+              {FLOW_STEPS.map((flowStep) => (
+                <article
+                  key={flowStep.step}
+                  className="flex h-full flex-col rounded-xl border border-slate-200 bg-white/90 p-4 text-slate-900"
+                >
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                    Schritt {flowStep.step}
+                  </p>
+                  <h3 className="mt-2 text-base font-semibold tracking-tight">{flowStep.title}</h3>
+                  <p className="mt-2 text-sm leading-6 text-slate-600">{flowStep.description}</p>
+                  <a
+                    href={`/blog/${flowStep.slug}`}
+                    className="mt-auto pt-4 inline-flex text-xs font-semibold uppercase tracking-[0.12em] text-slate-700 underline decoration-slate-300 underline-offset-4 transition hover:text-slate-900 hover:decoration-slate-500"
+                  >
+                    Zum Essay
+                  </a>
                 </article>
               ))}
             </div>
+
+            <p className="text-sm leading-7 text-slate-500">
+              Du kannst den Gedankengang chronologisch lesen –<br />
+              oder direkt an dem Punkt einsteigen, der dich aktuell beschäftigt.
+            </p>
           </div>
         </section>
       </main>
