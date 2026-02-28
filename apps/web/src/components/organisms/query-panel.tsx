@@ -3,6 +3,7 @@
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
+import { BookOpen, GitBranch, History, Network, Route, Scale, Search, ShieldCheck } from "lucide-react";
 import dynamic from "next/dynamic";
 
 import type { QuerySuggestionGroup } from "@/components/molecules/query-input";
@@ -530,7 +531,10 @@ export function QueryPanel(): React.JSX.Element {
   return (
     <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(330px,37%)]">
       <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
-        <h2 className="text-base font-semibold text-slate-900">Antwortführung</h2>
+        <h2 className="flex items-center gap-2 text-base font-semibold text-slate-900">
+          <Route className="h-4 w-4 text-sky-700" aria-hidden />
+          <span>Antwortführung</span>
+        </h2>
 
         <PipelineStepper status={status} />
 
@@ -549,7 +553,10 @@ export function QueryPanel(): React.JSX.Element {
         {status === "loading" ? (
           <section className="rounded-xl border border-sky-200 bg-sky-50 p-3">
             <div className="mb-1 flex items-center justify-between">
-              <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Antwortaufbau</h3>
+              <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+                <Route className="h-3.5 w-3.5" aria-hidden />
+                <span>Antwortaufbau</span>
+              </h3>
               <span className="text-xs text-sky-700">läuft</span>
             </div>
             <p className="text-xs leading-6 text-slate-700">
@@ -561,7 +568,10 @@ export function QueryPanel(): React.JSX.Element {
 
         <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
           <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Quality Gate</h3>
+            <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+              <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
+              <span>Quality Gate</span>
+            </h3>
             <span className={`rounded-full px-2 py-1 text-[11px] font-semibold ${getQualityStateClasses(overallQualityState)}`}>
               {getOverallQualityLabel(overallQualityState)}
             </span>
@@ -579,7 +589,10 @@ export function QueryPanel(): React.JSX.Element {
 
         <section className="rounded-xl border border-slate-200 bg-white p-3">
           <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Node-Auswahl fürs LLM</h3>
+            <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+              <Network className="h-3.5 w-3.5" aria-hidden />
+              <span>Node-Auswahl fürs LLM</span>
+            </h3>
             <span className="text-xs text-slate-500">Retrieval-Transparenz</span>
           </div>
           <p className="text-xs leading-6 text-slate-700">
@@ -604,7 +617,10 @@ export function QueryPanel(): React.JSX.Element {
 
         <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
           <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">RAG vs GraphRAG</h3>
+            <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+              <GitBranch className="h-3.5 w-3.5" aria-hidden />
+              <span>RAG vs GraphRAG</span>
+            </h3>
             <span className="text-xs text-slate-500">3 Kernunterschiede</span>
           </div>
           <ul className="space-y-1 text-xs leading-6 text-slate-700">
@@ -622,7 +638,10 @@ export function QueryPanel(): React.JSX.Element {
 
         <section className="rounded-xl border border-slate-200 bg-white p-3">
           <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">LLM-only vs GraphRAG</h3>
+            <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+              <Scale className="h-3.5 w-3.5" aria-hidden />
+              <span>LLM-only vs GraphRAG</span>
+            </h3>
             <span className="text-xs text-slate-500">Warum der Graph hilft</span>
           </div>
           <div className="grid gap-2 text-xs text-slate-700 sm:grid-cols-2">
@@ -706,7 +725,10 @@ export function QueryPanel(): React.JSX.Element {
 
         <section className="rounded-xl border border-slate-200/70 bg-white/60 p-3">
           <div className="mb-2 flex items-center justify-between">
-            <h3 className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Session Memory</h3>
+            <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+              <History className="h-3.5 w-3.5" aria-hidden />
+              <span>Session Memory</span>
+            </h3>
             <div className="flex items-center gap-2">
               <span className="text-xs text-slate-500">lokal gespeichert</span>
               <button
@@ -778,21 +800,26 @@ export function QueryPanel(): React.JSX.Element {
       </section>
 
       <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
-        <div className="flex items-center justify-between gap-3">
-          <h2 className="text-base font-semibold text-slate-900">Kontext und Tools</h2>
-          <div className="flex items-center gap-2">
+        <div className="space-y-3">
+          <h2 className="flex items-center gap-2 text-base font-semibold text-slate-900">
+            <BookOpen className="h-4.5 w-4.5 text-sky-700" aria-hidden />
+            <span>Kontext und Tools</span>
+          </h2>
+          <div className="flex w-full flex-wrap gap-2">
             <button
               type="button"
               onClick={() => void openExplorer("system")}
-              className="rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 transition hover:bg-indigo-100"
+              className="inline-flex items-center gap-1 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 transition hover:bg-indigo-100"
             >
+              <Network className="h-3.5 w-3.5" aria-hidden />
               System Thinking Gesamtgraph
             </button>
             <button
               type="button"
               onClick={() => void openExplorer("query")}
-              className="rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700 transition hover:bg-sky-100"
+              className="inline-flex items-center gap-1 rounded-full border border-sky-200 bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700 transition hover:bg-sky-100"
             >
+              <Search className="h-3.5 w-3.5" aria-hidden />
               Graph Explorer
             </button>
           </div>
@@ -802,8 +829,9 @@ export function QueryPanel(): React.JSX.Element {
 
         <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
-              Referenzkonzepte
+            <h3 className="flex items-center gap-1.5 text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
+              <BookOpen className="h-3.5 w-3.5" aria-hidden />
+              <span>Referenzkonzepte</span>
             </h3>
             <span className="text-xs font-semibold text-slate-500">
               {hasReferences
@@ -867,8 +895,9 @@ export function QueryPanel(): React.JSX.Element {
 
         <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
-              Herleitungsdetails
+            <h3 className="flex items-center gap-1.5 text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
+              <Route className="h-3.5 w-3.5" aria-hidden />
+              <span>Herleitungsdetails</span>
             </h3>
             <span className="text-xs font-semibold text-slate-500">kontextuelle Tiefe</span>
           </div>
