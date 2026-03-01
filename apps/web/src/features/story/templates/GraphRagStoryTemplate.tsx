@@ -25,7 +25,7 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
             <p className="max-w-3xl text-[1.125rem] leading-relaxed text-slate-700 font-medium">
               Wir zeigen Schritt für Schritt, wie aus einer ersten Frage eine klare Entscheidung entsteht.
               Dabei bleibt jeder Übergang nachvollziehbar: von der Auswahl des Kontexts über den Aufbau der Beziehungen
-              bis zur begründeten Schlussfolgerung für das Team.
+              bis zur begründeten Schlussfolgerung.
             </p>
           </section>
 
@@ -40,7 +40,7 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
                 GraphRAG ist mehr als ein besseres Suchfeld.
               </h2>
               <p className="text-[1.25rem] text-slate-700 font-medium mt-1">
-                Es hilft Teams, Entscheidungen klar zu begründen und später erneut zu prüfen.
+                Es hilft, Entscheidungen klar zu begründen und später erneut zu prüfen.
                 So bleibt Wissen nicht nur im Kopf einzelner Personen, sondern in einem gemeinsamen, nutzbaren
                 Entscheidungsweg.
               </p>

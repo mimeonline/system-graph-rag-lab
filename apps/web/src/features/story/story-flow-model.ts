@@ -124,7 +124,7 @@ export const STORY_CHAPTERS: StoryChapter[] = [
     keyTerms: ["Kontextpaket", "Prompt-Kontext", "Belegpfad", "Nachvollziehbarkeit"],
     beforeAfter: {
       before: "Antwort mit angehängter Quellenliste",
-      after: "Nachvollziehbarer Pfad: Frage → Schluss",
+      after: "Nachvollziehbarer Pfad: Frage → Kontext → Beleg → Antwort",
     },
     nextStepHint: "Die Herleitung wird zur operativen Entscheidung.",
     perspectiveCopy: {
@@ -145,7 +145,7 @@ export const STORY_CHAPTERS: StoryChapter[] = [
     structuralRelevance:
       "Erst wenn aus der belegten Antwort eine klare Maßnahme wird, entsteht tatsächliche Wirkung. Der Schritt macht transparent, wie aus faktenbasierter Analyse verbindliches Handeln wird. Das reduziert Interpretationsspielraum und beschleunigt die Umsetzung.",
     visualSpec:
-      "Du siehst den direkten Pfad von Antwort zu Entscheidung und von dort zur Maßnahme. Ein letzter Knoten markiert die Überprüfung im nächsten Zyklus. Dadurch ist klar erkennbar, wie die Herleitung in konkretes Handeln übergeht.",
+      "Du siehst den direkten Pfad von Antwort zu Entscheidung und von dort zur Maßnahme. Ein letzter Knoten markiert den erwarteten Mehrwert im nächsten Zyklus. Dadurch ist klar erkennbar, wie die Herleitung in konkretes Handeln übergeht.",
     keyInsight:
       "Eine belegte Antwort ist erst dann wertvoll, wenn daraus eine klare Maßnahme folgt.",
     keyTerms: ["Entscheidung", "Maßnahme", "Verantwortung", "Umsetzungspfad"],

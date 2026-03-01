@@ -654,7 +654,7 @@ function ChapterScene({
             const value: [number, number, number] = [2.8, 0.5, 0];
             const nodeRadius = 0.23;
             const activeRadius = 0.33;
-            const mainA = buildAnchoredEdge(answer, decision, nodeRadius, nodeRadius);
+            const mainA: Array<[number, number, number]> = [answer, decision];
             const mainB = buildAnchoredEdge(decision, measure, nodeRadius, nodeRadius);
             const mainC = buildAnchoredEdge(measure, value, nodeRadius, activeRadius);
 
