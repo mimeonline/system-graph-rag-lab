@@ -1,4 +1,4 @@
-<svg width="1400" height="860" viewBox="0 0 1400 860" fill="none" xmlns="http://www.w3.org/2000/svg">
+<svg width="1460" height="860" viewBox="0 0 1460 860" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <filter id="glass" x="-10%" y="-10%" width="120%" height="120%">
       <feGaussianBlur stdDeviation="12" result="blur" />
@@ -21,7 +21,7 @@
     </marker>
   </defs>
 
-  <rect width="1400" height="860" fill="#f8fafc"/>
+  <rect width="1460" height="860" fill="#f8fafc"/>
 
   <text x="80" y="90" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800" fill="#0f172a" letter-spacing="-0.02em">Systemische Schleifen als GraphRAG-Pfade</text>
   <text x="80" y="132" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="500" fill="#475569">Wie Rückkopplungen und Nebenwirkungen explizit modelliert werden.</text>
@@ -53,41 +53,41 @@
   <line x1="580" y1="250" x2="580" y2="700" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8 8"/>
 
   <!-- Systemic Graph View -->
-  <g transform="translate(660, 220)">
+    <g transform="translate(660, 220)">
     <rect width="640" height="520" rx="24" fill="#0f172a" filter="url(#glass)"/>
     <text x="320" y="60" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">Systemische Graph-Logik</text>
     <text x="320" y="90" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500" fill="#94a3b8" text-anchor="middle">Rückkopplungen und Nebenwirkungen explizit machen</text>
 
     <!-- Nodes -->
-    <rect x="120" y="160" width="160" height="50" rx="25" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-    <text x="200" y="190" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600" fill="#e0f2fe" text-anchor="middle">Arbeitslast</text>
+    <rect x="100" y="155" width="200" height="60" rx="25" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+    <text x="200" y="195" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600" fill="#e0f2fe" text-anchor="middle">Arbeitslast</text>
 
-    <rect x="360" y="160" width="160" height="50" rx="25" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-    <text x="440" y="190" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600" fill="#e0f2fe" text-anchor="middle">Fehlerquote</text>
+    <rect x="340" y="155" width="200" height="60" rx="25" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+    <text x="440" y="195" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600" fill="#e0f2fe" text-anchor="middle">Fehlerquote</text>
 
-    <rect x="360" y="300" width="160" height="50" rx="25" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
-    <text x="440" y="330" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600" fill="#e0f2fe" text-anchor="middle">Nacharbeit</text>
+    <rect x="340" y="295" width="200" height="60" rx="25" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+    <text x="440" y="335" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600" fill="#e0f2fe" text-anchor="middle">Nacharbeit</text>
 
-    <rect x="120" y="300" width="160" height="50" rx="25" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
-    <text x="200" y="330" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">Neue Prozesse</text>
+    <rect x="100" y="295" width="200" height="60" rx="25" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+    <text x="200" y="335" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">Neue Prozesse</text>
 
-    <rect x="120" y="420" width="160" height="50" rx="25" fill="#1e293b" stroke="#ef4444" stroke-width="2"/>
-    <text x="200" y="450" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600" fill="#fecaca" text-anchor="middle">Admin-Overhead</text>
+    <rect x="100" y="415" width="200" height="60" rx="25" fill="#1e293b" stroke="#ef4444" stroke-width="2"/>
+    <text x="200" y="455" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600" fill="#fecaca" text-anchor="middle">Admin-Overhead</text>
 
     <!-- Edges -->
-    <path d="M 280 185 L 360 185" fill="none" stroke="#0ea5e9" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M 300 185 L 340 185" fill="none" stroke="#0ea5e9" stroke-width="3" marker-end="url(#arrow)"/>
     <text x="320" y="175" font-family="Inter, Arial, sans-serif" font-size="12" fill="#38bdf8" text-anchor="middle">erhöht</text>
 
-    <path d="M 440 210 L 440 300" fill="none" stroke="#0ea5e9" stroke-width="3" marker-end="url(#arrow)"/>
-    <text x="460" y="260" font-family="Inter, Arial, sans-serif" font-size="12" fill="#38bdf8">führt zu</text>
+    <path d="M 440 215 L 440 295" fill="none" stroke="#0ea5e9" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="460" y="255" font-family="Inter, Arial, sans-serif" font-size="12" fill="#38bdf8">führt zu</text>
 
-    <path d="M 360 325 L 280 325" fill="none" stroke="#0ea5e9" stroke-width="3" marker-end="url(#arrow)"/>
+    <path d="M 340 325 L 300 325" fill="none" stroke="#0ea5e9" stroke-width="3" marker-end="url(#arrow)"/>
     <text x="320" y="315" font-family="Inter, Arial, sans-serif" font-size="12" fill="#38bdf8" text-anchor="middle">erzwingt</text>
 
-    <path d="M 200 300 L 200 210" fill="none" stroke="#0ea5e9" stroke-width="3" marker-end="url(#arrow)" stroke-dasharray="4 4"/>
+    <path d="M 200 355 L 200 215" fill="none" stroke="#0ea5e9" stroke-width="3" marker-end="url(#arrow)" stroke-dasharray="4 4"/>
     <text x="180" y="260" font-family="Inter, Arial, sans-serif" font-size="12" fill="#38bdf8" text-anchor="end">Feedback-Loop</text>
 
-    <path d="M 200 350 L 200 420" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-red)"/>
+    <path d="M 200 355 L 200 415" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-red)"/>
     <text x="220" y="390" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700" fill="#ef4444">Nebenwirkung</text>
 
     <path d="M 120 445 Q 60 445 60 380 Q 60 185 120 185" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-red)" stroke-dasharray="4 4"/>
