@@ -1,0 +1,77 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1600" y2="900" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#081433"/>
+      <stop offset="1" stop-color="#12368D"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="72" y1="268" x2="1528" y2="268" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#132B62" stop-opacity="0.92"/>
+      <stop offset="1" stop-color="#0F2557" stop-opacity="0.92"/>
+    </linearGradient>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="8" stdDeviation="12" flood-color="#020817" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="900" fill="url(#bg)"/>
+
+  <g opacity="0.42" stroke="#7DD3FC" stroke-width="2">
+    <circle cx="1190" cy="210" r="34"/>
+    <circle cx="1190" cy="210" r="62"/>
+    <circle cx="1190" cy="210" r="98"/>
+    <circle cx="1190" cy="210" r="150"/>
+    <circle cx="1190" cy="210" r="224" opacity="0.35"/>
+    <circle cx="1190" cy="210" r="320" opacity="0.28"/>
+  </g>
+
+  <text x="96" y="156" fill="#E2E8F0" font-family="Inter, Arial, sans-serif" font-size="40" font-weight="800" letter-spacing="-0.02em">System Thinking als idealer Use Case für GraphRAG</text>
+  <text x="96" y="212" fill="#C7D2FE" font-family="Inter, Arial, sans-serif" font-size="20" font-weight="500" letter-spacing="-0.01em">Kausale Schleifen, Nebenwirkungen und Interventionen als prüfbarer Pfad</text>
+
+  <rect x="72" y="268" width="1456" height="578" rx="34" fill="url(#panel)" stroke="#5CA7F0" stroke-width="2"/>
+
+  <g stroke="#9CC8FF" stroke-width="3" stroke-linecap="round" opacity="0.92">
+    <path d="M 524 440 L 742 402"/>
+    <path d="M 922 402 L 940 498"/>
+    <path d="M 452 512 L 380 674"/>
+    <path d="M 1030 545 L 980 662"/>
+    <path d="M 370 694 L 620 792"/>
+    <path d="M 620 792 L 920 695"/>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <rect x="346" y="385" width="186" height="70" rx="14" fill="#E2E8F0" stroke="#60A5FA" stroke-width="2"/>
+    <text x="439" y="428" text-anchor="middle" fill="#223C63" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500">Lokale Maßnahme</text>
+
+    <rect x="742" y="332" width="184" height="70" rx="14" fill="#E2E8F0" stroke="#60A5FA" stroke-width="2"/>
+    <text x="834" y="375" text-anchor="middle" fill="#223C63" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500">Kurzfristiger Effekt</text>
+
+    <rect x="940" y="475" width="180" height="70" rx="14" fill="#E2E8F0" stroke="#60A5FA" stroke-width="2"/>
+    <text x="1030" y="518" text-anchor="middle" fill="#223C63" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500">Nebenwirkung</text>
+
+    <rect x="860" y="662" width="220" height="70" rx="14" fill="#E2E8F0" stroke="#60A5FA" stroke-width="2"/>
+    <text x="970" y="705" text-anchor="middle" fill="#223C63" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500">Koordinationsdruck</text>
+
+    <rect x="272" y="622" width="186" height="70" rx="14" fill="#E2E8F0" stroke="#60A5FA" stroke-width="2"/>
+    <text x="365" y="665" text-anchor="middle" fill="#223C63" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500">Ursachenmuster</text>
+
+    <rect x="598" y="741" width="206" height="70" rx="14" fill="#E2E8F0" stroke="#60A5FA" stroke-width="2"/>
+    <text x="701" y="784" text-anchor="middle" fill="#223C63" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500">Rückkopplung</text>
+  </g>
+
+  <g filter="url(#softShadow)">
+    <rect x="1210" y="406" width="280" height="354" rx="18" fill="#152F66" stroke="#5CA7F0" stroke-width="2"/>
+    <text x="1232" y="466" fill="#DDE6F4" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="800">GraphRAG Hebel</text>
+
+    <circle cx="1228" cy="508" r="7" fill="#8EB9FF"/>
+    <text x="1247" y="519" fill="#C2D6F8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500">Explizite Beziehungen</text>
+
+    <circle cx="1228" cy="566" r="7" fill="#8EB9FF"/>
+    <text x="1247" y="577" fill="#C2D6F8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500">Mehr-Hop-Ableitungen</text>
+
+    <circle cx="1228" cy="624" r="7" fill="#8EB9FF"/>
+    <text x="1247" y="635" fill="#C2D6F8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500">Belegpfade pro Kante</text>
+
+    <circle cx="1228" cy="682" r="7" fill="#8EB9FF"/>
+    <text x="1247" y="693" fill="#C2D6F8" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500">Versionierte Hypothesen</text>
+  </g>
+</svg>
