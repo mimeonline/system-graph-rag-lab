@@ -34,32 +34,6 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
           <section className="glass-panel rounded-3xl p-8 sm:p-12 relative overflow-hidden mt-12">
             <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 to-slate-100/50 -z-10" />
 
-            {/* C3: Summary pipeline diagram */}
-            <figure className="mb-8 rounded-xl border border-slate-200/60 bg-white/60 p-4">
-              <svg viewBox="0 0 660 60" className="h-auto w-full" role="img" aria-label="5-Schritt-Pipeline">
-                {[
-                  { x: 66, label: "Frage" },
-                  { x: 198, label: "Kontextauswahl" },
-                  { x: 330, label: "Graph" },
-                  { x: 462, label: "Synthese" },
-                  { x: 594, label: "Handlung" },
-                ].map((step, i, arr) => (
-                  <g key={step.label}>
-                    {i < arr.length - 1 ? (
-                      <line
-                        x1={step.x + 36} y1="24" x2={arr[i + 1].x - 36} y2="24"
-                        stroke="#0ea5e9" strokeWidth="2" strokeDasharray="4 3"
-                      />
-                    ) : null}
-                    <rect x={step.x - 36} y="6" width="72" height="36" rx="8" fill="#f0f9ff" stroke="#0ea5e9" strokeWidth="1.5" />
-                    <text x={step.x} y="29" textAnchor="middle" className="fill-sky-800 text-[10px] font-bold tracking-tight">
-                      {step.label}
-                    </text>
-                  </g>
-                ))}
-              </svg>
-            </figure>
-
             <div className="max-w-2xl">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Abschluss</p>
               <h2 className="mt-4 text-[1.5rem] font-bold text-slate-900 sm:text-[1.75rem] leading-tight">
@@ -88,4 +62,3 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
     </div>
   );
 }
-
