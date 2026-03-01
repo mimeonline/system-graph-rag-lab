@@ -101,7 +101,7 @@ function ActionMini(): React.JSX.Element {
       <rect x="404" y="100" width="90" height="18" rx="4" fill="#0f172a" stroke="#475569" />
       <text x="449" y="65" textAnchor="middle" className="fill-slate-200 text-[9px]">Antwort</text>
       <text x="449" y="89" textAnchor="middle" className="fill-slate-200 text-[9px]">Entscheidung</text>
-      <text x="449" y="113" textAnchor="middle" className="fill-slate-200 text-[9px]">Maßnahme + Review</text>
+      <text x="449" y="113" textAnchor="middle" className="fill-slate-200 text-[9px]">Maßnahme + Mehrwert</text>
     </>
   );
 }

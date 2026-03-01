@@ -651,12 +651,12 @@ function ChapterScene({
             const answer: [number, number, number] = [-2.6, 0.24, 0.05];
             const decision: [number, number, number] = [-0.8, 0.52, 0.12];
             const measure: [number, number, number] = [1.0, 0.2, -0.05];
-            const review: [number, number, number] = [2.8, 0.5, 0];
+            const value: [number, number, number] = [2.8, 0.5, 0];
             const nodeRadius = 0.23;
             const activeRadius = 0.33;
             const mainA = buildAnchoredEdge(answer, decision, nodeRadius, nodeRadius);
             const mainB = buildAnchoredEdge(decision, measure, nodeRadius, nodeRadius);
-            const mainC = buildAnchoredEdge(measure, review, nodeRadius, activeRadius);
+            const mainC = buildAnchoredEdge(measure, value, nodeRadius, activeRadius);
 
             return (
               <>
@@ -668,7 +668,7 @@ function ChapterScene({
                 </RevealGroup>
                 <RevealGroup step={3} activeStep={activeStep}>
                   <Node position={measure} color="#f59e0b" label="Maßnahme" status="gesichert" hideLabel={hideNodeLabels} />
-                  <Node position={review} color="#0ea5e9" label="Review" emphasis status="offen" hideLabel={hideNodeLabels} />
+                  <Node position={value} color="#0ea5e9" label="Mehrwert" emphasis status="offen" hideLabel={hideNodeLabels} />
                 </RevealGroup>
                 <RevealGroup step={4} activeStep={activeStep}>
                   <PathEdge points={mainA} color="#0ea5e9" />
