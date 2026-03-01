@@ -77,6 +77,69 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
 
           <LandingReveal>
             <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-gradient-to-b from-slate-100 to-slate-50 py-12 sm:py-14">
+              <div className="mx-auto w-full max-w-295 space-y-5 px-4 sm:px-6">
+                <div className="space-y-2">
+                  <h2 className="text-lg font-semibold text-slate-900 sm:text-xl">Was Dich hier auf dieser Seite erwartet</h2>
+                  <p className="max-w-[88ch] text-sm leading-7 text-slate-700">
+                    Das hier ist ein Explorationsprojekt zu GraphRAG, das ich offen teile. Ziel war, GraphRAG nicht nur
+                    theoretisch zu verstehen, sondern praktisch auszuprobieren: Was funktioniert wirklich, wo wird es
+                    klarer und wo bleibt es anspruchsvoll?
+                  </p>
+                  <p className="max-w-[88ch] text-sm leading-7 text-slate-700">
+                    Auf dieser Seite mache ich diese Erfahrung zugänglich: als Live-Demo, als visuelle Einordnung und
+                    als Essays mit den wichtigsten Erkenntnissen aus Architektur-, Produkt- und Governance-Perspektive.
+                    Du kannst direkt dort einsteigen, wo es für Dich gerade den meisten Wert hat.
+                  </p>
+                </div>
+
+                <div className="grid gap-3.5 sm:grid-cols-3">
+                  <TrackedLink
+                    href="/demo"
+                    label="Demo"
+                    eventName="landing_section_click"
+                    payload={{ target: "/demo", surface: "what-to-expect-demo" }}
+                    className="group rounded-xl border border-slate-200 bg-white p-4 transition hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-50/60"
+                  >
+                    <h3 className="text-sm font-semibold text-slate-900">Demo</h3>
+                    <p className="mt-1.5 text-sm leading-6 text-slate-700">
+                      Sieh live, wie aus Kontext und Belegen ein klarer Entscheidungsweg wird.
+                    </p>
+                  </TrackedLink>
+                  <TrackedLink
+                    href="/story/graphrag"
+                    label="GraphRAG Story"
+                    eventName="landing_section_click"
+                    payload={{ target: "/story/graphrag", surface: "what-to-expect-story" }}
+                    className="group rounded-xl border border-slate-200 bg-white p-4 transition hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-50/60"
+                  >
+                    <h3 className="text-sm font-semibold text-slate-900">GraphRAG Story</h3>
+                    <p className="mt-1.5 text-sm leading-6 text-slate-700">
+                      Verstehe im direkten Vergleich, warum Struktur den Unterschied macht.
+                    </p>
+                  </TrackedLink>
+                  <TrackedLink
+                    href="/blog"
+                    label="Graph Essays"
+                    eventName="landing_section_click"
+                    payload={{ target: "/blog", surface: "what-to-expect-essays" }}
+                    className="group rounded-xl border border-slate-200 bg-white p-4 transition hover:-translate-y-0.5 hover:border-sky-300 hover:bg-sky-50/60"
+                  >
+                    <h3 className="text-sm font-semibold text-slate-900">Graph Essays</h3>
+                    <p className="mt-1.5 text-sm leading-6 text-slate-700">
+                      Vertiefe die Themen Qualität, Governance und System Thinking.
+                    </p>
+                  </TrackedLink>
+                </div>
+
+                <p className="text-sm text-slate-700">
+                  Wenn Du es direkt erleben möchtest: Starte mit der Demo.
+                </p>
+              </div>
+            </section>
+          </LandingReveal>
+
+          <LandingReveal>
+            <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-white py-12 sm:py-14">
             <div className="mx-auto w-full max-w-295 space-y-5 px-4 sm:px-6">
               <div className="space-y-1.5">
                 <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-600">SYSTEMISCHE GRENZE</p>
@@ -146,7 +209,7 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
           <LandingReveal>
             <section
               id="rag-vs-graphrag"
-              className="relative left-1/2 right-1/2 -mx-[50vw] w-screen py-12 sm:py-14"
+              className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-gradient-to-b from-slate-100 to-slate-50 py-12 sm:py-14"
             >
             <div className="mx-auto w-full max-w-295 space-y-5 px-4 sm:px-6">
               <div className="space-y-1.5">
@@ -235,7 +298,7 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
           </LandingReveal>
 
           <LandingReveal>
-            <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-gradient-to-b from-slate-50 to-slate-100 py-12 sm:py-14">
+            <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-white py-12 sm:py-14">
             <div className="mx-auto w-full max-w-295 px-4 sm:px-6">
               <div className="text-center">
                 <h2 className="text-lg font-semibold text-slate-900 sm:text-xl">

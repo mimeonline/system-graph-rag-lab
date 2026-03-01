@@ -11,6 +11,7 @@ type TrackedLinkProps = {
   className?: string;
   external?: boolean;
   icon?: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 export function TrackedLink({
@@ -21,6 +22,7 @@ export function TrackedLink({
   className,
   external = false,
   icon,
+  children,
 }: TrackedLinkProps): React.JSX.Element {
   const handleClick = () => {
     trackLiteEvent(eventName, payload);
@@ -35,16 +37,24 @@ export function TrackedLink({
         target="_blank"
         rel="noreferrer noopener"
       >
-        {icon ? <span className="mr-1.5 inline-flex items-center">{icon}</span> : null}
-        {label}
+        {children ?? (
+          <>
+            {icon ? <span className="mr-1.5 inline-flex items-center">{icon}</span> : null}
+            {label}
+          </>
+        )}
       </a>
     );
   }
 
   return (
     <Link href={href} className={className} onClick={handleClick}>
-      {icon ? <span className="mr-1.5 inline-flex items-center">{icon}</span> : null}
-      {label}
+      {children ?? (
+        <>
+          {icon ? <span className="mr-1.5 inline-flex items-center">{icon}</span> : null}
+          {label}
+        </>
+      )}
     </Link>
   );
 }
