@@ -30,105 +30,124 @@ export function StoryChapterAnimatedVisual({ chapterId }: StoryChapterAnimatedVi
 function QuestionAnimated(): React.JSX.Element {
   return (
     <>
+      {/* Solution Horizon / Lösungshorizont */}
+      <rect
+        x="60" y="40" width="520" height="200" rx="16"
+        fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="8 8" strokeOpacity="0.2"
+        className="st-fade-in"
+      />
+      <text x="78" y="32" fill="#64748b" className="st-fade-in uppercase tracking-wider text-[10px]">
+        Lösungshorizont
+      </text>
+
       {/* Radiating circles */}
       <circle
         cx="320" cy="140" r="44"
-        fill="none" stroke="rgba(125,211,252,0.4)" strokeWidth="1.5"
-        style={{ animation: "story-radiate 3s ease-out infinite" }}
+        fill="none" stroke="#7dd3fc" strokeWidth="1.5" strokeOpacity="0.4"
+        className="st-radiate"
       />
       <circle
         cx="320" cy="140" r="44"
-        fill="none" stroke="rgba(125,211,252,0.3)" strokeWidth="1"
-        style={{ animation: "story-radiate 3s ease-out 1s infinite" }}
-      />
-      <circle
-        cx="320" cy="140" r="44"
-        fill="none" stroke="rgba(125,211,252,0.2)" strokeWidth="1"
-        style={{ animation: "story-radiate 3s ease-out 2s infinite" }}
+        fill="none" stroke="#7dd3fc" strokeWidth="1" strokeOpacity="0.3"
+        className="st-radiate" style={{ animationDelay: "1s" }}
       />
 
-      {/* Dashed boundary circles */}
-      <circle
-        cx="320" cy="140" r="90"
-        fill="none" stroke="rgba(148,163,184,0.25)" strokeWidth="1.5" strokeDasharray="4 6"
-        style={{ opacity: 0, animation: "story-fade-in 1s ease-out 0.5s forwards" }}
-      />
-      <circle
-        cx="320" cy="140" r="125"
-        fill="none" stroke="rgba(148,163,184,0.15)" strokeWidth="1" strokeDasharray="3 8"
-        style={{ opacity: 0, animation: "story-fade-in 1s ease-out 1s forwards" }}
-      />
+      {/* Central question node / Problemknoten */}
+      <g className="st-pulse">
+        <circle
+          cx="320" cy="140" r="50"
+          fill="rgba(14,165,233,0.15)" stroke="#0ea5e9" strokeWidth="2.5"
+        />
+        {/* Internal nodes / Question aspects */}
+        <circle cx="305" cy="125" r="5" fill="#38bdf8" className="st-fade-in" style={{ animationDelay: "0.5s" }} />
+        <circle cx="340" cy="135" r="4" fill="#38bdf8" className="st-fade-in" style={{ animationDelay: "0.7s" }} />
+        <circle cx="315" cy="155" r="6" fill="#38bdf8" className="st-fade-in" style={{ animationDelay: "0.9s" }} />
+        
+        <text x="320" y="138" textAnchor="middle" fill="#e0f2fe" className="text-[13px] font-bold tracking-tight">
+          PROBLEM-
+        </text>
+        <text x="320" y="152" textAnchor="middle" fill="#e0f2fe" className="text-[13px] font-bold tracking-tight">
+          KNOTEN
+        </text>
+      </g>
 
-      {/* Central question node */}
-      <circle
-        cx="320" cy="140" r="42"
-        fill="rgba(14,165,233,0.15)" stroke="#0ea5e9" strokeWidth="2"
-        style={{ animation: "story-pulse 3s ease-in-out infinite" }}
-      />
-      <text x="320" y="137" textAnchor="middle" className="fill-sky-200 text-[15px] font-semibold">
-        Kern-
+      {/* Annotation labels */}
+      <g className="st-fade-in" style={{ animationDelay: "1.2s" }}>
+        <text x="440" y="90" fill="#38bdf8" className="text-[11px] font-semibold">Kontext-Annahme</text>
+        <line x1="435" y1="95" x2="365" y2="120" stroke="#0ea5e9" strokeWidth="1.2" strokeDasharray="3 3" strokeOpacity="0.4" />
+      </g>
+      <g className="st-fade-in" style={{ animationDelay: "1.8s" }}>
+        <text x="120" y="200" fill="#94a3b8" className="text-[11px]">Vage Ausgangslage</text>
+        <path d="M120 185 Q180 180 275 155" fill="none" stroke="#94a3b8" strokeWidth="1" strokeDasharray="4 4" strokeOpacity="0.2" />
+      </g>
+      
+      <text x="320" y="225" textAnchor="middle" fill="#64748b" className="st-fade-in text-[10px]" style={{ animationDelay: "2s" }}>
+        Explizite Definition von Ziel & Systemgrenze
       </text>
-      <text x="320" y="154" textAnchor="middle" className="fill-sky-200 text-[15px] font-semibold">
-        frage
-      </text>
-
-      {/* Annotation labels – fade in */}
-      <g style={{ opacity: 0, animation: "story-fade-in 0.8s ease-out 0.8s forwards" }}>
-        <text x="432" y="94" className="fill-slate-400 text-[11px]">implizite Annahmen</text>
-        <line x1="424" y1="97" x2="380" y2="118" stroke="rgba(148,163,184,0.3)" strokeWidth="1" strokeDasharray="3 3" />
-      </g>
-      <g style={{ opacity: 0, animation: "story-fade-in 0.8s ease-out 1.2s forwards" }}>
-        <text x="148" y="190" className="fill-slate-400 text-[11px]">Ziel &amp; Grenze</text>
-        <line x1="216" y1="186" x2="270" y2="162" stroke="rgba(148,163,184,0.3)" strokeWidth="1" strokeDasharray="3 3" />
-      </g>
-      <g style={{ opacity: 0, animation: "story-fade-in 0.8s ease-out 1.6s forwards" }}>
-        <text x="400" y="216" className="fill-slate-400 text-[11px]">noch keine Relationen</text>
-      </g>
     </>
   );
 }
 
 /* ─── Chapter 2: Retrieval ─── */
 function RetrievalAnimated(): React.JSX.Element {
-  const nodes = [
-    { x: 130, y: 120, r: 28, label: "hoch", fill: "#22d3ee", delay: 0 },
-    { x: 260, y: 170, r: 20, label: "mittel", fill: "#38bdf8", delay: 0.3 },
-    { x: 360, y: 95, r: 28, label: "hoch", fill: "#22d3ee", delay: 0.6 },
-    { x: 480, y: 160, r: 14, label: "niedrig", fill: "#475569", delay: 0.9 },
-    { x: 560, y: 110, r: 20, label: "mittel", fill: "#38bdf8", delay: 1.2 },
+  const allNodes = [
+    { x: 100, y: 80, r: 16, label: "Doku A", fill: "#475569", filtered: true, delay: 0 },
+    { x: 100, y: 140, r: 20, label: "Kontext 1", fill: "#0ea5e9", filtered: false, delay: 0.2 },
+    { x: 100, y: 200, r: 16, label: "Doku C", fill: "#475569", filtered: true, delay: 0.4 },
+    { x: 280, y: 110, r: 24, label: "Kontext 2", fill: "#22d3ee", filtered: false, delay: 0.8 },
+    { x: 280, y: 180, r: 18, label: "Doku D", fill: "#475569", filtered: true, delay: 1.0 },
+    { x: 480, y: 140, r: 28, label: "Kontext 3", fill: "#0ea5e9", filtered: false, delay: 1.4 },
   ];
 
   return (
     <>
       {/* Background container */}
-      <rect x="60" y="40" width="520" height="200" rx="16" fill="rgba(15,23,42,0.4)" stroke="rgba(148,163,184,0.15)" />
+      <rect x="40" y="40" width="560" height="200" rx="16" fill="rgba(15,23,42,0.4)" stroke="rgba(148,163,184,0.15)" />
 
-      {/* Title */}
-      <text x="78" y="32" className="fill-slate-400 text-[11px]" style={{ opacity: 0, animation: "story-fade-in 0.6s ease-out forwards" }}>
-        Priorisierung statt Vollständigkeit
+      {/* Filter Metaphor Line */}
+      <g className="st-fade-in" style={{ animationDelay: "0.5s" }}>
+        <line x1="380" y1="50" x2="380" y2="230" stroke="#38bdf8" strokeWidth="2" strokeDasharray="6 4" strokeOpacity="0.4" />
+        <rect x="365" y="80" width="30" height="120" rx="4" fill="rgba(56,189,248,0.05)" stroke="rgba(56,189,248,0.2)" />
+        <text x="385" y="65" fill="#38bdf8" className="text-[10px] font-bold uppercase tracking-wider">Ranking-Filter</text>
+      </g>
+
+      {/* Vector Search Label */}
+      <text x="60" y="32" fill="#64748b" className="st-fade-in text-[10px] uppercase tracking-widest">
+        Vektor-Suche im Wissensraum
       </text>
 
-      {/* Context nodes – grow in with stagger */}
-      {nodes.map((node) => (
-        <g key={`${node.x}-${node.y}`} style={{ transformOrigin: `${node.x}px ${node.y}px`, opacity: 0, animation: `story-grow-in 0.5s cubic-bezier(0.34,1.56,0.64,1) ${node.delay}s forwards` }}>
-          <circle cx={node.x} cy={node.y} r={node.r} fill={node.fill} opacity="0.85" />
-          <text x={node.x} y={node.y + 4} textAnchor="middle" className="fill-slate-950 text-[10px] font-bold">
-            {node.label}
+      {/* Nodes passing through */}
+      {allNodes.map((node) => (
+        <g key={`${node.x}-${node.y}`} className="st-grow-in" style={{ animationDelay: `${node.delay}s` }}>
+          <circle 
+            cx={node.x} cy={node.y} r={node.r} 
+            fill={node.fill} 
+            fillOpacity={node.filtered ? "0.3" : "0.9"} 
+            stroke={node.filtered ? "none" : "#fff"}
+            strokeWidth={node.filtered ? 0 : 1.5}
+          />
+          <text 
+            x={node.x} y={node.y + 4} 
+            textAnchor="middle" 
+            fill={node.filtered ? "#94a3b8" : "#020617"}
+            className="text-[9px] font-bold"
+          >
+            {node.filtered ? "" : node.label}
           </text>
+          {!node.filtered && (
+             <text x={node.x} y={node.y + node.r + 12} textAnchor="middle" fill="#38bdf8" className="text-[8px] font-bold">RELEVANT</text>
+          )}
         </g>
       ))}
 
-      {/* Weight indicator lines – fade in late */}
-      <g style={{ opacity: 0, animation: "story-fade-in 0.8s ease-out 1.5s forwards" }}>
-        {/* Connection hints between high-priority nodes */}
-        <line x1="158" y1="120" x2="332" y2="95" stroke="rgba(34,211,238,0.25)" strokeWidth="1" strokeDasharray="4 4" />
-        <line x1="260" y1="170" x2="360" y2="95" stroke="rgba(56,189,248,0.2)" strokeWidth="1" strokeDasharray="4 4" />
+      {/* Connection lines */}
+      <g className="st-fade-in" style={{ animationDelay: "2s" }}>
+        <path d="M120 140 L256 110 M304 110 L452 140" stroke="#38bdf8" strokeWidth="2" strokeDasharray="5 5" strokeOpacity="0.4" fill="none" />
       </g>
 
-      {/* Dimmed indicator for low-priority */}
-      <g style={{ opacity: 0, animation: "story-fade-in 0.6s ease-out 1.8s forwards" }}>
-        <text x="480" y="190" textAnchor="middle" className="fill-slate-500 text-[9px]">zurückgestellt</text>
-      </g>
+      <text x="500" y="225" textAnchor="middle" fill="#64748b" className="st-fade-in text-[10px]" style={{ animationDelay: "2.2s" }}>
+        Nur validierte Quellen gelangen in den Graphen
+      </text>
     </>
   );
 }
@@ -136,36 +155,42 @@ function RetrievalAnimated(): React.JSX.Element {
 /* ─── Chapter 3: Graph ─── */
 function GraphAnimated(): React.JSX.Element {
   const nodes = [
-    { id: "a", x: 140, y: 140, r: 22, fill: "#bae6fd", label: "Frage" },
-    { id: "b", x: 280, y: 80, r: 20, fill: "#a7f3d0", label: "Konzept A" },
-    { id: "c", x: 280, y: 200, r: 20, fill: "#c4b5fd", label: "Konzept B" },
-    { id: "d", x: 420, y: 110, r: 20, fill: "#fde68a", label: "Beleg" },
-    { id: "e", x: 420, y: 190, r: 18, fill: "#fed7aa", label: "Trade-off" },
-    { id: "f", x: 540, y: 140, r: 22, fill: "#bbf7d0", label: "Ergebnis" },
+    { id: "a", x: 120, y: 140, r: 24, fill: "#bae6fd", label: "PROBLEM", pulse: true },
+    { id: "b1", x: 260, y: 70, r: 18, fill: "#a7f3d0", label: "Konzept 1" },
+    { id: "b2", x: 260, y: 110, r: 16, fill: "#a7f3d0", label: "Konzept 2" },
+    { id: "c", x: 260, y: 200, r: 20, fill: "#c4b5fd", label: "Konzept 3" },
+    { id: "d", x: 420, y: 80, r: 22, fill: "#fde68a", label: "BELEG A", pulse: true },
+    { id: "e", x: 420, y: 160, r: 18, fill: "#fed7aa", label: "Trade-off" },
+    { id: "f", x: 420, y: 220, r: 16, fill: "#fde68a", label: "BELEG B" },
+    { id: "res", x: 550, y: 140, r: 26, fill: "#bbf7d0", label: "ERGEBNIS", pulse: true },
   ];
 
   const edges = [
-    { x1: 162, y1: 134, x2: 260, y2: 84, color: "#0ea5e9", label: "Ursache", delay: 0.8 },
-    { x1: 162, y1: 146, x2: 260, y2: 196, color: "#a78bfa", label: "Trade-off", delay: 1.1 },
-    { x1: 300, y1: 80, x2: 400, y2: 110, color: "#22c55e", label: "Evidenz", delay: 1.4 },
-    { x1: 300, y1: 200, x2: 400, y2: 190, color: "#f59e0b", label: "", delay: 1.7 },
-    { x1: 440, y1: 110, x2: 520, y2: 136, color: "#22c55e", label: "", delay: 2.0 },
-    { x1: 440, y1: 190, x2: 520, y2: 144, color: "#a78bfa", label: "", delay: 2.3 },
+    { x1: 144, y1: 135, x2: 242, y2: 75, color: "#0ea5e9", label: "Ursache", delay: 0.8 },
+    { x1: 144, y1: 145, x2: 242, y2: 105, color: "#0ea5e9", label: "", delay: 1.0 },
+    { x1: 144, y1: 140, x2: 240, y2: 200, color: "#a78bfa", label: "Konflikt", delay: 1.2 },
+    { x1: 278, y1: 70, x2: 398, y2: 75, color: "#22c55e", label: "stützt", delay: 1.5 },
+    { x1: 278, y1: 200, x2: 402, y2: 165, color: "#f59e0b", label: "Trade-off", delay: 1.8 },
+    { x1: 442, y1: 85, x2: 524, y2: 130, color: "#22c55e", label: "validiert", delay: 2.1 },
+    { x1: 438, y1: 165, x2: 524, y2: 150, color: "#0ea5e9", label: "", delay: 2.4 },
   ];
 
   return (
     <>
-      {/* Nodes – present from start with fade */}
+      <g className="st-fade-in" style={{ animationDelay: "0.3s" }}>
+        <rect x="230" y="50" width="60" height="85" rx="8" fill="rgba(167,243,208,0.05)" stroke="rgba(167,243,208,0.2)" strokeDasharray="3 3" />
+        <text x="260" y="45" textAnchor="middle" fill="#34d399" className="text-[8px] uppercase font-bold">Themen-Cluster</text>
+      </g>
+
       {nodes.map((node, i) => (
-        <g key={node.id} style={{ opacity: 0, animation: `story-fade-in 0.4s ease-out ${i * 0.1}s forwards` }}>
-          <circle cx={node.x} cy={node.y} r={node.r} fill={node.fill} opacity="0.85" />
-          <text x={node.x} y={node.y + 4} textAnchor="middle" className="fill-slate-900 text-[9px] font-bold">
+        <g key={node.id} className={`st-fade-in ${node.pulse ? "st-pulse" : ""}`} style={{ animationDelay: `${i * 0.1}s` }}>
+          <circle cx={node.x} cy={node.y} r={node.r} fill={node.fill} fillOpacity="0.9" />
+          <text x={node.x} y={node.y + 4} textAnchor="middle" fill="#0f172a" className="text-[9px] font-bold">
             {node.label}
           </text>
         </g>
       ))}
 
-      {/* Edges – draw in sequentially */}
       {edges.map((edge, i) => {
         const length = Math.sqrt((edge.x2 - edge.x1) ** 2 + (edge.y2 - edge.y1) ** 2);
         return (
@@ -173,17 +198,19 @@ function GraphAnimated(): React.JSX.Element {
             <line
               x1={edge.x1} y1={edge.y1} x2={edge.x2} y2={edge.y2}
               stroke={edge.color} strokeWidth="2.5"
-              strokeDasharray={length}
-              strokeDashoffset={length}
-              style={{ animation: `story-draw-edge 0.6s ease-out ${edge.delay}s forwards` }}
+              strokeDasharray="1000"
+              strokeDashoffset="1000"
+              className="st-draw"
+              style={{ animationDelay: `${edge.delay}s` }}
             />
             {edge.label ? (
               <text
                 x={(edge.x1 + edge.x2) / 2}
                 y={(edge.y1 + edge.y2) / 2 - 8}
                 textAnchor="middle"
-                className="fill-slate-300 text-[9px]"
-                style={{ opacity: 0, animation: `story-fade-in 0.4s ease-out ${edge.delay + 0.3}s forwards` }}
+                fill="#7dd3fc"
+                className="st-fade-in text-[9px] font-semibold"
+                style={{ animationDelay: `${edge.delay + 0.3}s` }}
               >
                 {edge.label}
               </text>
@@ -192,15 +219,9 @@ function GraphAnimated(): React.JSX.Element {
         );
       })}
 
-      {/* Legend */}
-      <g style={{ opacity: 0, animation: "story-fade-in 0.6s ease-out 2.8s forwards" }}>
-        <circle cx="68" cy="248" r="4" fill="#0ea5e9" />
-        <text x="78" y="252" className="fill-slate-400 text-[9px]">Ursache</text>
-        <circle cx="140" cy="248" r="4" fill="#a78bfa" />
-        <text x="150" y="252" className="fill-slate-400 text-[9px]">Trade-off</text>
-        <circle cx="220" cy="248" r="4" fill="#22c55e" />
-        <text x="230" y="252" className="fill-slate-400 text-[9px]">Evidenz</text>
-      </g>
+      <text x="320" y="255" textAnchor="middle" fill="#64748b" className="st-fade-in text-[10px]" style={{ animationDelay: "2.8s" }}>
+        Beziehungen schaffen Struktur: Ursache-Wirkung-Netz statt Textwüste
+      </text>
     </>
   );
 }
@@ -208,11 +229,11 @@ function GraphAnimated(): React.JSX.Element {
 /* ─── Chapter 4: Synthese ─── */
 function SynthesisAnimated(): React.JSX.Element {
   const pathNodes = [
-    { x: 80, y: 140, label: "Frage", delay: 0 },
-    { x: 210, y: 100, label: "Konzept", delay: 0.4 },
-    { x: 350, y: 140, label: "Beziehung", delay: 0.8 },
-    { x: 480, y: 100, label: "Beleg", delay: 1.2 },
-    { x: 580, y: 140, label: "Schluss", delay: 1.6 },
+    { x: 80, y: 140, label: "FRAGE", type: "start", delay: 0 },
+    { x: 210, y: 100, label: "KONZEPT", type: "step", delay: 0.4 },
+    { x: 350, y: 140, label: "BELEG", type: "step", delay: 0.8 },
+    { x: 480, y: 100, label: "BEZIEHUNG", type: "step", delay: 1.2 },
+    { x: 580, y: 140, label: "SCHLUSS", type: "end", delay: 1.6 },
   ];
 
   const pathSegments = [
@@ -224,62 +245,49 @@ function SynthesisAnimated(): React.JSX.Element {
 
   return (
     <>
-      {/* Alternative paths – dim, dashed, always visible */}
-      <path
-        d="M80 180 Q180 220 350 210 Q480 200 580 180"
-        stroke="rgba(148,163,184,0.2)" strokeWidth="1.5" fill="none" strokeDasharray="5 6"
-        style={{ opacity: 0, animation: "story-fade-in 0.8s ease-out 0.5s forwards" }}
-      />
-      <path
-        d="M80 100 Q200 50 350 70"
-        stroke="rgba(148,163,184,0.15)" strokeWidth="1" fill="none" strokeDasharray="4 6"
-        style={{ opacity: 0, animation: "story-fade-in 0.8s ease-out 0.8s forwards" }}
-      />
+      <g className="st-fade-in" style={{ animationDelay: "0.5s" }}>
+        <path d="M80 160 Q180 200 350 190" stroke="#ef4444" strokeWidth="1.5" fill="none" strokeDasharray="4 4" strokeOpacity="0.2" />
+        <text x="220" y="210" fill="rgba(239,68,68,0.4)" className="text-[9px] italic">Widerspruch erkannt</text>
+        <path d="M210 120 L300 200" stroke="#94a3b8" strokeWidth="1" fill="none" strokeDasharray="3 3" strokeOpacity="0.15" />
+        <text x="310" y="205" fill="#475569" className="text-[8px]">Unzureichende Evidenz</text>
+      </g>
 
-      {/* Main path segments – light up sequentially */}
-      {pathSegments.map((seg, i) => {
-        const length = Math.sqrt((seg.x2 - seg.x1) ** 2 + (seg.y2 - seg.y1) ** 2);
-        return (
-          <line
-            key={`seg-${i}`}
-            x1={seg.x1} y1={seg.y1} x2={seg.x2} y2={seg.y2}
-            stroke="#06b6d4" strokeWidth="3"
-            strokeDasharray={length}
-            strokeDashoffset={length}
-            style={{ animation: `story-draw-edge 0.4s ease-out ${seg.delay}s forwards` }}
-          />
-        );
-      })}
+      {pathSegments.map((seg, i) => (
+        <line
+          key={`seg-${i}`}
+          x1={seg.x1} y1={seg.y1} x2={seg.x2} y2={seg.y2}
+          stroke="#06b6d4" strokeWidth="4"
+          strokeDasharray="1000"
+          strokeDashoffset="1000"
+          className="st-draw"
+          style={{ animationDelay: `${seg.delay}s`, filter: "drop-shadow(0 0 4px rgba(6,182,212,0.4))" }}
+        />
+      ))}
 
-      {/* Path nodes – appear sequentially */}
       {pathNodes.map((node) => (
-        <g key={node.label} style={{ opacity: 0, animation: `story-fade-in 0.4s ease-out ${node.delay}s forwards` }}>
+        <g key={node.label} className="st-fade-in" style={{ animationDelay: `${node.delay}s` }}>
           <rect
-            x={node.x - 48} y={node.y - 20}
-            width="96" height="40" rx="10"
-            fill="rgba(8,145,178,0.15)" stroke="#06b6d4" strokeWidth="1.5"
+            x={node.x - 50} y={node.y - 20} width="100" height="40" rx="10"
+            fill={node.type === "start" || node.type === "end" ? "rgba(8,145,178,0.3)" : "rgba(15,23,42,0.8)"}
+            stroke={node.type === "end" ? "#34d399" : "#06b6d4"} strokeWidth="2"
           />
-          <text x={node.x} y={node.y + 5} textAnchor="middle" className="fill-sky-200 text-[12px] font-semibold">
+          <text x={node.x} y={node.y + 5} textAnchor="middle" fill="#e0f2fe" className="text-[11px] font-bold tracking-tight">
             {node.label}
           </text>
         </g>
       ))}
 
-      {/* Label */}
-      <text
-        x="80" y="40"
-        className="fill-slate-400 text-[11px]"
-        style={{ opacity: 0, animation: "story-fade-in 0.6s ease-out 0.2s forwards" }}
-      >
-        Markierter Ableitungspfad
-      </text>
-      <text
-        x="350" y="240"
-        textAnchor="middle"
-        className="fill-slate-500 text-[9px]"
-        style={{ opacity: 0, animation: "story-fade-in 0.6s ease-out 2s forwards" }}
-      >
-        alternative Pfade bleiben sichtbar
+      <g className="st-fade-in" style={{ animationDelay: "1s" }}>
+         <circle cx="170" cy="115" r="3" fill="#06b6d4" />
+         <text x="178" y="118" fill="#06b6d4" className="text-[9px] font-bold">PRÜFUNG</text>
+      </g>
+      <g className="st-fade-in" style={{ animationDelay: "2s" }}>
+         <circle cx="530" cy="115" r="3" fill="#34d399" />
+         <text x="538" y="118" fill="#34d399" className="text-[9px] font-bold">VALIDIERT</text>
+      </g>
+
+      <text x="320" y="245" textAnchor="middle" fill="#64748b" className="st-fade-in text-[10px]" style={{ animationDelay: "2.5s" }}>
+        Der Graph liefert die Argumentationskette – die Synthese prüft deren Konsistenz
       </text>
     </>
   );
@@ -288,73 +296,71 @@ function SynthesisAnimated(): React.JSX.Element {
 /* ─── Chapter 5: Handlung ─── */
 function ActionAnimated(): React.JSX.Element {
   const versions = [
-    { y: 76, label: "v1  stabiler Pfad", active: true, delay: 1.4 },
-    { y: 116, label: "v2  Fragevariation", active: false, delay: 1.7 },
-    { y: 156, label: "v3  Trade-off-Pfad", active: false, delay: 2.0 },
+    { y: 76, label: "v1.2", status: "OPERATIV", active: true, delay: 1.4 },
+    { y: 116, label: "v1.1", status: "ARCHIVIERT", active: false, delay: 1.7 },
+    { y: 156, label: "v1.0", status: "ARCHIVIERT", active: false, delay: 2.0 },
   ];
 
   return (
     <>
-      {/* Graph area */}
-      <rect x="40" y="40" width="340" height="200" rx="14" fill="rgba(15,23,42,0.4)" stroke="rgba(148,163,184,0.15)" />
+      <rect x="30" y="40" width="340" height="200" rx="14" fill="rgba(15,23,42,0.4)" stroke="rgba(148,163,184,0.15)" />
+      <text x="45" y="32" fill="#64748b" className="text-[10px] uppercase tracking-wider">Entscheidungs-Zustand</text>
 
-      {/* Graph nodes */}
-      <g style={{ opacity: 0, animation: "story-fade-in 0.4s ease-out 0.2s forwards" }}>
-        <circle cx="120" cy="100" r="18" fill="#38bdf8" opacity="0.85" />
-        <circle cx="210" cy="155" r="18" fill="#22d3ee" opacity="0.85" />
-        <circle cx="290" cy="110" r="18" fill="#22c55e" opacity="0.85" />
-        <circle cx="330" cy="185" r="16" fill="#f59e0b" opacity="0.7" />
+      <g className="st-fade-in" style={{ animationDelay: "0.2s" }}>
+        <circle cx="100" cy="100" r="18" fill="#38bdf8" fillOpacity="0.6" />
+        <circle cx="180" cy="160" r="18" fill="#22d3ee" fillOpacity="0.6" />
+        <circle cx="260" cy="110" r="22" fill="#22c55e" fillOpacity="0.85" />
       </g>
 
-      {/* Edges */}
-      <g style={{ opacity: 0, animation: "story-fade-in 0.4s ease-out 0.5s forwards" }}>
-        <line x1="138" y1="100" x2="192" y2="155" stroke="#7dd3fc" strokeWidth="2.5" />
-        <line x1="228" y1="155" x2="272" y2="110" stroke="#7dd3fc" strokeWidth="2.5" />
-        <line x1="308" y1="110" x2="314" y2="185" stroke="#86efac" strokeWidth="2.5" />
+      <g className="st-fade-in" style={{ animationDelay: "0.5s" }}>
+        <line x1="118" y1="108" x2="162" y2="152" stroke="rgba(125,211,252,0.3)" strokeWidth="2" />
+        <line x1="198" y1="152" x2="242" y2="118" stroke="rgba(125,211,252,0.3)" strokeWidth="2" />
       </g>
 
-      {/* Alternative path – dashed */}
-      <path
-        d="M210 155 C240 200,300 210,330 185"
-        stroke="rgba(148,163,184,0.4)" strokeWidth="1.5" fill="none" strokeDasharray="5 5"
-        style={{ opacity: 0, animation: "story-fade-in 0.6s ease-out 0.8s forwards" }}
-      />
+      <g className="st-radiate" style={{ transformOrigin: "260px 110px" }}>
+        <circle cx="260" cy="110" r="28" fill="none" stroke="#34d399" strokeWidth="2" strokeDasharray="4 3" />
+      </g>
+      <text x="260" y="70" textAnchor="middle" fill="#34d399" className="st-fade-in text-[10px] font-bold" style={{ animationDelay: "1s" }}>SNAPSHOT</text>
 
-      {/* Decision state marker */}
-      <g style={{ opacity: 0, animation: "story-fade-in 0.6s ease-out 1s forwards" }}>
-        <circle cx="290" cy="110" r="24" fill="none" stroke="#22c55e" strokeWidth="2" strokeDasharray="4 3" />
-        <text x="290" y="78" textAnchor="middle" className="fill-emerald-400 text-[9px] font-semibold">Entscheidung</text>
+      <g className="st-fade-in" style={{ animationDelay: "2.2s" }}>
+         <path d="M288 110 Q350 110 420 91" fill="none" stroke="#0ea5e9" strokeWidth="2" strokeDasharray="5 5" markerEnd="url(#arrowhead)" />
+         <text x="350" y="95" textAnchor="middle" fill="#0ea5e9" className="text-[9px] font-bold">TRANSFORM</text>
       </g>
 
-      {/* Version layer panel */}
-      <rect x="420" y="40" width="180" height="200" rx="14" fill="rgba(15,23,42,0.4)" stroke="rgba(148,163,184,0.15)"
-        style={{ opacity: 0, animation: "story-fade-in 0.4s ease-out 1.2s forwards" }}
-      />
-      <text x="440" y="62" className="fill-slate-300 text-[10px] font-semibold"
-        style={{ opacity: 0, animation: "story-fade-in 0.4s ease-out 1.3s forwards" }}
-      >
-        Version-Layer
-      </text>
+      <rect x="420" y="40" width="190" height="200" rx="14" fill="rgba(15,23,42,0.4)" stroke="rgba(148,163,184,0.15)" className="st-fade-in" style={{ animationDelay: "1.2s" }} />
+      <text x="440" y="62" fill="#94a3b8" className="st-fade-in text-[10px] font-bold uppercase tracking-wider" style={{ animationDelay: "1.2s" }}>Version-Layer</text>
 
-      {/* Version cards – slide in from right */}
       {versions.map((v) => (
-        <g key={v.label} style={{ opacity: 0, animation: `story-slide-in-right 0.4s ease-out ${v.delay}s forwards` }}>
+        <g key={v.label} className="st-slide-right" style={{ animationDelay: `${v.delay}s` }}>
           <rect
-            x="440" y={v.y} width="140" height="30" rx="6"
-            fill={v.active ? "rgba(8,145,178,0.2)" : "#0f172a"}
-            stroke={v.active ? "#0ea5e9" : "#475569"}
+            x="440" y={v.y} width="150" height="34" rx="8"
+            fill={v.active ? "rgba(8,145,178,0.2)" : "rgba(15,23,42,1)"}
+            stroke={v.active ? "#0ea5e9" : "#334155"}
             strokeWidth={v.active ? "1.5" : "1"}
           />
-          <text
-            x="510" y={v.y + 19}
-            textAnchor="middle"
-            className={v.active ? "fill-sky-200 text-[10px] font-semibold" : "fill-slate-400 text-[10px]"}
-            style={v.active ? { animation: "story-version-pulse 2.5s ease-in-out 2.5s infinite" } : undefined}
-          >
+          <text x="455" y={v.y + 21} fill={v.active ? "#e0f2fe" : "#64748b"} className="text-[11px] font-bold">
             {v.label}
           </text>
+          <text x="580" y={v.y + 21} textAnchor="end" fill={v.active ? "#38bdf8" : "#475569"} className="text-[9px] font-bold">
+            {v.status}
+          </text>
+          {v.active && (
+            <circle cx="584" cy={v.y + 17} r="3" fill="#38bdf8" className="st-v-pulse" />
+          )}
         </g>
       ))}
+
+      <defs>
+        <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="0" refY="3.5" orient="auto">
+          <polygon points="0 0, 10 3.5, 0 7" fill="#0ea5e9" />
+        </marker>
+      </defs>
+
+      <text x="495" y="255" textAnchor="middle" fill="#64748b" className="st-fade-in text-[10px]" style={{ animationDelay: "2.5s" }}>
+        Stabile Entscheidungs-Zustände statt flüchtiger Antworten
+      </text>
     </>
   );
 }
+
+

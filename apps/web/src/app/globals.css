@@ -91,13 +91,13 @@ body {
 
 /* Story SVG animations */
 @keyframes story-pulse {
-  0%, 100% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.06); opacity: 0.85; }
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
 }
 
 @keyframes story-radiate {
-  0% { r: 44; opacity: 0.7; }
-  100% { r: 80; opacity: 0; }
+  0% { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(1.8); opacity: 0; }
 }
 
 @keyframes story-fade-in {
@@ -111,21 +111,24 @@ body {
 }
 
 @keyframes story-draw-edge {
-  from { stroke-dashoffset: 200; }
+  from { stroke-dashoffset: 1000; }
   to { stroke-dashoffset: 0; }
 }
 
-@keyframes story-path-glow {
-  from { stroke-opacity: 0.2; stroke-width: 2; }
-  to { stroke-opacity: 1; stroke-width: 4; }
-}
-
 @keyframes story-slide-in-right {
-  from { transform: translateX(20px); opacity: 0; }
+  from { transform: translateX(30px); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
 }
 
 @keyframes story-version-pulse {
   0%, 100% { opacity: 1; }
-  50% { opacity: 0.6; }
+  50% { opacity: 0.4; }
 }
+
+.st-pulse { animation: story-pulse 4s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
+.st-radiate { animation: story-radiate 3s ease-out infinite; transform-box: fill-box; transform-origin: center; }
+.st-fade-in { animation: story-fade-in 0.8s ease-out forwards; }
+.st-grow-in { animation: story-grow-in 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards; transform-box: fill-box; transform-origin: center; }
+.st-draw { animation: story-draw-edge 1s ease-out forwards; }
+.st-slide-right { animation: story-slide-in-right 0.5s ease-out forwards; }
+.st-v-pulse { animation: story-version-pulse 2s ease-in-out infinite; }

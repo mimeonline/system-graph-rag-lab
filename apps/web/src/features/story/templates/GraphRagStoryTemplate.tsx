@@ -39,7 +39,7 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
               <svg viewBox="0 0 660 60" className="h-auto w-full" role="img" aria-label="5-Schritt-Pipeline">
                 {[
                   { x: 66, label: "Frage" },
-                  { x: 198, label: "Kontext" },
+                  { x: 198, label: "Kontextauswahl" },
                   { x: 330, label: "Graph" },
                   { x: 462, label: "Synthese" },
                   { x: 594, label: "Handlung" },
@@ -52,7 +52,7 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
                       />
                     ) : null}
                     <rect x={step.x - 36} y="6" width="72" height="36" rx="8" fill="#f0f9ff" stroke="#0ea5e9" strokeWidth="1.5" />
-                    <text x={step.x} y="29" textAnchor="middle" className="fill-sky-800 text-[11px] font-semibold">
+                    <text x={step.x} y="29" textAnchor="middle" className="fill-sky-800 text-[10px] font-bold tracking-tight">
                       {step.label}
                     </text>
                   </g>
