@@ -29,9 +29,9 @@ export function BlogFeaturedItem({ post }: BlogFeaturedItemProps): React.JSX.Ele
             ))}
           </div>
           <TrackedLink
-            href={`/blog/${post.slug}`}
+            href={`/essay/${post.slug}`}
             label="Featured lesen"
-            eventName="blog_featured_click"
+            eventName="essay_featured_click"
             payload={{ slug: post.slug }}
             className="mt-5 inline-flex rounded-md bg-sky-600 px-3 py-2 text-sm font-semibold text-white transition hover:bg-sky-700"
           />

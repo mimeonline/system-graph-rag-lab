@@ -56,7 +56,7 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
-      <TrackedPageView page="/blog" />
+      <TrackedPageView page="/essay" />
       <SiteHeader />
 
       <main className="flex-1">
@@ -166,7 +166,7 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
                     <h3 className="text-lg font-bold tracking-tight text-slate-900">{flowStep.title}</h3>
                     <p className="mt-2 text-sm leading-relaxed text-slate-600">{flowStep.description}</p>
                     <a
-                      href={`/blog/${flowStep.slug}`}
+                      href={`/essay/${flowStep.slug}`}
                       className="mt-auto pt-5 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-sky-700 hover:text-sky-900 transition-colors"
                     >
                       Essay lesen
@@ -192,15 +192,15 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
               <TrackedLink
                 href="/demo"
                 label="Demo starten"
-                eventName="blog_cta_click"
-                payload={{ target: "/demo", surface: "blog-bottom-cta" }}
+                eventName="essay_cta_click"
+                payload={{ target: "/demo", surface: "essay-bottom-cta" }}
                 className="inline-flex rounded-lg bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-slate-900/20 transition-all hover:bg-sky-700 hover:-translate-y-0.5"
               />
               <TrackedLink
                 href="/story/graphrag"
                 label="Zur Architektur-Story"
-                eventName="blog_cta_click"
-                payload={{ target: "/story/graphrag", surface: "blog-bottom-secondary" }}
+                eventName="essay_cta_click"
+                payload={{ target: "/story/graphrag", surface: "essay-bottom-secondary" }}
                 className="inline-flex rounded-lg border border-slate-300 glass-panel px-6 py-3.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
               />
             </motion.div>

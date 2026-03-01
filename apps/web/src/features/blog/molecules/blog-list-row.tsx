@@ -26,9 +26,9 @@ export function BlogListRow({ post }: BlogListRowProps): React.JSX.Element {
           </div>
         </div>
         <TrackedLink
-          href={`/blog/${post.slug}`}
+          href={`/essay/${post.slug}`}
           label="Lesen"
-          eventName="blog_list_row_click"
+          eventName="essay_list_row_click"
           payload={{ slug: post.slug }}
           className="inline-flex shrink-0 rounded-md border border-slate-300 px-2.5 py-1.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
         />

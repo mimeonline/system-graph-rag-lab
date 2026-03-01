@@ -569,7 +569,7 @@ export function GraphEssaysSurface(): React.JSX.Element {
       if (!slug) {
         return;
       }
-      router.push(`/blog/${slug}`);
+      router.push(`/essay/${slug}`);
     };
 
     cy.on("mouseover", 'node[kind = "essay"]', handleNodeMouseOver);

@@ -1,7 +1,7 @@
 export type SiteCTA = {
   label: string;
   href: string;
-  surface: "header" | "hero" | "blog" | "story" | "lab" | "footer";
+  surface: "header" | "hero" | "essay" | "story" | "lab" | "footer";
   priority: "high" | "medium" | "low";
 };
 
@@ -35,7 +35,7 @@ export const NAV_LINKS = [
   { label: "Home", href: "/" },
   { label: "Demo", href: "/demo" },
   { label: "GraphRAG Story", href: "/story/graphrag" },
-  { label: "Graph Essays", href: "/blog" },
+  { label: "Graph Essays", href: "/essay" },
 ] as const;
 
 export function withCanonical(pathname: string): string {

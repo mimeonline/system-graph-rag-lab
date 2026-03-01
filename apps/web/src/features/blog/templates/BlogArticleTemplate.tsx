@@ -33,7 +33,7 @@ function getNextEssay(currentSlug: string): { slug: string; title: string; step:
 }
 
 export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTemplateProps): React.JSX.Element {
-  const canonical = frontmatter.canonicalUrl ?? withCanonical(`/blog/${frontmatter.slug}`);
+  const canonical = frontmatter.canonicalUrl ?? withCanonical(`/essay/${frontmatter.slug}`);
   const linkedInShare = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonical)}`;
   const xShare = `https://twitter.com/intent/tweet?url=${encodeURIComponent(canonical)}&text=${encodeURIComponent(frontmatter.title)}`;
   const publishedDate = new Intl.DateTimeFormat("de-DE", { timeZone: "UTC" }).format(new Date(frontmatter.publishedAt));
@@ -42,7 +42,7 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
       <ReadingProgressBar />
-      <TrackedPageView page={`/blog/${frontmatter.slug}`} />
+      <TrackedPageView page={`/essay/${frontmatter.slug}`} />
       <SiteHeader />
       <main className="flex-1 px-4 py-10 sm:px-6 sm:py-14">
         <div className="mx-auto grid w-full max-w-[1280px] gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
@@ -136,7 +136,7 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
             {nextEssay ? (
               <>
                 <a
-                  href={`/blog/${nextEssay.slug}`}
+                  href={`/essay/${nextEssay.slug}`}
                   className="group mt-6 flex items-center justify-between gap-4 glass-panel rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgb(14,165,233,0.12)] hover:border-sky-300/50"
                 >
                   <div className="space-y-1">
@@ -200,7 +200,7 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
 
             {/* Floating Back Link */}
             <a
-              href="/blog"
+              href="/essay"
               className="inline-flex glass-panel items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-slate-600 transition-all hover:text-sky-700 hover:-translate-y-0.5 hover:shadow-md"
             >
               <span className="text-lg leading-none transition-transform group-hover:-translate-x-1" aria-hidden>←</span>

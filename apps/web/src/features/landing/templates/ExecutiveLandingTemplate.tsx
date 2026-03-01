@@ -131,10 +131,10 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
                     </p>
                   </TrackedLink>
                   <TrackedLink
-                    href="/blog"
+                    href="/essay"
                     label="Graph Essays"
                     eventName="landing_section_click"
-                    payload={{ target: "/blog", surface: "what-to-expect-essays" }}
+                    payload={{ target: "/essay", surface: "what-to-expect-essays" }}
                     className="group glass-panel rounded-2xl p-6 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-sky-900/5"
                   >
                     <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-teal-100/50 text-teal-600">
