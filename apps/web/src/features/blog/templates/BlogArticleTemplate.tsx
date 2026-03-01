@@ -185,14 +185,24 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                 <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Visualisierungen</p>
                 <div className="mt-3 space-y-3">
                   {frontmatter.diagramImages.map((image) => (
-                    <Image
-                      key={image}
-                      src={image}
-                      alt="Diagramm"
-                      width={1200}
-                      height={800}
-                      className="block h-auto w-full rounded-lg border border-slate-200/60 shadow-sm"
-                    />
+                    image.toLowerCase().endsWith(".svg") ? (
+                      <img
+                        key={image}
+                        src={image}
+                        alt="Diagramm"
+                        className="block h-auto w-full rounded-lg border border-slate-200/60 shadow-sm"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <Image
+                        key={image}
+                        src={image}
+                        alt="Diagramm"
+                        width={1200}
+                        height={800}
+                        className="block h-auto w-full rounded-lg border border-slate-200/60 shadow-sm"
+                      />
+                    )
                   ))}
                 </div>
               </motion.section>

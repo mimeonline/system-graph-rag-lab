@@ -79,8 +79,8 @@
 
   <!-- Connecting Lines -->
   <line x1="700" y1="430" x2="700" y2="270" stroke="#38bdf8" stroke-width="3" stroke-dasharray="4 4" opacity="0.6"/>
-  <line x1="630" y1="460" x2="440" y2="360" stroke="#38bdf8" stroke-width="3" stroke-dasharray="4 4" opacity="0.6"/>
-  <line x1="770" y1="460" x2="960" y2="360" stroke="#38bdf8" stroke-width="3" stroke-dasharray="4 4" opacity="0.6"/>
-  <line x1="650" y1="570" x2="520" y2="730" stroke="#38bdf8" stroke-width="3" stroke-dasharray="4 4" opacity="0.6"/>
-  <line x1="750" y1="570" x2="880" y2="730" stroke="#38bdf8" stroke-width="3" stroke-dasharray="4 4" opacity="0.6"/>
+  <line x1="620" y1="484" x2="557" y2="464" stroke="#38bdf8" stroke-width="3" stroke-dasharray="4 4" opacity="0.6"/>
+  <line x1="780" y1="484" x2="843" y2="464" stroke="#38bdf8" stroke-width="3" stroke-dasharray="4 4" opacity="0.6"/>
+  <line x1="642" y1="590" x2="565" y2="697" stroke="#38bdf8" stroke-width="3" stroke-dasharray="4 4" opacity="0.6"/>
+  <line x1="758" y1="590" x2="836" y2="697" stroke="#38bdf8" stroke-width="3" stroke-dasharray="4 4" opacity="0.6"/>
 </svg>
