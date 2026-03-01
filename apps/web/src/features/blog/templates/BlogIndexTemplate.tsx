@@ -1,9 +1,11 @@
+import { TrackedLink } from "@/components/molecules/tracked-link";
 import { TrackedPageView } from "@/components/molecules/tracked-page-view";
 import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
 import type { BlogPostSummary } from "@/features/blog/contracts";
 import { GraphEssaysSurface } from "@/features/blog/organisms/GraphEssaysSurface";
 import * as motion from "framer-motion/client";
+import { Fragment } from "react";
 
 type BlogIndexTemplateProps = {
   posts: BlogPostSummary[];
@@ -99,19 +101,31 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
           </div>
         </section>
 
+        {/* Gradient Divider */}
+        <div className="mx-auto max-w-295 px-4 sm:px-6" aria-hidden>
+          <div className="h-px bg-gradient-to-r from-transparent via-slate-300/60 to-transparent" />
+        </div>
+
         {/* Graph Surface */}
-        <section className="space-y-4 pb-4">
-          <div className="mx-auto flex w-full max-w-295 items-end justify-between gap-4 px-4 sm:px-6">
-            <div className="space-y-1">
-              <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Argumentationsfluss</h2>
-              <p className="text-sm text-slate-500 font-medium">Problemraum → Struktur → Qualität → Organisation → Positionierung</p>
+        <section className="space-y-4 py-8">
+          <div className="mx-auto max-w-295 px-4 sm:px-6">
+            <div className="glass-panel inline-flex items-center gap-4 rounded-xl px-5 py-3">
+              <div className="space-y-0.5">
+                <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-700">Argumentationsfluss</h2>
+                <p className="text-sm text-slate-500 font-medium">Problemraum → Struktur → Qualität → Organisation → Positionierung</p>
+              </div>
             </div>
           </div>
           <GraphEssaysSurface />
         </section>
 
+        {/* Gradient Divider */}
+        <div className="mx-auto max-w-295 px-4 sm:px-6" aria-hidden>
+          <div className="h-px bg-gradient-to-r from-transparent via-slate-300/60 to-transparent" />
+        </div>
+
         {/* Flow Steps */}
-        <section className="px-4 py-20 sm:px-6">
+        <section className="px-4 py-16 sm:px-6 sm:py-20">
           <div className="mx-auto w-full max-w-[1180px] space-y-10">
             <motion.div
               initial={{ opacity: 0, y: 12 }}
@@ -119,7 +133,7 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
               transition={{ duration: 0.5, ease: "easeOut" }}
               className="space-y-3"
             >
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-sky-600">Struktur des Arguments</p>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-600">Struktur des Arguments</p>
               <h2 className="text-[1.75rem] font-bold tracking-tight text-slate-900 sm:text-[2.25rem]">Vom Problem zur Position</h2>
               <p className="max-w-[72ch] text-[1.05rem] leading-relaxed text-slate-600 font-medium">
                 Der Gedankengang folgt einer klaren Logik – von der Ausgangsfrage
@@ -127,28 +141,39 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
               </p>
             </motion.div>
 
-            <div className="grid gap-5 md:grid-cols-5">
+            {/* Step Cards with Connection Arrows */}
+            <div className="flex flex-col md:grid md:grid-cols-3 lg:flex lg:flex-row lg:items-stretch gap-5 lg:gap-0">
               {FLOW_STEPS.map((flowStep, index) => (
-                <motion.article
-                  key={flowStep.step}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.45, delay: 0.08 * index, ease: "easeOut" }}
-                  className="glass-panel group flex h-full flex-col rounded-2xl p-5 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-sky-900/5"
-                >
-                  <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100/60 text-[11px] font-black text-sky-700">
-                    {flowStep.step}
-                  </div>
-                  <h3 className="text-lg font-bold tracking-tight text-slate-900">{flowStep.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{flowStep.description}</p>
-                  <a
-                    href={`/blog/${flowStep.slug}`}
-                    className="mt-auto pt-5 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-sky-700 hover:text-sky-900 transition-colors"
+                <Fragment key={flowStep.step}>
+                  {/* Arrow connector between cards (desktop only) */}
+                  {index > 0 ? (
+                    <div className="hidden lg:flex items-center justify-center shrink-0 px-1.5" aria-hidden>
+                      <div className="flex items-center gap-0.5 text-slate-400">
+                        <div className="h-px w-4 bg-gradient-to-r from-slate-300 to-slate-400" />
+                        <span className="text-xs">›</span>
+                      </div>
+                    </div>
+                  ) : null}
+                  <motion.article
+                    initial={{ opacity: 0, y: 16 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.45, delay: 0.08 * index, ease: "easeOut" }}
+                    className="glass-panel group flex flex-col rounded-2xl p-5 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-sky-900/5 hover:border-sky-200 lg:flex-1 lg:min-w-0"
                   >
-                    Essay lesen
-                    <span className="transition-transform group-hover:translate-x-0.5" aria-hidden>→</span>
-                  </a>
-                </motion.article>
+                    <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100/60 text-[11px] font-black text-sky-700 group-hover:bg-sky-200/60 transition-colors">
+                      {flowStep.step}
+                    </div>
+                    <h3 className="text-lg font-bold tracking-tight text-slate-900">{flowStep.title}</h3>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-600">{flowStep.description}</p>
+                    <a
+                      href={`/blog/${flowStep.slug}`}
+                      className="mt-auto pt-5 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-sky-700 hover:text-sky-900 transition-colors"
+                    >
+                      Essay lesen
+                      <span className="transition-transform group-hover:translate-x-0.5" aria-hidden>→</span>
+                    </a>
+                  </motion.article>
+                </Fragment>
               ))}
             </div>
 
@@ -156,6 +181,29 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
               Der Argumentationspfad lässt sich chronologisch verfolgen –
               oder gezielt an dem Punkt einsteigen, der für Ihre aktuelle Architektur- oder Governance-Frage relevant ist.
             </p>
+
+            {/* CTA Section */}
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
+              className="flex flex-wrap items-center gap-4 pt-4"
+            >
+              <TrackedLink
+                href="/demo"
+                label="Demo starten"
+                eventName="blog_cta_click"
+                payload={{ target: "/demo", surface: "blog-bottom-cta" }}
+                className="inline-flex rounded-lg bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-slate-900/20 transition-all hover:bg-sky-700 hover:-translate-y-0.5"
+              />
+              <TrackedLink
+                href="/story/graphrag"
+                label="Zur Architektur-Story"
+                eventName="blog_cta_click"
+                payload={{ target: "/story/graphrag", surface: "blog-bottom-secondary" }}
+                className="inline-flex rounded-lg border border-slate-300 glass-panel px-6 py-3.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
+              />
+            </motion.div>
           </div>
         </section>
       </main>

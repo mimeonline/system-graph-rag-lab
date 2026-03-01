@@ -1,3 +1,4 @@
+import { ReadingProgressBar } from "@/components/molecules/reading-progress-bar";
 import { TrackedLink } from "@/components/molecules/tracked-link";
 import { TrackedPageView } from "@/components/molecules/tracked-page-view";
 import { SiteFooter } from "@/components/organisms/site-footer";
@@ -14,14 +15,33 @@ type BlogArticleTemplateProps = {
   toc: BlogTocItem[];
 };
 
+/** Ordered essay slugs for the "Next Essay" navigation */
+const ESSAY_ORDER: { slug: string; title: string; step: string }[] = [
+  { slug: "warum-ki-antworten-fuer-entscheidungen-nicht-ausreichen", title: "Problemraum", step: "01" },
+  { slug: "was-graphrag-strukturell-anders-macht-als-klassisches-rag", title: "Struktur", step: "02" },
+  { slug: "qualitaetskriterien-fuer-ein-produktives-graphrag-system", title: "Qualität", step: "03" },
+  { slug: "graphrag-als-entscheidungs-interface-fuer-organisationen", title: "Organisation", step: "04" },
+  { slug: "von-plausiblen-antworten-zu-pruefbaren-entscheidungen", title: "Positionierung", step: "05" },
+];
+
+function getNextEssay(currentSlug: string): { slug: string; title: string; step: string } | null {
+  const currentIndex = ESSAY_ORDER.findIndex((e) => e.slug === currentSlug);
+  if (currentIndex === -1 || currentIndex >= ESSAY_ORDER.length - 1) {
+    return null;
+  }
+  return ESSAY_ORDER[currentIndex + 1] ?? null;
+}
+
 export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTemplateProps): React.JSX.Element {
   const canonical = frontmatter.canonicalUrl ?? withCanonical(`/blog/${frontmatter.slug}`);
   const linkedInShare = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonical)}`;
   const xShare = `https://twitter.com/intent/tweet?url=${encodeURIComponent(canonical)}&text=${encodeURIComponent(frontmatter.title)}`;
   const publishedDate = new Intl.DateTimeFormat("de-DE", { timeZone: "UTC" }).format(new Date(frontmatter.publishedAt));
+  const nextEssay = getNextEssay(frontmatter.slug);
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
+      <ReadingProgressBar />
       <TrackedPageView page={`/blog/${frontmatter.slug}`} />
       <SiteHeader />
       <main className="flex-1 px-4 py-10 sm:px-6 sm:py-14">
@@ -34,7 +54,7 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-sky-600">
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-600">
                 Systemische Praxis
               </p>
               <h1 className="mt-4 text-[2.2rem] font-bold tracking-tight text-slate-950 leading-[1.15] sm:text-[2.6rem]">
@@ -88,8 +108,13 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
 
             <div className="mt-8 max-w-[74ch] prose-slate">{content}</div>
 
+            {/* Gradient Divider */}
+            <div className="mt-10" aria-hidden>
+              <div className="h-px bg-gradient-to-r from-transparent via-slate-300/60 to-transparent" />
+            </div>
+
             {/* Share */}
-            <div className="mt-10 flex flex-wrap items-center gap-3 border-t border-slate-200/60 pt-6">
+            <div className="mt-6 flex flex-wrap items-center gap-3">
               <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">Teilen</span>
               <TrackedLink
                 href={linkedInShare}
@@ -110,6 +135,27 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                 icon={<span className="text-[13px] font-bold leading-none">𝕏</span>}
               />
             </div>
+
+            {/* Next Essay Navigation */}
+            {nextEssay ? (
+              <>
+                <div className="mt-8" aria-hidden>
+                  <div className="h-px bg-gradient-to-r from-transparent via-slate-300/60 to-transparent" />
+                </div>
+                <a
+                  href={`/blog/${nextEssay.slug}`}
+                  className="group mt-6 flex items-center justify-between gap-4 glass-panel rounded-2xl p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-sky-900/5 hover:border-sky-200"
+                >
+                  <div className="space-y-1">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Weiter im Argumentationsfluss</p>
+                    <p className="text-base font-bold text-slate-900 group-hover:text-sky-700 transition-colors">
+                      Schritt {nextEssay.step}: {nextEssay.title}
+                    </p>
+                  </div>
+                  <span className="text-xl text-slate-400 group-hover:text-sky-600 transition-all group-hover:translate-x-1" aria-hidden>→</span>
+                </a>
+              </>
+            ) : null}
           </article>
 
           {/* Sidebar */}
