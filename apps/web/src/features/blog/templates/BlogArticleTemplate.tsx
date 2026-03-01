@@ -24,6 +24,25 @@ const ESSAY_ORDER: { slug: string; title: string; step: string }[] = [
   { slug: "von-plausiblen-antworten-zu-pruefbaren-entscheidungen", title: "Positionierung", step: "05" },
 ];
 
+const ESSAY_DRILLDOWNS: Record<string, { slug: string; title: string }> = {
+  "was-graphrag-strukturell-anders-macht-als-klassisches-rag": {
+    slug: "kontextdisziplin-warum-weniger-kontext-oft-bessere-antworten-erzeugt",
+    title: "Kontextdisziplin",
+  },
+  "qualitaetskriterien-fuer-ein-produktives-graphrag-system": {
+    slug: "prompt-transparenz-als-vertrauensfaktor",
+    title: "Prompt-Transparenz",
+  },
+  "graphrag-als-entscheidungs-interface-fuer-organisationen": {
+    slug: "system-thinking-als-idealer-use-case-fuer-graphrag",
+    title: "System Thinking Use Case",
+  },
+};
+
+const DRILLDOWN_PARENT: Record<string, string> = Object.fromEntries(
+  Object.entries(ESSAY_DRILLDOWNS).map(([parentSlug, drilldown]) => [drilldown.slug, parentSlug]),
+);
+
 function getNextEssay(currentSlug: string): { slug: string; title: string; step: string } | null {
   const currentIndex = ESSAY_ORDER.findIndex((e) => e.slug === currentSlug);
   if (currentIndex === -1 || currentIndex >= ESSAY_ORDER.length - 1) {
@@ -32,12 +51,40 @@ function getNextEssay(currentSlug: string): { slug: string; title: string; step:
   return ESSAY_ORDER[currentIndex + 1] ?? null;
 }
 
+function getDrilldownEssay(currentSlug: string): { slug: string; title: string } | null {
+  return ESSAY_DRILLDOWNS[currentSlug] ?? null;
+}
+
+function getDrilldownParentEssay(currentSlug: string): { slug: string; title: string; step: string } | null {
+  const parentSlug = DRILLDOWN_PARENT[currentSlug];
+  if (!parentSlug) {
+    return null;
+  }
+  const parent = ESSAY_ORDER.find((essay) => essay.slug === parentSlug);
+  return parent ?? null;
+}
+
+function getDrilldownContinueEssay(currentSlug: string): { slug: string; title: string; step: string } | null {
+  const parentSlug = DRILLDOWN_PARENT[currentSlug];
+  if (!parentSlug) {
+    return null;
+  }
+  const parentIndex = ESSAY_ORDER.findIndex((essay) => essay.slug === parentSlug);
+  if (parentIndex === -1 || parentIndex >= ESSAY_ORDER.length - 1) {
+    return null;
+  }
+  return ESSAY_ORDER[parentIndex + 1] ?? null;
+}
+
 export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTemplateProps): React.JSX.Element {
   const canonical = frontmatter.canonicalUrl ?? withCanonical(`/essay/${frontmatter.slug}`);
   const linkedInShare = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonical)}`;
   const xShare = `https://twitter.com/intent/tweet?url=${encodeURIComponent(canonical)}&text=${encodeURIComponent(frontmatter.title)}`;
   const publishedDate = new Intl.DateTimeFormat("de-DE", { timeZone: "UTC" }).format(new Date(frontmatter.publishedAt));
   const nextEssay = getNextEssay(frontmatter.slug);
+  const drilldownEssay = getDrilldownEssay(frontmatter.slug);
+  const drilldownParentEssay = getDrilldownParentEssay(frontmatter.slug);
+  const drilldownContinueEssay = getDrilldownContinueEssay(frontmatter.slug);
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
@@ -74,13 +121,14 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
             </div>
 
             {frontmatter.heroImage ? (
-              <figure className="mt-6 overflow-hidden rounded-xl border border-slate-200/60 shadow-sm">
+              <figure className="mt-6 mx-auto max-w-[95vw] lg:max-w-[1100px] overflow-hidden rounded-xl border border-slate-200/60 shadow-sm">
                 <Image
                   src={frontmatter.heroImage}
                   alt={frontmatter.title}
                   width={1600}
                   height={900}
-                  className="block h-auto w-full object-cover"
+                  className="block w-full object-contain"
+                  style={{ maxHeight: 420, maxWidth: 1100 }}
                   priority
                 />
                 <div className="absolute inset-0 rounded-xl rounded-b-none ring-1 ring-inset ring-slate-900/10" aria-hidden />
@@ -149,6 +197,55 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                 </a>
               </>
             ) : null}
+
+            {drilldownEssay ? (
+              <a
+                href={`/essay/${drilldownEssay.slug}`}
+                className="group mt-4 flex items-center justify-between gap-4 rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-indigo-50/70 to-sky-50/60 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgb(79,70,229,0.14)] hover:border-indigo-300/70"
+              >
+                <div className="space-y-1">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-indigo-700">Vertiefung im Strang</p>
+                  <p className="text-base font-bold text-slate-900 group-hover:text-indigo-800 transition-colors">
+                    {drilldownEssay.title}
+                  </p>
+                </div>
+                <span className="text-xl text-indigo-400 group-hover:text-indigo-600 transition-all group-hover:translate-x-1" aria-hidden>↗</span>
+              </a>
+            ) : null}
+
+            {drilldownParentEssay || drilldownContinueEssay ? (
+              <div className="mt-4 grid gap-3 sm:grid-cols-2">
+                {drilldownParentEssay ? (
+                  <a
+                    href={`/essay/${drilldownParentEssay.slug}`}
+                    className="group flex items-center justify-between gap-3 rounded-2xl border border-slate-200/70 bg-white/90 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-sm"
+                  >
+                    <div className="space-y-1">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">Zurück im Strang</p>
+                      <p className="text-sm font-semibold text-slate-900 group-hover:text-slate-950">
+                        Schritt {drilldownParentEssay.step}: {drilldownParentEssay.title}
+                      </p>
+                    </div>
+                    <span className="text-lg text-slate-400 group-hover:text-slate-600 transition-transform group-hover:-translate-x-1" aria-hidden>←</span>
+                  </a>
+                ) : null}
+
+                {drilldownContinueEssay ? (
+                  <a
+                    href={`/essay/${drilldownContinueEssay.slug}`}
+                    className="group flex items-center justify-between gap-3 rounded-2xl border border-sky-200/70 bg-gradient-to-br from-sky-50/70 to-slate-50/80 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-sm"
+                  >
+                    <div className="space-y-1">
+                      <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-sky-700">Weiter im Flow</p>
+                      <p className="text-sm font-semibold text-slate-900 group-hover:text-sky-800">
+                        Schritt {drilldownContinueEssay.step}: {drilldownContinueEssay.title}
+                      </p>
+                    </div>
+                    <span className="text-lg text-sky-400 group-hover:text-sky-600 transition-transform group-hover:translate-x-1" aria-hidden>→</span>
+                  </a>
+                ) : null}
+              </div>
+            ) : null}
           </article>
 
           {/* Sidebar */}
@@ -180,10 +277,10 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                 initial={{ opacity: 0, x: 8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.4, delay: 0.25, ease: "easeOut" }}
-                className="glass-panel rounded-2xl p-5"
+                className="glass-panel rounded-2xl p-5 max-w-[460px]"
               >
                 <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Visualisierungen</p>
-                <div className="mt-3 space-y-3">
+                <div className="mt-3 space-y-3 flex flex-col items-center">
                   {frontmatter.diagramImages.map((image) => (
                     image.toLowerCase().endsWith(".svg") ? (
                       <img
@@ -191,6 +288,7 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                         src={image}
                         alt="Diagramm"
                         className="block h-auto w-full rounded-lg border border-slate-200/60 shadow-sm"
+                        style={{ maxWidth: 420 }}
                         loading="lazy"
                       />
                     ) : (
@@ -201,6 +299,7 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                         width={1200}
                         height={800}
                         className="block h-auto w-full rounded-lg border border-slate-200/60 shadow-sm"
+                        style={{ maxWidth: 420 }}
                       />
                     )
                   ))}
