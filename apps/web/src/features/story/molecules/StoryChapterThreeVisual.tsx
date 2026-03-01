@@ -647,22 +647,37 @@ function ChapterScene({
 
       {chapterId === "action" ? (
         <>
-          <RevealGroup step={1} activeStep={activeStep}>
-            <Node position={[-2.4, 0.2, 0]} color="#0ea5e9" label="Pfad v1" status="gesichert" hideLabel={hideNodeLabels} />
-          </RevealGroup>
-          <RevealGroup step={2} activeStep={activeStep}>
-            <Node position={[-0.6, 0.5, 0.1]} color="#22d3ee" label="Pfad v2" status="offen" hideLabel={hideNodeLabels} />
-          </RevealGroup>
-          <RevealGroup step={3} activeStep={activeStep}>
-            <Node position={[1.1, 0.1, -0.1]} color="#22c55e" label="Pfad v3" status="hypothese" hideLabel={hideNodeLabels} />
-            <Node position={[2.9, 0.5, 0]} color="#f59e0b" label="Entscheidung" emphasis status="gesichert" hideLabel={hideNodeLabels} />
-          </RevealGroup>
-          <RevealGroup step={4} activeStep={activeStep}>
-            <PathEdge points={[[-2.4, 0.2, 0], [-0.6, 0.5, 0.1], [1.1, 0.1, -0.1], [2.9, 0.5, 0]]} color="#0ea5e9" hero />
-          </RevealGroup>
-          <RevealGroup step={5} activeStep={activeStep}>
-            <PathEdge points={[[-2.4, -0.4, -0.2], [0.7, -0.7, -0.4], [2.9, 0.1, -0.2]]} color="#64748b" />
-          </RevealGroup>
+          {(() => {
+            const answer: [number, number, number] = [-2.6, 0.24, 0.05];
+            const decision: [number, number, number] = [-0.8, 0.52, 0.12];
+            const measure: [number, number, number] = [1.0, 0.2, -0.05];
+            const review: [number, number, number] = [2.8, 0.5, 0];
+            const nodeRadius = 0.23;
+            const activeRadius = 0.33;
+            const mainA = buildAnchoredEdge(answer, decision, nodeRadius, nodeRadius);
+            const mainB = buildAnchoredEdge(decision, measure, nodeRadius, nodeRadius);
+            const mainC = buildAnchoredEdge(measure, review, nodeRadius, activeRadius);
+
+            return (
+              <>
+                <RevealGroup step={1} activeStep={activeStep}>
+                  <Node position={answer} color="#06b6d4" label="Antwort" status="gesichert" hideLabel={hideNodeLabels} />
+                </RevealGroup>
+                <RevealGroup step={2} activeStep={activeStep}>
+                  <Node position={decision} color="#22c55e" label="Entscheidung" status="gesichert" hideLabel={hideNodeLabels} />
+                </RevealGroup>
+                <RevealGroup step={3} activeStep={activeStep}>
+                  <Node position={measure} color="#f59e0b" label="Maßnahme" status="gesichert" hideLabel={hideNodeLabels} />
+                  <Node position={review} color="#0ea5e9" label="Review" emphasis status="offen" hideLabel={hideNodeLabels} />
+                </RevealGroup>
+                <RevealGroup step={4} activeStep={activeStep}>
+                  <PathEdge points={mainA} color="#0ea5e9" />
+                  <PathEdge points={mainB} color="#0ea5e9" />
+                  <PathEdge points={mainC} color="#0ea5e9" />
+                </RevealGroup>
+              </>
+            );
+          })()}
         </>
       ) : null}
     </group>

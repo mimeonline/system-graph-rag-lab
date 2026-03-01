@@ -141,26 +141,26 @@ export const STORY_CHAPTERS: StoryChapter[] = [
     label: "Handlung",
     goal: "Nächste Schritte nutzen",
     technicalFlow:
-      "Wir machen aus der Schlussfolgerung einen konkreten nächsten Schritt mit klarer Verantwortlichkeit. Gleichzeitig bleiben frühere Versionen und alternative Pfade sichtbar. So kann das Team bei neuen Informationen gezielt nachsteuern, ohne den gesamten Entscheidungsweg neu aufzubauen.",
+      "Wir nehmen die Antwort aus dem vorherigen Schritt, die auf Fakten und Belegen basiert, und treffen daraus eine klare Entscheidung. Diese Entscheidung wird in eine konkrete Maßnahme mit klarer Verantwortlichkeit und nächstem Termin übersetzt. So geht der Weg ohne Bruch von der Herleitung in die Umsetzung.",
     structuralRelevance:
-      "So bleibt die Entscheidung auch bei Änderungen stabil und überprüfbar. Das Team kann sehen, was sich geändert hat und warum die Kernaussage gleich geblieben oder bewusst angepasst wurde. Diese Transparenz stärkt Vertrauen im Alltag und in formalen Freigaben.",
+      "Erst wenn aus der belegten Antwort eine klare Maßnahme wird, entsteht tatsächliche Wirkung. Der Schritt macht transparent, wie aus faktenbasierter Analyse verbindliches Handeln wird. Das reduziert Interpretationsspielraum und beschleunigt die Umsetzung.",
     visualSpec:
-      "Du siehst den aktuellen Entscheidungsstand, frühere Versionen und mögliche Alternativen im direkten Vergleich. Dadurch wird aus einer Antwort ein steuerbarer Entscheidungsprozess. Das Diagramm zeigt, dass Entscheidungen nicht statisch sind, sondern kontrolliert weiterentwickelt werden können.",
+      "Du siehst den direkten Pfad von Antwort zu Entscheidung und von dort zur Maßnahme. Ein letzter Knoten markiert die Überprüfung im nächsten Zyklus. Dadurch ist klar erkennbar, wie die Herleitung in konkretes Handeln übergeht.",
     keyInsight:
-      "Gute Entscheidungen halten bei Veränderungen stand – Versionierung macht das prüfbar.",
-    keyTerms: ["Versionierung", "Entscheidungszustand", "Pfadstabilität", "Vergleichbarkeit"],
+      "Eine belegte Antwort ist erst dann wertvoll, wenn daraus eine klare Maßnahme folgt.",
+    keyTerms: ["Entscheidung", "Maßnahme", "Verantwortung", "Umsetzungspfad"],
     beforeAfter: {
       before: "Einmalige Empfehlung ohne Nachvollzug",
-      after: "Versionierter Entscheidungszustand mit Alternativen",
+      after: "Antwort führt zu Entscheidung und konkreter Maßnahme",
     },
     nextStepHint: "Die Demo zeigt diesen gesamten Prozess live.",
     perspectiveCopy: {
       architecture:
-        "Architektur: Bleibt die Entscheidung auch bei Architekturänderungen nachvollziehbar, und welche Teile müssen dann neu bewertet werden? So bleibt die technische Linie trotz Änderungen stabil.",
+        "Architektur: Welche technische Entscheidung wird konkret umgesetzt, und welche Abhängigkeiten müssen dafür aktiv gemanagt werden? So bleibt Architekturarbeit handlungsorientiert.",
       product:
-        "Produkt: Welche nächsten Schritte sind direkt umsetzbar, und wie messen wir ihren Effekt im nächsten Zyklus? So bleibt das Produktteam handlungsfähig und lernorientiert.",
+        "Produkt: Welche nächsten Schritte sind direkt umsetzbar, und wie messen wir ihren Effekt im nächsten Zyklus? So bleibt die Umsetzung handlungsfähig und lernorientiert.",
       governance:
-        "Governance: Welche Version ist freigegeben, was ist abgewichen, und welche nächste Prüfung oder Eskalation ist vorgesehen? Damit bleiben Verantwortung und Nachweisführung klar verteilt.",
+        "Governance: Wer verantwortet die Maßnahme, wann wird überprüft, und welche Kriterien entscheiden über Fortführung oder Korrektur? Damit bleiben Verantwortung und Nachweisführung klar verteilt.",
     },
   },
 ];

@@ -89,19 +89,19 @@ function SynthesisMini(): React.JSX.Element {
 function ActionMini(): React.JSX.Element {
   return (
     <>
-      <circle cx="120" cy="86" r="14" fill="#38bdf8" />
-      <circle cx="200" cy="66" r="14" fill="#22d3ee" />
-      <circle cx="280" cy="94" r="14" fill="#22c55e" />
-      <circle cx="360" cy="76" r="14" fill="#f59e0b" />
+      <circle cx="120" cy="86" r="14" fill="#06b6d4" />
+      <circle cx="200" cy="66" r="14" fill="#22c55e" />
+      <circle cx="280" cy="94" r="14" fill="#f59e0b" />
+      <circle cx="360" cy="76" r="14" fill="#0ea5e9" />
       <line x1="134" y1="84" x2="186" y2="68" stroke="#0ea5e9" strokeWidth="2.5" />
       <line x1="214" y1="68" x2="266" y2="92" stroke="#22c55e" strokeWidth="2.5" />
-      <line x1="294" y1="92" x2="346" y2="78" stroke="#f59e0b" strokeWidth="2.5" />
+      <line x1="294" y1="92" x2="346" y2="78" stroke="#0ea5e9" strokeWidth="2.5" />
       <rect x="404" y="52" width="90" height="18" rx="4" fill="#0f172a" stroke="#475569" />
       <rect x="404" y="76" width="90" height="18" rx="4" fill="#0f172a" stroke="#475569" />
       <rect x="404" y="100" width="90" height="18" rx="4" fill="#0f172a" stroke="#475569" />
-      <text x="449" y="65" textAnchor="middle" className="fill-slate-200 text-[9px]">v1 aktiv</text>
-      <text x="449" y="89" textAnchor="middle" className="fill-slate-200 text-[9px]">v2 geprüft</text>
-      <text x="449" y="113" textAnchor="middle" className="fill-slate-200 text-[9px]">v3 Alternative</text>
+      <text x="449" y="65" textAnchor="middle" className="fill-slate-200 text-[9px]">Antwort</text>
+      <text x="449" y="89" textAnchor="middle" className="fill-slate-200 text-[9px]">Entscheidung</text>
+      <text x="449" y="113" textAnchor="middle" className="fill-slate-200 text-[9px]">Maßnahme + Review</text>
     </>
   );
 }
