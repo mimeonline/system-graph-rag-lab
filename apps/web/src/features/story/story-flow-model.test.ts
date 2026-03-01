@@ -1,9 +1,9 @@
-import { describe, expect, it } from "vitest";
 import {
-  STORY_CHAPTERS,
-  type StoryPerspective,
-  getPrimaryActionForChapter,
+    STORY_CHAPTERS,
+    type StoryPerspective,
+    getPrimaryActionForChapter,
 } from "@/features/story/story-flow-model";
+import { describe, expect, it } from "vitest";
 
 describe("story flow model", () => {
   it("contains exactly five chapters in the expected order", () => {
@@ -35,12 +35,10 @@ describe("story flow model", () => {
     }
   });
 
-  it("uses three.js only for chapter three and svg for all other chapters", () => {
-    expect(STORY_CHAPTERS[2]?.visualMode).toBe("three");
-
-    expect(
-      STORY_CHAPTERS.filter((chapter) => chapter.id !== "graph").every((chapter) => chapter.visualMode === "svg"),
-    ).toBe(true);
+  it("contains a non-empty keyInsight for each chapter", () => {
+    for (const chapter of STORY_CHAPTERS) {
+      expect(chapter.keyInsight.length).toBeGreaterThan(0);
+    }
   });
 
   it("returns Weiter for chapter 1-4 and Zur Demo for chapter 5", () => {

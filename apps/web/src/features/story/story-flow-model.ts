@@ -9,8 +9,11 @@ export type StoryChapter = {
   technicalFlow: string;
   structuralRelevance: string;
   visualSpec: string;
+  keyInsight: string;
+  keyTerms: string[];
+  beforeAfter: { before: string; after: string };
+  nextStepHint: string;
   perspectiveCopy: Record<StoryPerspective, string>;
-  visualMode: "svg" | "three";
 };
 
 export type StoryPrimaryAction = {
@@ -35,6 +38,14 @@ export const STORY_CHAPTERS: StoryChapter[] = [
       "Wenn die Frage unklar bleibt, werden auch die späteren Antworten unklar oder widersprüchlich. Mit einem sauberen Fokus am Anfang vermeiden wir viele Missverständnisse im weiteren Verlauf. Genau hier entsteht die Basis für stabile Entscheidungen, weil der Entscheidungsraum nicht unterwegs unbemerkt wechselt.",
     visualSpec:
       "In der Mitte steht nur die Kernfrage. Der umgebende Raum zeigt, dass Annahmen vorhanden sind, aber noch nicht als feste Beziehungen modelliert wurden. Das Diagramm macht damit bewusst klar: Wir beginnen nicht mit Antworten, sondern mit einem präzisen gemeinsamen Verständnis.",
+    keyInsight:
+      "Gute Entscheidungen beginnen mit einer klaren Frage – nicht mit Daten.",
+    keyTerms: ["Entscheidungsraum", "Problemknoten", "Implizite Annahmen", "Zielklärung"],
+    beforeAfter: {
+      before: "Vage Textanfrage an ein Modell",
+      after: "Präziser Problemknoten mit Ziel und Grenze",
+    },
+    nextStepHint: "Mit der klaren Frage suchen wir relevanten Kontext.",
     perspectiveCopy: {
       architecture:
         "Architektur: Welche Systemgrenzen und Abhängigkeiten sind hier wirklich relevant, und was gehört bewusst nicht in diesen Entscheidungsraum? Diese Klärung verhindert, dass später technische Nebenthemen den eigentlichen Kern der Entscheidung überlagern.",
@@ -43,7 +54,6 @@ export const STORY_CHAPTERS: StoryChapter[] = [
       governance:
         "Governance: Welche Regeln, Nachweise und Risiken müssen wir von Anfang an mitdenken, damit die Entscheidung auch unter Prüfung Bestand hat? Damit wird früh sichtbar, welche Anforderungen nicht optional sind.",
     },
-    visualMode: "svg",
   },
   {
     id: "retrieval",
@@ -55,6 +65,14 @@ export const STORY_CHAPTERS: StoryChapter[] = [
       "Mehr Kontext ist nicht automatisch besser, weil zu viel Material den Blick auf das Wesentliche verdeckt. Eine klare Auswahl macht die folgenden Schritte stabiler und leichter prüfbar. Sie sorgt außerdem dafür, dass ähnliche Fragen später mit einer vergleichbaren Logik beantwortet werden können.",
     visualSpec:
       "Du siehst mehrere Kontexte mit unterschiedlichem Gewicht. Wichtiges steht sichtbar im Vordergrund, weniger Relevantes bleibt vorhanden, aber bewusst zurückgenommen. Das Diagramm zeigt damit nicht nur Auswahl, sondern auch Priorität und Begründung der Auswahl.",
+    keyInsight:
+      "Nicht die Menge an Kontext zählt, sondern die Disziplin der Auswahl.",
+    keyTerms: ["Kontextdisziplin", "Relevanzgewichtung", "Rauschreduktion", "Priorisierung"],
+    beforeAfter: {
+      before: "Alle verfügbaren Dokumente im Kontext",
+      after: "Gewichtete, priorisierte Kontextauswahl",
+    },
+    nextStepHint: "Die priorisierten Knoten werden jetzt verknüpft.",
     perspectiveCopy: {
       architecture:
         "Architektur: Welche Quellen bringen wirklich Klarheit über Abhängigkeiten, und welche machen das Bild nur voller ohne zusätzliche Aussage? So vermeiden wir technische Überladung ohne echten Erkenntnisgewinn.",
@@ -63,7 +81,6 @@ export const STORY_CHAPTERS: StoryChapter[] = [
       governance:
         "Governance: Welche Kontexte sind belastbar, aktuell und sauber dokumentiert, sodass Entscheidungen später transparent nachvollzogen werden können? Das schafft Sicherheit für Reviews und Audits.",
     },
-    visualMode: "svg",
   },
   {
     id: "graph",
@@ -75,6 +92,14 @@ export const STORY_CHAPTERS: StoryChapter[] = [
       "Erst mit klar typisierten Verbindungen werden Abhängigkeiten und Nebenwirkungen sichtbar. Dadurch wird die Diskussion im Team konkreter, weil Aussagen direkt auf Struktur statt auf Bauchgefühl bezogen werden. Gleichzeitig sinkt das Risiko, dass unterschiedliche Teams am selben Thema vorbeireden.",
     visualSpec:
       "Aus einzelnen Punkten wird ein klares Netz mit unterschiedlichen Beziehungstypen. So ist auf einen Blick erkennbar, was Ursache ist, wo Zielkonflikte liegen und welche Teile mit Belegen gestützt sind. Das Diagramm macht sichtbar, wie eng fachliche und technische Entscheidungen miteinander verbunden sind.",
+    keyInsight:
+      "Explizite Beziehungen machen Abhängigkeiten und Trade-offs im Team besprechbar.",
+    keyTerms: ["Beziehungstypen", "Ursache-Wirkung", "Trade-off", "Evidenzbezug"],
+    beforeAfter: {
+      before: "Isolierte Konzepte ohne Beziehungen",
+      after: "Typisiertes Beziehungsmodell mit Kanten",
+    },
+    nextStepHint: "Aus dem Netz wird ein prüfbarer Ableitungspfad.",
     perspectiveCopy: {
       architecture:
         "Architektur: Wo entstehen Ursache-Wirkung-Ketten zwischen Komponenten oder Domänen, und wo entstehen Kopplungen mit hoher Folgewirkung? Diese Sicht hilft, Risiken nicht erst im Betrieb zu entdecken.",
@@ -83,7 +108,6 @@ export const STORY_CHAPTERS: StoryChapter[] = [
       governance:
         "Governance: Welche Beziehungstypen brauchen Freigaben, Kontrollen oder dokumentierte Ausnahmen, damit Entscheidungen sauber geführt werden? So bleibt Steuerung nachvollziehbar und nicht personengebunden.",
     },
-    visualMode: "three",
   },
   {
     id: "synthesis",
@@ -95,6 +119,14 @@ export const STORY_CHAPTERS: StoryChapter[] = [
       "Eine reine Quellenliste reicht nicht, weil sie keine Begründungslogik zeigt. Der Pfad macht sichtbar, wie die Antwort zustande kommt und an welcher Stelle sie überprüft werden kann. Genau dadurch kann das Team Fehler schneller finden und Annahmen sauber korrigieren.",
     visualSpec:
       "Ein Hauptpfad ist klar hervorgehoben, damit die zentrale Herleitung sofort erkennbar ist. Andere Pfade bleiben sichtbar im Hintergrund und zeigen mögliche Alternativen. Das Diagramm hilft dadurch sowohl bei Entscheidungen als auch bei späteren Review-Gesprächen.",
+    keyInsight:
+      "Nachvollziehbarkeit entsteht durch den Ableitungspfad – nicht durch eine Quellenliste.",
+    keyTerms: ["Ableitungspfad", "Auditierbarkeit", "Herleitung", "Alternativpfade"],
+    beforeAfter: {
+      before: "Antwort mit angehängter Quellenliste",
+      after: "Nachvollziehbarer Pfad: Frage → Schluss",
+    },
+    nextStepHint: "Die Herleitung wird zur operativen Entscheidung.",
     perspectiveCopy: {
       architecture:
         "Architektur: Ist die technische Entscheidung über mehrere Schritte hinweg konsistent, oder bricht die Begründung an einzelnen Kanten? So lassen sich technische Schwachstellen früh benennen.",
@@ -103,7 +135,6 @@ export const STORY_CHAPTERS: StoryChapter[] = [
       governance:
         "Governance: Kann ein Review die Schlussfolgerung nachvollziehen, ohne zusätzliches Insiderwissen oder mündliche Sondererklärung? Damit bleibt Qualität auch bei Personalwechsel stabil.",
     },
-    visualMode: "svg",
   },
   {
     id: "action",
@@ -115,6 +146,14 @@ export const STORY_CHAPTERS: StoryChapter[] = [
       "So bleibt die Entscheidung auch bei Änderungen stabil und überprüfbar. Das Team kann sehen, was sich geändert hat und warum die Kernaussage gleich geblieben oder bewusst angepasst wurde. Diese Transparenz stärkt Vertrauen im Alltag und in formalen Freigaben.",
     visualSpec:
       "Du siehst den aktuellen Entscheidungsstand, frühere Versionen und mögliche Alternativen im direkten Vergleich. Dadurch wird aus einer Antwort ein steuerbarer Entscheidungsprozess. Das Diagramm zeigt, dass Entscheidungen nicht statisch sind, sondern kontrolliert weiterentwickelt werden können.",
+    keyInsight:
+      "Gute Entscheidungen halten bei Veränderungen stand – Versionierung macht das prüfbar.",
+    keyTerms: ["Versionierung", "Entscheidungszustand", "Pfadstabilität", "Vergleichbarkeit"],
+    beforeAfter: {
+      before: "Einmalige Empfehlung ohne Nachvollzug",
+      after: "Versionierter Entscheidungszustand mit Alternativen",
+    },
+    nextStepHint: "Die Demo zeigt diesen gesamten Prozess live.",
     perspectiveCopy: {
       architecture:
         "Architektur: Bleibt die Entscheidung auch bei Architekturänderungen nachvollziehbar, und welche Teile müssen dann neu bewertet werden? So bleibt die technische Linie trotz Änderungen stabil.",
@@ -123,7 +162,6 @@ export const STORY_CHAPTERS: StoryChapter[] = [
       governance:
         "Governance: Welche Version ist freigegeben, was ist abgewichen, und welche nächste Prüfung oder Eskalation ist vorgesehen? Damit bleiben Verantwortung und Nachweisführung klar verteilt.",
     },
-    visualMode: "svg",
   },
 ];
 
