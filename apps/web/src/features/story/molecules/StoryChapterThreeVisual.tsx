@@ -1,329 +1,399 @@
 "use client";
 
-import {
-    Box,
-    Cylinder,
-    Float,
-    Html,
-    Icosahedron,
-    Line,
-    OrbitControls,
-    PointMaterial,
-    Points,
-    Sphere
-} from "@react-three/drei";
-import { Canvas, useFrame } from "@react-three/fiber";
-import React, { Suspense, useMemo, useRef } from "react";
+import { Html, Line, OrbitControls } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
-import { StoryChapterId } from "../story-flow-model";
+import type { StoryChapterId } from "../story-flow-model";
 
-/* ─── Shared Components & Utils ─── */
-
-function BackgroundParticles({ count = 100 }) {
-  const points = useMemo(() => {
-    const p = new Float32Array(count * 3);
-    for (let i = 0; i < count; i++) {
-      p[i * 3] = (Math.random() - 0.5) * 15;
-      p[i * 3 + 1] = (Math.random() - 0.5) * 15;
-      p[i * 3 + 2] = (Math.random() - 0.5) * 15;
-    }
-    return p;
-  }, [count]);
-
-  return (
-    <Points positions={points}>
-      <PointMaterial
-        transparent
-        color="#38bdf8"
-        size={0.05}
-        sizeAttenuation={true}
-        depthWrite={false}
-        opacity={0.4}
-      />
-    </Points>
-  );
-}
-
-/* ─── Scene 1: Frage ─── */
-function SceneQuestion() {
-  const groupRef = useRef<THREE.Group>(null);
-  
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-    if (groupRef.current) {
-      groupRef.current.scale.setScalar(1 + Math.sin(t * 1.5) * 0.05);
-      groupRef.current.rotation.y = t * 0.2;
-    }
-  });
-
-  return (
-    <group>
-      <group ref={groupRef}>
-        <Icosahedron args={[1, 2]}>
-          <meshStandardMaterial 
-            color="#0ea5e9" 
-            wireframe 
-            emissive="#0ea5e9" 
-            emissiveIntensity={1} 
-            transparent 
-            opacity={0.6} 
-          />
-        </Icosahedron>
-        <Sphere args={[0.6, 16, 16]}>
-          <meshStandardMaterial 
-            color="#38bdf8" 
-            emissive="#38bdf8" 
-            emissiveIntensity={2} 
-            transparent 
-            opacity={0.2} 
-          />
-        </Sphere>
-        <Html position={[0, 0, 0]} center transform distanceFactor={5} sprite>
-          <div className="bg-sky-950/80 border border-sky-400 px-4 py-2 rounded-lg backdrop-blur-md shadow-2xl">
-            <span className="text-sky-100 font-bold text-lg tracking-tighter uppercase whitespace-nowrap">Problem-Knoten</span>
-          </div>
-        </Html>
-      </group>
-
-      <Html position={[2, 1.5, -1]} center>
-        <div className="text-sky-400 font-semibold text-xs uppercase tracking-widest whitespace-nowrap opacity-60">Kontext-Annahme</div>
-      </Html>
-      <Html position={[-2, -1, 1]} center>
-        <div className="text-slate-400 text-xs whitespace-nowrap opacity-40 italic">Lösungshorizont</div>
-      </Html>
-
-      <BackgroundParticles count={150} />
-    </group>
-  );
-}
-
-/* ─── Scene 2: Kontextauswahl ─── */
-function SceneContext() {
-  const groupRef = useRef<THREE.Group>(null);
-  
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-    if (groupRef.current) {
-      groupRef.current.children.forEach((child, i) => {
-        child.position.z = ((i * 2 + t * 2) % 10) - 5;
-        const opacity = 1 - Math.abs(child.position.z / 5);
-        if (child instanceof THREE.Mesh && child.material instanceof THREE.Material) {
-          child.material.opacity = opacity * 0.8;
-        }
-      });
-    }
-  });
-
-  return (
-    <group>
-      <group ref={groupRef}>
-        {[...Array(8)].map((_, i) => (
-          <Sphere key={i} args={[0.2, 16, 16]} position={[(Math.random() - 0.5) * 4, (Math.random() - 0.5) * 4, 0]}>
-            <meshStandardMaterial color={i % 2 === 0 ? "#22d3ee" : "#475569"} transparent />
-          </Sphere>
-        ))}
-      </group>
-
-      {/* Filter Grid */}
-      <Box args={[6, 6, 0.05]} position={[0, 0, -0.5]}>
-        <meshStandardMaterial 
-          color="#38bdf8" 
-          wireframe 
-          transparent 
-          opacity={0.15} 
-          emissive="#38bdf8"
-          emissiveIntensity={0.5}
-        />
-        <Html position={[0, 3.2, 0]} center>
-          <div className="bg-sky-400/20 text-sky-400 px-3 py-1 rounded border border-sky-400/30 text-[10px] font-bold uppercase tracking-widest">
-            Ranking-Filter
-          </div>
-        </Html>
-      </Box>
-
-      <Html position={[-3, 2, 0]} center>
-        <div className="text-slate-500 text-[10px] uppercase font-bold tracking-widest -rotate-90">Vektor-Suche</div>
-      </Html>
-    </group>
-  );
-}
-
-/* ─── Scene 3: Graph ─── */
-function SceneGraph() {
-  const groupRef = useRef<THREE.Group>(null);
-  
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-    if (groupRef.current) {
-      groupRef.current.rotation.y = t * 0.15;
-      groupRef.current.rotation.x = Math.sin(t * 0.1) * 0.1;
-    }
-  });
-
-  const nodes = [
-    { pos: [0, 0, 0], color: "#0ea5e9", label: "KERN" },
-    { pos: [1.5, 1, -0.5], color: "#22d3ee", label: "Rel A" },
-    { pos: [-1.2, 0.8, 1], color: "#a78bfa", label: "Rel B" },
-    { pos: [0.5, -1.5, 0.5], color: "#22c55e", label: "Rel C" },
-    { pos: [-1.8, -0.5, -1.2], color: "#f59e0b", label: "Rel D" },
-  ];
-
-  return (
-    <group ref={groupRef}>
-      {nodes.map((n, i) => (
-        <group key={i} position={n.pos as [number, number, number]}>
-          <Sphere args={[0.3, 16, 16]}>
-            <meshStandardMaterial color={n.color} emissive={n.color} emissiveIntensity={0.5} />
-          </Sphere>
-          <Html distanceFactor={10} position={[0, 0.5, 0]} center>
-            <div className="text-[10px] font-bold text-sky-100 bg-sky-950/40 px-1 rounded">{n.label}</div>
-          </Html>
-        </group>
-      ))}
-      
-      {/* Connections */}
-      <Line points={[[0,0,0], [1.5, 1, -0.5]]} color="#0ea5e9" lineWidth={1} />
-      <Line points={[[0,0,0], [-1.2, 0.8, 1]]} color="#a78bfa" lineWidth={1} />
-      <Line points={[[1.5, 1, -0.5], [0.5, -1.5, 0.5]]} color="#22d3ee" lineWidth={1} />
-      <Line points={[[0,0,0], [-1.8, -0.5, -1.2]]} color="#f59e0b" lineWidth={1} />
-
-      <Html position={[0, -2.5, 0]} center>
-        <div className="text-emerald-400 text-[10px] font-bold uppercase tracking-widest border-b border-emerald-400/30 pb-1">Themen-Cluster "Beteiligungsmodell"</div>
-      </Html>
-    </group>
-  );
-}
-
-/* ─── Scene 4: Synthese ─── */
-function SceneSynthesis() {
-  const lineRef = useRef<THREE.Group>(null);
-  
-  useFrame((state) => {
-    const t = state.clock.getElapsedTime();
-    if (lineRef.current) {
-      lineRef.current.position.y = Math.sin(t * 0.5) * 0.1;
-    }
-  });
-
-  return (
-    <group>
-      {/* Background swarm */}
-      <BackgroundParticles count={300} />
-
-      {/* Primary Path */}
-      <group ref={lineRef}>
-        <Line 
-          points={[[-3, 0, 0], [-1, 1, 0.5], [1, -0.5, 1], [3, 0, 0]]} 
-          color="#06b6d4" 
-          lineWidth={4} 
-        />
-        <Html position={[-3, 0.5, 0]} center>
-          <div className="bg-sky-500 text-sky-950 text-[10px] font-bold px-2 py-0.5 rounded">FRAGE</div>
-        </Html>
-        <Html position={[0, 0.8, 0.8]} center>
-          <div className="text-sky-300 text-[9px] font-bold uppercase tracking-tighter bg-sky-950/60 p-1 rounded backdrop-blur-sm italic">Prüfung & Validierung...</div>
-        </Html>
-        <Html position={[3, 0.5, 0]} center>
-          <div className="bg-emerald-500 text-emerald-950 text-[10px] font-bold px-2 py-0.5 rounded">FAZIT</div>
-        </Html>
-        <Sphere position={[3,0,0]} args={[0.4, 16, 16]}>
-          <meshStandardMaterial color="#10b981" emissive="#10b981" emissiveIntensity={2} />
-        </Sphere>
-      </group>
-
-      {/* Alternative Path (Rejected) */}
-      <Line 
-        points={[[-3, 0, 0], [0, -1.5, -1], [3, -0.5, 0]]} 
-        color="#ef4444" 
-        lineWidth={1} 
-        dashed
-        dashSize={0.2}
-        gapSize={0.1}
-      />
-      <Html position={[0, -1.8, -1]} center>
-        <div className="text-red-500/60 text-[8px] font-bold">WIDERSPRUCH ERKANNT</div>
-      </Html>
-    </group>
-  );
-}
-
-/* ─── Scene 5: Handlung ─── */
-function SceneAction() {
-  return (
-    <group>
-      <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-        <Box args={[3.5, 0.05, 2.2]} position={[0, 0.8, 0]}>
-          <meshStandardMaterial color="#0ea5e9" transparent opacity={0.3} metalness={0.8} roughness={0.2} />
-          <Html position={[0, 0.1, 0]} center transform rotation={[Math.PI / 2, 0, 0]} distanceFactor={8}>
-            <div className="flex flex-col items-center">
-              <div className="text-sky-100 font-bold text-2xl tracking-tighter">v1.2 OPERATIV</div>
-              <div className="text-sky-400 text-[8px] tracking-[0.3em] font-bold mt-1 uppercase">Entscheidungs-Zustand</div>
-            </div>
-          </Html>
-        </Box>
-        <Box args={[3.2, 0.05, 2]} position={[0, 0, 0]}>
-          <meshStandardMaterial color="#334155" transparent opacity={0.2} />
-        </Box>
-        <Box args={[3.2, 0.05, 2]} position={[0, -0.8, 0]}>
-          <meshStandardMaterial color="#334155" transparent opacity={0.1} />
-        </Box>
-      </Float>
-
-      {/* Connection from Graph (hint) */}
-      <Cylinder args={[0.02, 0.02, 2]} position={[-2.5, 0, 0]} rotation={[0, 0, Math.PI / 4]}>
-        <meshStandardMaterial color="#0ea5e9" transparent opacity={0.2} />
-      </Cylinder>
-      
-      <Html position={[-3, 0, 0]} center>
-        <div className="text-sky-500 text-[9px] font-bold uppercase tracking-widest -rotate-90 opacity-40">Transform</div>
-      </Html>
-    </group>
-  );
-}
-
-/* ─── Main Component ─── */
-
-interface StoryChapterThreeVisualProps {
+type StoryChapterThreeVisualProps = {
   chapterId: StoryChapterId;
+};
+
+type ShotConfig = {
+  label: "Top" | "Side" | "Orbit";
+  camera: [number, number, number];
+  target: [number, number, number];
+  orbit: boolean;
+};
+
+const SHOTS: Record<StoryChapterId, ShotConfig> = {
+  question: { label: "Top", camera: [0.6, 2.15, 5.8], target: [0, 0.1, 0], orbit: false },
+  retrieval: { label: "Side", camera: [5.8, 1.7, 2.0], target: [0, 0.1, 0], orbit: false },
+  graph: { label: "Orbit", camera: [0.4, 1.9, 6.0], target: [0, 0, 0], orbit: true },
+  synthesis: { label: "Side", camera: [5.2, 1.2, 2.4], target: [0, 0, 0], orbit: false },
+  action: { label: "Top", camera: [0.8, 2.0, 5.2], target: [0, 0.1, 0], orbit: false },
+};
+
+function useReducedMotion(): boolean {
+  if (typeof window === "undefined") {
+    return false;
+  }
+  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 }
 
-export const StoryChapterThreeVisual: React.FC<StoryChapterThreeVisualProps> = ({ chapterId }) => {
+function CameraDirector({
+  chapterId,
+  reducedMotion,
+  locked,
+}: {
+  chapterId: StoryChapterId;
+  reducedMotion: boolean;
+  locked: boolean;
+}): null {
+  const { camera, clock } = useThree();
+  const target = useMemo(() => new THREE.Vector3(...SHOTS[chapterId].target), [chapterId]);
+  const introStart = useRef<number | null>(null);
+
+  useFrame((_state, delta) => {
+    if (locked) {
+      return;
+    }
+
+    const shot = SHOTS[chapterId];
+    const elapsed = clock.getElapsedTime();
+    if (introStart.current === null) {
+      introStart.current = elapsed;
+    }
+    const introElapsed = elapsed - introStart.current;
+    const inIntro = introElapsed < 1.7;
+    const desired = new THREE.Vector3(...shot.camera);
+
+    if (shot.orbit && !reducedMotion && inIntro) {
+      const radius = 5.8;
+      const angle = elapsed * 0.22;
+      desired.set(Math.cos(angle) * radius, 1.9, Math.sin(angle) * radius);
+    }
+
+    const alpha = 1 - Math.exp(-delta * 4.2);
+    camera.position.lerp(desired, alpha);
+    camera.lookAt(target);
+  });
+
+  return null;
+}
+
+function RevealGroup({
+  step,
+  activeStep,
+  children,
+}: {
+  step: number;
+  activeStep: number;
+  children: React.ReactNode;
+}): React.JSX.Element {
+  const ref = useRef<THREE.Group>(null);
+
+  useFrame((_state, delta) => {
+    if (!ref.current) {
+      return;
+    }
+
+    const active = activeStep >= step;
+    const targetScale = active ? 1 : 0.78;
+    const targetY = active ? 0 : 0.22;
+    const alpha = 1 - Math.exp(-delta * 6.5);
+
+    ref.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), alpha);
+    ref.current.position.y = THREE.MathUtils.lerp(ref.current.position.y, targetY, alpha);
+  });
+
+  return <group ref={ref}>{children}</group>;
+}
+
+function Node({
+  position,
+  color,
+  label,
+  emphasis = false,
+}: {
+  position: [number, number, number];
+  color: string;
+  label: string;
+  emphasis?: boolean;
+}): React.JSX.Element {
   return (
-    <div className="relative h-[450px] w-full rounded-2xl overflow-hidden bg-slate-950/20 glass-panel">
-      <Canvas
-        camera={{ position: [0, 0, 6], fov: 45 }}
-        dpr={[1, 2]}
-        gl={{ antialias: true, alpha: true }}
-      >
-        <ambientLight intensity={0.4} />
-        <pointLight position={[10, 10, 10]} intensity={1} color="#38bdf8" />
-        <pointLight position={[-10, -10, -10]} intensity={0.5} color="#0ea5e9" />
-        
+    <group position={position}>
+      <mesh castShadow receiveShadow frustumCulled={false}>
+        <sphereGeometry args={[emphasis ? 0.33 : 0.23, 24, 24]} />
+        <meshStandardMaterial
+          color={color}
+          emissive={color}
+          emissiveIntensity={emphasis ? 0.75 : 0.28}
+          roughness={0.3}
+          metalness={0.12}
+        />
+      </mesh>
+      <Html transform sprite distanceFactor={8} position={[0, 0.52, 0]}>
+        <div className="rounded-md border border-sky-300/70 bg-slate-950/85 px-2 py-1 text-[11px] font-semibold text-sky-100 shadow-lg whitespace-nowrap">
+          {label}
+        </div>
+      </Html>
+    </group>
+  );
+}
+
+function PathEdge({
+  points,
+  color,
+  hero = false,
+}: {
+  points: Array<[number, number, number]>;
+  color: string;
+  hero?: boolean;
+}): React.JSX.Element {
+  return (
+    <>
+      {hero ? (
+        <Line
+          points={points}
+          color="#0f172a"
+          lineWidth={5.6}
+          transparent
+          opacity={1}
+          depthTest={false}
+          depthWrite={false}
+          renderOrder={12}
+          frustumCulled={false}
+        />
+      ) : null}
+      <Line
+        points={points}
+        color={color}
+        lineWidth={hero ? 3.2 : 2}
+        transparent
+        opacity={1}
+        depthTest={false}
+        depthWrite={false}
+        renderOrder={hero ? 13 : 11}
+        frustumCulled={false}
+      />
+    </>
+  );
+}
+
+function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId; reducedMotion: boolean }): React.JSX.Element {
+  const timeRef = useRef(0);
+
+  useFrame((_state, delta) => {
+    timeRef.current += delta;
+  });
+
+  const activeStep = reducedMotion ? 6 : Math.min(6, Math.floor(timeRef.current / 1.15) + 1);
+
+  return (
+    <group>
+      <fog attach="fog" args={["#dbeafe", 8, 18]} />
+
+      <ambientLight intensity={0.42} />
+      <directionalLight
+        castShadow
+        position={[3.5, 6, 4]}
+        intensity={1.05}
+        color="#f8fafc"
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
+      />
+      <pointLight position={[-4, 2, -2]} intensity={0.45} color="#38bdf8" />
+      <pointLight position={[3, 1.5, -4]} intensity={0.4} color="#22d3ee" />
+
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.25, 0]} receiveShadow>
+        <planeGeometry args={[16, 16]} />
+        <meshStandardMaterial color="#0f172a" transparent opacity={0.08} />
+      </mesh>
+
+      {chapterId === "question" ? (
+        <>
+          <RevealGroup step={1} activeStep={activeStep}>
+            <Node position={[0, 0.2, 0]} color="#0ea5e9" label="Kernfrage" emphasis />
+          </RevealGroup>
+          <RevealGroup step={2} activeStep={activeStep}>
+            <Node position={[-1.8, 0.5, -0.4]} color="#94a3b8" label="Annahme A" />
+          </RevealGroup>
+          <RevealGroup step={3} activeStep={activeStep}>
+            <Node position={[1.9, -0.2, 0.3]} color="#94a3b8" label="Annahme B" />
+          </RevealGroup>
+          <RevealGroup step={4} activeStep={activeStep}>
+            <PathEdge points={[[0, 0.2, 0], [-1.8, 0.5, -0.4]]} color="#7dd3fc" />
+          </RevealGroup>
+          <RevealGroup step={5} activeStep={activeStep}>
+            <PathEdge points={[[0, 0.2, 0], [1.9, -0.2, 0.3]]} color="#7dd3fc" />
+          </RevealGroup>
+        </>
+      ) : null}
+
+      {chapterId === "retrieval" ? (
+        <>
+          <RevealGroup step={1} activeStep={activeStep}>
+            <Node position={[-2.2, 0.6, -0.6]} color="#22d3ee" label="Kontext hoch" />
+          </RevealGroup>
+          <RevealGroup step={2} activeStep={activeStep}>
+            <Node position={[-0.8, 0.2, 0.4]} color="#38bdf8" label="Kontext mittel" />
+          </RevealGroup>
+          <RevealGroup step={3} activeStep={activeStep}>
+            <Node position={[0.8, -0.1, -0.3]} color="#64748b" label="Kontext niedrig" />
+          </RevealGroup>
+          <RevealGroup step={4} activeStep={activeStep}>
+            <Node position={[2.2, 0.5, 0.5]} color="#22d3ee" label="Kontext hoch" emphasis />
+          </RevealGroup>
+          <RevealGroup step={5} activeStep={activeStep}>
+            <PathEdge points={[[-2.2, 0.6, -0.6], [-0.8, 0.2, 0.4], [2.2, 0.5, 0.5]]} color="#0ea5e9" hero />
+          </RevealGroup>
+        </>
+      ) : null}
+
+      {chapterId === "graph" ? (
+        <>
+          <RevealGroup step={1} activeStep={activeStep}>
+            <Node position={[0, 0.45, 0]} color="#0ea5e9" label="Kernbegriff" emphasis />
+          </RevealGroup>
+          <RevealGroup step={2} activeStep={activeStep}>
+            <Node position={[-2.0, 0.2, -0.2]} color="#22c55e" label="Ursache" />
+            <Node position={[2.0, 0.2, 0.2]} color="#a78bfa" label="Trade-off" />
+          </RevealGroup>
+          <RevealGroup step={3} activeStep={activeStep}>
+            <Node position={[0.2, -1.0, 0.1]} color="#f59e0b" label="Beleg" />
+          </RevealGroup>
+          <RevealGroup step={4} activeStep={activeStep}>
+            <PathEdge points={[[0, 0.45, 0], [-2.0, 0.2, -0.2]]} color="#22c55e" />
+            <PathEdge points={[[0, 0.45, 0], [2.0, 0.2, 0.2]]} color="#a78bfa" />
+          </RevealGroup>
+          <RevealGroup step={5} activeStep={activeStep}>
+            <PathEdge points={[[-2.0, 0.2, -0.2], [0.2, -1.0, 0.1], [2.0, 0.2, 0.2]]} color="#f59e0b" hero />
+          </RevealGroup>
+        </>
+      ) : null}
+
+      {chapterId === "synthesis" ? (
+        <>
+          <RevealGroup step={1} activeStep={activeStep}>
+            <Node position={[-2.8, 0.2, 0]} color="#0ea5e9" label="Frage" />
+          </RevealGroup>
+          <RevealGroup step={2} activeStep={activeStep}>
+            <Node position={[-1.0, 0.65, 0.3]} color="#22d3ee" label="Konzept" />
+          </RevealGroup>
+          <RevealGroup step={3} activeStep={activeStep}>
+            <Node position={[1.0, -0.1, 0.2]} color="#a78bfa" label="Beziehung" />
+            <Node position={[2.8, 0.2, 0]} color="#22c55e" label="Schluss" emphasis />
+          </RevealGroup>
+          <RevealGroup step={4} activeStep={activeStep}>
+            <PathEdge points={[[-2.8, 0.2, 0], [-1.0, 0.65, 0.3], [1.0, -0.1, 0.2], [2.8, 0.2, 0]]} color="#06b6d4" hero />
+          </RevealGroup>
+          <RevealGroup step={5} activeStep={activeStep}>
+            <PathEdge points={[[-2.8, -0.5, -0.3], [0.1, -0.8, -0.6], [2.8, -0.4, -0.2]]} color="#64748b" />
+          </RevealGroup>
+        </>
+      ) : null}
+
+      {chapterId === "action" ? (
+        <>
+          <RevealGroup step={1} activeStep={activeStep}>
+            <Node position={[-2.4, 0.2, 0]} color="#0ea5e9" label="Pfad v1" />
+          </RevealGroup>
+          <RevealGroup step={2} activeStep={activeStep}>
+            <Node position={[-0.6, 0.5, 0.1]} color="#22d3ee" label="Pfad v2" />
+          </RevealGroup>
+          <RevealGroup step={3} activeStep={activeStep}>
+            <Node position={[1.1, 0.1, -0.1]} color="#22c55e" label="Pfad v3" />
+            <Node position={[2.9, 0.5, 0]} color="#f59e0b" label="Entscheidung" emphasis />
+          </RevealGroup>
+          <RevealGroup step={4} activeStep={activeStep}>
+            <PathEdge points={[[-2.4, 0.2, 0], [-0.6, 0.5, 0.1], [1.1, 0.1, -0.1], [2.9, 0.5, 0]]} color="#0ea5e9" hero />
+          </RevealGroup>
+          <RevealGroup step={5} activeStep={activeStep}>
+            <PathEdge points={[[-2.4, -0.4, -0.2], [0.7, -0.7, -0.4], [2.9, 0.1, -0.2]]} color="#64748b" />
+          </RevealGroup>
+        </>
+      ) : null}
+    </group>
+  );
+}
+
+export function StoryChapterThreeVisual({ chapterId }: StoryChapterThreeVisualProps): React.JSX.Element {
+  const reducedMotion = useReducedMotion();
+  const shot = SHOTS[chapterId];
+  const [isUserControlling, setIsUserControlling] = useState(false);
+  const [introDone, setIntroDone] = useState(false);
+  const controlsRef = useRef<{
+    target: THREE.Vector3;
+    update: () => void;
+    reset: () => void;
+    saveState: () => void;
+  } | null>(null);
+
+  useEffect(() => {
+    setIsUserControlling(false);
+    setIntroDone(false);
+    const timeout = window.setTimeout(() => setIntroDone(true), 1700);
+    return () => window.clearTimeout(timeout);
+  }, [chapterId]);
+
+  useEffect(() => {
+    const controls = controlsRef.current;
+    if (!controls) {
+      return;
+    }
+    controls.target.set(...shot.target);
+    controls.update();
+    controls.saveState();
+  }, [chapterId, shot.target]);
+
+  const handleResetView = () => {
+    controlsRef.current?.reset();
+    setIsUserControlling(false);
+    setIntroDone(true);
+  };
+
+  return (
+    <div className="relative h-[440px] w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-950/10">
+      <Canvas key={chapterId} shadows dpr={[1, 1.8]} camera={{ position: [...shot.camera], fov: 46 }}>
         <Suspense fallback={null}>
-          {chapterId === "question" && <SceneQuestion />}
-          {chapterId === "retrieval" && <SceneContext />}
-          {chapterId === "graph" && <SceneGraph />}
-          {chapterId === "synthesis" && <SceneSynthesis />}
-          {chapterId === "action" && <SceneAction />}
+          <CameraDirector chapterId={chapterId} reducedMotion={reducedMotion} locked={isUserControlling || introDone} />
+          <ChapterScene chapterId={chapterId} reducedMotion={reducedMotion} />
         </Suspense>
 
-        <OrbitControls 
-          enableZoom={false} 
+        <OrbitControls
+          ref={(instance) => {
+            controlsRef.current = instance
+              ? {
+                  target: instance.target,
+                  update: instance.update.bind(instance),
+                  reset: instance.reset.bind(instance),
+                  saveState: instance.saveState.bind(instance),
+                }
+              : null;
+          }}
+          enableZoom
           enablePan={false}
-          autoRotate={chapterId === "graph"}
-          autoRotateSpeed={0.5}
+          enableRotate
+          enableDamping
+          dampingFactor={0.08}
+          minDistance={4.5}
+          maxDistance={8.2}
+          minPolarAngle={0.35}
+          maxPolarAngle={2.35}
+          autoRotate={shot.orbit && !reducedMotion && !isUserControlling}
+          autoRotateSpeed={0.18}
+          onStart={() => setIsUserControlling(true)}
         />
       </Canvas>
-      
-      {/* Decorative corners */}
-      <div className="absolute top-4 left-4 w-4 h-4 border-t border-l border-sky-500/30" />
-      <div className="absolute top-4 right-4 w-4 h-4 border-t border-r border-sky-500/30" />
-      <div className="absolute bottom-4 left-4 w-4 h-4 border-b border-l border-sky-500/30" />
-      <div className="absolute bottom-4 right-4 w-4 h-4 border-b border-r border-sky-500/30" />
-      
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-[9px] uppercase tracking-[0.4em] text-sky-400/20 font-bold pointer-events-none">
-        Architectural Simulation • v1.0
+
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,transparent_45%,rgba(2,6,23,0.18)_100%)]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.22),transparent_30%,transparent_70%,rgba(15,23,42,0.14))]" />
+
+      <div className="pointer-events-none absolute left-4 top-4 rounded-md border border-slate-200/60 bg-white/75 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-600 backdrop-blur-sm">
+        Shot: {shot.label}
       </div>
+      <div className="pointer-events-none absolute right-28 top-4 rounded-md border border-slate-200/60 bg-white/75 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-600 backdrop-blur-sm">
+        Build: Step-by-step
+      </div>
+      <button
+        type="button"
+        onClick={handleResetView}
+        className="absolute right-4 top-4 rounded-md border border-slate-300/80 bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-700 shadow-sm backdrop-blur-sm transition hover:bg-white"
+      >
+        Reset View
+      </button>
     </div>
   );
-};
+}
