@@ -17,6 +17,11 @@ type ShotConfig = {
   orbit: boolean;
 };
 
+const ROOM_WIDTH = 11.6;
+const ROOM_DEPTH = 8.4;
+const ROOM_HEIGHT = 3.45;
+const FLOOR_Y = -1.25;
+
 const SHOTS: Record<StoryChapterId, ShotConfig> = {
   question: { label: "Top", camera: [0.6, 2.15, 5.8], target: [0, 0.1, 0], orbit: false },
   retrieval: { label: "Side", camera: [5.8, 1.7, 2.0], target: [0, 0.1, 0], orbit: false },
@@ -112,11 +117,26 @@ function Node({
   label: string;
   emphasis?: boolean;
 }): React.JSX.Element {
+  const meshRef = useRef<THREE.Mesh>(null);
+  const materialRef = useRef<THREE.MeshStandardMaterial>(null);
+  const isCore = label.toLowerCase() === "kernfrage";
+
+  useFrame((state) => {
+    if (!emphasis || !meshRef.current || !materialRef.current) {
+      return;
+    }
+    const t = state.clock.getElapsedTime();
+    const pulse = 1 + Math.sin(t * 1.8) * 0.04;
+    meshRef.current.scale.setScalar(pulse);
+    materialRef.current.emissiveIntensity = 0.8 + Math.sin(t * 1.8) * 0.08;
+  });
+
   return (
     <group position={position}>
-      <mesh castShadow receiveShadow frustumCulled={false}>
+      <mesh ref={meshRef} castShadow receiveShadow frustumCulled={false}>
         <sphereGeometry args={[emphasis ? 0.33 : 0.23, 24, 24]} />
         <meshStandardMaterial
+          ref={materialRef}
           color={color}
           emissive={color}
           emissiveIntensity={emphasis ? 0.75 : 0.28}
@@ -125,7 +145,13 @@ function Node({
         />
       </mesh>
       <Html center position={[0, 0.74, 0]}>
-        <div className="rounded-md border border-sky-200/80 bg-white/90 px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 shadow-sm whitespace-nowrap">
+        <div
+          className={`rounded-md px-1.5 py-0.5 text-[10px] font-semibold shadow-sm whitespace-nowrap ${
+            isCore
+              ? "border border-sky-300 bg-sky-50/92 text-sky-900"
+              : "border border-slate-200/90 bg-white/90 text-slate-700"
+          }`}
+        >
           {label}
         </div>
       </Html>
@@ -172,6 +198,82 @@ function PathEdge({
   );
 }
 
+function buildAnchoredEdge(
+  source: [number, number, number],
+  target: [number, number, number],
+  sourceRadius: number,
+  targetRadius: number,
+): Array<[number, number, number]> {
+  const from = new THREE.Vector3(...source);
+  const to = new THREE.Vector3(...target);
+  const direction = to.clone().sub(from).normalize();
+
+  const start = from.clone().add(direction.clone().multiplyScalar(sourceRadius));
+  const end = to.clone().sub(direction.clone().multiplyScalar(targetRadius));
+
+  return [
+    [start.x, start.y, start.z],
+    [end.x, end.y, end.z],
+  ];
+}
+
+function RoomFrame(): React.JSX.Element {
+  const halfW = ROOM_WIDTH / 2;
+  const halfD = ROOM_DEPTH / 2;
+  const topY = FLOOR_Y + ROOM_HEIGHT;
+
+  const corners: Array<[number, number]> = [
+    [-halfW, -halfD],
+    [halfW, -halfD],
+    [halfW, halfD],
+    [-halfW, halfD],
+  ];
+
+  return (
+    <group>
+      {corners.map(([x, z], index) => (
+        <Line
+          key={`corner-${index}`}
+          points={[[x, FLOOR_Y, z], [x, topY, z]]}
+          color="#94a3b8"
+          lineWidth={1.1}
+          transparent
+          opacity={0.38}
+          depthWrite={false}
+        />
+      ))}
+      <Line
+        points={[
+          [-halfW, FLOOR_Y, -halfD],
+          [halfW, FLOOR_Y, -halfD],
+          [halfW, FLOOR_Y, halfD],
+          [-halfW, FLOOR_Y, halfD],
+          [-halfW, FLOOR_Y, -halfD],
+        ]}
+        color="#94a3b8"
+        lineWidth={1}
+        transparent
+        opacity={0.2}
+        depthWrite={false}
+      />
+      <Line
+        points={[
+          [-halfW, topY, -halfD],
+          [halfW, topY, -halfD],
+          [halfW, topY, halfD],
+          [-halfW, topY, halfD],
+          [-halfW, topY, -halfD],
+        ]}
+        color="#94a3b8"
+        lineWidth={1}
+        transparent
+        opacity={0.18}
+        depthWrite={false}
+      />
+    </group>
+  );
+}
+
 function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId; reducedMotion: boolean }): React.JSX.Element {
   const timeRef = useRef(0);
 
@@ -197,13 +299,46 @@ function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId;
       <pointLight position={[-4, 2, -2]} intensity={0.45} color="#38bdf8" />
       <pointLight position={[3, 1.5, -4]} intensity={0.4} color="#22d3ee" />
 
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -1.25, 0]} receiveShadow>
-        <planeGeometry args={[16, 16]} />
-        <meshStandardMaterial color="#0f172a" transparent opacity={0.08} />
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, FLOOR_Y, 0]} receiveShadow>
+        <planeGeometry args={[ROOM_WIDTH, ROOM_DEPTH]} />
+        <meshStandardMaterial color="#0f172a" transparent opacity={0.14} />
       </mesh>
+      <mesh position={[0, 0.48, -ROOM_DEPTH / 2]} receiveShadow>
+        <planeGeometry args={[ROOM_WIDTH, ROOM_HEIGHT]} />
+        <meshStandardMaterial color="#1e293b" transparent opacity={0.07} />
+      </mesh>
+      <mesh rotation={[0, Math.PI / 2, 0]} position={[-ROOM_WIDTH / 2, 0.48, 0]} receiveShadow>
+        <planeGeometry args={[ROOM_DEPTH, ROOM_HEIGHT]} />
+        <meshStandardMaterial color="#0f172a" transparent opacity={0.06} />
+      </mesh>
+      <mesh rotation={[0, -Math.PI / 2, 0]} position={[ROOM_WIDTH / 2, 0.48, 0]} receiveShadow>
+        <planeGeometry args={[ROOM_DEPTH, ROOM_HEIGHT]} />
+        <meshStandardMaterial color="#0f172a" transparent opacity={0.06} />
+      </mesh>
+      <RoomFrame />
 
       {chapterId === "question" ? (
         <>
+          {(() => {
+            const core: [number, number, number] = [0, 0.2, 0];
+            const assumptionA: [number, number, number] = [-1.8, 0.5, -0.4];
+            const assumptionB: [number, number, number] = [1.9, 0.62, 0.3];
+            const coreRadius = 0.33;
+            const assumptionRadius = 0.23;
+            const edgeA = buildAnchoredEdge(core, assumptionA, coreRadius, assumptionRadius);
+            const edgeB = buildAnchoredEdge(core, assumptionB, coreRadius, assumptionRadius);
+
+            return (
+              <>
+                <RevealGroup step={4} activeStep={activeStep}>
+                  <PathEdge points={edgeA} color="#38bdf8" />
+                </RevealGroup>
+                <RevealGroup step={5} activeStep={activeStep}>
+                  <PathEdge points={edgeB} color="#38bdf8" />
+                </RevealGroup>
+              </>
+            );
+          })()}
           <RevealGroup step={1} activeStep={activeStep}>
             <Node position={[0, 0.2, 0]} color="#0ea5e9" label="Kernfrage" emphasis />
           </RevealGroup>
@@ -212,12 +347,6 @@ function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId;
           </RevealGroup>
           <RevealGroup step={3} activeStep={activeStep}>
             <Node position={[1.9, 0.62, 0.3]} color="#94a3b8" label="Annahme B" />
-          </RevealGroup>
-          <RevealGroup step={4} activeStep={activeStep}>
-            <PathEdge points={[[-0.35, 0.26, -0.08], [-1.64, 0.5, -0.4]]} color="#7dd3fc" />
-          </RevealGroup>
-          <RevealGroup step={5} activeStep={activeStep}>
-            <PathEdge points={[[0.35, 0.28, 0.06], [1.74, 0.62, 0.3]]} color="#7dd3fc" />
           </RevealGroup>
         </>
       ) : null}
