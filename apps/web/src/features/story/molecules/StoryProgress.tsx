@@ -1,0 +1,36 @@
+import type { StoryChapter } from "@/features/story/story-flow-model";
+
+type StoryProgressProps = {
+  chapters: StoryChapter[];
+  activeIndex: number;
+};
+
+export function StoryProgress({ chapters, activeIndex }: StoryProgressProps): React.JSX.Element {
+  return (
+    <section className="space-y-3 rounded-xl border border-slate-300/80 bg-white p-3 sm:p-4">
+      <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
+        <div
+          className="h-full rounded-full bg-sky-600 transition-all duration-300"
+          style={{ width: `${((activeIndex + 1) / chapters.length) * 100}%` }}
+        />
+      </div>
+      <ol className="grid gap-2 sm:grid-cols-5" aria-label="Story Fortschritt">
+        {chapters.map((chapter, index) => {
+          const reached = index <= activeIndex;
+          return (
+            <li
+              key={chapter.id}
+              className={`rounded-lg border px-2.5 py-2 text-left ${
+                reached ? "border-sky-300 bg-sky-50/70" : "border-slate-200 bg-slate-50"
+              }`}
+              aria-current={index === activeIndex ? "step" : undefined}
+            >
+              <p className="text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-500">{`${index + 1}. ${chapter.label}`}</p>
+              <p className="mt-1 text-xs text-slate-700">{chapter.goal}</p>
+            </li>
+          );
+        })}
+      </ol>
+    </section>
+  );
+}

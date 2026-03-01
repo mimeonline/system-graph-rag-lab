@@ -4,13 +4,15 @@ import { GraphRagStoryTemplate } from "@/features/story/templates/GraphRagStoryT
 
 export const metadata: Metadata = {
   title: "GraphRAG Story | System GraphRAG Lab",
-  description: "Systemische Struktur-Demonstration: Textverdichtung, Graph-Struktur und stabiler Entscheidungspfad im direkten Vergleich.",
+  description:
+    "Technische 5-Schritt-Herleitung von Frage, Retrieval, Graph, Synthese und Handlung fuer belastbare Entscheidungsstruktur.",
   alternates: {
     canonical: withCanonical("/story/graphrag"),
   },
   openGraph: {
     title: "GraphRAG Story | System GraphRAG Lab",
-    description: "Systemische Struktur-Demonstration: Textverdichtung, Graph-Struktur und stabiler Entscheidungspfad im direkten Vergleich.",
+    description:
+      "Technische 5-Schritt-Herleitung von Frage, Retrieval, Graph, Synthese und Handlung fuer belastbare Entscheidungsstruktur.",
     url: withCanonical("/story/graphrag"),
     type: "website",
   },

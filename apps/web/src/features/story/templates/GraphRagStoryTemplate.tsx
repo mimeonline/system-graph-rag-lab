@@ -4,7 +4,7 @@ import { TrackedLink } from "@/components/molecules/tracked-link";
 import { TrackedPageView } from "@/components/molecules/tracked-page-view";
 import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
-import { GraphRagStateLab } from "@/features/story/organisms/GraphRagStateLab";
+import { GraphRagTechnicalFlow } from "@/features/story/organisms/GraphRagTechnicalFlow";
 
 export function GraphRagStoryTemplate(): React.JSX.Element {
   return (
@@ -16,15 +16,14 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
           <section className="space-y-4 pt-4">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">GraphRAG Story</p>
             <h1 className="max-w-4xl text-[2.75rem] font-bold leading-tight tracking-tight sm:text-[3.25rem]">
-              Struktur sichtbar machen
+              Von der Frage zur Entscheidung in 5 klaren Schritten
             </h1>
             <p className="max-w-3xl text-[1.125rem] leading-relaxed text-slate-700 font-medium">
-              Kein Story-Template, kein Scroll-Drama. Ein strukturierter Denkraum, in dem Zustände direkt vergleichbar
-              sind.
+              Eine ruhige, strukturierte Führung durch den Weg von der Problemfrage bis zur belastbaren Entscheidung.
             </p>
           </section>
 
-          <GraphRagStateLab />
+          <GraphRagTechnicalFlow />
 
           <section className="glass-panel rounded-3xl p-8 sm:p-12 relative overflow-hidden mt-12">
             <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 to-slate-100/50 -z-10" />
@@ -38,8 +37,8 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
               <div className="mt-8">
                 <TrackedLink
                   href="/demo"
-                  label="Projekt anfragen"
-                  eventName="story_project_request_click"
+                  label="Zur Demo"
+                  eventName="story_demo_entry_click"
                   payload={{ surface: "graphrag_story" }}
                   className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-slate-900/20 transition-all hover:bg-sky-600 hover:-translate-y-1 hover:shadow-sky-600/30"
                 />
