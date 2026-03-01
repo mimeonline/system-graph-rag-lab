@@ -124,8 +124,8 @@ function Node({
           metalness={0.12}
         />
       </mesh>
-      <Html transform sprite distanceFactor={8} position={[0, 0.52, 0]}>
-        <div className="rounded-md border border-sky-300/70 bg-slate-950/85 px-2 py-1 text-[11px] font-semibold text-sky-100 shadow-lg whitespace-nowrap">
+      <Html center position={[0, 0.74, 0]}>
+        <div className="rounded-md border border-sky-200/80 bg-white/90 px-1.5 py-0.5 text-[10px] font-semibold text-slate-700 shadow-sm whitespace-nowrap">
           {label}
         </div>
       </Html>
@@ -211,13 +211,13 @@ function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId;
             <Node position={[-1.8, 0.5, -0.4]} color="#94a3b8" label="Annahme A" />
           </RevealGroup>
           <RevealGroup step={3} activeStep={activeStep}>
-            <Node position={[1.9, -0.2, 0.3]} color="#94a3b8" label="Annahme B" />
+            <Node position={[1.9, 0.62, 0.3]} color="#94a3b8" label="Annahme B" />
           </RevealGroup>
           <RevealGroup step={4} activeStep={activeStep}>
-            <PathEdge points={[[0, 0.2, 0], [-1.8, 0.5, -0.4]]} color="#7dd3fc" />
+            <PathEdge points={[[-0.35, 0.26, -0.08], [-1.64, 0.5, -0.4]]} color="#7dd3fc" />
           </RevealGroup>
           <RevealGroup step={5} activeStep={activeStep}>
-            <PathEdge points={[[0, 0.2, 0], [1.9, -0.2, 0.3]]} color="#7dd3fc" />
+            <PathEdge points={[[0.35, 0.28, 0.06], [1.74, 0.62, 0.3]]} color="#7dd3fc" />
           </RevealGroup>
         </>
       ) : null}
