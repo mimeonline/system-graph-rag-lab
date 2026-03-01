@@ -21,7 +21,7 @@ import { HeroLearningStage } from "@/features/home/organisms/HeroLearningStage";
  */
 export function HomeTemplate(): React.JSX.Element {
   return (
-    <div className="flex min-h-screen flex-col bg-white text-slate-900">
+    <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
       <SiteHeader />
 
       <main className="flex-1">
@@ -29,7 +29,7 @@ export function HomeTemplate(): React.JSX.Element {
           <HeroLearningStage />
         </section>
 
-        <div className="mx-auto grid w-full max-w-295 gap-10 px-4 py-8 sm:px-6 sm:py-10">
+        <div className="mx-auto grid w-full max-w-295 gap-10 px-4 py-12 sm:px-6 sm:py-16">
           <div id="antwortfuehrung" className="scroll-mt-24 sm:scroll-mt-28">
             <QueryPanel />
           </div>

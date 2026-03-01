@@ -1,29 +1,29 @@
 "use client";
 
-import type { FormEvent } from "react";
-import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { BookOpen, GitBranch, History, Network, Route, Scale, Search, ShieldCheck } from "lucide-react";
 import dynamic from "next/dynamic";
+import type { FormEvent } from "react";
+import { useEffect, useState } from "react";
 
-import type { QuerySuggestionGroup } from "@/components/molecules/query-input";
 import { GraphPreview } from "@/components/molecules/graph-preview";
-import { AnswerCard } from "@/components/organisms/answer-card";
+import type { QuerySuggestionGroup } from "@/components/molecules/query-input";
 import { ActionCard } from "@/components/organisms/action-card";
-import { RationaleCard } from "@/components/organisms/rationale-card";
+import { AnswerCard } from "@/components/organisms/answer-card";
 import {
-  getStatusHint,
-  type QueryPanelStatus,
+    getStatusHint,
+    type QueryPanelStatus,
 } from "@/components/organisms/query-panel-status";
-import { PipelineStepper } from "@/features/home/molecules/PipelineStepper";
+import { RationaleCard } from "@/components/organisms/rationale-card";
 import { buildHomeGraphModel, type HomeGraphModel } from "@/features/home/graph-view-model";
-import type { QueryContextElement, QuerySuccessResponse, QueryReference } from "@/features/query/contracts";
-import { buildQueryViewModel, type QueryViewModel } from "@/features/query/view-model";
+import { PipelineStepper } from "@/features/home/molecules/PipelineStepper";
+import type { QueryContextElement, QueryReference, QuerySuccessResponse } from "@/features/query/contracts";
 import {
-  buildGraphRagPromptMessages,
-  buildLlmOnlyPromptMessages,
-  type PromptMessage,
+    buildGraphRagPromptMessages,
+    buildLlmOnlyPromptMessages,
+    type PromptMessage,
 } from "@/features/query/prompt-templates";
+import { buildQueryViewModel, type QueryViewModel } from "@/features/query/view-model";
 
 const QueryInput = dynamic(
   () => import("@/components/molecules/query-input").then((module) => module.QueryInput),
@@ -529,10 +529,11 @@ export function QueryPanel(): React.JSX.Element {
   };
 
   return (
-    <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(330px,37%)]">
-      <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">
-        <h2 className="flex items-center gap-2 text-base font-semibold text-slate-900">
-          <Route className="h-4 w-4 text-sky-700" aria-hidden />
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(330px,37%)]">
+      <section className="glass-panel space-y-6 rounded-3xl p-6 sm:p-8 relative overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-slate-50/30 -z-10" />
+        <h2 className="flex items-center gap-2 text-[1.125rem] font-bold text-slate-900 border-b border-slate-200/60 pb-4">
+          <Route className="h-5 w-5 text-sky-600" aria-hidden />
           <span>Antwortführung</span>
         </h2>
 
@@ -566,10 +567,10 @@ export function QueryPanel(): React.JSX.Element {
           </section>
         ) : null}
 
-        <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-              <ShieldCheck className="h-3.5 w-3.5" aria-hidden />
+        <section className="rounded-2xl border border-slate-200/60 bg-white/70 p-4 shadow-sm">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+              <ShieldCheck className="h-4 w-4 text-slate-400" aria-hidden />
               <span>Quality Gate</span>
             </h3>
             {status !== "idle" ? (
@@ -597,10 +598,10 @@ export function QueryPanel(): React.JSX.Element {
           )}
         </section>
 
-        <section className="rounded-xl border border-slate-200 bg-white p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-              <Network className="h-3.5 w-3.5" aria-hidden />
+        <section className="rounded-2xl border border-slate-200/60 bg-white p-4 shadow-sm">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+              <Network className="h-4 w-4 text-slate-400" aria-hidden />
               <span>Node-Auswahl fürs LLM</span>
             </h3>
             <span className="text-xs text-slate-500">Retrieval-Transparenz</span>
@@ -627,10 +628,10 @@ export function QueryPanel(): React.JSX.Element {
           )}
         </section>
 
-        <section className="rounded-xl border border-slate-200 bg-slate-50 p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-              <GitBranch className="h-3.5 w-3.5" aria-hidden />
+        <section className="rounded-2xl border border-slate-200/60 bg-white/70 p-4 shadow-sm">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+              <GitBranch className="h-4 w-4 text-slate-400" aria-hidden />
               <span>RAG vs GraphRAG</span>
             </h3>
             <span className="text-xs text-slate-500">3 Kernunterschiede</span>
@@ -648,10 +649,10 @@ export function QueryPanel(): React.JSX.Element {
           </ul>
         </section>
 
-        <section className="rounded-xl border border-slate-200 bg-white p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-              <Scale className="h-3.5 w-3.5" aria-hidden />
+        <section className="rounded-2xl border border-slate-200/60 bg-white p-4 shadow-sm">
+          <div className="mb-3 flex items-center justify-between">
+            <h3 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+              <Scale className="h-4 w-4 text-slate-400" aria-hidden />
               <span>LLM-only vs GraphRAG</span>
             </h3>
             <span className="text-xs text-slate-500">Warum der Graph hilft</span>
@@ -741,10 +742,10 @@ export function QueryPanel(): React.JSX.Element {
           </details>
         </section>
 
-        <section className="rounded-xl border border-slate-200/70 bg-white/60 p-3">
-          <div className="mb-2 flex items-center justify-between">
-            <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
-              <History className="h-3.5 w-3.5" aria-hidden />
+        <section className="rounded-2xl glass-panel bg-white/40 p-5 shadow-sm">
+          <div className="mb-3 flex items-center justify-between border-b border-slate-200/60 pb-3">
+            <h3 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
+              <History className="h-4 w-4 text-slate-400" aria-hidden />
               <span>Session Memory</span>
             </h3>
             <div className="flex items-center gap-2">
