@@ -11,17 +11,17 @@ import type { QuerySuggestionGroup } from "@/components/molecules/query-input";
 import { ActionCard } from "@/components/organisms/action-card";
 import { AnswerCard } from "@/components/organisms/answer-card";
 import {
-    getStatusHint,
-    type QueryPanelStatus,
+  getStatusHint,
+  type QueryPanelStatus,
 } from "@/components/organisms/query-panel-status";
 import { RationaleCard } from "@/components/organisms/rationale-card";
 import { buildHomeGraphModel, type HomeGraphModel } from "@/features/home/graph-view-model";
 import { PipelineStepper } from "@/features/home/molecules/PipelineStepper";
 import type { QueryContextElement, QueryReference, QuerySuccessResponse } from "@/features/query/contracts";
 import {
-    buildGraphRagPromptMessages,
-    buildLlmOnlyPromptMessages,
-    type PromptMessage,
+  buildGraphRagPromptMessages,
+  buildLlmOnlyPromptMessages,
+  type PromptMessage,
 } from "@/features/query/prompt-templates";
 import { buildQueryViewModel, type QueryViewModel } from "@/features/query/view-model";
 
@@ -973,7 +973,7 @@ export function QueryPanel(): React.JSX.Element {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.16 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/45 p-4"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm"
             onClick={() => setIsExplorerOpen(false)}
           >
             <motion.div
@@ -981,11 +981,11 @@ export function QueryPanel(): React.JSX.Element {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 8, scale: 0.985 }}
               transition={{ duration: 0.18 }}
-              className="max-h-[94dvh] w-full max-w-[1120px] overflow-x-hidden overflow-y-auto rounded-2xl border border-slate-200 bg-white p-3 pb-5 shadow-2xl sm:p-4 sm:pb-6"
+              className="glass-panel max-h-[94dvh] w-full max-w-[1120px] overflow-x-hidden overflow-y-auto rounded-3xl border border-slate-200/60 p-4 pb-6 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] sm:p-5 sm:pb-7"
               onClick={(event) => event.stopPropagation()}
             >
-              <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 pb-3">
+                <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
                   Traversierbarer Graph Explorer
                 </p>
                 <div className="flex items-center gap-2">

@@ -1,11 +1,10 @@
-import { useEffect, useMemo, useRef, useState } from "react";
-import cytoscape, { type Core, type ElementDefinition } from "cytoscape";
-// @ts-expect-error cytoscape-dagre ships no types
-import dagre from "cytoscape-dagre";
-import type { HomeGraphModel, HomeGraphNode } from "@/features/home/graph-view-model";
-import { Button } from "@/components/ui/button";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import type { HomeGraphModel, HomeGraphNode } from "@/features/home/graph-view-model";
+import cytoscape, { type Core, type ElementDefinition } from "cytoscape";
+import dagre from "cytoscape-dagre";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 type GraphLayoutMode = "force" | "hierarchy-vertical" | "hierarchy-horizontal";
 type GraphPresetMode = "all" | "concepts-tools" | "archetypes" | "problems-interventions";
@@ -1148,12 +1147,12 @@ export function GraphPreview({
   return (
     <section
       ref={wrapperRef}
-      className={`space-y-3 rounded-xl border border-slate-200 bg-white p-4 sm:p-5 ${
-        isFullscreen ? "h-[100dvh] w-screen overflow-auto rounded-none border-0 p-4 sm:p-6" : ""
+      className={`space-y-4 rounded-2xl border border-slate-200/60 bg-white/70 p-5 sm:p-6 shadow-sm ${
+        isFullscreen ? "h-[100dvh] w-screen overflow-auto rounded-none border-0 bg-white p-4 sm:p-6" : ""
       }`}
     >
-      <div className="flex items-center justify-between gap-3">
-        <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">Graph-Ansicht</h3>
+      <div className="flex items-center justify-between gap-3 border-b border-slate-200/60 pb-3">
+        <h3 className="text-sm font-bold uppercase tracking-[0.14em] text-slate-500">Graph-Ansicht</h3>
         <span className="text-xs font-semibold text-slate-500">
           {model.isFallback ? "Lernansicht" : "Zur aktuellen Frage"}
         </span>
@@ -1162,7 +1161,7 @@ export function GraphPreview({
       <p className="text-sm text-slate-600">{model.caption}</p>
 
       {interactive ? (
-        <div className="sticky top-2 z-10 space-y-2 rounded-lg border border-slate-200 bg-slate-50/95 p-2 backdrop-blur-sm">
+        <div className="sticky top-2 z-10 space-y-3 rounded-xl border border-slate-200/60 bg-white/80 p-3 shadow-md backdrop-blur-md">
           <div className="grid gap-2 md:grid-cols-[minmax(160px,220px)_minmax(170px,240px)_auto_auto] md:items-center">
             <div className="space-y-1">
               <span className="px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
@@ -1393,9 +1392,9 @@ export function GraphPreview({
       </p>
 
       {interactive ? (
-        <div className="grid items-start gap-3 lg:grid-cols-[200px_minmax(0,1fr)]">
-          <section className="overflow-hidden rounded-lg border border-slate-200 bg-slate-50 p-2">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Mini-Map</p>
+        <div className="mt-4 grid items-start gap-4 lg:grid-cols-[200px_minmax(0,1fr)]">
+          <section className="overflow-hidden rounded-xl border border-slate-200/60 bg-slate-50/80 p-3 shadow-sm">
+            <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">Mini-Map</p>
             {miniMap && miniMap.nodes.length > 0 ? (
               <div className="h-[128px] w-full md:h-[140px]">
                 <MiniMapView snapshot={miniMap} onJump={handleMiniMapJump} />
@@ -1404,8 +1403,8 @@ export function GraphPreview({
               <p className="text-xs text-slate-500">Lade Übersicht…</p>
             )}
           </section>
-          <section className="rounded-lg border border-slate-200 bg-white p-3">
-            <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+          <section className="rounded-xl border border-slate-200/60 bg-white p-4 shadow-sm">
+            <p className="mb-2 text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">
               Node-Details
             </p>
             {selectedNodeDetails || selectedEdgeDetails ? (

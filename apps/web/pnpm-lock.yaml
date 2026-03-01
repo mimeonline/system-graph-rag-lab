@@ -69,6 +69,9 @@ importers:
       '@tailwindcss/postcss':
         specifier: ^4
         version: 4.2.1
+      '@types/cytoscape-dagre':
+        specifier: ^2.3.4
+        version: 2.3.4
       '@types/node':
         specifier: ^20
         version: 20.19.33
@@ -1232,6 +1235,9 @@ packages:
 
   '@types/chai@5.2.3':
     resolution: {integrity: sha512-Mw558oeA9fFbv65/y4mHtXDs9bPnFMZAL/jxdPFUpOHHIXX91mcgEHbS5Lahr+pwZFR8A7GQleRWeI6cGFC2UA==}
+
+  '@types/cytoscape-dagre@2.3.4':
+    resolution: {integrity: sha512-uOGXuPfPLFoKZaegjHl9oj4tqONNJuhUl180FiJgRZ35rVijBs6J4UP1Ah6mA6S46h+7pv4ICqpgfdC3EADZlw==}
 
   '@types/debug@4.1.12':
     resolution: {integrity: sha512-vIChWdVG3LG1SMxEvI/AK+FWJthlrqlTu7fbrlywTkkaONwk/UAGaULXRlf8vkzFBLVm0zkMdCquhL5aOjhXPQ==}
@@ -4379,6 +4385,10 @@ snapshots:
     dependencies:
       '@types/deep-eql': 4.0.2
       assertion-error: 2.0.1
+
+  '@types/cytoscape-dagre@2.3.4':
+    dependencies:
+      cytoscape: 3.33.1
 
   '@types/debug@4.1.12':
     dependencies:
