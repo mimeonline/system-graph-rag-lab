@@ -20,31 +20,31 @@ const FLOW_STEPS: FlowStep[] = [
   {
     step: "01",
     title: "Problemraum",
-    description: "Warum reine KI-Antworten nicht ausreichen",
+    description: "Warum plausible KI-Antworten für belastbare Entscheidungen nicht ausreichen.",
     slug: "warum-ki-antworten-fuer-entscheidungen-nicht-ausreichen",
   },
   {
     step: "02",
     title: "Struktur",
-    description: "Was GraphRAG strukturell anders macht",
+    description: "Wie GraphRAG Beziehungen und Belegpfade explizit modelliert.",
     slug: "was-graphrag-strukturell-anders-macht-als-klassisches-rag",
   },
   {
     step: "03",
     title: "Qualität",
-    description: "Welche Kriterien ein produktives System erfüllen muss",
+    description: "Welche Kriterien ein produktives System für Retrieval und Herleitung erfüllen muss.",
     slug: "qualitaetskriterien-fuer-ein-produktives-graphrag-system",
   },
   {
     step: "04",
     title: "Organisation",
-    description: "Wie GraphRAG als Entscheidungs-Interface wirkt",
+    description: "Wie GraphRAG als Entscheidungs-Interface in Organisationen wirkt.",
     slug: "graphrag-als-entscheidungs-interface-fuer-organisationen",
   },
   {
     step: "05",
     title: "Positionierung",
-    description: "Von plausiblen Antworten zu prüfbaren Entscheidungen",
+    description: "Von plausiblen Antworten zu prüfbaren, verteidigbaren Entscheidungen.",
     slug: "von-plausiblen-antworten-zu-pruefbaren-entscheidungen",
   },
 ];
@@ -58,76 +58,103 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
       <SiteHeader />
 
       <main className="flex-1">
-        <section className="mx-auto w-full max-w-295 px-4 py-12 sm:px-6 sm:py-16">
-          <div className="space-y-6">
-            <motion.p 
+        {/* Hero Section */}
+        <section className="mx-auto w-full max-w-295 px-4 py-8 sm:px-6 sm:py-12">
+          <div className="space-y-8">
+            <motion.p
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, ease: "easeOut" }}
-              className="text-[11px] font-bold uppercase tracking-[0.2em] text-sky-600"
+              className="text-xs font-bold uppercase tracking-[0.2em] text-sky-600"
             >
               Systemische Praxis
             </motion.p>
-            <div className="space-y-5">
-            <h1 className="max-w-[32ch] text-[2.5rem] font-bold tracking-tight text-slate-950 sm:text-[3.2rem]">
-              Systemische Praxis
-            </h1>
-            <p className="max-w-[66ch] text-lg font-medium leading-relaxed text-slate-800">
-              Vom deskriptiven RAG zur prüfbaren Entscheidungsarchitektur.
-            </p>
-            <div className="max-w-[80ch] space-y-4 text-slate-600 sm:text-lg leading-relaxed">
-              <p>
-                Diese Essayserie dokumentiert den Weg von probabilistischer Textverdichtung hin zu einer deterministischen Entscheidungslogik. Wir betrachten GraphRAG nicht als Feature, sondern als strukturelle Infrastruktur für Governance und Nachvollziehbarkeit.
+            <motion.div
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
+              className="space-y-5"
+            >
+              <h1 className="max-w-[28ch] text-[2.5rem] font-bold tracking-tight text-slate-950 sm:text-[3.2rem] leading-[1.1]">
+                Vom Wahrscheinlichkeitsmodell zur <span className="text-gradient-primary">Entscheidungsarchitektur</span>.
+              </h1>
+              <p className="max-w-[66ch] text-lg font-medium leading-relaxed text-slate-700">
+                Diese Essayserie analysiert den strukturellen Übergang von deskriptivem RAG
+                zu einer prüfbaren, graphbasierten Entscheidungslogik.
               </p>
+            </motion.div>
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2, ease: "easeOut" }}
+              className="max-w-[80ch] space-y-4 text-slate-600 sm:text-[1.05rem] leading-relaxed"
+            >
               <p>
-                Jeder Beitrag ist ein Baustein in einem integrierten Denkmodell: Wir analysieren den Problemraum klassischer RAG-Systeme, leiten die notwendige Struktur ab und definieren Qualitätskriterien für den produktiven Einsatz.
+                Jeder Beitrag ist ein Baustein in einem integrierten Denkmodell.
+                Der Argumentationsfluss beginnt im Problemraum klassischer RAG-Systeme,
+                leitet die notwendige Struktur ab und definiert Qualitätskriterien
+                für den produktiven Einsatz.
               </p>
-            </div>
+            </motion.div>
           </div>
-        </div>
-      </section>
+        </section>
 
-        <section className="space-y-3 pb-2">
+        {/* Graph Surface */}
+        <section className="space-y-4 pb-4">
           <div className="mx-auto flex w-full max-w-295 items-end justify-between gap-4 px-4 sm:px-6">
-            <h2 className="text-sm font-semibold uppercase tracking-[0.15em] text-slate-500">Argumentationsfluss</h2>
-            <p className="text-xs text-slate-500">Problemraum → Struktur → Qualität → Organisation → Positionierung</p>
+            <div className="space-y-1">
+              <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Argumentationsfluss</h2>
+              <p className="text-sm text-slate-500 font-medium">Problemraum → Struktur → Qualität → Organisation → Positionierung</p>
+            </div>
           </div>
           <GraphEssaysSurface />
         </section>
 
-        <section className="bg-slate-50 px-4 py-20 text-slate-900 sm:px-6">
-          <div className="mx-auto w-full max-w-[1100px] space-y-8">
-            <div className="space-y-3">
-              <h2 className="text-2xl font-semibold tracking-tight text-slate-900 sm:text-[2rem]">Vom Problem zur Position</h2>
-              <p className="max-w-[72ch] text-sm leading-7 text-slate-600 sm:text-base">
-                Der Gedankengang folgt einer klaren Logik – von der Ausgangsfrage bis zur Einordnung.
+        {/* Flow Steps */}
+        <section className="px-4 py-20 sm:px-6">
+          <div className="mx-auto w-full max-w-[1180px] space-y-10">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="space-y-3"
+            >
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-sky-600">Struktur des Arguments</p>
+              <h2 className="text-[1.75rem] font-bold tracking-tight text-slate-900 sm:text-[2.25rem]">Vom Problem zur Position</h2>
+              <p className="max-w-[72ch] text-[1.05rem] leading-relaxed text-slate-600 font-medium">
+                Der Gedankengang folgt einer klaren Logik – von der Ausgangsfrage
+                bis zur organisatorischen Einordnung. Jeder Schritt baut auf dem vorherigen auf.
               </p>
-            </div>
+            </motion.div>
 
             <div className="grid gap-5 md:grid-cols-5">
-              {FLOW_STEPS.map((flowStep) => (
-                <article
+              {FLOW_STEPS.map((flowStep, index) => (
+                <motion.article
                   key={flowStep.step}
-                  className="glass-panel group flex h-full flex-col p-5 transition-all hover:-translate-y-1 hover:shadow-xl"
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.45, delay: 0.08 * index, ease: "easeOut" }}
+                  className="glass-panel group flex h-full flex-col rounded-2xl p-5 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-sky-900/5"
                 >
-                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 group-hover:text-sky-600 transition-colors">
-                    Schritt {flowStep.step}
-                  </p>
-                  <h3 className="mt-3 text-lg font-bold tracking-tight text-slate-900">{flowStep.title}</h3>
-                  <p className="mt-3 text-sm leading-relaxed text-slate-600">{flowStep.description}</p>
+                  <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100/60 text-[11px] font-black text-sky-700">
+                    {flowStep.step}
+                  </div>
+                  <h3 className="text-lg font-bold tracking-tight text-slate-900">{flowStep.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-slate-600">{flowStep.description}</p>
                   <a
                     href={`/blog/${flowStep.slug}`}
-                    className="mt-auto pt-6 inline-flex text-xs font-bold uppercase tracking-[0.14em] text-sky-700 hover:text-sky-900 transition-colors"
+                    className="mt-auto pt-5 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-sky-700 hover:text-sky-900 transition-colors"
                   >
-                    Essay lesen →
+                    Essay lesen
+                    <span className="transition-transform group-hover:translate-x-0.5" aria-hidden>→</span>
                   </a>
-                </article>
+                </motion.article>
               ))}
             </div>
 
-            <p className="text-sm leading-7 text-slate-500">
-              Du kannst den Gedankengang chronologisch lesen –<br />
-              oder direkt an dem Punkt einsteigen, der dich aktuell beschäftigt.
+            <p className="max-w-[66ch] text-sm leading-relaxed text-slate-500 font-medium">
+              Der Argumentationspfad lässt sich chronologisch verfolgen –
+              oder gezielt an dem Punkt einsteigen, der für Ihre aktuelle Architektur- oder Governance-Frage relevant ist.
             </p>
           </div>
         </section>

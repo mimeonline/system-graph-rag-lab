@@ -24,29 +24,37 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
     <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
       <TrackedPageView page={`/blog/${frontmatter.slug}`} />
       <SiteHeader />
-      <main className="flex-1 px-4 py-8 sm:px-6 sm:py-10">
-        <div className="mx-auto grid w-full max-w-[1240px] gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-          <article className="glass-panel p-6 sm:p-10">
-            <motion.p 
-              initial={{ opacity: 0, y: 10 }}
+      <main className="flex-1 px-4 py-10 sm:px-6 sm:py-14">
+        <div className="mx-auto grid w-full max-w-[1280px] gap-8 lg:grid-cols-[minmax(0,1fr)_300px]">
+
+          {/* Article */}
+          <article className="glass-panel rounded-2xl p-6 sm:p-10">
+            <motion.div
+              initial={{ opacity: 0, y: 12 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, ease: "easeOut" }}
-              className="text-[11px] font-bold uppercase tracking-[0.2em] text-sky-600 mb-6"
+              transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              Systemische Praxis
-            </motion.p>
-            <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-sky-700">Expert Insights</p>
-            <h1 className="mt-3 text-[2.4rem] font-bold tracking-tight text-slate-950 leading-[1.15]">{frontmatter.title}</h1>
-            <p className="mt-4 max-w-[72ch] text-[1.05rem] leading-relaxed text-slate-700 font-medium">{frontmatter.excerpt}</p>
-            <div className="mt-3 flex flex-wrap items-center gap-2 text-sm text-slate-500">
+              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-sky-600">
+                Systemische Praxis
+              </p>
+              <h1 className="mt-4 text-[2.2rem] font-bold tracking-tight text-slate-950 leading-[1.15] sm:text-[2.6rem]">
+                {frontmatter.title}
+              </h1>
+              <p className="mt-4 max-w-[72ch] text-[1.05rem] leading-relaxed text-slate-700 font-medium">
+                {frontmatter.excerpt}
+              </p>
+            </motion.div>
+
+            <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-500">
               <time dateTime={frontmatter.publishedAt}>{publishedDate}</time>
-              <span>·</span>
+              <span className="text-slate-300">·</span>
               <span>{frontmatter.readingTime}</span>
-              <span>·</span>
+              <span className="text-slate-300">·</span>
               <span>{frontmatter.tags.join(", ")}</span>
             </div>
+
             {frontmatter.heroImage ? (
-              <figure className="mt-4 overflow-hidden rounded-xl border border-slate-200">
+              <figure className="mt-6 overflow-hidden rounded-xl border border-slate-200/60 shadow-sm">
                 <Image
                   src={frontmatter.heroImage}
                   alt={frontmatter.title}
@@ -57,58 +65,85 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                 />
               </figure>
             ) : null}
+
             {frontmatter.tldr ? (
-              <section className="mt-6 rounded-2xl border border-sky-200 bg-sky-50/50 p-5 shadow-sm">
-                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-sky-800">Executive Summary</p>
-                <p className="mt-2 text-[1rem] leading-relaxed text-slate-800">{frontmatter.tldr}</p>
+              <section className="mt-8 rounded-2xl border border-sky-200/60 bg-gradient-to-br from-sky-50/60 to-sky-50/30 p-5 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-sky-500 shadow-[0_0_6px_rgba(14,165,233,0.5)]" />
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-sky-800">Executive Summary</p>
+                </div>
+                <p className="mt-3 text-[1rem] leading-relaxed text-slate-800">{frontmatter.tldr}</p>
               </section>
             ) : null}
-            <div className="mt-4 flex flex-wrap gap-2 border-t border-slate-200 pt-4">
+
+            {frontmatter.linkedinHook ? (
+              <section className="mt-6 rounded-2xl border-l-4 border-l-indigo-500 border border-indigo-200/50 bg-gradient-to-br from-indigo-50/50 to-indigo-50/20 p-5 shadow-sm">
+                <div className="flex items-center gap-2">
+                  <div className="h-1.5 w-1.5 rounded-full bg-indigo-500 shadow-[0_0_6px_rgba(99,102,241,0.5)]" />
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-indigo-800">Kernaussage</p>
+                </div>
+                <p className="mt-3 text-[1rem] leading-relaxed text-slate-800 italic">{frontmatter.linkedinHook}</p>
+              </section>
+            ) : null}
+
+            <div className="mt-8 max-w-[74ch] prose-slate">{content}</div>
+
+            {/* Share */}
+            <div className="mt-10 flex flex-wrap items-center gap-3 border-t border-slate-200/60 pt-6">
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">Teilen</span>
               <TrackedLink
                 href={linkedInShare}
-                label="Auf LinkedIn teilen"
+                label="LinkedIn"
                 eventName="share_click"
                 payload={{ channel: "linkedin", slug: frontmatter.slug }}
-                className="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:-translate-y-0.5 hover:shadow-md"
                 external
                 icon={<Linkedin className="h-4 w-4" aria-hidden />}
               />
               <TrackedLink
                 href={xShare}
-                label="Auf X teilen"
+                label="X"
                 eventName="share_click"
                 payload={{ channel: "x", slug: frontmatter.slug }}
-                className="inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-semibold text-slate-700 hover:bg-slate-50"
+                className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:-translate-y-0.5 hover:shadow-md"
                 external
                 icon={<span className="text-[13px] font-bold leading-none">𝕏</span>}
               />
             </div>
-            {frontmatter.linkedinHook ? (
-              <section className="mt-6 rounded-2xl border border-indigo-200 bg-indigo-50/50 p-5 shadow-sm border-l-4 border-l-indigo-500">
-                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-indigo-800">Systemischer Fokus</p>
-                <p className="mt-2 text-[1rem] leading-relaxed text-slate-800 italic">{frontmatter.linkedinHook}</p>
-              </section>
-            ) : null}
-            <div className="mt-6 max-w-[74ch]">{content}</div>
           </article>
 
-          <aside className="space-y-6">
-            <section className="glass-panel p-5">
+          {/* Sidebar */}
+          <aside className="space-y-6 lg:sticky lg:top-6 lg:self-start">
+            <motion.section
+              initial={{ opacity: 0, x: 8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.4, delay: 0.15, ease: "easeOut" }}
+              className="glass-panel rounded-2xl p-5"
+            >
               <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Inhaltsverzeichnis</p>
               <nav className="mt-4 space-y-2" aria-label="Inhaltsverzeichnis">
                 {toc.map((item) => (
                   <div key={item.id} className={item.level === 3 ? "pl-4" : ""}>
-                    <a href={`#${item.id}`} className="text-sm font-medium text-slate-600 hover:text-sky-700 transition-colors">
+                    <a
+                      href={`#${item.id}`}
+                      className="block text-sm font-medium text-slate-600 transition-colors hover:text-sky-700"
+                    >
                       {item.text}
                     </a>
                   </div>
                 ))}
               </nav>
-            </section>
+            </motion.section>
+
             {frontmatter.diagramImages && frontmatter.diagramImages.length > 0 ? (
-              <section className="glass-panel p-5">
+              <motion.section
+                initial={{ opacity: 0, x: 8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.4, delay: 0.25, ease: "easeOut" }}
+                className="glass-panel rounded-2xl p-5"
+              >
                 <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Visualisierungen</p>
-                <div className="mt-2 space-y-2">
+                <div className="mt-3 space-y-3">
                   {frontmatter.diagramImages.map((image) => (
                     <Image
                       key={image}
@@ -116,12 +151,21 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                       alt="Diagramm"
                       width={1200}
                       height={800}
-                      className="block h-auto w-full rounded-lg border border-slate-200"
+                      className="block h-auto w-full rounded-lg border border-slate-200/60 shadow-sm"
                     />
                   ))}
                 </div>
-              </section>
+              </motion.section>
             ) : null}
+
+            {/* Back Link */}
+            <a
+              href="/blog"
+              className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-slate-500 transition-colors hover:text-sky-700"
+            >
+              <span aria-hidden>←</span>
+              Alle Essays
+            </a>
           </aside>
         </div>
       </main>
