@@ -158,7 +158,7 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
                     initial={{ opacity: 0, y: 16 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.45, delay: 0.08 * index, ease: "easeOut" }}
-                    className="glass-panel group flex flex-col rounded-2xl p-5 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-sky-900/5 hover:border-sky-200 lg:flex-1 lg:min-w-0"
+                    className="glass-panel group flex flex-col rounded-2xl p-5 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(14,165,233,0.12)] hover:border-sky-300/50 lg:flex-1 lg:min-w-0"
                   >
                     <div className="mb-3 inline-flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100/60 text-[11px] font-black text-sky-700 group-hover:bg-sky-200/60 transition-colors">
                       {flowStep.step}
@@ -170,7 +170,7 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
                       className="mt-auto pt-5 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-sky-700 hover:text-sky-900 transition-colors"
                     >
                       Essay lesen
-                      <span className="transition-transform group-hover:translate-x-0.5" aria-hidden>→</span>
+                      <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden>→</span>
                     </a>
                   </motion.article>
                 </Fragment>

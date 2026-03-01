@@ -57,7 +57,7 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-600">
                 Systemische Praxis
               </p>
-              <h1 className="mt-4 text-[2.2rem] font-bold tracking-tight text-slate-950 leading-[1.15] sm:text-[2.6rem]">
+              <h1 className="mt-4 text-[2.2rem] font-bold tracking-tight text-gradient-primary leading-[1.15] sm:text-[2.6rem]">
                 {frontmatter.title}
               </h1>
               <p className="mt-4 max-w-[72ch] text-[1.05rem] leading-relaxed text-slate-700 font-medium">
@@ -80,9 +80,10 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                   alt={frontmatter.title}
                   width={1600}
                   height={900}
-                  className="block h-auto w-full"
+                  className="block h-auto w-full object-cover"
                   priority
                 />
+                <div className="absolute inset-0 rounded-xl rounded-b-none ring-1 ring-inset ring-slate-900/10" aria-hidden />
               </figure>
             ) : null}
 
@@ -144,7 +145,7 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                 </div>
                 <a
                   href={`/blog/${nextEssay.slug}`}
-                  className="group mt-6 flex items-center justify-between gap-4 glass-panel rounded-2xl p-5 transition-all hover:-translate-y-0.5 hover:shadow-lg hover:shadow-sky-900/5 hover:border-sky-200"
+                  className="group mt-6 flex items-center justify-between gap-4 glass-panel rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgb(14,165,233,0.12)] hover:border-sky-300/50"
                 >
                   <div className="space-y-1">
                     <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Weiter im Argumentationsfluss</p>
@@ -172,9 +173,10 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                   <div key={item.id} className={item.level === 3 ? "pl-4" : ""}>
                     <a
                       href={`#${item.id}`}
-                      className="block text-sm font-medium text-slate-600 transition-colors hover:text-sky-700"
+                      className="group flex items-center gap-3 text-sm font-medium text-slate-600 transition-colors hover:text-sky-700"
                     >
-                      {item.text}
+                      <span className="block h-1.5 w-1.5 rounded-full bg-slate-300 transition-colors group-hover:bg-sky-500" aria-hidden />
+                      <span className="flex-1">{item.text}</span>
                     </a>
                   </div>
                 ))}
@@ -204,13 +206,13 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
               </motion.section>
             ) : null}
 
-            {/* Back Link */}
+            {/* Floating Back Link */}
             <a
               href="/blog"
-              className="inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-slate-500 transition-colors hover:text-sky-700"
+              className="inline-flex glass-panel items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-slate-600 transition-all hover:text-sky-700 hover:-translate-y-0.5 hover:shadow-md"
             >
-              <span aria-hidden>←</span>
-              Alle Essays
+              <span className="text-lg leading-none transition-transform group-hover:-translate-x-1" aria-hidden>←</span>
+              Zurück zur Übersicht
             </a>
           </aside>
         </div>
