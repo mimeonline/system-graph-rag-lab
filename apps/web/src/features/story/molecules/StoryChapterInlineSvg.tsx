@@ -61,9 +61,10 @@ function GraphMini(): React.JSX.Element {
       <line x1="136" y1="88" x2="204" y2="114" stroke="#22c55e" strokeWidth="2.5" />
       <line x1="236" y1="56" x2="314" y2="84" stroke="#a78bfa" strokeWidth="2.5" />
       <line x1="236" y1="116" x2="314" y2="88" stroke="#f59e0b" strokeWidth="2.5" />
-      <text x="88" y="130" className="fill-slate-600 text-[10px]">Ursache</text>
-      <text x="170" y="130" className="fill-slate-600 text-[10px]">Trade-off</text>
-      <text x="260" y="130" className="fill-slate-600 text-[10px]">Beleg</text>
+      <text x="82" y="130" className="fill-slate-600 text-[10px]">Kernfrage</text>
+      <text x="165" y="130" className="fill-slate-600 text-[10px]">Konzept</text>
+      <text x="244" y="130" className="fill-slate-600 text-[10px]">Hop</text>
+      <text x="298" y="130" className="fill-slate-600 text-[10px]">Beleg</text>
     </>
   );
 }

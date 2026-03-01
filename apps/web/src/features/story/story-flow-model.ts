@@ -60,17 +60,17 @@ export const STORY_CHAPTERS: StoryChapter[] = [
     label: "Kontextauswahl",
     goal: "Kontext priorisieren",
     technicalFlow:
-      "Wir sammeln mögliche Kontexte und ordnen sie nach Relevanz für die Kernfrage. In den nächsten Schritt gehen nur die Informationen, die den Entscheidungsweg tatsächlich tragen. Alles andere bleibt sichtbar, wird aber bewusst zurückgestellt, damit das Team den Fokus nicht verliert.",
+      "Wir berechnen für mögliche Kontextknoten die Nähe zur Kernfrage über Embeddings und ordnen sie nach Graph-Score. Falls nötig erweitern wir die Auswahl über direkte Nachbarn per Hop. In den nächsten Schritt gehen nur diese priorisierten Knoten als Kontext für den LLM-Prompt.",
     structuralRelevance:
-      "Mehr Kontext ist nicht automatisch besser, weil zu viel Material den Blick auf das Wesentliche verdeckt. Eine klare Auswahl macht die folgenden Schritte stabiler und leichter prüfbar. Sie sorgt außerdem dafür, dass ähnliche Fragen später mit einer vergleichbaren Logik beantwortet werden können.",
+      "Mehr Kontext ist nicht automatisch besser, weil zu viel Material den Fokus verwässert. Die priorisierte Auswahl hält den Prompt präzise und macht den Auswahlweg reproduzierbar. So bleibt transparent, warum ein Knoten enthalten ist und ein anderer nicht.",
     visualSpec:
-      "Du siehst mehrere Kontexte mit unterschiedlichem Gewicht. Wichtiges steht sichtbar im Vordergrund, weniger Relevantes bleibt vorhanden, aber bewusst zurückgenommen. Das Diagramm zeigt damit nicht nur Auswahl, sondern auch Priorität und Begründung der Auswahl.",
+      "Du siehst ein zentriertes Kontextpaket mit den ausgewählten Knoten für den Prompt. Kontexte mit mittlerer und niedriger Relevanz liegen bewusst außen und bleiben sichtbar. Damit wird klar: ausgewählt wird nach Score und Hop-Regel, nicht nach Zufall.",
     keyInsight:
       "Nicht die Menge an Kontext zählt, sondern die Disziplin der Auswahl.",
-    keyTerms: ["Kontextdisziplin", "Relevanzgewichtung", "Rauschreduktion", "Priorisierung"],
+    keyTerms: ["Embedding-Match", "Graph-Score", "Hop-Erweiterung", "Prompt-Kontext"],
     beforeAfter: {
-      before: "Alle verfügbaren Dokumente im Kontext",
-      after: "Gewichtete, priorisierte Kontextauswahl",
+      before: "Unstrukturierter Vollkontext im Prompt",
+      after: "Score-basierte Knotenauswahl mit optionalem Hop",
     },
     nextStepHint: "Die priorisierten Knoten werden jetzt verknüpft.",
     perspectiveCopy: {
@@ -85,28 +85,28 @@ export const STORY_CHAPTERS: StoryChapter[] = [
   {
     id: "graph",
     label: "Graph",
-    goal: "Knoten verknüpfen",
+    goal: "Knoten für das LLM auswählen",
     technicalFlow:
-      "Jetzt verbinden wir die Begriffe zu einem gemeinsamen Modell. Jede Verbindung bekommt einen klaren Typ, zum Beispiel Ursache, Zielkonflikt oder Belegbezug. Dadurch wird aus einer Sammlung von Informationen ein strukturiertes Netz, das sich gemeinsam bearbeiten und weiterentwickeln lässt.",
+      "Wir berechnen die semantische Nähe zwischen Kernfrage und Graph-Knoten über Embeddings. Danach wählen wir passende Konzeptknoten aus und nehmen die zugehörigen Belege mit. Falls nötig erweitern wir den Kontext um direkte Nachbarn über einen Hop. Genau dieses Teilnetz wird anschließend als strukturierter Kontext in den LLM-Prompt übergeben.",
     structuralRelevance:
-      "Erst mit klar typisierten Verbindungen werden Abhängigkeiten und Nebenwirkungen sichtbar. Dadurch wird die Diskussion im Team konkreter, weil Aussagen direkt auf Struktur statt auf Bauchgefühl bezogen werden. Gleichzeitig sinkt das Risiko, dass unterschiedliche Teams am selben Thema vorbeireden.",
+      "Damit ist jederzeit klar, welche Knoten in den Prompt gelangen und warum. Der Kontext bleibt fokussiert statt beliebig groß und wird bei gleichen Eingaben reproduzierbar. So wird die Auswahl prüfbar und die Antwort stabiler.",
     visualSpec:
-      "Aus einzelnen Punkten wird ein klares Netz mit unterschiedlichen Beziehungstypen. So ist auf einen Blick erkennbar, was Ursache ist, wo Zielkonflikte liegen und welche Teile mit Belegen gestützt sind. Das Diagramm macht sichtbar, wie eng fachliche und technische Entscheidungen miteinander verbunden sind.",
+      "Die Visualisierung zeigt zuerst die Kernfrage, dann passende Konzepte, danach zugehörige Belege. Eine zusätzliche Kante markiert die optionale Hop-Erweiterung. Dadurch siehst du direkt, welche Knoten wirklich für den LLM-Kontext ausgewählt wurden.",
     keyInsight:
-      "Explizite Beziehungen machen Abhängigkeiten und Trade-offs im Team besprechbar.",
-    keyTerms: ["Beziehungstypen", "Ursache-Wirkung", "Trade-off", "Evidenzbezug"],
+      "GraphRAG gewinnt Qualität durch nachvollziehbare Knotenauswahl, nicht durch mehr Text.",
+    keyTerms: ["Embedding-Match", "Knotenauswahl", "Hop-Erweiterung", "Belegbezug"],
     beforeAfter: {
-      before: "Isolierte Konzepte ohne Beziehungen",
-      after: "Typisiertes Beziehungsmodell mit Kanten",
+      before: "Ungefilterter Kontext für das LLM",
+      after: "Embedding-basierte Knotenauswahl mit Belegen",
     },
     nextStepHint: "Aus dem Netz wird ein prüfbarer Ableitungspfad.",
     perspectiveCopy: {
       architecture:
-        "Architektur: Wo entstehen Ursache-Wirkung-Ketten zwischen Komponenten oder Domänen, und wo entstehen Kopplungen mit hoher Folgewirkung? Diese Sicht hilft, Risiken nicht erst im Betrieb zu entdecken.",
+        "Architektur: Welche Knoten und Kanten müssen in den Prompt, damit technische Abhängigkeiten korrekt abgebildet sind? So bleibt die Kontextbildung kontrollierbar und nachvollziehbar.",
       product:
-        "Produkt: Welche Entscheidung verbessert einen Pfad, macht aber einen anderen schlechter, und welche Trade-offs sind dabei akzeptabel? So wird Priorisierung transparent statt intuitiv.",
+        "Produkt: Welche Konzepte tragen wirklich zur Antwort bei, und welche bleiben bewusst außerhalb des Prompt-Kontexts? So bleibt die Antwort nah an der eigentlichen Produktfrage.",
       governance:
-        "Governance: Welche Beziehungstypen brauchen Freigaben, Kontrollen oder dokumentierte Ausnahmen, damit Entscheidungen sauber geführt werden? So bleibt Steuerung nachvollziehbar und nicht personengebunden.",
+        "Governance: Ist dokumentiert, welche Knoten mit welchem Score ausgewählt wurden und welche über Hop hinzugekommen sind? Damit bleibt die Kontextauswahl auditierbar.",
     },
   },
   {

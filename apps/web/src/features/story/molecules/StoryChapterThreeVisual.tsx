@@ -30,6 +30,8 @@ const ROOM_WIDTH = 11.6;
 const ROOM_DEPTH = 8.4;
 const ROOM_HEIGHT = 3.45;
 const FLOOR_Y = -1.25;
+const RETRIEVAL_SAFE_ZONE_X = 3.6;
+const RETRIEVAL_SAFE_ZONE_Z = 2.2;
 
 const SHOTS: Record<StoryChapterId, ShotConfig> = {
   question: { label: "Top", camera: [0.6, 2.15, 5.8], target: [0, 0.1, 0], orbit: false },
@@ -154,12 +156,16 @@ function Node({
   label,
   emphasis = false,
   status,
+  radius,
+  hideLabel = false,
 }: {
   position: [number, number, number];
   color: string;
   label: string;
   emphasis?: boolean;
   status?: NodeStatus;
+  radius?: number;
+  hideLabel?: boolean;
 }): React.JSX.Element {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.MeshStandardMaterial>(null);
@@ -177,15 +183,13 @@ function Node({
       return;
     }
     const t = state.clock.getElapsedTime();
-    const pulse = 1 + Math.sin(t * 1.8) * 0.04;
-    meshRef.current.scale.setScalar(pulse);
     materialRef.current.emissiveIntensity = 0.8 + Math.sin(t * 1.8) * 0.08;
   });
 
   return (
     <group position={position}>
       <mesh ref={meshRef} castShadow receiveShadow frustumCulled={false}>
-        <sphereGeometry args={[emphasis ? 0.33 : 0.23, 24, 24]} />
+        <sphereGeometry args={[radius ?? (emphasis ? 0.33 : 0.23), 24, 24]} />
         <meshStandardMaterial
           ref={materialRef}
           color={color}
@@ -195,20 +199,22 @@ function Node({
           metalness={0.12}
         />
       </mesh>
-      <Html center position={[0, 0.74, 0]}>
-        <div
-          className={`rounded-md px-1.5 py-0.5 text-[10px] font-semibold shadow-sm whitespace-nowrap ${
-            isCore
-              ? "border border-sky-300 bg-sky-50/92 text-sky-900"
-              : "border border-slate-200/90 bg-white/90 text-slate-700"
-          }`}
-        >
-          <span className="inline-flex items-center gap-1">
-            <span className={`h-1.5 w-1.5 rounded-full ${statusClass}`} />
-            {label}
-          </span>
-        </div>
-      </Html>
+      {!hideLabel ? (
+        <Html center position={[0, 0.74, 0]}>
+          <div
+            className={`rounded-md px-1.5 py-0.5 text-[10px] font-semibold shadow-sm whitespace-nowrap ${
+              isCore
+                ? "border border-sky-300/70 bg-sky-50/56 text-sky-900"
+                : "border border-slate-200/70 bg-white/50 text-slate-700"
+            }`}
+          >
+            <span className="inline-flex items-center gap-1">
+              <span className={`h-1.5 w-1.5 rounded-full ${statusClass}`} />
+              {label}
+            </span>
+          </div>
+        </Html>
+      ) : null}
     </group>
   );
 }
@@ -271,6 +277,18 @@ function buildAnchoredEdge(
   ];
 }
 
+function clampPositionToZone(
+  position: [number, number, number],
+  maxX: number,
+  maxZ: number,
+): [number, number, number] {
+  return [
+    THREE.MathUtils.clamp(position[0], -maxX, maxX),
+    position[1],
+    THREE.MathUtils.clamp(position[2], -maxZ, maxZ),
+  ];
+}
+
 function RoomFrame(): React.JSX.Element {
   const halfW = ROOM_WIDTH / 2;
   const halfD = ROOM_DEPTH / 2;
@@ -328,8 +346,18 @@ function RoomFrame(): React.JSX.Element {
   );
 }
 
-function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId; reducedMotion: boolean }): React.JSX.Element {
+function ChapterScene({
+  chapterId,
+  reducedMotion,
+  hideNodeLabels,
+}: {
+  chapterId: StoryChapterId;
+  reducedMotion: boolean;
+  hideNodeLabels: boolean;
+}): React.JSX.Element {
   const timeRef = useRef(0);
+  const retrievalSafe = (position: [number, number, number]) =>
+    clampPositionToZone(position, RETRIEVAL_SAFE_ZONE_X, RETRIEVAL_SAFE_ZONE_Z);
 
   useFrame((_state, delta) => {
     timeRef.current += delta;
@@ -395,13 +423,13 @@ function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId;
             );
           })()}
           <RevealGroup step={1} activeStep={activeStep}>
-            <Node position={[0, 0.2, 0]} color="#0ea5e9" label="Kernfrage" emphasis status="gesichert" />
+            <Node position={[0, 0.2, 0]} color="#0ea5e9" label="Kernfrage" emphasis status="gesichert" hideLabel={hideNodeLabels} />
           </RevealGroup>
           <RevealGroup step={2} activeStep={activeStep}>
-            <Node position={[-1.8, 0.5, -0.4]} color="#94a3b8" label="Annahme A" status="hypothese" />
+            <Node position={[-1.8, 0.5, -0.4]} color="#94a3b8" label="Annahme A" status="hypothese" hideLabel={hideNodeLabels} />
           </RevealGroup>
           <RevealGroup step={3} activeStep={activeStep}>
-            <Node position={[1.9, 0.62, 0.3]} color="#94a3b8" label="Annahme B" status="offen" />
+            <Node position={[1.9, 0.62, 0.3]} color="#94a3b8" label="Annahme B" status="offen" hideLabel={hideNodeLabels} />
           </RevealGroup>
         </>
       ) : null}
@@ -409,56 +437,186 @@ function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId;
       {chapterId === "retrieval" ? (
         <>
           <RevealGroup step={1} activeStep={activeStep}>
-            <Node position={[-2.2, 0.6, -0.6]} color="#22d3ee" label="Kontext hoch" status="gesichert" />
+            <mesh position={[0, 0.45, 0.15]}>
+              <boxGeometry args={[1.8, 1.8, 1.8]} />
+              <meshStandardMaterial color="#0ea5e9" transparent opacity={0.05} />
+            </mesh>
+            <lineSegments position={[0, 0.45, 0.15]}>
+              <edgesGeometry args={[new THREE.BoxGeometry(1.8, 1.8, 1.8)]} />
+              <lineBasicMaterial color="#38bdf8" transparent opacity={0.56} />
+            </lineSegments>
+            <Line
+              points={[
+                [-0.9, -0.45, 1.05],
+                [0.9, -0.45, 1.05],
+                [0.9, 1.35, 1.05],
+                [-0.9, 1.35, 1.05],
+                [-0.9, -0.45, 1.05],
+              ]}
+              color="#38bdf8"
+              lineWidth={1.2}
+              transparent
+              opacity={0.38}
+              depthWrite={false}
+            />
+          </RevealGroup>
+
+          <RevealGroup step={1} activeStep={activeStep}>
+            <Node
+              position={retrievalSafe([-0.5, 0.62, -0.2])}
+              color="#34d399"
+              label="Kontext hoch"
+              status="gesichert"
+              radius={0.31}
+              hideLabel={hideNodeLabels}
+            />
           </RevealGroup>
           <RevealGroup step={2} activeStep={activeStep}>
-            <Node position={[-0.8, 0.2, 0.4]} color="#38bdf8" label="Kontext mittel" status="offen" />
+            <Node
+              position={retrievalSafe([2.95, 0.3, 1.25])}
+              color="#6366f1"
+              label="Kontext mittel"
+              status="offen"
+              radius={0.23}
+              hideLabel={hideNodeLabels}
+            />
+            <Node
+              position={retrievalSafe([-3.0, 0.16, 1.2])}
+              color="#6366f1"
+              label="Kontext mittel"
+              status="offen"
+              radius={0.23}
+              hideLabel={hideNodeLabels}
+            />
+            <Node
+              position={retrievalSafe([2.75, -0.08, -1.4])}
+              color="#6366f1"
+              label="Kontext mittel"
+              status="offen"
+              radius={0.23}
+              hideLabel={hideNodeLabels}
+            />
+            <Node
+              position={retrievalSafe([-2.85, -0.16, -1.45])}
+              color="#6366f1"
+              label="Kontext mittel"
+              status="offen"
+              radius={0.23}
+              hideLabel={hideNodeLabels}
+            />
           </RevealGroup>
           <RevealGroup step={3} activeStep={activeStep}>
-            <Node position={[0.8, -0.1, -0.3]} color="#64748b" label="Kontext niedrig" status="hypothese" />
+            <Node
+              position={retrievalSafe([0, -0.38, -2.15])}
+              color="#64748b"
+              label="Kontext niedrig"
+              status="hypothese"
+              radius={0.16}
+              hideLabel={hideNodeLabels}
+            />
+            <Node
+              position={retrievalSafe([3.2, -0.5, -0.45])}
+              color="#64748b"
+              label="Kontext niedrig"
+              status="hypothese"
+              radius={0.16}
+              hideLabel={hideNodeLabels}
+            />
+            <Node
+              position={retrievalSafe([-3.2, -0.52, -0.35])}
+              color="#64748b"
+              label="Kontext niedrig"
+              status="hypothese"
+              radius={0.16}
+              hideLabel={hideNodeLabels}
+            />
+            <Node
+              position={retrievalSafe([1.85, -0.56, 1.65])}
+              color="#64748b"
+              label="Kontext niedrig"
+              status="hypothese"
+              radius={0.16}
+              hideLabel={hideNodeLabels}
+            />
+            <Node
+              position={retrievalSafe([-1.95, -0.54, 1.6])}
+              color="#64748b"
+              label="Kontext niedrig"
+              status="hypothese"
+              radius={0.16}
+              hideLabel={hideNodeLabels}
+            />
           </RevealGroup>
           <RevealGroup step={4} activeStep={activeStep}>
-            <Node position={[2.2, 0.5, 0.5]} color="#22d3ee" label="Kontext hoch" emphasis status="gesichert" />
-          </RevealGroup>
-          <RevealGroup step={5} activeStep={activeStep}>
-            <PathEdge points={[[-2.2, 0.6, -0.6], [-0.8, 0.2, 0.4], [2.2, 0.5, 0.5]]} color="#0ea5e9" hero />
+            <Node
+              position={retrievalSafe([0, 0.72, 0.35])}
+              color="#34d399"
+              label="Kontext hoch"
+              status="gesichert"
+              radius={0.31}
+              hideLabel={hideNodeLabels}
+            />
           </RevealGroup>
         </>
       ) : null}
 
       {chapterId === "graph" ? (
         <>
-          <RevealGroup step={1} activeStep={activeStep}>
-            <Node position={[0, 0.45, 0]} color="#0ea5e9" label="Kernbegriff" emphasis status="gesichert" />
-          </RevealGroup>
-          <RevealGroup step={2} activeStep={activeStep}>
-            <Node position={[-2.0, 0.2, -0.2]} color="#22c55e" label="Ursache" status="gesichert" />
-            <Node position={[2.0, 0.2, 0.2]} color="#a78bfa" label="Trade-off" status="offen" />
-          </RevealGroup>
-          <RevealGroup step={3} activeStep={activeStep}>
-            <Node position={[0.2, -1.0, 0.1]} color="#f59e0b" label="Beleg" status="gesichert" />
-          </RevealGroup>
-          <RevealGroup step={4} activeStep={activeStep}>
-            <PathEdge points={[[0, 0.45, 0], [-2.0, 0.2, -0.2]]} color="#22c55e" />
-            <PathEdge points={[[0, 0.45, 0], [2.0, 0.2, 0.2]]} color="#a78bfa" />
-          </RevealGroup>
-          <RevealGroup step={5} activeStep={activeStep}>
-            <PathEdge points={[[-2.0, 0.2, -0.2], [0.2, -1.0, 0.1], [2.0, 0.2, 0.2]]} color="#f59e0b" hero />
-          </RevealGroup>
+          {(() => {
+            const core: [number, number, number] = [0, 0.45, 0];
+            const conceptMatchA: [number, number, number] = [-1.55, 0.24, 0];
+            const conceptHopA: [number, number, number] = [-2.35, 0.28, 0.28];
+            const conceptMatchB: [number, number, number] = [1.55, 0.24, 0];
+            const evidenceA: [number, number, number] = [-2.75, -0.56, -0.48];
+            const evidenceB: [number, number, number] = [2.95, -0.68, -0.52];
+            const coreRadius = 0.33;
+            const nodeRadius = 0.23;
+            const edgeCoreToMatchA = buildAnchoredEdge(core, conceptMatchA, coreRadius, nodeRadius);
+            const edgeCoreToMatchB = buildAnchoredEdge(core, conceptMatchB, coreRadius, nodeRadius);
+            const edgeMatchAToHop = buildAnchoredEdge(conceptMatchA, conceptHopA, nodeRadius, nodeRadius);
+            const edgeMatchAToEvidence = buildAnchoredEdge(conceptMatchA, evidenceA, nodeRadius, nodeRadius);
+            const edgeMatchBToEvidence = buildAnchoredEdge(conceptMatchB, evidenceB, nodeRadius, nodeRadius);
+
+            return (
+              <>
+                <RevealGroup step={1} activeStep={activeStep}>
+                  <Node position={core} color="#0ea5e9" label="Kernfrage" emphasis status="gesichert" hideLabel={hideNodeLabels} />
+                </RevealGroup>
+                <RevealGroup step={2} activeStep={activeStep}>
+                  <Node position={conceptMatchA} color="#22c55e" label="Konzept (Match)" status="gesichert" hideLabel={hideNodeLabels} />
+                  <Node position={conceptMatchB} color="#22c55e" label="Konzept (Match)" status="gesichert" hideLabel={hideNodeLabels} />
+                </RevealGroup>
+                <RevealGroup step={3} activeStep={activeStep}>
+                  <Node position={conceptHopA} color="#a78bfa" label="Konzept (Hop)" status="offen" hideLabel={hideNodeLabels} />
+                  <Node position={evidenceA} color="#f59e0b" label="Beleg" status="gesichert" hideLabel={hideNodeLabels} />
+                  <Node position={evidenceB} color="#f59e0b" label="Beleg" status="gesichert" hideLabel={hideNodeLabels} />
+                </RevealGroup>
+                <RevealGroup step={4} activeStep={activeStep}>
+                  <PathEdge points={edgeCoreToMatchA} color="#22c55e" />
+                  <PathEdge points={edgeCoreToMatchB} color="#f59e0b" />
+                  <PathEdge points={edgeMatchAToHop} color="#a78bfa" />
+                  <PathEdge points={edgeMatchAToEvidence} color="#f59e0b" />
+                </RevealGroup>
+                <RevealGroup step={5} activeStep={activeStep}>
+                  <PathEdge points={edgeMatchBToEvidence} color="#f59e0b" />
+                </RevealGroup>
+              </>
+            );
+          })()}
         </>
       ) : null}
 
       {chapterId === "synthesis" ? (
         <>
           <RevealGroup step={1} activeStep={activeStep}>
-            <Node position={[-2.8, 0.2, 0]} color="#0ea5e9" label="Frage" status="gesichert" />
+            <Node position={[-2.8, 0.2, 0]} color="#0ea5e9" label="Frage" status="gesichert" hideLabel={hideNodeLabels} />
           </RevealGroup>
           <RevealGroup step={2} activeStep={activeStep}>
-            <Node position={[-1.0, 0.65, 0.3]} color="#22d3ee" label="Konzept" status="gesichert" />
+            <Node position={[-1.0, 0.65, 0.3]} color="#22d3ee" label="Konzept" status="gesichert" hideLabel={hideNodeLabels} />
           </RevealGroup>
           <RevealGroup step={3} activeStep={activeStep}>
-            <Node position={[1.0, -0.1, 0.2]} color="#a78bfa" label="Beziehung" status="offen" />
-            <Node position={[2.8, 0.2, 0]} color="#22c55e" label="Schluss" emphasis status="gesichert" />
+            <Node position={[1.0, -0.1, 0.2]} color="#a78bfa" label="Beziehung" status="offen" hideLabel={hideNodeLabels} />
+            <Node position={[2.8, 0.2, 0]} color="#22c55e" label="Schluss" emphasis status="gesichert" hideLabel={hideNodeLabels} />
           </RevealGroup>
           <RevealGroup step={4} activeStep={activeStep}>
             <PathEdge points={[[-2.8, 0.2, 0], [-1.0, 0.65, 0.3], [1.0, -0.1, 0.2], [2.8, 0.2, 0]]} color="#06b6d4" hero />
@@ -472,14 +630,14 @@ function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId;
       {chapterId === "action" ? (
         <>
           <RevealGroup step={1} activeStep={activeStep}>
-            <Node position={[-2.4, 0.2, 0]} color="#0ea5e9" label="Pfad v1" status="gesichert" />
+            <Node position={[-2.4, 0.2, 0]} color="#0ea5e9" label="Pfad v1" status="gesichert" hideLabel={hideNodeLabels} />
           </RevealGroup>
           <RevealGroup step={2} activeStep={activeStep}>
-            <Node position={[-0.6, 0.5, 0.1]} color="#22d3ee" label="Pfad v2" status="offen" />
+            <Node position={[-0.6, 0.5, 0.1]} color="#22d3ee" label="Pfad v2" status="offen" hideLabel={hideNodeLabels} />
           </RevealGroup>
           <RevealGroup step={3} activeStep={activeStep}>
-            <Node position={[1.1, 0.1, -0.1]} color="#22c55e" label="Pfad v3" status="hypothese" />
-            <Node position={[2.9, 0.5, 0]} color="#f59e0b" label="Entscheidung" emphasis status="gesichert" />
+            <Node position={[1.1, 0.1, -0.1]} color="#22c55e" label="Pfad v3" status="hypothese" hideLabel={hideNodeLabels} />
+            <Node position={[2.9, 0.5, 0]} color="#f59e0b" label="Entscheidung" emphasis status="gesichert" hideLabel={hideNodeLabels} />
           </RevealGroup>
           <RevealGroup step={4} activeStep={activeStep}>
             <PathEdge points={[[-2.4, 0.2, 0], [-0.6, 0.5, 0.1], [1.1, 0.1, -0.1], [2.9, 0.5, 0]]} color="#0ea5e9" hero />
@@ -549,7 +707,7 @@ export function StoryChapterThreeVisual({ chapterId }: StoryChapterThreeVisualPr
       >
         <Suspense fallback={null}>
           <CameraDirector chapterId={displayChapter} reducedMotion={reducedMotion} locked={isUserControlling || introDone} />
-          <ChapterScene chapterId={displayChapter} reducedMotion={reducedMotion} />
+          <ChapterScene chapterId={displayChapter} reducedMotion={reducedMotion} hideNodeLabels={isCleanView} />
         </Suspense>
 
         <OrbitControls

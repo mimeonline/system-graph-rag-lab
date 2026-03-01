@@ -607,8 +607,9 @@ export function QueryPanel(): React.JSX.Element {
             <span className="text-xs text-slate-500">Transparenz der Kontextauswahl</span>
           </div>
           <p className="text-xs leading-6 text-slate-700">
-            Das System wählt zuerst semantisch passende Knoten über den Graph-Score aus, erweitert bei Bedarf über
-            Nachbarn (Hop) und übergibt nur diese Auswahl als Kontext an das LLM.
+            Das System ermittelt zuerst passende Konzepte über Embedding-Match und Graph-Score, ergänzt zugehörige
+            Belege und erweitert bei Bedarf über einen Hop auf direkte Nachbarn. Nur diese Auswahl wird als
+            strukturierter Kontext an das LLM übergeben.
           </p>
           {references.length > 0 ? (
             <ul className="mt-2 space-y-1 rounded-md border border-slate-200 bg-slate-50 p-2">
@@ -623,7 +624,8 @@ export function QueryPanel(): React.JSX.Element {
             </ul>
           ) : (
             <p className="mt-2 text-xs text-slate-500">
-              Noch keine Knoten ausgewählt. Nach dem ersten Lauf wird hier die tatsächliche Auswahl angezeigt.
+              Noch keine Knoten ausgewählt. Nach dem ersten Lauf siehst du hier die tatsächliche Auswahl inklusive
+              Score und Hop.
             </p>
           )}
         </section>
