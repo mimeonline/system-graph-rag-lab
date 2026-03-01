@@ -17,6 +17,15 @@ type ShotConfig = {
   orbit: boolean;
 };
 
+type NodeStatus = "gesichert" | "offen" | "hypothese";
+
+type LightingConfig = {
+  ambient: number;
+  key: { intensity: number; color: string; position: [number, number, number] };
+  fillA: { intensity: number; color: string; position: [number, number, number] };
+  fillB: { intensity: number; color: string; position: [number, number, number] };
+};
+
 const ROOM_WIDTH = 11.6;
 const ROOM_DEPTH = 8.4;
 const ROOM_HEIGHT = 3.45;
@@ -28,6 +37,39 @@ const SHOTS: Record<StoryChapterId, ShotConfig> = {
   graph: { label: "Orbit", camera: [0.4, 1.9, 6.0], target: [0, 0, 0], orbit: true },
   synthesis: { label: "Side", camera: [5.2, 1.2, 2.4], target: [0, 0, 0], orbit: false },
   action: { label: "Top", camera: [0.8, 2.0, 5.2], target: [0, 0.1, 0], orbit: false },
+};
+
+const LIGHTING: Record<StoryChapterId, LightingConfig> = {
+  question: {
+    ambient: 0.44,
+    key: { intensity: 1.0, color: "#f8fafc", position: [3.5, 6, 4] },
+    fillA: { intensity: 0.42, color: "#38bdf8", position: [-4, 2, -2] },
+    fillB: { intensity: 0.32, color: "#cbd5e1", position: [3, 1.5, -4] },
+  },
+  retrieval: {
+    ambient: 0.42,
+    key: { intensity: 1.02, color: "#e2e8f0", position: [4.4, 5.4, 3.1] },
+    fillA: { intensity: 0.5, color: "#22d3ee", position: [-3, 2.4, -2] },
+    fillB: { intensity: 0.34, color: "#94a3b8", position: [4, 1.5, -3] },
+  },
+  graph: {
+    ambient: 0.38,
+    key: { intensity: 1.12, color: "#f8fafc", position: [3.2, 6.2, 2.8] },
+    fillA: { intensity: 0.58, color: "#60a5fa", position: [-4.5, 2.2, -1.4] },
+    fillB: { intensity: 0.48, color: "#a78bfa", position: [4.8, 1.7, -3.8] },
+  },
+  synthesis: {
+    ambient: 0.43,
+    key: { intensity: 1.06, color: "#f8fafc", position: [3.8, 6, 3.6] },
+    fillA: { intensity: 0.5, color: "#22d3ee", position: [-3.6, 2.4, -1.8] },
+    fillB: { intensity: 0.38, color: "#34d399", position: [3.5, 1.6, -3.8] },
+  },
+  action: {
+    ambient: 0.46,
+    key: { intensity: 1.02, color: "#fef3c7", position: [3.6, 5.8, 3.4] },
+    fillA: { intensity: 0.48, color: "#38bdf8", position: [-4.2, 2.2, -1.6] },
+    fillB: { intensity: 0.44, color: "#f59e0b", position: [4, 1.5, -3.8] },
+  },
 };
 
 function useReducedMotion(): boolean {
@@ -111,15 +153,24 @@ function Node({
   color,
   label,
   emphasis = false,
+  status,
 }: {
   position: [number, number, number];
   color: string;
   label: string;
   emphasis?: boolean;
+  status?: NodeStatus;
 }): React.JSX.Element {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.MeshStandardMaterial>(null);
   const isCore = label.toLowerCase() === "kernfrage";
+  const statusLabel = status ?? (isCore ? "gesichert" : "offen");
+  const statusClass =
+    statusLabel === "gesichert"
+      ? "bg-emerald-500"
+      : statusLabel === "hypothese"
+        ? "bg-amber-500"
+        : "bg-slate-400";
 
   useFrame((state) => {
     if (!emphasis || !meshRef.current || !materialRef.current) {
@@ -152,7 +203,10 @@ function Node({
               : "border border-slate-200/90 bg-white/90 text-slate-700"
           }`}
         >
-          {label}
+          <span className="inline-flex items-center gap-1">
+            <span className={`h-1.5 w-1.5 rounded-full ${statusClass}`} />
+            {label}
+          </span>
         </div>
       </Html>
     </group>
@@ -282,22 +336,23 @@ function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId;
   });
 
   const activeStep = reducedMotion ? 6 : Math.min(6, Math.floor(timeRef.current / 1.15) + 1);
+  const lighting = LIGHTING[chapterId];
 
   return (
     <group>
       <fog attach="fog" args={["#dbeafe", 8, 18]} />
 
-      <ambientLight intensity={0.42} />
+      <ambientLight intensity={lighting.ambient} />
       <directionalLight
         castShadow
-        position={[3.5, 6, 4]}
-        intensity={1.05}
-        color="#f8fafc"
+        position={lighting.key.position}
+        intensity={lighting.key.intensity}
+        color={lighting.key.color}
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}
       />
-      <pointLight position={[-4, 2, -2]} intensity={0.45} color="#38bdf8" />
-      <pointLight position={[3, 1.5, -4]} intensity={0.4} color="#22d3ee" />
+      <pointLight position={lighting.fillA.position} intensity={lighting.fillA.intensity} color={lighting.fillA.color} />
+      <pointLight position={lighting.fillB.position} intensity={lighting.fillB.intensity} color={lighting.fillB.color} />
 
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, FLOOR_Y, 0]} receiveShadow>
         <planeGeometry args={[ROOM_WIDTH, ROOM_DEPTH]} />
@@ -340,13 +395,13 @@ function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId;
             );
           })()}
           <RevealGroup step={1} activeStep={activeStep}>
-            <Node position={[0, 0.2, 0]} color="#0ea5e9" label="Kernfrage" emphasis />
+            <Node position={[0, 0.2, 0]} color="#0ea5e9" label="Kernfrage" emphasis status="gesichert" />
           </RevealGroup>
           <RevealGroup step={2} activeStep={activeStep}>
-            <Node position={[-1.8, 0.5, -0.4]} color="#94a3b8" label="Annahme A" />
+            <Node position={[-1.8, 0.5, -0.4]} color="#94a3b8" label="Annahme A" status="hypothese" />
           </RevealGroup>
           <RevealGroup step={3} activeStep={activeStep}>
-            <Node position={[1.9, 0.62, 0.3]} color="#94a3b8" label="Annahme B" />
+            <Node position={[1.9, 0.62, 0.3]} color="#94a3b8" label="Annahme B" status="offen" />
           </RevealGroup>
         </>
       ) : null}
@@ -354,16 +409,16 @@ function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId;
       {chapterId === "retrieval" ? (
         <>
           <RevealGroup step={1} activeStep={activeStep}>
-            <Node position={[-2.2, 0.6, -0.6]} color="#22d3ee" label="Kontext hoch" />
+            <Node position={[-2.2, 0.6, -0.6]} color="#22d3ee" label="Kontext hoch" status="gesichert" />
           </RevealGroup>
           <RevealGroup step={2} activeStep={activeStep}>
-            <Node position={[-0.8, 0.2, 0.4]} color="#38bdf8" label="Kontext mittel" />
+            <Node position={[-0.8, 0.2, 0.4]} color="#38bdf8" label="Kontext mittel" status="offen" />
           </RevealGroup>
           <RevealGroup step={3} activeStep={activeStep}>
-            <Node position={[0.8, -0.1, -0.3]} color="#64748b" label="Kontext niedrig" />
+            <Node position={[0.8, -0.1, -0.3]} color="#64748b" label="Kontext niedrig" status="hypothese" />
           </RevealGroup>
           <RevealGroup step={4} activeStep={activeStep}>
-            <Node position={[2.2, 0.5, 0.5]} color="#22d3ee" label="Kontext hoch" emphasis />
+            <Node position={[2.2, 0.5, 0.5]} color="#22d3ee" label="Kontext hoch" emphasis status="gesichert" />
           </RevealGroup>
           <RevealGroup step={5} activeStep={activeStep}>
             <PathEdge points={[[-2.2, 0.6, -0.6], [-0.8, 0.2, 0.4], [2.2, 0.5, 0.5]]} color="#0ea5e9" hero />
@@ -374,14 +429,14 @@ function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId;
       {chapterId === "graph" ? (
         <>
           <RevealGroup step={1} activeStep={activeStep}>
-            <Node position={[0, 0.45, 0]} color="#0ea5e9" label="Kernbegriff" emphasis />
+            <Node position={[0, 0.45, 0]} color="#0ea5e9" label="Kernbegriff" emphasis status="gesichert" />
           </RevealGroup>
           <RevealGroup step={2} activeStep={activeStep}>
-            <Node position={[-2.0, 0.2, -0.2]} color="#22c55e" label="Ursache" />
-            <Node position={[2.0, 0.2, 0.2]} color="#a78bfa" label="Trade-off" />
+            <Node position={[-2.0, 0.2, -0.2]} color="#22c55e" label="Ursache" status="gesichert" />
+            <Node position={[2.0, 0.2, 0.2]} color="#a78bfa" label="Trade-off" status="offen" />
           </RevealGroup>
           <RevealGroup step={3} activeStep={activeStep}>
-            <Node position={[0.2, -1.0, 0.1]} color="#f59e0b" label="Beleg" />
+            <Node position={[0.2, -1.0, 0.1]} color="#f59e0b" label="Beleg" status="gesichert" />
           </RevealGroup>
           <RevealGroup step={4} activeStep={activeStep}>
             <PathEdge points={[[0, 0.45, 0], [-2.0, 0.2, -0.2]]} color="#22c55e" />
@@ -396,14 +451,14 @@ function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId;
       {chapterId === "synthesis" ? (
         <>
           <RevealGroup step={1} activeStep={activeStep}>
-            <Node position={[-2.8, 0.2, 0]} color="#0ea5e9" label="Frage" />
+            <Node position={[-2.8, 0.2, 0]} color="#0ea5e9" label="Frage" status="gesichert" />
           </RevealGroup>
           <RevealGroup step={2} activeStep={activeStep}>
-            <Node position={[-1.0, 0.65, 0.3]} color="#22d3ee" label="Konzept" />
+            <Node position={[-1.0, 0.65, 0.3]} color="#22d3ee" label="Konzept" status="gesichert" />
           </RevealGroup>
           <RevealGroup step={3} activeStep={activeStep}>
-            <Node position={[1.0, -0.1, 0.2]} color="#a78bfa" label="Beziehung" />
-            <Node position={[2.8, 0.2, 0]} color="#22c55e" label="Schluss" emphasis />
+            <Node position={[1.0, -0.1, 0.2]} color="#a78bfa" label="Beziehung" status="offen" />
+            <Node position={[2.8, 0.2, 0]} color="#22c55e" label="Schluss" emphasis status="gesichert" />
           </RevealGroup>
           <RevealGroup step={4} activeStep={activeStep}>
             <PathEdge points={[[-2.8, 0.2, 0], [-1.0, 0.65, 0.3], [1.0, -0.1, 0.2], [2.8, 0.2, 0]]} color="#06b6d4" hero />
@@ -417,14 +472,14 @@ function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId;
       {chapterId === "action" ? (
         <>
           <RevealGroup step={1} activeStep={activeStep}>
-            <Node position={[-2.4, 0.2, 0]} color="#0ea5e9" label="Pfad v1" />
+            <Node position={[-2.4, 0.2, 0]} color="#0ea5e9" label="Pfad v1" status="gesichert" />
           </RevealGroup>
           <RevealGroup step={2} activeStep={activeStep}>
-            <Node position={[-0.6, 0.5, 0.1]} color="#22d3ee" label="Pfad v2" />
+            <Node position={[-0.6, 0.5, 0.1]} color="#22d3ee" label="Pfad v2" status="offen" />
           </RevealGroup>
           <RevealGroup step={3} activeStep={activeStep}>
-            <Node position={[1.1, 0.1, -0.1]} color="#22c55e" label="Pfad v3" />
-            <Node position={[2.9, 0.5, 0]} color="#f59e0b" label="Entscheidung" emphasis />
+            <Node position={[1.1, 0.1, -0.1]} color="#22c55e" label="Pfad v3" status="hypothese" />
+            <Node position={[2.9, 0.5, 0]} color="#f59e0b" label="Entscheidung" emphasis status="gesichert" />
           </RevealGroup>
           <RevealGroup step={4} activeStep={activeStep}>
             <PathEdge points={[[-2.4, 0.2, 0], [-0.6, 0.5, 0.1], [1.1, 0.1, -0.1], [2.9, 0.5, 0]]} color="#0ea5e9" hero />
@@ -440,9 +495,12 @@ function ChapterScene({ chapterId, reducedMotion }: { chapterId: StoryChapterId;
 
 export function StoryChapterThreeVisual({ chapterId }: StoryChapterThreeVisualProps): React.JSX.Element {
   const reducedMotion = useReducedMotion();
-  const shot = SHOTS[chapterId];
+  const [displayChapter, setDisplayChapter] = useState<StoryChapterId>(chapterId);
+  const shot = SHOTS[displayChapter];
   const [isUserControlling, setIsUserControlling] = useState(false);
   const [introDone, setIntroDone] = useState(false);
+  const [isCleanView, setIsCleanView] = useState(false);
+  const [isRecomposing, setIsRecomposing] = useState(false);
   const controlsRef = useRef<{
     target: THREE.Vector3;
     update: () => void;
@@ -451,10 +509,17 @@ export function StoryChapterThreeVisual({ chapterId }: StoryChapterThreeVisualPr
   } | null>(null);
 
   useEffect(() => {
+    setIsRecomposing(true);
     setIsUserControlling(false);
     setIntroDone(false);
-    const timeout = window.setTimeout(() => setIntroDone(true), 1700);
-    return () => window.clearTimeout(timeout);
+    const chapterSwap = window.setTimeout(() => setDisplayChapter(chapterId), 160);
+    const introTimeout = window.setTimeout(() => setIntroDone(true), 1700);
+    const recompositionTimeout = window.setTimeout(() => setIsRecomposing(false), 520);
+    return () => {
+      window.clearTimeout(chapterSwap);
+      window.clearTimeout(introTimeout);
+      window.clearTimeout(recompositionTimeout);
+    };
   }, [chapterId]);
 
   useEffect(() => {
@@ -465,7 +530,7 @@ export function StoryChapterThreeVisual({ chapterId }: StoryChapterThreeVisualPr
     controls.target.set(...shot.target);
     controls.update();
     controls.saveState();
-  }, [chapterId, shot.target]);
+  }, [displayChapter, shot.target]);
 
   const handleResetView = () => {
     controlsRef.current?.reset();
@@ -475,10 +540,16 @@ export function StoryChapterThreeVisual({ chapterId }: StoryChapterThreeVisualPr
 
   return (
     <div className="relative h-[440px] w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-950/10">
-      <Canvas key={chapterId} shadows dpr={[1, 1.8]} camera={{ position: [...shot.camera], fov: 46 }}>
+      <Canvas
+        key={displayChapter}
+        shadows
+        dpr={[1, 1.8]}
+        camera={{ position: [...shot.camera], fov: 46 }}
+        style={{ opacity: isRecomposing ? 0.86 : 1, transform: isRecomposing ? "scale(0.995)" : "scale(1)", transition: "opacity 260ms ease, transform 260ms ease" }}
+      >
         <Suspense fallback={null}>
-          <CameraDirector chapterId={chapterId} reducedMotion={reducedMotion} locked={isUserControlling || introDone} />
-          <ChapterScene chapterId={chapterId} reducedMotion={reducedMotion} />
+          <CameraDirector chapterId={displayChapter} reducedMotion={reducedMotion} locked={isUserControlling || introDone} />
+          <ChapterScene chapterId={displayChapter} reducedMotion={reducedMotion} />
         </Suspense>
 
         <OrbitControls
@@ -510,18 +581,35 @@ export function StoryChapterThreeVisual({ chapterId }: StoryChapterThreeVisualPr
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_40%,transparent_45%,rgba(2,6,23,0.18)_100%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.22),transparent_30%,transparent_70%,rgba(15,23,42,0.14))]" />
 
-      <div className="pointer-events-none absolute left-4 top-4 rounded-md border border-slate-200/60 bg-white/75 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-600 backdrop-blur-sm">
-        Shot: {shot.label}
-      </div>
-      <div className="pointer-events-none absolute right-28 top-4 rounded-md border border-slate-200/60 bg-white/75 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-600 backdrop-blur-sm">
-        Build: Step-by-step
-      </div>
+      {!isCleanView ? (
+        <>
+          <div className="pointer-events-none absolute left-4 top-4 rounded-md border border-slate-200/60 bg-white/75 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-600 backdrop-blur-sm">
+            Shot: {shot.label}
+          </div>
+          <div className="pointer-events-none absolute right-48 top-4 rounded-md border border-slate-200/60 bg-white/75 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-600 backdrop-blur-sm">
+            Build: Step-by-step
+          </div>
+          <button
+            type="button"
+            onClick={handleResetView}
+            className="absolute right-4 top-4 rounded-md border border-slate-300/80 bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-700 shadow-sm backdrop-blur-sm transition hover:bg-white"
+          >
+            Reset View
+          </button>
+          <aside className="pointer-events-none absolute bottom-4 left-4 rounded-md border border-slate-200/70 bg-white/85 px-2.5 py-2 text-[10px] text-slate-700 shadow-sm">
+            <p className="font-semibold uppercase tracking-[0.08em] text-slate-500">Legende</p>
+            <p className="mt-1 flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />gesichert</p>
+            <p className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-slate-400" />offen</p>
+            <p className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-amber-500" />hypothese</p>
+          </aside>
+        </>
+      ) : null}
       <button
         type="button"
-        onClick={handleResetView}
-        className="absolute right-4 top-4 rounded-md border border-slate-300/80 bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-700 shadow-sm backdrop-blur-sm transition hover:bg-white"
+        onClick={() => setIsCleanView((current) => !current)}
+        className="absolute bottom-4 right-4 rounded-md border border-slate-300/80 bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-700 shadow-sm backdrop-blur-sm transition hover:bg-white"
       >
-        Reset View
+        {isCleanView ? "Show UI" : "Clean View"}
       </button>
     </div>
   );
