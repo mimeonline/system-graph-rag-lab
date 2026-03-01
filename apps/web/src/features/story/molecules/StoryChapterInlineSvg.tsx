@@ -77,7 +77,11 @@ function SynthesisMini(): React.JSX.Element {
       <rect x="292" y="70" width="72" height="28" rx="7" fill="#f8fafc" stroke="#38bdf8" />
       <rect x="402" y="50" width="72" height="28" rx="7" fill="#f8fafc" stroke="#38bdf8" />
       <path d="M144 84 L182 64 L254 64 L292 84 L364 84 L402 64" stroke="#06b6d4" strokeWidth="2.5" fill="none" />
-      <text x="78" y="42" className="fill-slate-600 text-[10px]">Markierter Herleitungspfad</text>
+      <text x="95" y="87" className="fill-slate-700 text-[9px]">Frage</text>
+      <text x="190" y="67" className="fill-slate-700 text-[9px]">Kontext</text>
+      <text x="305" y="87" className="fill-slate-700 text-[9px]">Beleg</text>
+      <text x="414" y="67" className="fill-slate-700 text-[9px]">Antwort</text>
+      <text x="78" y="42" className="fill-slate-600 text-[10px]">Pfad: Frage → Kontextpaket → Beleg → Antwort</text>
     </>
   );
 }

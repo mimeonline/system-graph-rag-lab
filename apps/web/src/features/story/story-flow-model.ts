@@ -114,14 +114,14 @@ export const STORY_CHAPTERS: StoryChapter[] = [
     label: "Synthese",
     goal: "Antwort herleiten",
     technicalFlow:
-      "Wir markieren einen klaren Pfad von der Frage bis zur Schlussfolgerung. Dieser Pfad zeigt in welcher Reihenfolge Begriffe, Beziehungen und Belege zur Antwort führen. Zusätzlich sehen wir, welche alternativen Pfade möglich wären und warum der Hauptpfad für diese Entscheidung bevorzugt wurde.",
+      "Wir geben das priorisierte Kontextpaket in den Prompt und lassen die Antwort entlang konkreter Knoten ableiten. Sichtbar bleibt der Pfad von der Frage über Kontext und Beleg bis zur Antwort. So ist klar, auf welche Belege sich die Aussage stützt.",
     structuralRelevance:
-      "Eine reine Quellenliste reicht nicht, weil sie keine Begründungslogik zeigt. Der Pfad macht sichtbar, wie die Antwort zustande kommt und an welcher Stelle sie überprüft werden kann. Genau dadurch kann das Team Fehler schneller finden und Annahmen sauber korrigieren.",
+      "Eine reine Quellenliste reicht nicht, weil sie keine Begründungslogik zeigt. Der Ableitungspfad macht sichtbar, wie die Antwort zustande kommt und an welcher Stelle sie geprüft werden kann. Damit bleibt die Antwort nachvollziehbar statt nur plausibel formuliert.",
     visualSpec:
-      "Ein Hauptpfad ist klar hervorgehoben, damit die zentrale Herleitung sofort erkennbar ist. Andere Pfade bleiben sichtbar im Hintergrund und zeigen mögliche Alternativen. Das Diagramm hilft dadurch sowohl bei Entscheidungen als auch bei späteren Review-Gesprächen.",
+      "Du siehst einen klaren Pfad von Frage zu Antwort über Kontextpaket und Beleg. Damit wird sofort verständlich, was die finale Aussage fachlich trägt.",
     keyInsight:
       "Nachvollziehbarkeit entsteht durch den Ableitungspfad – nicht durch eine Quellenliste.",
-    keyTerms: ["Ableitungspfad", "Auditierbarkeit", "Herleitung", "Alternativpfade"],
+    keyTerms: ["Kontextpaket", "Prompt-Kontext", "Belegpfad", "Nachvollziehbarkeit"],
     beforeAfter: {
       before: "Antwort mit angehängter Quellenliste",
       after: "Nachvollziehbarer Pfad: Frage → Schluss",

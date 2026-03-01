@@ -608,22 +608,40 @@ function ChapterScene({
 
       {chapterId === "synthesis" ? (
         <>
-          <RevealGroup step={1} activeStep={activeStep}>
-            <Node position={[-2.8, 0.2, 0]} color="#0ea5e9" label="Frage" status="gesichert" hideLabel={hideNodeLabels} />
-          </RevealGroup>
-          <RevealGroup step={2} activeStep={activeStep}>
-            <Node position={[-1.0, 0.65, 0.3]} color="#22d3ee" label="Konzept" status="gesichert" hideLabel={hideNodeLabels} />
-          </RevealGroup>
-          <RevealGroup step={3} activeStep={activeStep}>
-            <Node position={[1.0, -0.1, 0.2]} color="#a78bfa" label="Beziehung" status="offen" hideLabel={hideNodeLabels} />
-            <Node position={[2.8, 0.2, 0]} color="#22c55e" label="Schluss" emphasis status="gesichert" hideLabel={hideNodeLabels} />
-          </RevealGroup>
-          <RevealGroup step={4} activeStep={activeStep}>
-            <PathEdge points={[[-2.8, 0.2, 0], [-1.0, 0.65, 0.3], [1.0, -0.1, 0.2], [2.8, 0.2, 0]]} color="#06b6d4" hero />
-          </RevealGroup>
-          <RevealGroup step={5} activeStep={activeStep}>
-            <PathEdge points={[[-2.8, -0.5, -0.3], [0.1, -0.8, -0.6], [2.8, -0.4, -0.2]]} color="#64748b" />
-          </RevealGroup>
+          {(() => {
+            const question: [number, number, number] = [-2.75, 0.2, 0];
+            const contextPackage: [number, number, number] = [-0.95, 0.58, 0.26];
+            const evidence: [number, number, number] = [0.85, -0.18, 0.16];
+            const answer: [number, number, number] = [2.75, 0.2, 0];
+
+            const questionRadius = 0.23;
+            const contextRadius = 0.23;
+            const evidenceRadius = 0.23;
+            const answerRadius = 0.33;
+            const mainA = buildAnchoredEdge(question, contextPackage, questionRadius, contextRadius);
+            const mainB = buildAnchoredEdge(contextPackage, evidence, contextRadius, evidenceRadius);
+            const mainC = buildAnchoredEdge(evidence, answer, evidenceRadius, answerRadius);
+
+            return (
+              <>
+                <RevealGroup step={1} activeStep={activeStep}>
+                  <Node position={question} color="#0ea5e9" label="Frage" status="gesichert" hideLabel={hideNodeLabels} />
+                </RevealGroup>
+                <RevealGroup step={2} activeStep={activeStep}>
+                  <Node position={contextPackage} color="#22c55e" label="Kontextpaket" status="gesichert" hideLabel={hideNodeLabels} />
+                </RevealGroup>
+                <RevealGroup step={3} activeStep={activeStep}>
+                  <Node position={evidence} color="#f59e0b" label="Beleg" status="gesichert" hideLabel={hideNodeLabels} />
+                  <Node position={answer} color="#06b6d4" label="Antwort" emphasis status="gesichert" hideLabel={hideNodeLabels} />
+                </RevealGroup>
+                <RevealGroup step={4} activeStep={activeStep}>
+                  <PathEdge points={mainA} color="#06b6d4" />
+                  <PathEdge points={mainB} color="#06b6d4" />
+                  <PathEdge points={mainC} color="#06b6d4" />
+                </RevealGroup>
+              </>
+            );
+          })()}
         </>
       ) : null}
 
