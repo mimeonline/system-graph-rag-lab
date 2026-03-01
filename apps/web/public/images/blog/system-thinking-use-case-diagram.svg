@@ -1,0 +1,96 @@
+<svg width="1400" height="860" viewBox="0 0 1400 860" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <filter id="glass" x="-10%" y="-10%" width="120%" height="120%">
+      <feGaussianBlur stdDeviation="12" result="blur" />
+      <feColorMatrix type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 18 -7" result="glow" />
+      <feBlend in="SourceGraphic" in2="glow" />
+    </filter>
+    <linearGradient id="sky-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0284c7" />
+      <stop offset="100%" stop-color="#0369a1" />
+    </linearGradient>
+    <linearGradient id="panel-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9" />
+      <stop offset="100%" stop-color="#f8fafc" stop-opacity="0.8" />
+    </linearGradient>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#0ea5e9" />
+    </marker>
+    <marker id="arrow-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#ef4444" />
+    </marker>
+  </defs>
+
+  <rect width="1400" height="860" fill="#f8fafc"/>
+
+  <text x="80" y="90" font-family="Inter, Arial, sans-serif" font-size="42" font-weight="800" fill="#0f172a" letter-spacing="-0.02em">Systemische Schleifen als GraphRAG-Pfade</text>
+  <text x="80" y="132" font-family="Inter, Arial, sans-serif" font-size="24" font-weight="500" fill="#475569">Wie Rückkopplungen und Nebenwirkungen explizit modelliert werden.</text>
+
+  <!-- Left Side: Linear View vs Right Side: Systemic View -->
+  
+  <!-- Linear Text View -->
+  <g transform="translate(100, 220)">
+    <rect width="400" height="520" rx="24" fill="#ffffff" stroke="#e2e8f0" stroke-width="2" filter="url(#glass)"/>
+    <text x="200" y="60" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#0f172a" text-anchor="middle">Lineare Textlogik</text>
+    <text x="200" y="90" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500" fill="#64748b" text-anchor="middle">Symptome isoliert betrachten</text>
+
+    <rect x="60" y="140" width="280" height="60" rx="8" fill="#f1f5f9"/>
+    <text x="80" y="175" font-family="Inter, Arial, sans-serif" font-size="16" fill="#475569">"Arbeitslast ist zu hoch."</text>
+
+    <rect x="60" y="240" width="280" height="60" rx="8" fill="#f1f5f9"/>
+    <text x="80" y="275" font-family="Inter, Arial, sans-serif" font-size="16" fill="#475569">"Fehlerquote steigt an."</text>
+
+    <rect x="60" y="340" width="280" height="60" rx="8" fill="#f1f5f9"/>
+    <text x="80" y="375" font-family="Inter, Arial, sans-serif" font-size="16" fill="#475569">"Wir brauchen mehr Personal."</text>
+
+    <line x1="200" y1="200" x2="200" y2="240" stroke="#cbd5e1" stroke-width="3" marker-end="url(#arrow)"/>
+    <line x1="200" y1="300" x2="200" y2="340" stroke="#cbd5e1" stroke-width="3" marker-end="url(#arrow)"/>
+
+    <text x="200" y="460" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="600" fill="#ef4444" text-anchor="middle">Gefahr der Symptombehandlung</text>
+  </g>
+
+  <!-- Divider -->
+  <line x1="580" y1="250" x2="580" y2="700" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="8 8"/>
+
+  <!-- Systemic Graph View -->
+  <g transform="translate(660, 220)">
+    <rect width="640" height="520" rx="24" fill="#0f172a" filter="url(#glass)"/>
+    <text x="320" y="60" font-family="Inter, Arial, sans-serif" font-size="22" font-weight="700" fill="#ffffff" text-anchor="middle">Systemische Graph-Logik</text>
+    <text x="320" y="90" font-family="Inter, Arial, sans-serif" font-size="14" font-weight="500" fill="#94a3b8" text-anchor="middle">Rückkopplungen und Nebenwirkungen explizit machen</text>
+
+    <!-- Nodes -->
+    <rect x="120" y="160" width="160" height="50" rx="25" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+    <text x="200" y="190" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600" fill="#e0f2fe" text-anchor="middle">Arbeitslast</text>
+
+    <rect x="360" y="160" width="160" height="50" rx="25" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+    <text x="440" y="190" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600" fill="#e0f2fe" text-anchor="middle">Fehlerquote</text>
+
+    <rect x="360" y="300" width="160" height="50" rx="25" fill="#1e293b" stroke="#38bdf8" stroke-width="2"/>
+    <text x="440" y="330" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600" fill="#e0f2fe" text-anchor="middle">Nacharbeit</text>
+
+    <rect x="120" y="300" width="160" height="50" rx="25" fill="#0284c7" stroke="#38bdf8" stroke-width="2"/>
+    <text x="200" y="330" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="middle">Neue Prozesse</text>
+
+    <rect x="120" y="420" width="160" height="50" rx="25" fill="#1e293b" stroke="#ef4444" stroke-width="2"/>
+    <text x="200" y="450" font-family="Inter, Arial, sans-serif" font-size="16" font-weight="600" fill="#fecaca" text-anchor="middle">Admin-Overhead</text>
+
+    <!-- Edges -->
+    <path d="M 280 185 L 360 185" fill="none" stroke="#0ea5e9" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="320" y="175" font-family="Inter, Arial, sans-serif" font-size="12" fill="#38bdf8" text-anchor="middle">erhöht</text>
+
+    <path d="M 440 210 L 440 300" fill="none" stroke="#0ea5e9" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="460" y="260" font-family="Inter, Arial, sans-serif" font-size="12" fill="#38bdf8">führt zu</text>
+
+    <path d="M 360 325 L 280 325" fill="none" stroke="#0ea5e9" stroke-width="3" marker-end="url(#arrow)"/>
+    <text x="320" y="315" font-family="Inter, Arial, sans-serif" font-size="12" fill="#38bdf8" text-anchor="middle">erzwingt</text>
+
+    <path d="M 200 300 L 200 210" fill="none" stroke="#0ea5e9" stroke-width="3" marker-end="url(#arrow)" stroke-dasharray="4 4"/>
+    <text x="180" y="260" font-family="Inter, Arial, sans-serif" font-size="12" fill="#38bdf8" text-anchor="end">Feedback-Loop</text>
+
+    <path d="M 200 350 L 200 420" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-red)"/>
+    <text x="220" y="390" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700" fill="#ef4444">Nebenwirkung</text>
+
+    <path d="M 120 445 Q 60 445 60 380 Q 60 185 120 185" fill="none" stroke="#ef4444" stroke-width="3" marker-end="url(#arrow-red)" stroke-dasharray="4 4"/>
+    <text x="50" y="310" font-family="Inter, Arial, sans-serif" font-size="12" font-weight="700" fill="#ef4444" text-anchor="end" transform="rotate(-90 50 310)">Langfristig belastend</text>
+  </g>
+</svg>

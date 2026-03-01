@@ -109,11 +109,6 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
 
             <div className="mt-8 max-w-[74ch] prose-slate">{content}</div>
 
-            {/* Gradient Divider */}
-            <div className="mt-10" aria-hidden>
-              <div className="h-px bg-gradient-to-r from-transparent via-slate-300/60 to-transparent" />
-            </div>
-
             {/* Share */}
             <div className="mt-6 flex flex-wrap items-center gap-3">
               <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">Teilen</span>
@@ -140,9 +135,6 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
             {/* Next Essay Navigation */}
             {nextEssay ? (
               <>
-                <div className="mt-8" aria-hidden>
-                  <div className="h-px bg-gradient-to-r from-transparent via-slate-300/60 to-transparent" />
-                </div>
                 <a
                   href={`/blog/${nextEssay.slug}`}
                   className="group mt-6 flex items-center justify-between gap-4 glass-panel rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgb(14,165,233,0.12)] hover:border-sky-300/50"
