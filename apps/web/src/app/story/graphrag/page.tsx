@@ -4,13 +4,13 @@ import { GraphRagStoryTemplate } from "@/features/story/templates/GraphRagStoryT
 
 export const metadata: Metadata = {
   title: "GraphRAG Story | System GraphRAG Lab",
-  description: "Interaktive 3D-Reise: Wie GraphRAG von der Frage bis zur Entscheidung funktioniert.",
+  description: "Systemische Struktur-Demonstration: Textverdichtung, Graph-Struktur und stabiler Entscheidungspfad im direkten Vergleich.",
   alternates: {
     canonical: withCanonical("/story/graphrag"),
   },
   openGraph: {
     title: "GraphRAG Story | System GraphRAG Lab",
-    description: "Interaktive 3D-Reise: Wie GraphRAG von der Frage bis zur Entscheidung funktioniert.",
+    description: "Systemische Struktur-Demonstration: Textverdichtung, Graph-Struktur und stabiler Entscheidungspfad im direkten Vergleich.",
     url: withCanonical("/story/graphrag"),
     type: "website",
   },
