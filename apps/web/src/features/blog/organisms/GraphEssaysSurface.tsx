@@ -68,7 +68,7 @@ const ESSAYS: EssayNodeData[] = [
     parent: "cluster-structure",
     slug: "was-graphrag-strukturell-anders-macht-als-klassisches-rag",
     title: "Was GraphRAG strukturell anders macht als klassisches RAG",
-    thesis: "GraphRAG ergänzt Textretrieval um explizite Beziehungen und macht dadurch den Argumentationspfad sichtbar.",
+    thesis: "GraphRAG ergänzt die Kontextauswahl um explizite Beziehungen und macht dadurch den Argumentationspfad sichtbar.",
   },
   {
     id: "essay-structure-2",
@@ -82,7 +82,7 @@ const ESSAYS: EssayNodeData[] = [
     parent: "cluster-quality",
     slug: "qualitaetskriterien-fuer-ein-produktives-graphrag-system",
     title: "Qualitätskriterien für ein produktives GraphRAG-System",
-    thesis: "Ein produktives System braucht klare Qualitätskriterien für Retrieval, Herleitung und Antwortstabilität.",
+    thesis: "Ein produktives System braucht klare Qualitätskriterien für Kontextauswahl, Herleitung und Antwortstabilität.",
   },
   {
     id: "essay-quality-2",

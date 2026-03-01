@@ -30,36 +30,38 @@ export const STORY_CHAPTERS: StoryChapter[] = [
     label: "Frage",
     goal: "Systemproblem formulieren",
     technicalFlow:
-      "Die Ausgangsfrage wird als präziser Problemknoten modelliert. Implizite Begriffe wie Ziel, Grenze und Wirkung werden explizit benannt, bevor Retrieval startet.",
+      "Wir machen aus der ersten Frage eine klare Kernfrage. Dazu benennen wir ausdrücklich Ziel, Grenze und erwartete Wirkung, damit alle vom gleichen Ausgangspunkt sprechen. Außerdem halten wir fest, welche Begriffe im Team unterschiedlich verstanden werden könnten, damit diese Unterschiede direkt am Anfang sichtbar sind und nicht erst in späteren Diskussionen auftauchen.",
     structuralRelevance:
-      "Entscheidungsqualität entsteht am Eingang. Unklare Problemräume erzeugen später instabile Pfade, auch wenn die Antwort sprachlich plausibel wirkt.",
-    visualSpec: "Ein zentraler Frage-Knoten mit angedeutetem Bedeutungsraum. Noch keine expliziten Relationen.",
+      "Wenn die Frage unklar bleibt, werden auch die späteren Antworten unklar oder widersprüchlich. Mit einem sauberen Fokus am Anfang vermeiden wir viele Missverständnisse im weiteren Verlauf. Genau hier entsteht die Basis für stabile Entscheidungen, weil der Entscheidungsraum nicht unterwegs unbemerkt wechselt.",
+    visualSpec:
+      "In der Mitte steht nur die Kernfrage. Der umgebende Raum zeigt, dass Annahmen vorhanden sind, aber noch nicht als feste Beziehungen modelliert wurden. Das Diagramm macht damit bewusst klar: Wir beginnen nicht mit Antworten, sondern mit einem präzisen gemeinsamen Verständnis.",
     perspectiveCopy: {
       architecture:
-        "Fokus auf Scope-Schnitt: Welche Systemgrenzen und Abhängigkeiten sind Teil des Entscheidungsraums?",
+        "Architektur: Welche Systemgrenzen und Abhängigkeiten sind hier wirklich relevant, und was gehört bewusst nicht in diesen Entscheidungsraum? Diese Klärung verhindert, dass später technische Nebenthemen den eigentlichen Kern der Entscheidung überlagern.",
       product:
-        "Fokus auf Outcome-Schnitt: Welche Nutzer- und Geschäftswirkung soll die Frage tatsächlich klären?",
+        "Produkt: Welche Wirkung für Nutzer und Geschäft soll diese Frage klären, und woran erkennen wir später, dass die Entscheidung geholfen hat? So bleibt von Anfang an klar, welche Ergebnisse am Ende wirklich zählen.",
       governance:
-        "Fokus auf Regel-Schnitt: Welche Richtlinien, Nachweispflichten und Risiken sind bereits implizit enthalten?",
+        "Governance: Welche Regeln, Nachweise und Risiken müssen wir von Anfang an mitdenken, damit die Entscheidung auch unter Prüfung Bestand hat? Damit wird früh sichtbar, welche Anforderungen nicht optional sind.",
     },
     visualMode: "svg",
   },
   {
     id: "retrieval",
-    label: "Retrieval",
+    label: "Kontextauswahl",
     goal: "Kontext priorisieren",
     technicalFlow:
-      "Kontextkandidaten werden mit Relevanzsignalen gewichtet. Nur strukturell tragfähige Knoten und Belege gelangen in das aktive Kontextpaket.",
+      "Wir sammeln mögliche Kontexte und ordnen sie nach Relevanz für die Kernfrage. In den nächsten Schritt gehen nur die Informationen, die den Entscheidungsweg tatsächlich tragen. Alles andere bleibt sichtbar, wird aber bewusst zurückgestellt, damit das Team den Fokus nicht verliert.",
     structuralRelevance:
-      "Kontextdisziplin ist wichtiger als Kontextmenge. Priorisierung reduziert Rauschen und schützt die spätere Beziehungslogik.",
-    visualSpec: "Mehrere Kontextknoten mit sichtbarer Gewichtung. Sekundäre Knoten bleiben vorhanden, aber zurückgenommen.",
+      "Mehr Kontext ist nicht automatisch besser, weil zu viel Material den Blick auf das Wesentliche verdeckt. Eine klare Auswahl macht die folgenden Schritte stabiler und leichter prüfbar. Sie sorgt außerdem dafür, dass ähnliche Fragen später mit einer vergleichbaren Logik beantwortet werden können.",
+    visualSpec:
+      "Du siehst mehrere Kontexte mit unterschiedlichem Gewicht. Wichtiges steht sichtbar im Vordergrund, weniger Relevantes bleibt vorhanden, aber bewusst zurückgenommen. Das Diagramm zeigt damit nicht nur Auswahl, sondern auch Priorität und Begründung der Auswahl.",
     perspectiveCopy: {
       architecture:
-        "Fokus auf Signalqualität: Welche Quellen erhöhen Modellklarheit, welche erzeugen nur Dichte?",
+        "Architektur: Welche Quellen bringen wirklich Klarheit über Abhängigkeiten, und welche machen das Bild nur voller ohne zusätzliche Aussage? So vermeiden wir technische Überladung ohne echten Erkenntnisgewinn.",
       product:
-        "Fokus auf Entscheidungsnutzen: Welcher Kontext verändert Priorisierung oder Sequenz der nächsten Produktschritte?",
+        "Produkt: Welcher Kontext ändert tatsächlich unsere nächsten Schritte, und welcher ist nur interessant, aber nicht entscheidungsrelevant? Diese Unterscheidung schützt vor Aktionismus ohne Wirkung.",
       governance:
-        "Fokus auf Nachweislast: Welche Kontexte sind belastbar, aktuell und auditierbar?",
+        "Governance: Welche Kontexte sind belastbar, aktuell und sauber dokumentiert, sodass Entscheidungen später transparent nachvollzogen werden können? Das schafft Sicherheit für Reviews und Audits.",
     },
     visualMode: "svg",
   },
@@ -68,18 +70,18 @@ export const STORY_CHAPTERS: StoryChapter[] = [
     label: "Graph",
     goal: "Knoten verknüpfen",
     technicalFlow:
-      "Begriffe werden als Knoten normalisiert, Beziehungen typisiert und über Ursache, Trade-off und Evidenz differenziert modelliert.",
+      "Jetzt verbinden wir die Begriffe zu einem gemeinsamen Modell. Jede Verbindung bekommt einen klaren Typ, zum Beispiel Ursache, Zielkonflikt oder Belegbezug. Dadurch wird aus einer Sammlung von Informationen ein strukturiertes Netz, das sich gemeinsam bearbeiten und weiterentwickeln lässt.",
     structuralRelevance:
-      "Explizite Beziehungen machen Abhängigkeiten, Nebenwirkungen und Zielkonflikte prüfbar statt implizit diskutierbar.",
+      "Erst mit klar typisierten Verbindungen werden Abhängigkeiten und Nebenwirkungen sichtbar. Dadurch wird die Diskussion im Team konkreter, weil Aussagen direkt auf Struktur statt auf Bauchgefühl bezogen werden. Gleichzeitig sinkt das Risiko, dass unterschiedliche Teams am selben Thema vorbeireden.",
     visualSpec:
-      "Ein fokussiertes Netz mit klar unterscheidbaren Kanten-Typen. Der Schritt zeigt den Sprung von isolierten Knoten zur belastbaren Struktur.",
+      "Aus einzelnen Punkten wird ein klares Netz mit unterschiedlichen Beziehungstypen. So ist auf einen Blick erkennbar, was Ursache ist, wo Zielkonflikte liegen und welche Teile mit Belegen gestützt sind. Das Diagramm macht sichtbar, wie eng fachliche und technische Entscheidungen miteinander verbunden sind.",
     perspectiveCopy: {
       architecture:
-        "Fokus auf Kopplung: Wo entstehen Ursache-Wirkung-Ketten zwischen Komponenten oder Domänen?",
+        "Architektur: Wo entstehen Ursache-Wirkung-Ketten zwischen Komponenten oder Domänen, und wo entstehen Kopplungen mit hoher Folgewirkung? Diese Sicht hilft, Risiken nicht erst im Betrieb zu entdecken.",
       product:
-        "Fokus auf Trade-offs: Welche Produktentscheidung verbessert einen Pfad und verschlechtert einen anderen?",
+        "Produkt: Welche Entscheidung verbessert einen Pfad, macht aber einen anderen schlechter, und welche Trade-offs sind dabei akzeptabel? So wird Priorisierung transparent statt intuitiv.",
       governance:
-        "Fokus auf Verantwortbarkeit: Welche Beziehungstypen benötigen Freigaben, Kontrollen oder dokumentierte Ausnahmen?",
+        "Governance: Welche Beziehungstypen brauchen Freigaben, Kontrollen oder dokumentierte Ausnahmen, damit Entscheidungen sauber geführt werden? So bleibt Steuerung nachvollziehbar und nicht personengebunden.",
     },
     visualMode: "three",
   },
@@ -88,18 +90,18 @@ export const STORY_CHAPTERS: StoryChapter[] = [
     label: "Synthese",
     goal: "Antwort herleiten",
     technicalFlow:
-      "Aus dem Modell wird ein expliziter Ableitungspfad markiert: Frage, Konzept, Beziehung, Beleg und Schlussfolgerung.",
+      "Wir markieren einen klaren Pfad von der Frage bis zur Schlussfolgerung. Dieser Pfad zeigt in welcher Reihenfolge Begriffe, Beziehungen und Belege zur Antwort führen. Zusätzlich sehen wir, welche alternativen Pfade möglich wären und warum der Hauptpfad für diese Entscheidung bevorzugt wurde.",
     structuralRelevance:
-      "Auditierbarkeit entsteht durch den Pfad, nicht durch eine lose Quellenliste. Jede Schlussfolgerung bleibt auf ihre Struktur rückführbar.",
+      "Eine reine Quellenliste reicht nicht, weil sie keine Begründungslogik zeigt. Der Pfad macht sichtbar, wie die Antwort zustande kommt und an welcher Stelle sie überprüft werden kann. Genau dadurch kann das Team Fehler schneller finden und Annahmen sauber korrigieren.",
     visualSpec:
-      "Ein hervorgehobener Primärpfad, während alternative Pfade sichtbar bleiben. Der Fokus liegt auf nachvollziehbarer Herleitung.",
+      "Ein Hauptpfad ist klar hervorgehoben, damit die zentrale Herleitung sofort erkennbar ist. Andere Pfade bleiben sichtbar im Hintergrund und zeigen mögliche Alternativen. Das Diagramm hilft dadurch sowohl bei Entscheidungen als auch bei späteren Review-Gesprächen.",
     perspectiveCopy: {
       architecture:
-        "Fokus auf Begründungstiefe: Ist die technische Entscheidung über mehrere Relationen konsistent hergeleitet?",
+        "Architektur: Ist die technische Entscheidung über mehrere Schritte hinweg konsistent, oder bricht die Begründung an einzelnen Kanten? So lassen sich technische Schwachstellen früh benennen.",
       product:
-        "Fokus auf Entscheidungsargument: Lässt sich die priorisierte Produktmaßnahme mit klaren Ursache-Ketten begründen?",
+        "Produkt: Können wir die priorisierte Maßnahme so begründen, dass Priorisierung, Wirkung und Risiken gemeinsam verständlich sind? Das verbessert Entscheidungen über Teams und Rollen hinweg.",
       governance:
-        "Fokus auf Prüfpfad: Kann ein Review die Schlussfolgerung ohne implizites Expertenwissen reproduzieren?",
+        "Governance: Kann ein Review die Schlussfolgerung nachvollziehen, ohne zusätzliches Insiderwissen oder mündliche Sondererklärung? Damit bleibt Qualität auch bei Personalwechsel stabil.",
     },
     visualMode: "svg",
   },
@@ -108,17 +110,18 @@ export const STORY_CHAPTERS: StoryChapter[] = [
     label: "Handlung",
     goal: "Nächste Schritte nutzen",
     technicalFlow:
-      "Die hergeleitete Schlussfolgerung wird als versionierter Entscheidungszustand operativ gemacht. Alternative Pfade bleiben vergleichbar.",
+      "Wir machen aus der Schlussfolgerung einen konkreten nächsten Schritt mit klarer Verantwortlichkeit. Gleichzeitig bleiben frühere Versionen und alternative Pfade sichtbar. So kann das Team bei neuen Informationen gezielt nachsteuern, ohne den gesamten Entscheidungsweg neu aufzubauen.",
     structuralRelevance:
-      "Stabile Entscheidungen brauchen Variationsfähigkeit. Versionierung zeigt, ob Kernaussagen bei neuen Eingaben robust bleiben.",
-    visualSpec: "Entscheidungszustand mit Versionslayer und einblendbaren Alternativpfaden.",
+      "So bleibt die Entscheidung auch bei Änderungen stabil und überprüfbar. Das Team kann sehen, was sich geändert hat und warum die Kernaussage gleich geblieben oder bewusst angepasst wurde. Diese Transparenz stärkt Vertrauen im Alltag und in formalen Freigaben.",
+    visualSpec:
+      "Du siehst den aktuellen Entscheidungsstand, frühere Versionen und mögliche Alternativen im direkten Vergleich. Dadurch wird aus einer Antwort ein steuerbarer Entscheidungsprozess. Das Diagramm zeigt, dass Entscheidungen nicht statisch sind, sondern kontrolliert weiterentwickelt werden können.",
     perspectiveCopy: {
       architecture:
-        "Fokus auf Änderbarkeit: Bleibt der Entscheidungszustand bei Architekturvariation nachvollziehbar und kontrolliert?",
+        "Architektur: Bleibt die Entscheidung auch bei Architekturänderungen nachvollziehbar, und welche Teile müssen dann neu bewertet werden? So bleibt die technische Linie trotz Änderungen stabil.",
       product:
-        "Fokus auf Umsetzung: Welche nächsten Schritte sind direkt ausführbar und wie wird ihr Effekt zurück in den Pfad gespiegelt?",
+        "Produkt: Welche nächsten Schritte sind direkt umsetzbar, und wie messen wir ihren Effekt im nächsten Zyklus? So bleibt das Produktteam handlungsfähig und lernorientiert.",
       governance:
-        "Fokus auf Steuerung: Welche Version ist freigegeben, welche Abweichung ist dokumentiert und welche Eskalation gilt?",
+        "Governance: Welche Version ist freigegeben, was ist abgewichen, und welche nächste Prüfung oder Eskalation ist vorgesehen? Damit bleiben Verantwortung und Nachweisführung klar verteilt.",
     },
     visualMode: "svg",
   },

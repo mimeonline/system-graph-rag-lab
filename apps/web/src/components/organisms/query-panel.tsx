@@ -561,7 +561,7 @@ export function QueryPanel(): React.JSX.Element {
               <span className="text-xs text-sky-700">läuft</span>
             </div>
             <p className="text-xs leading-6 text-slate-700">
-              Retrieval {"->"} Graph-Kontext {"->"} Synthese. Die Antwort wird gerade aus ausgewählten Knoten und
+              Kontextauswahl {"->"} Graph-Kontext {"->"} Synthese. Die Antwort wird gerade aus ausgewählten Knoten und
               Belegen aufgebaut.
             </p>
           </section>
@@ -604,10 +604,10 @@ export function QueryPanel(): React.JSX.Element {
               <Network className="h-4 w-4 text-slate-400" aria-hidden />
               <span>Node-Auswahl fürs LLM</span>
             </h3>
-            <span className="text-xs text-slate-500">Retrieval-Transparenz</span>
+            <span className="text-xs text-slate-500">Transparenz der Kontextauswahl</span>
           </div>
           <p className="text-xs leading-6 text-slate-700">
-            Das System wählt zuerst semantisch passende Knoten über den Graph-Retrieval-Score aus, erweitert bei Bedarf über
+            Das System wählt zuerst semantisch passende Knoten über den Graph-Score aus, erweitert bei Bedarf über
             Nachbarn (Hop) und übergibt nur diese Auswahl als Kontext an das LLM.
           </p>
           {references.length > 0 ? (

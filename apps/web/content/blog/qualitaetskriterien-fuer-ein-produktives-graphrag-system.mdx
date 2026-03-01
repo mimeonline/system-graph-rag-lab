@@ -38,7 +38,7 @@ Diese Annahmen führen zu:
 - inkonsistenten Begriffssystemen
 - widersprüchlichen Beziehungstypen
 - instabilen Belegpfaden
-- schwer wartbaren Retrieval-Setups
+- schwer wartbaren Setups für die Kontextauswahl
 
 Produktivität entsteht nicht durch Funktionsumfang, sondern durch Disziplin. Genau deshalb ist ein Kriterienkatalog mehr als Dokumentation. Er ist der operative Vertrag zwischen Fachlichkeit, Engineering und Betrieb.
 
@@ -85,12 +85,12 @@ Eine Quellenliste reicht nicht. Entscheidend ist der nachvollziehbare Ableitungs
 
 ### 4. Kontextkontrolle
 
-Ein produktives System muss Retrieval und Kontextumfang aktiv steuern.
+Ein produktives System muss Kontextauswahl und Kontextumfang aktiv steuern.
 
 Prüfkriterien:
 
 - Gibt es definierte Regeln für Kontextauswahl?
-- Sind Retrieval-Hops begrenzt oder bewusst gesteuert?
+- Sind Kontext-Hops begrenzt oder bewusst gesteuert?
 - Wird Kontextüberladung gemessen?
 - Bleiben Antworten bei semantisch ähnlichen Fragen stabil?
 
@@ -103,7 +103,7 @@ Produktive Systeme müssen unter realen Bedingungen konsistent funktionieren.
 Prüfkriterien:
 
 - saubere Fehlerpfade statt stiller Ausfälle
-- Statusanzeigen für Retrieval und Synthese
+- Statusanzeigen für Kontextauswahl und Synthese
 - Logging von Kontextpaketen
 - Trennung zwischen Seed-Daten, Test- und Produktivumgebung
 - Schutz vor unkontrollierter Kontexteskalation
@@ -154,7 +154,7 @@ Damit Qualität nicht nur konzeptionell bleibt, braucht es klare Betriebsroutine
 
 1. **Schema-Gate** vor neuen Node- oder Edge-Typen
 2. **Beleg-Gate** vor Freigabe kritischer Aussagen
-3. **Regression-Gate** bei Änderungen an Retrieval- oder Rankinglogik
+3. **Regression-Gate** bei Änderungen an Logik der Kontextauswahl oder am Ranking
 4. **Runtime-Gate** für Ausfälle, Timeouts und Fallback-Verhalten
 
 Diese Gates sind kein Bürokratie-Overhead, sondern reduzieren Folgekosten. Sie verhindern, dass fachliche Inkonsistenzen erst spät in produktiven Antworten sichtbar werden.
@@ -197,7 +197,7 @@ Gegenmaßnahme: Neue Typen nur über ein explizites Review-Gate einführen und b
 
 ### 3. Fehlendes Betriebsfeedback
 
-Retrieval- und Antwortprobleme werden nur an Einzelfällen diskutiert, ohne systematisches Logging und Metrikbezug.
+Probleme in Kontextauswahl und Antwortqualität werden nur an Einzelfällen diskutiert, ohne systematisches Logging und Metrikbezug.
 
 Gegenmaßnahme: Jede produktive Anfrage als beobachtbaren Lauf behandeln, inklusive Kontextpaket, Pfadqualität und Fehlerzustand.
 

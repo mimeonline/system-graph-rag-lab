@@ -5,14 +5,14 @@ import { GraphRagStoryTemplate } from "@/features/story/templates/GraphRagStoryT
 export const metadata: Metadata = {
   title: "GraphRAG Story | System GraphRAG Lab",
   description:
-    "Technische 5-Schritt-Herleitung von Frage, Retrieval, Graph, Synthese und Handlung fuer belastbare Entscheidungsstruktur.",
+    "In 5 einfachen Schritten von der Frage zu einer nachvollziehbaren Entscheidung mit GraphRAG.",
   alternates: {
     canonical: withCanonical("/story/graphrag"),
   },
   openGraph: {
     title: "GraphRAG Story | System GraphRAG Lab",
     description:
-      "Technische 5-Schritt-Herleitung von Frage, Retrieval, Graph, Synthese und Handlung fuer belastbare Entscheidungsstruktur.",
+      "In 5 einfachen Schritten von der Frage zu einer nachvollziehbaren Entscheidung mit GraphRAG.",
     url: withCanonical("/story/graphrag"),
     type: "website",
   },

@@ -13,7 +13,7 @@ type PipelineStep = {
 
 const STEPS: PipelineStep[] = [
   { id: "question", label: "Frage", detail: "Systemproblem formulieren" },
-  { id: "retrieval", label: "Retrieval", detail: "Kontext priorisieren" },
+  { id: "retrieval", label: "Kontextauswahl", detail: "Kontext priorisieren" },
   { id: "graph", label: "Graph", detail: "Knoten verknüpfen" },
   { id: "synthesis", label: "Synthese", detail: "Antwort herleiten" },
   { id: "action", label: "Handlung", detail: "Nächste Schritte nutzen" },

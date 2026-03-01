@@ -43,10 +43,11 @@ export function StoryChapter3DVisual(): React.JSX.Element {
     <div className="space-y-3">
       <GraphRagJourney3D step={GRAPH_CHAPTER_STEP} />
       <div className="rounded-xl border border-slate-300/80 bg-slate-50 p-3">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Statische Lesart</p>
+        <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Schnelle Einordnung</p>
         <p className="mt-1 text-sm text-slate-700">
-          Knoten repraesentieren Begriffe. Kanten sind typisiert als Ursache-Wirkung, Trade-off oder Evidenzbezug.
-          Die Markierung zeigt, welche Relationen in die Ableitung eingehen.
+          Punkte stehen fuer Begriffe. Linien zeigen die Art der Beziehung, zum Beispiel Ursache oder Zielkonflikt.
+          Die Markierung zeigt den Weg zur Schlussfolgerung. So sieht das Team nicht nur das Ergebnis, sondern auch die
+          Struktur, die zu diesem Ergebnis fuehrt.
         </p>
       </div>
     </div>

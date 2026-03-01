@@ -34,7 +34,7 @@ const FLOW_STEPS: FlowStep[] = [
   {
     step: "03",
     title: "Qualität",
-    description: "Welche Kriterien ein produktives System für Retrieval und Herleitung erfüllen muss.",
+    description: "Welche Kriterien ein produktives System für Kontextauswahl und Herleitung erfüllen muss.",
     slug: "qualitaetskriterien-fuer-ein-produktives-graphrag-system",
   },
   {

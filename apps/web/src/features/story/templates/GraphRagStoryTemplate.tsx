@@ -19,7 +19,9 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
               Von der Frage zur Entscheidung in 5 klaren Schritten
             </h1>
             <p className="max-w-3xl text-[1.125rem] leading-relaxed text-slate-700 font-medium">
-              Eine ruhige, strukturierte Führung durch den Weg von der Problemfrage bis zur belastbaren Entscheidung.
+              Wir zeigen Schritt für Schritt, wie aus einer ersten Frage eine klare Entscheidung entsteht.
+              Dabei bleibt jeder Übergang nachvollziehbar: von der Auswahl des Kontexts über den Aufbau der Beziehungen
+              bis zur begründeten Schlussfolgerung für das Team.
             </p>
           </section>
 
@@ -30,9 +32,13 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
             <div className="max-w-2xl">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Abschluss</p>
               <h2 className="mt-4 text-[1.5rem] font-bold text-slate-900 sm:text-[1.75rem] leading-tight">
-                GraphRAG ist kein besseres Suchfeld.
+                GraphRAG ist mehr als ein besseres Suchfeld.
               </h2>
-              <p className="text-[1.25rem] text-slate-700 font-medium mt-1">Es ist Entscheidungsinfrastruktur.</p>
+              <p className="text-[1.25rem] text-slate-700 font-medium mt-1">
+                Es hilft Teams, Entscheidungen klar zu begründen und später erneut zu prüfen.
+                So bleibt Wissen nicht nur im Kopf einzelner Personen, sondern in einem gemeinsamen, nutzbaren
+                Entscheidungsweg.
+              </p>
 
               <div className="mt-8">
                 <TrackedLink
