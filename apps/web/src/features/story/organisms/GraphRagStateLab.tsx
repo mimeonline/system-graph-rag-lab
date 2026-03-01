@@ -146,30 +146,98 @@ export function GraphRagStateLab(): React.JSX.Element {
   );
 }
 
+import { AnimatePresence, motion } from "framer-motion";
+
 function TextStateCanvas(): React.JSX.Element {
   return (
-    <svg viewBox="0 0 1000 390" className="h-full w-full">
-      <rect x="80" y="58" width="380" height="250" rx="14" fill="#e2e8f0" opacity="0.96" />
-      <rect x="520" y="58" width="400" height="250" rx="14" fill="#e2e8f0" opacity="0.96" />
-      <text x="110" y="92" className="fill-slate-700 text-[14px] font-semibold uppercase">Antworten</text>
-      <text x="110" y="130" className="fill-slate-600 text-[13px]">• plausible Zusammenfassung</text>
-      <text x="110" y="162" className="fill-slate-600 text-[13px]">• alternative Deutung</text>
-      <text x="110" y="194" className="fill-slate-600 text-[13px]">• offene Gewichtung</text>
-      <text x="110" y="226" className="fill-slate-600 text-[13px]">• uneinheitliche Schlussfolgerung</text>
+    <div className="relative h-full w-full p-8 font-sans">
+      <div className="flex h-full items-center justify-between gap-12">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex-1 rounded-2xl bg-slate-200/90 p-6 shadow-sm ring-1 ring-slate-300"
+        >
+          <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-700">Antworten</h4>
+          <ul className="space-y-3">
+            {[
+              "plausible Zusammenfassung",
+              "alternative Deutung",
+              "offene Gewichtung",
+              "uneinheitliche Schlussfolgerung"
+            ].map((text, i) => (
+              <motion.li 
+                key={i}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: i * 0.15 }}
+                className="flex items-center gap-3 text-sm text-slate-600 font-medium"
+              >
+                <div className="h-1.5 w-1.5 rounded-full bg-slate-400" />
+                {text}
+              </motion.li>
+            ))}
+          </ul>
+        </motion.div>
 
-      <text x="550" y="92" className="fill-slate-700 text-[14px] font-semibold uppercase">Quellenliste</text>
-      <text x="550" y="130" className="fill-slate-600 text-[13px]">Dokument A</text>
-      <text x="550" y="158" className="fill-slate-600 text-[13px]">Dokument B</text>
-      <text x="550" y="186" className="fill-slate-600 text-[13px]">Dokument C</text>
-      <text x="550" y="214" className="fill-slate-600 text-[13px]">Dokument D</text>
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.4 }}
+          className="relative flex h-full items-center justify-center p-4"
+        >
+          <div className="absolute h-0.5 w-full bg-slate-500/30 border-t border-dashed border-slate-400" />
+          <span className="relative bg-[#0b1021] px-4 text-sm font-medium text-slate-400">
+            Keine explizite Beziehungslogik
+          </span>
+        </motion.div>
 
-      <line x1="250" y1="296" x2="700" y2="296" stroke="rgba(148,163,184,0.8)" strokeWidth="2" strokeDasharray="6 6" />
-      <text x="500" y="330" textAnchor="middle" className="fill-slate-300 text-[14px]">
-        Keine explizite Beziehungslogik
-      </text>
-    </svg>
+        <motion.div 
+          initial={{ opacity: 0, x: 20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.2 }}
+          className="flex-1 rounded-2xl bg-slate-200/90 p-6 shadow-sm ring-1 ring-slate-300"
+        >
+          <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-700">Quellenliste</h4>
+          <ul className="space-y-3">
+            {["Dokument A", "Dokument B", "Dokument C", "Dokument D"].map((doc, i) => (
+              <li key={i} className="flex items-center gap-3 text-sm text-slate-600 font-medium">
+                <div className="flex h-5 w-4 items-center justify-center rounded-[2px] border border-slate-400 bg-white">
+                  <div className="h-2 w-2 border-t border-slate-400" />
+                </div>
+                {doc}
+              </li>
+            ))}
+          </ul>
+        </motion.div>
+      </div>
+    </div>
   );
 }
+
+const Node = ({ title, active, colorClass }: { title: string; active?: boolean; colorClass: string }) => (
+  <motion.div 
+    layout
+    initial={{ opacity: 0, scale: 0.9 }}
+    animate={{ opacity: 1, scale: 1 }}
+    className={`relative flex items-center justify-center min-w-[130px] rounded-xl border px-4 py-3 text-sm font-bold shadow-sm backdrop-blur-md transition-all ${colorClass}`}
+  >
+    {active && (
+      <motion.div
+        layoutId="activeGlow"
+        className="absolute inset-0 -z-10 rounded-xl bg-current opacity-30 blur-xl"
+      />
+    )}
+    {title}
+  </motion.div>
+);
+
+const Edge = ({ active, className }: { active?: boolean; className?: string }) => (
+  <motion.div 
+    initial={{ scaleX: 0 }}
+    animate={{ scaleX: 1 }}
+    className={`h-0.5 origin-left rounded-full ${active ? 'bg-sky-400 shadow-[0_0_8px_rgba(56,189,248,0.8)]' : 'bg-slate-700'} ${className || 'w-16'}`}
+  />
+);
 
 function StructureStateCanvas({
   showRelations,
@@ -179,33 +247,56 @@ function StructureStateCanvas({
   showEvidence: boolean;
 }): React.JSX.Element {
   return (
-    <svg viewBox="0 0 1000 390" className="h-full w-full">
-      <rect x="80" y="72" width="170" height="64" rx="14" fill="#f8fafc" stroke="#7dd3fc" strokeWidth="2" />
-      <text x="165" y="108" textAnchor="middle" className="fill-slate-900 text-[14px] font-semibold">Kernfrage</text>
+    <div className="relative flex h-full w-full items-center justify-center p-8">
+      <div className="flex items-center justify-center gap-2 w-full max-w-4xl">
+        
+        <div className="flex flex-col items-center z-10">
+          <Node title="Kernfrage" colorClass="bg-slate-100/10 border-sky-400/50 text-white" />
+        </div>
 
-      <rect x="340" y="56" width="190" height="64" rx="14" fill="#dbeafe" stroke="#38bdf8" strokeWidth="2" />
-      <text x="435" y="92" textAnchor="middle" className="fill-slate-900 text-[14px] font-semibold">Begriff A</text>
+        <div className="flex flex-col justify-center gap-[4.5rem] relative -mx-4 h-full">
+            <AnimatePresence>
+              {showRelations && (
+                <>
+                  <Edge active className="w-20 absolute top-1/4 -rotate-12" />
+                  <Edge active className="w-20 absolute bottom-1/4 rotate-12" />
+                </>
+              )}
+            </AnimatePresence>
+        </div>
 
-      <rect x="340" y="168" width="190" height="64" rx="14" fill="#dbeafe" stroke="#38bdf8" strokeWidth="2" />
-      <text x="435" y="204" textAnchor="middle" className="fill-slate-900 text-[14px] font-semibold">Begriff B</text>
+        <div className="flex flex-col gap-6 z-10 pl-16">
+          <Node title="Begriff A" colorClass="bg-sky-500/20 border-sky-400 text-sky-100" />
+          <Node title="Begriff B" colorClass="bg-sky-500/20 border-sky-400 text-sky-100" />
+        </div>
 
-      <rect x="640" y="108" width="170" height="64" rx="14" fill="#dcfce7" stroke="#22c55e" strokeWidth="2" />
-      <text x="725" y="144" textAnchor="middle" className="fill-slate-900 text-[14px] font-semibold">Beleg</text>
+        <div className="flex flex-col justify-center gap-[4.5rem] relative -mx-4 h-full">
+           <AnimatePresence>
+             {showRelations && (
+                <>
+                  <Edge active className="w-20 absolute top-1/4 rotate-12" />
+                  <Edge active className="w-20 absolute bottom-1/4 -rotate-12" />
+                </>
+             )}
+           </AnimatePresence>
+        </div>
 
-      <rect x="840" y="108" width="120" height="64" rx="14" fill="#f0f9ff" stroke="#0ea5e9" strokeWidth="2" />
-      <text x="900" y="144" textAnchor="middle" className="fill-slate-900 text-[14px] font-semibold">Ableitung</text>
+        <div className="flex flex-col items-center z-10 pl-16">
+          <Node title="Beleg" active={showEvidence} colorClass="bg-emerald-500/20 border-emerald-400 text-emerald-100" />
+        </div>
 
-      {showRelations ? (
-        <>
-          <line x1="250" y1="104" x2="340" y2="88" stroke="#38bdf8" strokeWidth="2.5" />
-          <line x1="250" y1="104" x2="340" y2="200" stroke="#38bdf8" strokeWidth="2.5" />
-          <line x1="530" y1="88" x2="640" y2="128" stroke="#38bdf8" strokeWidth="2.5" />
-          <line x1="530" y1="200" x2="640" y2="152" stroke="#38bdf8" strokeWidth="2.5" />
-        </>
-      ) : null}
+        <div className="flex flex-col justify-center items-center px-4">
+          <AnimatePresence>
+            {showEvidence && <Edge active={true} className="w-12" />}
+          </AnimatePresence>
+        </div>
 
-      {showEvidence ? <line x1="810" y1="140" x2="840" y2="140" stroke="#22c55e" strokeWidth="2.6" /> : null}
-    </svg>
+        <div className="flex flex-col items-center z-10">
+          <Node active={showEvidence} title="Ableitung" colorClass="bg-indigo-500/20 border-indigo-400 text-indigo-100" />
+        </div>
+
+      </div>
+    </div>
   );
 }
 
@@ -217,40 +308,82 @@ function DecisionStateCanvas({
   simulateVariation: boolean;
 }): React.JSX.Element {
   return (
-    <svg viewBox="0 0 1000 390" className="h-full w-full">
-      <rect x="70" y="66" width="170" height="54" rx="12" fill="#f8fafc" stroke="#7dd3fc" strokeWidth="1.8" />
-      <text x="155" y="98" textAnchor="middle" className="fill-slate-900 text-[13px] font-semibold">Frage A</text>
+    <div className="relative flex h-full w-full items-center justify-between p-8">
+      
+      <div className="flex items-center gap-6 z-10">
+        <div className="flex flex-col gap-4">
+          <motion.div layout>
+            <Node title="Frage A" colorClass="bg-slate-100/10 border-sky-400/50 text-white" />
+          </motion.div>
+          
+          <AnimatePresence>
+            {simulateVariation && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+              >
+                <Node title="Frage B" colorClass="bg-slate-100/10 border-sky-400/50 text-white" />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
 
-      {simulateVariation ? (
-        <>
-          <rect x="70" y="138" width="170" height="54" rx="12" fill="#f8fafc" stroke="#7dd3fc" strokeWidth="1.8" />
-          <text x="155" y="170" textAnchor="middle" className="fill-slate-900 text-[13px] font-semibold">Frage B</text>
-        </>
-      ) : null}
+        <div className="flex flex-col justify-center gap-[1.5rem] relative">
+            <AnimatePresence>
+              {showPath && (
+                 <motion.div 
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  className="h-0.5 w-16 origin-left rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]"
+                 />
+              )}
+            </AnimatePresence>
+        </div>
 
-      <rect x="360" y="88" width="170" height="56" rx="12" fill="#dbeafe" stroke="#38bdf8" strokeWidth="2" />
-      <text x="445" y="121" textAnchor="middle" className="fill-slate-900 text-[13px] font-semibold">Begriffsraum</text>
+        <Node title="Begriffsraum" active={showPath} colorClass="bg-sky-500/20 border-sky-400 text-sky-100" />
+        
+        <div className="px-2">
+            <AnimatePresence>
+                  {showPath && (
+                    <motion.div 
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      className="h-0.5 w-12 origin-left rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"
+                    />
+                  )}
+            </AnimatePresence>
+        </div>
 
-      <rect x="620" y="88" width="170" height="56" rx="12" fill="#dcfce7" stroke="#22c55e" strokeWidth="2" />
-      <text x="705" y="121" textAnchor="middle" className="fill-slate-900 text-[13px] font-semibold">Belegpfad</text>
+        <Node title="Belegpfad" active={showPath} colorClass="bg-emerald-500/20 border-emerald-400 text-emerald-100" />
+        
+        <div className="px-2">
+            <AnimatePresence>
+                  {showPath && (
+                    <motion.div 
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      className="h-0.5 w-12 origin-left rounded-full bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.8)]"
+                    />
+                  )}
+            </AnimatePresence>
+        </div>
 
-      <rect x="860" y="88" width="110" height="56" rx="12" fill="#f0f9ff" stroke="#0ea5e9" strokeWidth="2" />
-      <text x="915" y="121" textAnchor="middle" className="fill-slate-900 text-[13px] font-semibold">Entscheid</text>
+        <Node title="Entscheid" active={showPath} colorClass="bg-indigo-500/20 border-indigo-400 text-indigo-100" />
+      </div>
 
-      {showPath ? (
-        <>
-          <line x1="240" y1="94" x2="360" y2="116" stroke="#22d3ee" strokeWidth="3.2" />
-          <line x1="530" y1="116" x2="620" y2="116" stroke="#22d3ee" strokeWidth="3.2" />
-          <line x1="790" y1="116" x2="860" y2="116" stroke="#22d3ee" strokeWidth="3.2" />
-          {simulateVariation ? <line x1="240" y1="166" x2="360" y2="116" stroke="#22d3ee" strokeWidth="3.2" /> : null}
-        </>
-      ) : null}
-
-      <rect x="740" y="230" width="230" height="120" rx="14" fill="#0f172a" stroke="#334155" strokeWidth="1.6" />
-      <text x="855" y="260" textAnchor="middle" className="fill-slate-200 text-[11px] uppercase tracking-[0.08em]">Version-Layer</text>
-      <text x="768" y="290" className="fill-slate-300 text-[12px]">v1: stabiler Pfad</text>
-      <text x="768" y="316" className="fill-slate-300 text-[12px]">v2: Frage variiert</text>
-      <text x="768" y="342" className="fill-slate-300 text-[12px]">Kernaussage konsistent</text>
-    </svg>
+      <motion.div 
+        initial={{ y: 20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        className="absolute bottom-6 right-6 rounded-xl border border-slate-700/50 bg-slate-900/80 p-5 backdrop-blur-md"
+      >
+        <p className="mb-3 text-xs font-bold uppercase tracking-widest text-slate-400">Version-Layer</p>
+        <div className="space-y-1.5 text-sm font-medium text-slate-300">
+          <p className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-slate-500"/>v1: stabiler Pfad</p>
+          <p className="flex items-center gap-2"><div className="h-1.5 w-1.5 rounded-full bg-slate-500"/>v2: Frage variiert</p>
+          <p className="mt-2 text-sky-400">Kernaussage konsistent</p>
+        </div>
+      </motion.div>
+    </div>
   );
 }
