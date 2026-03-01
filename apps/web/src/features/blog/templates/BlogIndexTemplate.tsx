@@ -1,8 +1,9 @@
+import { TrackedPageView } from "@/components/molecules/tracked-page-view";
 import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
-import { TrackedPageView } from "@/components/molecules/tracked-page-view";
 import type { BlogPostSummary } from "@/features/blog/contracts";
 import { GraphEssaysSurface } from "@/features/blog/organisms/GraphEssaysSurface";
+import * as motion from "framer-motion/client";
 
 type BlogIndexTemplateProps = {
   posts: BlogPostSummary[];
@@ -52,28 +53,39 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
   void posts.length;
 
   return (
-    <div className="flex min-h-screen flex-col bg-white text-slate-900">
+    <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
       <TrackedPageView page="/blog" />
       <SiteHeader />
 
       <main className="flex-1">
-        <section className="mx-auto w-full max-w-295 px-4 py-8 sm:px-6 sm:py-10">
-          <div className="space-y-4">
-            <h1 className="max-w-[32ch] text-[2rem] font-semibold tracking-tight text-slate-950 sm:text-[2.4rem]">Variante B – Deutlich systemischer</h1>
-            <p className="max-w-[66ch] text-base leading-7 text-slate-700">
-              Wie aus KI-Antworten belastbare Entscheidungen werden
+        <section className="mx-auto w-full max-w-295 px-4 py-12 sm:px-6 sm:py-16">
+          <div className="space-y-6">
+            <motion.p 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+              className="text-[11px] font-bold uppercase tracking-[0.2em] text-sky-600"
+            >
+              Systemische Praxis
+            </motion.p>
+            <div className="space-y-5">
+            <h1 className="max-w-[32ch] text-[2.5rem] font-bold tracking-tight text-slate-950 sm:text-[3.2rem]">
+              Systemische Praxis
+            </h1>
+            <p className="max-w-[66ch] text-lg font-medium leading-relaxed text-slate-800">
+              Vom deskriptiven RAG zur prüfbaren Entscheidungsarchitektur.
             </p>
-            <p className="max-w-[76ch] text-sm leading-7 text-slate-600 sm:text-base">
-              Die Beiträge sind nicht als lose Artikel gedacht, sondern als explizites Denkmodell. Der Argumentationsfluss beginnt im Problemraum: Warum reichen plausible KI-Antworten allein nicht aus?
-            </p>
-            <p className="max-w-[76ch] text-sm leading-7 text-slate-600 sm:text-base">
-              Darauf folgt die strukturelle Differenzierung von GraphRAG, die Ableitung von Qualitätskriterien für produktive Systeme und schließlich die organisatorische Einordnung.
-            </p>
-            <p className="max-w-[76ch] text-sm leading-7 text-slate-600 sm:text-base">
-              Jeder Knoten steht für einen klar definierten Schritt im Argument. Zusammen entsteht eine prüfbare Linie vom Ausgangsproblem bis zur Positionierung.
-            </p>
+            <div className="max-w-[80ch] space-y-4 text-slate-600 sm:text-lg leading-relaxed">
+              <p>
+                Diese Essayserie dokumentiert den Weg von probabilistischer Textverdichtung hin zu einer deterministischen Entscheidungslogik. Wir betrachten GraphRAG nicht als Feature, sondern als strukturelle Infrastruktur für Governance und Nachvollziehbarkeit.
+              </p>
+              <p>
+                Jeder Beitrag ist ein Baustein in einem integrierten Denkmodell: Wir analysieren den Problemraum klassischer RAG-Systeme, leiten die notwendige Struktur ab und definieren Qualitätskriterien für den produktiven Einsatz.
+              </p>
+            </div>
           </div>
-        </section>
+        </div>
+      </section>
 
         <section className="space-y-3 pb-2">
           <div className="mx-auto flex w-full max-w-295 items-end justify-between gap-4 px-4 sm:px-6">
@@ -92,22 +104,22 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
               </p>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-5">
+            <div className="grid gap-5 md:grid-cols-5">
               {FLOW_STEPS.map((flowStep) => (
                 <article
                   key={flowStep.step}
-                  className="flex h-full flex-col rounded-xl border border-slate-200 bg-white/90 p-4 text-slate-900"
+                  className="glass-panel group flex h-full flex-col p-5 transition-all hover:-translate-y-1 hover:shadow-xl"
                 >
-                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-500">
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500 group-hover:text-sky-600 transition-colors">
                     Schritt {flowStep.step}
                   </p>
-                  <h3 className="mt-2 text-base font-semibold tracking-tight">{flowStep.title}</h3>
-                  <p className="mt-2 text-sm leading-6 text-slate-600">{flowStep.description}</p>
+                  <h3 className="mt-3 text-lg font-bold tracking-tight text-slate-900">{flowStep.title}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-slate-600">{flowStep.description}</p>
                   <a
                     href={`/blog/${flowStep.slug}`}
-                    className="mt-auto pt-4 inline-flex text-xs font-semibold uppercase tracking-[0.12em] text-slate-700 underline decoration-slate-300 underline-offset-4 transition hover:text-slate-900 hover:decoration-slate-500"
+                    className="mt-auto pt-6 inline-flex text-xs font-bold uppercase tracking-[0.14em] text-sky-700 hover:text-sky-900 transition-colors"
                   >
-                    Zum Essay
+                    Essay lesen →
                   </a>
                 </article>
               ))}
