@@ -1,7 +1,7 @@
 "use client";
 
 import { TrackedLink } from "@/components/molecules/tracked-link";
-import { StoryChapterAnimatedVisual } from "@/features/story/molecules/StoryChapterAnimatedVisual";
+import { StoryChapterThreeVisual } from "@/features/story/molecules/StoryChapterThreeVisual";
 import { StoryPerspectiveSwitch } from "@/features/story/molecules/StoryPerspectiveSwitch";
 import { StoryProgress } from "@/features/story/molecules/StoryProgress";
 import {
@@ -132,8 +132,8 @@ export function GraphRagTechnicalFlow(): React.JSX.Element {
             </div>
           </section>
 
-          {/* Animated chapter visual */}
-          <StoryChapterAnimatedVisual chapterId={activeChapter.id} />
+          {/* 3D chapter visual (Three.js) */}
+          <StoryChapterThreeVisual chapterId={activeChapter.id} />
 
           {/* C2: Key insight */}
           <aside className="rounded-lg border border-sky-200/60 bg-sky-50/50 px-4 py-3">
