@@ -289,7 +289,7 @@ interface StoryChapterThreeVisualProps {
 
 export const StoryChapterThreeVisual: React.FC<StoryChapterThreeVisualProps> = ({ chapterId }) => {
   return (
-    <div className="relative h-[300px] w-full rounded-2xl overflow-hidden bg-slate-950/20 glass-panel">
+    <div className="relative h-[450px] w-full rounded-2xl overflow-hidden bg-slate-950/20 glass-panel">
       <Canvas
         camera={{ position: [0, 0, 6], fov: 45 }}
         dpr={[1, 2]}
