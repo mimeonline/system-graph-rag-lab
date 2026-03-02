@@ -19,6 +19,15 @@ Technisch kombiniert es:
 Hinweis zu Multi-Agent-Artefakten:  
 Die Dateien sind absichtlich im Repo, weil sie den Engineering-Prozess dokumentieren und reproduzierbar machen. Sie gehoeren damit zum Projektbetrieb, nicht zu Runtime-Secrets.
 
+## Entwicklungskontext
+
+Dieses Repository ist nicht nur Code, sondern auch ein transparenter Entwicklungsverlauf.
+
+1. In der ersten Projektphase wurde ein Multi-Agent-Setup mit Rollenartefakten genutzt (`.codex/**`, `docs/**`), um Scope, Architektur und QA strukturiert aufzubauen.
+2. Danach wurde auf Single-Agent-Umsetzung gewechselt, weil der Tokenverbrauch im laufenden Build zu hoch war.
+3. Ergaenzend wurden punktuell ChatGPT fuer inhaltliche Sparring-Runden und Antigravity fuer Design-Iterationen genutzt.
+4. Deshalb bleiben Prozessdateien, Handoffs und Decision-Dokumentation bewusst im Repo, auch wenn sie fuer den Runtime-Betrieb nicht direkt benoetigt werden.
+
 ## Voraussetzungen
 
 1. `pnpm` (Pflicht, kein npm/yarn)
