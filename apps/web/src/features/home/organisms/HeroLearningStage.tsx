@@ -25,7 +25,7 @@ export function HeroLearningStage(): React.JSX.Element {
                 <div>
                   <h3 className="text-sm font-bold uppercase tracking-[0.14em] text-slate-900">Der Systemic-Use-Case</h3>
                   <p className="mt-3 text-[0.95rem] leading-relaxed text-slate-600 font-medium">
-                    Warum "System Thinking"? Komplexe Organisationen operieren in vernetzten Abhängigkeiten.
+                    Warum „System Thinking“? Komplexe Organisationen operieren in vernetzten Abhängigkeiten.
                     Fließtext allein reicht nicht aus, um Engpässe und Hebelwirkungen auditierbar aufzuzeigen. 
                     Diese Demo beweist, wie GraphRAG isolierte Dokumente zu einem logischen Entscheidungsnetz verstrickt.
                   </p>

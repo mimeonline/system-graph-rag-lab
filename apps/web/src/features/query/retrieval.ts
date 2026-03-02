@@ -617,7 +617,6 @@ function normalizeNumber(value: unknown): number {
   }
 
   if (typeof value === "object" && "toNumber" in value && typeof value["toNumber"] === "function") {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return (value as { toNumber: () => number }).toNumber();
   }
 

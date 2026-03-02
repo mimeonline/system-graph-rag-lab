@@ -356,14 +356,20 @@ function ChapterScene({
   hideNodeLabels: boolean;
 }): React.JSX.Element {
   const timeRef = useRef(0);
+  const [activeStep, setActiveStep] = useState(() => (reducedMotion ? 6 : 1));
   const retrievalSafe = (position: [number, number, number]) =>
     clampPositionToZone(position, RETRIEVAL_SAFE_ZONE_X, RETRIEVAL_SAFE_ZONE_Z);
 
   useFrame((_state, delta) => {
+    if (reducedMotion) {
+      return;
+    }
     timeRef.current += delta;
+    const nextStep = Math.min(6, Math.floor(timeRef.current / 1.15) + 1);
+    setActiveStep((previous) => (previous === nextStep ? previous : nextStep));
   });
 
-  const activeStep = reducedMotion ? 6 : Math.min(6, Math.floor(timeRef.current / 1.15) + 1);
+  const visibleStep = reducedMotion ? 6 : activeStep;
   const lighting = LIGHTING[chapterId];
 
   return (
@@ -413,22 +419,22 @@ function ChapterScene({
 
             return (
               <>
-                <RevealGroup step={4} activeStep={activeStep}>
+                <RevealGroup step={4} activeStep={visibleStep}>
                   <PathEdge points={edgeA} color="#38bdf8" />
                 </RevealGroup>
-                <RevealGroup step={5} activeStep={activeStep}>
+                <RevealGroup step={5} activeStep={visibleStep}>
                   <PathEdge points={edgeB} color="#38bdf8" />
                 </RevealGroup>
               </>
             );
           })()}
-          <RevealGroup step={1} activeStep={activeStep}>
+          <RevealGroup step={1} activeStep={visibleStep}>
             <Node position={[0, 0.2, 0]} color="#0ea5e9" label="Kernfrage" emphasis status="gesichert" hideLabel={hideNodeLabels} />
           </RevealGroup>
-          <RevealGroup step={2} activeStep={activeStep}>
+          <RevealGroup step={2} activeStep={visibleStep}>
             <Node position={[-1.8, 0.5, -0.4]} color="#94a3b8" label="Annahme A" status="hypothese" hideLabel={hideNodeLabels} />
           </RevealGroup>
-          <RevealGroup step={3} activeStep={activeStep}>
+          <RevealGroup step={3} activeStep={visibleStep}>
             <Node position={[1.9, 0.62, 0.3]} color="#94a3b8" label="Annahme B" status="offen" hideLabel={hideNodeLabels} />
           </RevealGroup>
         </>
@@ -436,7 +442,7 @@ function ChapterScene({
 
       {chapterId === "retrieval" ? (
         <>
-          <RevealGroup step={1} activeStep={activeStep}>
+          <RevealGroup step={1} activeStep={visibleStep}>
             <mesh position={[0, 0.45, 0.15]}>
               <boxGeometry args={[1.8, 1.8, 1.8]} />
               <meshStandardMaterial color="#0ea5e9" transparent opacity={0.05} />
@@ -461,7 +467,7 @@ function ChapterScene({
             />
           </RevealGroup>
 
-          <RevealGroup step={1} activeStep={activeStep}>
+          <RevealGroup step={1} activeStep={visibleStep}>
             <Node
               position={retrievalSafe([-0.5, 0.62, -0.2])}
               color="#34d399"
@@ -471,7 +477,7 @@ function ChapterScene({
               hideLabel={hideNodeLabels}
             />
           </RevealGroup>
-          <RevealGroup step={2} activeStep={activeStep}>
+          <RevealGroup step={2} activeStep={visibleStep}>
             <Node
               position={retrievalSafe([2.95, 0.3, 1.25])}
               color="#6366f1"
@@ -505,7 +511,7 @@ function ChapterScene({
               hideLabel={hideNodeLabels}
             />
           </RevealGroup>
-          <RevealGroup step={3} activeStep={activeStep}>
+          <RevealGroup step={3} activeStep={visibleStep}>
             <Node
               position={retrievalSafe([0, -0.38, -2.15])}
               color="#64748b"
@@ -547,7 +553,7 @@ function ChapterScene({
               hideLabel={hideNodeLabels}
             />
           </RevealGroup>
-          <RevealGroup step={4} activeStep={activeStep}>
+          <RevealGroup step={4} activeStep={visibleStep}>
             <Node
               position={retrievalSafe([0, 0.72, 0.35])}
               color="#34d399"
@@ -579,25 +585,25 @@ function ChapterScene({
 
             return (
               <>
-                <RevealGroup step={1} activeStep={activeStep}>
+                <RevealGroup step={1} activeStep={visibleStep}>
                   <Node position={core} color="#0ea5e9" label="Kernfrage" emphasis status="gesichert" hideLabel={hideNodeLabels} />
                 </RevealGroup>
-                <RevealGroup step={2} activeStep={activeStep}>
+                <RevealGroup step={2} activeStep={visibleStep}>
                   <Node position={conceptMatchA} color="#22c55e" label="Konzept (Match)" status="gesichert" hideLabel={hideNodeLabels} />
                   <Node position={conceptMatchB} color="#22c55e" label="Konzept (Match)" status="gesichert" hideLabel={hideNodeLabels} />
                 </RevealGroup>
-                <RevealGroup step={3} activeStep={activeStep}>
+                <RevealGroup step={3} activeStep={visibleStep}>
                   <Node position={conceptHopA} color="#a78bfa" label="Konzept (Hop)" status="offen" hideLabel={hideNodeLabels} />
                   <Node position={evidenceA} color="#f59e0b" label="Beleg" status="gesichert" hideLabel={hideNodeLabels} />
                   <Node position={evidenceB} color="#f59e0b" label="Beleg" status="gesichert" hideLabel={hideNodeLabels} />
                 </RevealGroup>
-                <RevealGroup step={4} activeStep={activeStep}>
+                <RevealGroup step={4} activeStep={visibleStep}>
                   <PathEdge points={edgeCoreToMatchA} color="#22c55e" />
                   <PathEdge points={edgeCoreToMatchB} color="#f59e0b" />
                   <PathEdge points={edgeMatchAToHop} color="#a78bfa" />
                   <PathEdge points={edgeMatchAToEvidence} color="#f59e0b" />
                 </RevealGroup>
-                <RevealGroup step={5} activeStep={activeStep}>
+                <RevealGroup step={5} activeStep={visibleStep}>
                   <PathEdge points={edgeMatchBToEvidence} color="#f59e0b" />
                 </RevealGroup>
               </>
@@ -624,17 +630,17 @@ function ChapterScene({
 
             return (
               <>
-                <RevealGroup step={1} activeStep={activeStep}>
+                <RevealGroup step={1} activeStep={visibleStep}>
                   <Node position={question} color="#0ea5e9" label="Frage" status="gesichert" hideLabel={hideNodeLabels} />
                 </RevealGroup>
-                <RevealGroup step={2} activeStep={activeStep}>
+                <RevealGroup step={2} activeStep={visibleStep}>
                   <Node position={contextPackage} color="#22c55e" label="Kontextpaket" status="gesichert" hideLabel={hideNodeLabels} />
                 </RevealGroup>
-                <RevealGroup step={3} activeStep={activeStep}>
+                <RevealGroup step={3} activeStep={visibleStep}>
                   <Node position={evidence} color="#f59e0b" label="Beleg" status="gesichert" hideLabel={hideNodeLabels} />
                   <Node position={answer} color="#06b6d4" label="Antwort" emphasis status="gesichert" hideLabel={hideNodeLabels} />
                 </RevealGroup>
-                <RevealGroup step={4} activeStep={activeStep}>
+                <RevealGroup step={4} activeStep={visibleStep}>
                   <PathEdge points={mainA} color="#06b6d4" />
                   <PathEdge points={mainB} color="#06b6d4" />
                   <PathEdge points={mainC} color="#06b6d4" />
@@ -660,17 +666,17 @@ function ChapterScene({
 
             return (
               <>
-                <RevealGroup step={1} activeStep={activeStep}>
+                <RevealGroup step={1} activeStep={visibleStep}>
                   <Node position={answer} color="#06b6d4" label="Antwort" status="gesichert" hideLabel={hideNodeLabels} />
                 </RevealGroup>
-                <RevealGroup step={2} activeStep={activeStep}>
+                <RevealGroup step={2} activeStep={visibleStep}>
                   <Node position={decision} color="#22c55e" label="Entscheidung" status="gesichert" hideLabel={hideNodeLabels} />
                 </RevealGroup>
-                <RevealGroup step={3} activeStep={activeStep}>
+                <RevealGroup step={3} activeStep={visibleStep}>
                   <Node position={measure} color="#f59e0b" label="Maßnahme" status="gesichert" hideLabel={hideNodeLabels} />
                   <Node position={value} color="#0ea5e9" label="Mehrwert" emphasis status="offen" hideLabel={hideNodeLabels} />
                 </RevealGroup>
-                <RevealGroup step={4} activeStep={activeStep}>
+                <RevealGroup step={4} activeStep={visibleStep}>
                   <PathEdge points={mainA} color="#0ea5e9" />
                   <PathEdge points={mainB} color="#0ea5e9" />
                   <PathEdge points={mainC} color="#0ea5e9" />
@@ -700,13 +706,16 @@ export function StoryChapterThreeVisual({ chapterId }: StoryChapterThreeVisualPr
   } | null>(null);
 
   useEffect(() => {
-    setIsRecomposing(true);
-    setIsUserControlling(false);
-    setIntroDone(false);
+    const transitionReset = window.setTimeout(() => {
+      setIsRecomposing(true);
+      setIsUserControlling(false);
+      setIntroDone(false);
+    }, 0);
     const chapterSwap = window.setTimeout(() => setDisplayChapter(chapterId), 160);
     const introTimeout = window.setTimeout(() => setIntroDone(true), 1700);
     const recompositionTimeout = window.setTimeout(() => setIsRecomposing(false), 520);
     return () => {
+      window.clearTimeout(transitionReset);
       window.clearTimeout(chapterSwap);
       window.clearTimeout(introTimeout);
       window.clearTimeout(recompositionTimeout);

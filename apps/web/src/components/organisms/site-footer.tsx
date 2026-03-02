@@ -10,15 +10,14 @@ export function SiteFooter(): React.JSX.Element {
         </div>
         <div className="flex items-center gap-3">
           <TrackedLink
-            href="mailto:hello@example.com?subject=Projektanfrage%20GraphRAG"
-            label="Kontakt"
+            href="/about"
+            label="About"
             eventName="footer_click"
-            payload={{ target: "contact" }}
+            payload={{ target: "about" }}
             className="text-slate-100 underline decoration-slate-400 underline-offset-2"
-            external
           />
           <TrackedLink
-            href="https://github.com/"
+            href="https://github.com/mimeonline/system-graph-rag-lab"
             label="GitHub"
             eventName="footer_click"
             payload={{ target: "github" }}
@@ -26,12 +25,26 @@ export function SiteFooter(): React.JSX.Element {
             external
           />
           <TrackedLink
-            href="https://www.linkedin.com/"
+            href="https://www.linkedin.com/in/michael-meierhoff-b5426458/"
             label="LinkedIn"
             eventName="footer_click"
             payload={{ target: "linkedin" }}
             className="text-slate-100 underline decoration-slate-400 underline-offset-2"
             external
+          />
+          <TrackedLink
+            href="/datenschutz"
+            label="Datenschutz"
+            eventName="footer_click"
+            payload={{ target: "privacy" }}
+            className="text-slate-100 underline decoration-slate-400 underline-offset-2"
+          />
+          <TrackedLink
+            href="/impressum"
+            label="Impressum"
+            eventName="footer_click"
+            payload={{ target: "imprint" }}
+            className="text-slate-100 underline decoration-slate-400 underline-offset-2"
           />
         </div>
       </div>

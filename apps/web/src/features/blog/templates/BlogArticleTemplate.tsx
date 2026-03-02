@@ -8,6 +8,7 @@ import type { BlogPostFrontmatter, BlogTocItem } from "@/features/blog/contracts
 import * as motion from "framer-motion/client";
 import { Linkedin } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 
 type BlogArticleTemplateProps = {
   frontmatter: BlogPostFrontmatter;
@@ -282,39 +283,29 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                 <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Visualisierungen</p>
                 <div className="mt-3 space-y-3 flex flex-col items-center">
                   {frontmatter.diagramImages.map((image) => (
-                    image.toLowerCase().endsWith(".svg") ? (
-                      <img
-                        key={image}
-                        src={image}
-                        alt="Diagramm"
-                        className="block h-auto w-full rounded-lg border border-slate-200/60 shadow-sm"
-                        style={{ maxWidth: 420 }}
-                        loading="lazy"
-                      />
-                    ) : (
-                      <Image
-                        key={image}
-                        src={image}
-                        alt="Diagramm"
-                        width={1200}
-                        height={800}
-                        className="block h-auto w-full rounded-lg border border-slate-200/60 shadow-sm"
-                        style={{ maxWidth: 420 }}
-                      />
-                    )
+                    <Image
+                      key={image}
+                      src={image}
+                      alt="Diagramm"
+                      width={1200}
+                      height={800}
+                      className="block h-auto w-full rounded-lg border border-slate-200/60 shadow-sm"
+                      style={{ maxWidth: 420 }}
+                      unoptimized={image.toLowerCase().endsWith(".svg")}
+                    />
                   ))}
                 </div>
               </motion.section>
             ) : null}
 
             {/* Floating Back Link */}
-            <a
+            <Link
               href="/essay"
               className="inline-flex glass-panel items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-slate-600 transition-all hover:text-sky-700 hover:-translate-y-0.5 hover:shadow-md"
             >
               <span className="text-lg leading-none transition-transform group-hover:-translate-x-1" aria-hidden>←</span>
               Zurück zur Übersicht
-            </a>
+            </Link>
           </aside>
         </div>
       </main>
