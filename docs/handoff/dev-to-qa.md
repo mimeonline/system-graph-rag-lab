@@ -252,7 +252,7 @@ CALL db.index.vector.createNodeIndex(
 
 ### Wie kann QA testen
 1. 
-> web@0.1.0 dev /Users/michaelmeierhoff/Code/projects/system-graph-rag-lab/apps/web
+> web@0.1.0 dev apps/web
 > next dev
 
  ELIFECYCLE  Command failed with exit code -35. starten.
