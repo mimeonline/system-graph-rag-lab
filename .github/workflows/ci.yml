@@ -1,7 +1,9 @@
 name: CI
 
 on:
+  # Run CI for every PR to validate incoming changes before merge.
   pull_request:
+  # Run CI on direct updates to main.
   push:
     branches:
       - main
@@ -30,16 +32,21 @@ jobs:
           cache-dependency-path: apps/web/pnpm-lock.yaml
 
       - name: Install
+        # Lockfile must be in sync. Fails if dependencies drift.
         run: pnpm install --frozen-lockfile
 
       - name: Lint
+        # Static code checks.
         run: pnpm lint
 
       - name: Test
+        # Unit and integration tests.
         run: pnpm test
 
       - name: Build
+        # Production build verification.
         run: pnpm build
 
       - name: Security audit advisory
+        # Advisory only. Keeps CI green while still exposing high-risk packages.
         run: pnpm audit --prod --audit-level high || true

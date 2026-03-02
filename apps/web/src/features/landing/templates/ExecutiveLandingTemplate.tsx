@@ -16,7 +16,7 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
         <div className="mx-auto w-full max-w-295 space-y-16">
           <LandingReveal>
             <section className="space-y-6">
-              <motion.p 
+              <motion.p
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.6, ease: "easeOut" }}
@@ -24,21 +24,26 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
               >
                 Executive Lab
               </motion.p>
-              
+
               <div className="grid items-start gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:gap-12">
-                <motion.div 
+                <motion.div
                   initial={{ opacity: 0, y: 15 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
                   className="min-w-0 space-y-6 text-left"
                 >
                   <h1 className="max-w-[16ch] text-[2.25rem] font-bold tracking-tight text-slate-950 sm:text-[3rem] leading-[1.1]">
-                    Entscheidungsfähigkeit<br />durch <span className="text-gradient-primary">Struktur</span>.
+                    Entscheidungsfähigkeit
+                    <br />
+                    durch{" "}
+                    <span className="text-gradient-primary">Struktur</span>.
                   </h1>
                   <p className="max-w-[65ch] text-[1.125rem] leading-relaxed text-slate-700 font-medium">
-                    GraphRAG macht KI-Herleitung prüfbar. Belege, Beziehungen und Ableitungspfad werden sichtbare Architektur – für Entscheidungen, die verteidigt werden können.
+                    GraphRAG macht KI-Herleitung prüfbar. Belege, Beziehungen
+                    und Ableitungspfad werden sichtbare Architektur – für
+                    Entscheidungen, die verteidigt werden können.
                   </p>
-                  
+
                   <div className="flex flex-wrap items-center gap-4 pt-2">
                     <TrackedLink
                       href="/demo"
@@ -58,9 +63,11 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
                       className="inline-flex rounded-lg border border-slate-300 glass-panel px-6 py-3.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"
                     />
                   </div>
-                  
+
                   <div className="space-y-3 pt-4 border-t border-slate-200/60">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">Prüfbarer Mehrwert:</p>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                      Prüfbarer Mehrwert:
+                    </p>
                     <ul className="space-y-2 text-sm font-medium text-slate-700">
                       <li className="flex items-center gap-2.5">
                         <div className="h-2 w-2 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
@@ -68,20 +75,24 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
                       </li>
                       <li className="flex items-center gap-2.5">
                         <div className="h-2 w-2 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
-                        <span>Sichtbare Belegpfade vom Dokument zur Antwort</span>
+                        <span>
+                          Sichtbare Belegpfade vom Dokument zur Antwort
+                        </span>
                       </li>
                       <li className="flex items-center gap-2.5">
                         <div className="h-2 w-2 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
-                        <span>Stabile Argumentation bei iterativen Nachfragen</span>
+                        <span>
+                          Stabile Argumentation bei iterativen Nachfragen
+                        </span>
                       </li>
                     </ul>
                   </div>
                 </motion.div>
 
-              <div className="w-full max-w-[560px] self-start justify-self-center rounded-2xl border border-slate-200 bg-gradient-to-b from-white to-slate-50 p-4 sm:p-5 lg:justify-self-end">
-                <ExecutiveHeroGraph />
+                <div className="w-full max-w-140 self-start justify-self-center rounded-2xl border border-slate-200 bg-linear-to-b from-white to-slate-50 p-4 sm:p-5 lg:justify-self-end">
+                  <ExecutiveHeroGraph />
+                </div>
               </div>
-            </div>
             </section>
           </LandingReveal>
 
@@ -89,13 +100,19 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
             <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen py-16 sm:py-20 border-y border-slate-200/50 bg-slate-50/50">
               <div className="mx-auto w-full max-w-295 space-y-8 px-4 sm:px-6">
                 <div className="space-y-3">
-                  <h2 className="text-[1.5rem] font-bold tracking-tight text-slate-900 sm:text-[1.75rem]">Was Dich hier erwartet</h2>
+                  <h2 className="text-[1.5rem] font-bold tracking-tight text-slate-900 sm:text-[1.75rem]">
+                    Was Dich hier erwartet
+                  </h2>
                   <p className="max-w-[88ch] text-[1.05rem] leading-relax text-slate-700 font-medium">
-                    Dieses Lab ist kein Produkt-Pitch. Es ist eine offene Architektur-Exploration, die zeigt, wie 
-                    Wahrscheinlichkeitsmodelle durch strukturelle Einbettung entscheidungsfähig werden.
+                    Dieses Lab ist kein Produkt-Pitch. Es ist eine offene
+                    Architektur-Exploration, die zeigt, wie
+                    Wahrscheinlichkeitsmodelle durch strukturelle Einbettung
+                    entscheidungsfähig werden.
                   </p>
                   <p className="max-w-[88ch] text-[1.05rem] leading-relax text-slate-700">
-                    Als Live-Demo, Konzeptraum und Essay-Sammlung – steige dort ein, wo der Erkenntnisgewinn für deine Architektur- oder Governance-Fragen am größten ist.
+                    Als Live-Demo, Konzeptraum und Essay-Sammlung – steige dort
+                    ein, wo der Erkenntnisgewinn für deine Architektur- oder
+                    Governance-Fragen am größten ist.
                   </p>
                 </div>
 
@@ -104,45 +121,102 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
                     href="/demo"
                     label="Demo"
                     eventName="landing_section_click"
-                    payload={{ target: "/demo", surface: "what-to-expect-demo" }}
+                    payload={{
+                      target: "/demo",
+                      surface: "what-to-expect-demo",
+                    }}
                     className="group glass-panel rounded-2xl p-6 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-sky-900/5"
                   >
                     <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-sky-100/50 text-sky-600">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <polygon points="5 3 19 12 5 21 5 3" />
+                      </svg>
                     </div>
-                    <h3 className="text-base font-bold text-slate-900">Operative Demo</h3>
+                    <h3 className="text-base font-bold text-slate-900">
+                      Operative Demo
+                    </h3>
                     <p className="mt-2 text-sm leading-relaxed text-slate-600 font-medium">
-                      Beobachte in Echtzeit, wie aus Kontext und Belegen ein belastbarer Entscheidungsweg verarbeitet wird.
+                      Beobachte in Echtzeit, wie aus Kontext und Belegen ein
+                      belastbarer Entscheidungsweg verarbeitet wird.
                     </p>
                   </TrackedLink>
                   <TrackedLink
                     href="/story/graphrag"
                     label="GraphRAG Story"
                     eventName="landing_section_click"
-                    payload={{ target: "/story/graphrag", surface: "what-to-expect-story" }}
+                    payload={{
+                      target: "/story/graphrag",
+                      surface: "what-to-expect-story",
+                    }}
                     className="group glass-panel rounded-2xl p-6 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-sky-900/5"
                   >
                     <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-indigo-100/50 text-indigo-600">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+                        <polyline points="3.27 6.96 12 12.01 20.73 6.96" />
+                        <line x1="12" y1="22.08" x2="12" y2="12" />
+                      </svg>
                     </div>
-                    <h3 className="text-base font-bold text-slate-900">Architektur Story</h3>
+                    <h3 className="text-base font-bold text-slate-900">
+                      Architektur Story
+                    </h3>
                     <p className="mt-2 text-sm leading-relaxed text-slate-600 font-medium">
-                      Drei-Zustände-Modell im Vergleich: Verstehe, warum Struktur Wahrscheinlichkeit schlägt.
+                      Drei-Zustände-Modell im Vergleich: Verstehe, warum
+                      Struktur Wahrscheinlichkeit schlägt.
                     </p>
                   </TrackedLink>
                   <TrackedLink
                     href="/essay"
                     label="Graph Essays"
                     eventName="landing_section_click"
-                    payload={{ target: "/essay", surface: "what-to-expect-essays" }}
+                    payload={{
+                      target: "/essay",
+                      surface: "what-to-expect-essays",
+                    }}
                     className="group glass-panel rounded-2xl p-6 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-sky-900/5"
                   >
                     <div className="mb-4 inline-flex h-10 w-10 items-center justify-center rounded-lg bg-teal-100/50 text-teal-600">
-                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+                      <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      >
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                        <polyline points="10 9 9 9 8 9" />
+                      </svg>
                     </div>
-                    <h3 className="text-base font-bold text-slate-900">System Essays</h3>
+                    <h3 className="text-base font-bold text-slate-900">
+                      System Essays
+                    </h3>
                     <p className="mt-2 text-sm leading-relaxed text-slate-600 font-medium">
-                      Vertiefte Analysen zu Daten-Governance, Qualitätssicherung und systematischen LLM-Limitierungen.
+                      Vertiefte Analysen zu Daten-Governance, Qualitätssicherung
+                      und systematischen LLM-Limitierungen.
                     </p>
                   </TrackedLink>
                 </div>
@@ -152,73 +226,106 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
 
           <LandingReveal>
             <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen py-16 sm:py-20">
-            <div className="mx-auto w-full max-w-295 space-y-8 px-4 sm:px-6">
-              <div className="space-y-2">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Systemische Grenze</p>
-                <h2 className="text-[1.5rem] font-bold tracking-tight text-slate-900 sm:text-[1.75rem]">
-                  Warum reine LLM-Antworten nicht ausreichen
-                </h2>
-                <p className="max-w-[75ch] text-[1.05rem] text-slate-700 font-medium">
-                  Modelle liefern Plausibilität, keine Prüfbarkeit. Ohne sichtbare Herleitung kann eine Entscheidung nicht verantwortet oder skaliert werden.
+              <div className="mx-auto w-full max-w-295 space-y-8 px-4 sm:px-6">
+                <div className="space-y-2">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
+                    Systemische Grenze
+                  </p>
+                  <h2 className="text-[1.5rem] font-bold tracking-tight text-slate-900 sm:text-[1.75rem]">
+                    Warum reine LLM-Antworten nicht ausreichen
+                  </h2>
+                  <p className="max-w-[75ch] text-[1.05rem] text-slate-700 font-medium">
+                    Modelle liefern Plausibilität, keine Prüfbarkeit. Ohne
+                    sichtbare Herleitung kann eine Entscheidung nicht
+                    verantwortet oder skaliert werden.
+                  </p>
+                </div>
+
+                <div className="grid gap-6 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-slate-500 text-sm font-black">
+                        X
+                      </span>
+                      Status Quo (LLM-only)
+                    </h3>
+                    <ul className="mt-5 space-y-3.5 text-sm text-slate-700 font-medium">
+                      <li className="flex items-start gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                        <span>
+                          Der Argumentationspfad bleibt eine Blackbox (implizit)
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                        <span>
+                          Quellenbezüge sind oft lose, generisch oder
+                          halluziniert
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                        <span>
+                          Bei Nachfragen driftet die Begründung oder
+                          widerspricht sich
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                        <span>
+                          Entscheidungen beruhen auf Textwahrscheinlichkeit
+                          statt auf Struktur
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-2xl border border-sky-200 bg-sky-50/50 p-6 shadow-sm">
+                    <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-full bg-sky-100 text-sky-600 text-sm font-black">
+                        ✓
+                      </span>
+                      GraphRAG Architektur
+                    </h3>
+                    <ul className="mt-5 space-y-3.5 text-sm text-slate-700 font-medium">
+                      <li className="flex items-start gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
+                        <span>
+                          Relevante Konzepte und deren Beziehungen sind explizit
+                          modelliert (Wissensgraph)
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
+                        <span>
+                          Belegpfade sind als klare Ketten nachvollziehbar
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
+                        <span>
+                          Die Logik bleibt auch bei iterativen Anschlussfragen
+                          konsistent
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
+                        <span>
+                          Entscheidungen sind auditierbar statt nur
+                          hochplausibel
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <p className="text-[0.95rem] font-medium text-slate-600 max-w-3xl">
+                  Für explorative Fragen und Brainstorming reicht LLM-only oft
+                  aus. Für kritische Architekturabschätzungen oder strategische
+                  Produktentscheidungen braucht es jedoch sichtbare Struktur und
+                  Kontrolle.
                 </p>
               </div>
-
-              <div className="grid gap-6 sm:grid-cols-2">
-                <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 text-slate-500 text-sm font-black">X</span>
-                    Status Quo (LLM-only)
-                  </h3>
-                  <ul className="mt-5 space-y-3.5 text-sm text-slate-700 font-medium">
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
-                      <span>Der Argumentationspfad bleibt eine Blackbox (implizit)</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
-                      <span>Quellenbezüge sind oft lose, generisch oder halluziniert</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
-                      <span>Bei Nachfragen driftet die Begründung oder widerspricht sich</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
-                      <span>Entscheidungen beruhen auf Textwahrscheinlichkeit statt auf Struktur</span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="rounded-2xl border border-sky-200 bg-sky-50/50 p-6 shadow-sm">
-                  <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-sky-100 text-sky-600 text-sm font-black">✓</span>
-                    GraphRAG Architektur
-                  </h3>
-                  <ul className="mt-5 space-y-3.5 text-sm text-slate-700 font-medium">
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
-                      <span>Relevante Konzepte und deren Beziehungen sind explizit modelliert (Wissensgraph)</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
-                      <span>Belegpfade sind als klare Ketten nachvollziehbar</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
-                      <span>Die Logik bleibt auch bei iterativen Anschlussfragen konsistent</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
-                      <span>Entscheidungen sind auditierbar statt nur hochplausibel</span>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-
-              <p className="text-[0.95rem] font-medium text-slate-600 max-w-3xl">
-                Für explorative Fragen und Brainstorming reicht LLM-only oft aus. Für kritische Architekturabschätzungen oder strategische Produktentscheidungen braucht es jedoch sichtbare Struktur und Kontrolle.
-              </p>
-            </div>
             </section>
           </LandingReveal>
 
@@ -227,114 +334,160 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
               id="rag-vs-graphrag"
               className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-slate-50 py-16 sm:py-20"
             >
-            <div className="mx-auto w-full max-w-295 space-y-8 px-4 sm:px-6">
-              <div className="space-y-2">
-                <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Methodik-Vergleich</p>
-                <h2 className="text-[1.5rem] font-bold tracking-tight text-slate-900 sm:text-[1.75rem]">
-                  RAG liefert Treffer. GraphRAG liefert Herleitung.
-                </h2>
-                <p className="max-w-[75ch] text-[1.05rem] text-slate-700 font-medium">
-                  Nicht mehr Kontext, sondern sichtbare Begründung: Ein direkter Vergleich der Auditierbarkeit.
-                </p>
-              </div>
-              <div className="overflow-hidden rounded-2xl glass-panel">
-                <table className="w-full text-left text-sm">
-                  <thead className="bg-slate-100/50">
-                    <tr className="text-slate-600">
-                      <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs">Dimension</th>
-                      <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs">Standard RAG</th>
-                      <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs text-sky-700">System GraphRAG</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-200/60 text-slate-700 font-medium">
-                    <tr className="transition-colors hover:bg-white/40">
-                      <td className="px-6 py-4 font-bold text-slate-900">
-                        Auditierbarkeit
-                      </td>
-                      <td className="px-6 py-4">Quellen oft lose, Herleitung bleibt implizit</td>
-                      <td className="px-6 py-4 text-sky-900">Belegpfade explizit, Entscheidung prüfbar</td>
-                    </tr>
-                    <tr className="transition-colors hover:bg-white/40">
-                      <td className="px-6 py-4 font-bold text-slate-900">
-                        Stabilität bei Nachfragen
-                      </td>
-                      <td className="px-6 py-4">Driftet häufiger bei vernetzten Fragen</td>
-                      <td className="px-6 py-4 text-sky-900">Stabiler durch strukturierte Beziehungen</td>
-                    </tr>
-                    <tr className="transition-colors hover:bg-white/40">
-                      <td className="px-6 py-4 font-bold text-slate-900">
-                        Entscheidungsfähigkeit
-                      </td>
-                      <td className="px-6 py-4">Antwort verborgen in Fließtext</td>
-                      <td className="px-6 py-4 text-sky-900 font-semibold">Ableitung als Pfad, direkt übersetzbar</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-
-              <div className="grid gap-6 sm:grid-cols-2">
-                <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <h3 className="text-base font-bold text-slate-900">RAG reicht, wenn</h3>
-                  <ul className="mt-5 space-y-3.5 text-sm text-slate-700 font-medium">
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
-                      <span>Fragen primär dokumentzentriert und linear sind</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
-                      <span>Du vor allem fließtextbasierte Zusammenfassungen benötigst</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
-                      <span>Ein harter Audit-Nachweis keine zwingende Anforderung ist</span>
-                    </li>
-                  </ul>
+              <div className="mx-auto w-full max-w-295 space-y-8 px-4 sm:px-6">
+                <div className="space-y-2">
+                  <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
+                    Methodik-Vergleich
+                  </p>
+                  <h2 className="text-[1.5rem] font-bold tracking-tight text-slate-900 sm:text-[1.75rem]">
+                    RAG liefert Treffer. GraphRAG liefert Herleitung.
+                  </h2>
+                  <p className="max-w-[75ch] text-[1.05rem] text-slate-700 font-medium">
+                    Nicht mehr Kontext, sondern sichtbare Begründung: Ein
+                    direkter Vergleich der Auditierbarkeit.
+                  </p>
+                </div>
+                <div className="overflow-hidden rounded-2xl glass-panel">
+                  <table className="w-full text-left text-sm">
+                    <thead className="bg-slate-100/50">
+                      <tr className="text-slate-600">
+                        <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs">
+                          Dimension
+                        </th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs">
+                          Standard RAG
+                        </th>
+                        <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs text-sky-700">
+                          System GraphRAG
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-200/60 text-slate-700 font-medium">
+                      <tr className="transition-colors hover:bg-white/40">
+                        <td className="px-6 py-4 font-bold text-slate-900">
+                          Auditierbarkeit
+                        </td>
+                        <td className="px-6 py-4">
+                          Quellen oft lose, Herleitung bleibt implizit
+                        </td>
+                        <td className="px-6 py-4 text-sky-900">
+                          Belegpfade explizit, Entscheidung prüfbar
+                        </td>
+                      </tr>
+                      <tr className="transition-colors hover:bg-white/40">
+                        <td className="px-6 py-4 font-bold text-slate-900">
+                          Stabilität bei Nachfragen
+                        </td>
+                        <td className="px-6 py-4">
+                          Driftet häufiger bei vernetzten Fragen
+                        </td>
+                        <td className="px-6 py-4 text-sky-900">
+                          Stabiler durch strukturierte Beziehungen
+                        </td>
+                      </tr>
+                      <tr className="transition-colors hover:bg-white/40">
+                        <td className="px-6 py-4 font-bold text-slate-900">
+                          Entscheidungsfähigkeit
+                        </td>
+                        <td className="px-6 py-4">
+                          Antwort verborgen in Fließtext
+                        </td>
+                        <td className="px-6 py-4 text-sky-900 font-semibold">
+                          Ableitung als Pfad, direkt übersetzbar
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
 
-                <div className="rounded-2xl border border-sky-200 bg-sky-50/50 p-6 shadow-sm">
-                  <h3 className="text-base font-bold text-slate-900">GraphRAG ist Pflicht, wenn</h3>
-                  <ul className="mt-5 space-y-3.5 text-sm text-slate-700 font-medium">
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
-                      <span>Ursachenketten, Abhängigkeiten oder Trade-offs zentral sind</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
-                      <span>Stakeholder die Herleitung visualisieren und auditieren wollen</span>
-                    </li>
-                    <li className="flex items-start gap-3">
-                      <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
-                      <span>Die Argumentation über mehrere Follow-ups konsistent bleiben muss</span>
-                    </li>
-                  </ul>
+                <div className="grid gap-6 sm:grid-cols-2">
+                  <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                    <h3 className="text-base font-bold text-slate-900">
+                      RAG reicht, wenn
+                    </h3>
+                    <ul className="mt-5 space-y-3.5 text-sm text-slate-700 font-medium">
+                      <li className="flex items-start gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                        <span>
+                          Fragen primär dokumentzentriert und linear sind
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                        <span>
+                          Du vor allem fließtextbasierte Zusammenfassungen
+                          benötigst
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-slate-400" />
+                        <span>
+                          Ein harter Audit-Nachweis keine zwingende Anforderung
+                          ist
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="rounded-2xl border border-sky-200 bg-sky-50/50 p-6 shadow-sm">
+                    <h3 className="text-base font-bold text-slate-900">
+                      GraphRAG ist Pflicht, wenn
+                    </h3>
+                    <ul className="mt-5 space-y-3.5 text-sm text-slate-700 font-medium">
+                      <li className="flex items-start gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
+                        <span>
+                          Ursachenketten, Abhängigkeiten oder Trade-offs zentral
+                          sind
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
+                        <span>
+                          Stakeholder die Herleitung visualisieren und
+                          auditieren wollen
+                        </span>
+                      </li>
+                      <li className="flex items-start gap-3">
+                        <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-sky-500 shadow-[0_0_8px_rgba(14,165,233,0.6)]" />
+                        <span>
+                          Die Argumentation über mehrere Follow-ups konsistent
+                          bleiben muss
+                        </span>
+                      </li>
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </div>
             </section>
           </LandingReveal>
 
           <LandingReveal>
             <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-white py-20 sm:py-28">
-            <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
-              <div className="text-center space-y-8 glass-panel rounded-3xl p-10 sm:p-14 relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-br from-sky-50/50 to-indigo-50/50 -z-10" />
-                <h2 className="text-[1.75rem] font-bold tracking-tight text-slate-900 sm:text-[2.25rem] leading-tight max-w-[20ch] mx-auto">
-                  Von plausiblen Antworten zu <span className="text-transparent bg-clip-text bg-gradient-to-r from-sky-600 to-indigo-600">prüfbaren Entscheidungen.</span>
-                </h2>
-                <p className="mx-auto max-w-[50ch] text-[1.125rem] leading-relaxed text-slate-600 font-medium">
-                  Öffne die Demo und verfolge live, wie Kontextknoten, Belege und Ableitungspfad strukturiert zusammenspielen.
-                </p>
-                <div className="pt-4">
-                  <TrackedLink
-                    href="/demo"
-                    label="Demo starten"
-                    eventName="landing_cta_click"
-                    payload={{ target: "/demo", surface: "closing-cta" }}
-                    className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-8 py-4 text-base font-bold text-white shadow-xl shadow-slate-900/20 transition-all hover:bg-sky-600 hover:-translate-y-1 hover:shadow-sky-600/30"
-                  />
+              <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
+                <div className="text-center space-y-8 glass-panel rounded-3xl p-10 sm:p-14 relative overflow-hidden">
+                  <div className="absolute inset-0 bg-linear-to-br from-sky-50/50 to-indigo-50/50 -z-10" />
+                  <h2 className="text-[1.75rem] font-bold tracking-tight text-slate-900 sm:text-[2.25rem] leading-tight max-w-[20ch] mx-auto">
+                    Von plausiblen Antworten zu{" "}
+                    <span className="text-transparent bg-clip-text bg-linear-to-r from-sky-600 to-indigo-600">
+                      prüfbaren Entscheidungen.
+                    </span>
+                  </h2>
+                  <p className="mx-auto max-w-[50ch] text-[1.125rem] leading-relaxed text-slate-600 font-medium">
+                    Öffne die Demo und verfolge live, wie Kontextknoten, Belege
+                    und Ableitungspfad strukturiert zusammenspielen.
+                  </p>
+                  <div className="pt-4">
+                    <TrackedLink
+                      href="/demo"
+                      label="Demo starten"
+                      eventName="landing_cta_click"
+                      payload={{ target: "/demo", surface: "closing-cta" }}
+                      className="inline-flex items-center gap-2 rounded-xl bg-slate-900 px-8 py-4 text-base font-bold text-white shadow-xl shadow-slate-900/20 transition-all hover:bg-sky-600 hover:-translate-y-1 hover:shadow-sky-600/30"
+                    />
+                  </div>
                 </div>
               </div>
-            </div>
             </section>
           </LandingReveal>
         </div>

@@ -9,6 +9,7 @@
   <a href="https://nextjs.org/"><img alt="Next.js" src="https://img.shields.io/badge/Next.js-16.1.6-111827?style=for-the-badge&logo=next.js"></a>
   <a href="https://pnpm.io/"><img alt="pnpm" src="https://img.shields.io/badge/pnpm-workspace-F69220?style=for-the-badge&logo=pnpm&logoColor=white"></a>
   <a href="https://neo4j.com/"><img alt="Neo4j" src="https://img.shields.io/badge/Neo4j-Graph%20Backend-008CC1?style=for-the-badge&logo=neo4j&logoColor=white"></a>
+  <a href="https://github.com/mimeonline/system-graph-rag-lab/releases/tag/v1.0.0"><img alt="Release" src="https://img.shields.io/badge/Release-v1.0.0-0ea5e9?style=for-the-badge"></a>
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/License-MIT-0f172a?style=for-the-badge"></a>
 </p>
 
@@ -147,6 +148,15 @@ pnpm --dir apps/web typecheck
 pnpm --dir apps/web test
 pnpm --dir apps/web build
 ```
+
+## CI/CD
+
+GitHub Actions workflow: `.github/workflows/ci.yml`
+
+1. Trigger: `pull_request` and `push` to `main`
+2. Environment: Ubuntu, Node 20, pnpm 10, working directory `apps/web`
+3. Hard gates: install with frozen lockfile, lint, test, build
+4. Advisory step: `pnpm audit --prod --audit-level high` runs non-blocking
 
 ## Security baseline
 
