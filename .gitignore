@@ -1,6 +1,9 @@
 input/*
 output/*
 .pnpm-store/*
+.tmp_pdfenv/*
+.venv-imagegen/*
+tmp/*
 .playwright-cli/*
 node_modules/*
 apps/web/node_modules/*
