@@ -1,62 +1,99 @@
 # System GraphRAG Lab
 
-Public GraphRAG MVP fuer System Thinking.
+<p align="center">
+  Public GraphRAG MVP for System Thinking.<br/>
+  From plausible AI output to traceable decision paths.
+</p>
 
-Das Projekt zeigt, wie aus plausiblen KI-Antworten nachvollziehbare und pruefbare Entscheidungswege werden.  
-Technisch kombiniert es:
+<p align="center">
+  <a href="https://nextjs.org/"><img alt="Next.js" src="https://img.shields.io/badge/Next.js-16.1.6-111827?style=for-the-badge&logo=next.js"></a>
+  <a href="https://pnpm.io/"><img alt="pnpm" src="https://img.shields.io/badge/pnpm-workspace-F69220?style=for-the-badge&logo=pnpm&logoColor=white"></a>
+  <a href="https://neo4j.com/"><img alt="Neo4j" src="https://img.shields.io/badge/Neo4j-Graph%20Backend-008CC1?style=for-the-badge&logo=neo4j&logoColor=white"></a>
+  <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/License-MIT-0f172a?style=for-the-badge"></a>
+</p>
 
-1. Next.js Frontend/API (`apps/web`)
-2. Neo4j als Graph-Backend
-3. Kuratiertes Seed-Dataset fuer System-Thinking-Konzepte
+## Overview
 
-## Projektstruktur
+System GraphRAG Lab demonstrates how AI answers can be converted into transparent and auditable decision logic.
+The core idea is architectural, not rhetorical.
+Decision quality depends on explicit structure, context discipline, evidence paths and reproducible derivations.
 
-1. `apps/web`: Next.js App (UI, API, Seed-Logik)
-2. `docs/`: Architektur, Ops, QA, Handoffs
-3. `input/`: lokale, nicht versionierte Arbeitsquellen fuer Seed-Kuration
-4. `AGENTS.md` und `.codex/`: Multi-Agent- und Workflow-Konfiguration fuer reproduzierbare Entwicklungsablaeufe mit Codex
+Technically, the project combines:
 
-Hinweis zu Multi-Agent-Artefakten:  
-Die Dateien sind absichtlich im Repo, weil sie den Engineering-Prozess dokumentieren und reproduzierbar machen. Sie gehoeren damit zum Projektbetrieb, nicht zu Runtime-Secrets.
+1. Next.js frontend and API (`apps/web`)
+2. Neo4j as graph backend
+3. Curated seed dataset for system-thinking concepts
 
-## Entwicklungskontext
+## Why this repository exists
 
-Dieses Repository ist nicht nur Code, sondern auch ein transparenter Entwicklungsverlauf.
+Most AI demos optimize output quality.
+This project optimizes decision traceability.
 
-1. In der ersten Projektphase wurde ein Multi-Agent-Setup mit Rollenartefakten genutzt (`.codex/**`, `docs/**`), um Scope, Architektur und QA strukturiert aufzubauen.
-2. Danach wurde auf Single-Agent-Umsetzung gewechselt, weil der Tokenverbrauch im laufenden Build zu hoch war.
-3. Ergaenzend wurden punktuell ChatGPT fuer inhaltliche Sparring-Runden und Antigravity fuer Design-Iterationen genutzt.
-4. Deshalb bleiben Prozessdateien, Handoffs und Decision-Dokumentation bewusst im Repo, auch wenn sie fuer den Runtime-Betrieb nicht direkt benoetigt werden.
+You can inspect how a question is transformed into:
 
-## Voraussetzungen
+1. prioritized context
+2. explicit graph relations
+3. synthesis with evidence path
+4. operational decision framing
 
-1. `pnpm` (Pflicht, kein npm/yarn)
-2. Docker + Docker Compose
-3. Node.js 20+
+## Live surfaces in the app
 
-## Quick Start (empfohlen)
+1. `/demo` for the operational query flow
+2. `/story/graphrag` for the 5-step technical narrative
+3. `/essay` for architectural deep dives
+4. `/about` for positioning and project context
 
-Starte Neo4j, spiele Seed-Daten ein und starte danach die Web-App:
+## Repository structure
+
+1. `apps/web` contains the Next.js app, API routes, UI and seed logic
+2. `docs` contains architecture, ops, QA, handoffs and process artifacts
+3. `input` contains local, non-versioned source material for seed curation
+4. `.codex` and `AGENTS.md` contain process and collaboration setup used during development
+
+## Development context
+
+This repository intentionally includes process artifacts, not only runtime code.
+
+1. Phase one used a multi-agent setup to structure scope, architecture and QA output.
+2. Later implementation continued in single-agent mode due token budget efficiency.
+3. Additional iteration support came from ChatGPT for content sparring and Antigravity for visual design direction.
+4. Therefore `.codex/**` and `docs/**` remain part of the project context by design.
+
+## Requirements
+
+1. Node.js 20+
+2. pnpm
+3. Docker and Docker Compose
+
+## Quick start
+
+Run Neo4j, reseed data and start the app:
 
 ```bash
 ./scripts/dev-up.sh
 ```
 
-Stoppe lokale Infra wieder:
+Stop local infrastructure:
 
 ```bash
 ./scripts/dev-down.sh
 ```
 
-## Manuelle Einrichtung
+Open:
 
-1. Environment anlegen:
+```text
+http://localhost:3000
+```
+
+## Manual setup
+
+1. Create environment file:
 
 ```bash
 cp apps/web/.env.example apps/web/.env.local
 ```
 
-2. In `apps/web/.env.local` mindestens setzen:
+2. Set at least:
 
 ```dotenv
 OPENAI_API_KEY=sk-...
@@ -72,19 +109,19 @@ RATE_LIMIT_WINDOW_SECONDS=60
 RATE_LIMIT_IP_SALT=replace-with-random-string
 ```
 
-3. Neo4j starten:
+3. Start Neo4j:
 
 ```bash
 NEO4J_AUTH=neo4j/change-me docker compose -f docs/ops/docker-compose.local.yml up -d
 ```
 
-4. Dependencies installieren:
+4. Install dependencies:
 
 ```bash
 pnpm --dir apps/web install
 ```
 
-5. Seed reset/reseed ausfuehren:
+5. Run local reset and reseed:
 
 ```bash
 cd apps/web
@@ -96,24 +133,30 @@ export ALLOW_DESTRUCTIVE_SEED_RESET=true
 pnpm run seed:local:reset-reseed
 ```
 
-6. Dev-Server starten:
+6. Start development server:
 
 ```bash
 pnpm --dir apps/web dev
 ```
 
-Danach: `http://localhost:3000`
-
-## Wichtige Sicherheitsregeln
-
-1. Keine echten Secrets committen.
-2. `apps/web/.env.local` bleibt lokal.
-3. Destruktiver Seed-Reset ist nur lokal erlaubt und braucht explizit `ALLOW_DESTRUCTIVE_SEED_RESET=true`.
-
-## Nützliche Befehle
+## Validation commands
 
 ```bash
+pnpm --dir apps/web lint
 pnpm --dir apps/web typecheck
 pnpm --dir apps/web test
 pnpm --dir apps/web build
 ```
+
+## Security baseline
+
+1. Never commit real secrets.
+2. `apps/web/.env.local` stays local.
+3. Destructive seed reset is local-only and requires `ALLOW_DESTRUCTIVE_SEED_RESET=true`.
+
+## Contact and project links
+
+1. GitHub profile: https://github.com/mimeonline
+2. Project repository: https://github.com/mimeonline/system-graph-rag-lab
+3. LinkedIn: https://www.linkedin.com/in/michael-meierhoff-b5426458/
+4. Project inquiry page: https://meierhoff-systemde.de
