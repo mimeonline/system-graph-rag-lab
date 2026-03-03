@@ -39,6 +39,10 @@ jobs:
         # Static code checks.
         run: pnpm lint
 
+      - name: Typecheck
+        # Type safety checks.
+        run: pnpm typecheck
+
       - name: Test
         # Unit and integration tests.
         run: pnpm test

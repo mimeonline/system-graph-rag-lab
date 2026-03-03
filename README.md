@@ -155,8 +155,27 @@ GitHub Actions workflow: `.github/workflows/ci.yml`
 
 1. Trigger: `pull_request` and `push` to `main`
 2. Environment: Ubuntu, Node 20, pnpm 10, working directory `apps/web`
-3. Hard gates: install with frozen lockfile, lint, test, build
+3. Hard gates: install with frozen lockfile, lint, typecheck, test, build
 4. Advisory step: `pnpm audit --prod --audit-level high` runs non-blocking
+
+## Deploy
+
+Deployment is fully managed from this repository without cross-repo workflow calls.
+
+1. Required GitHub secret:
+   - `PROD_SSH_PRIVATE_KEY` (dedicated deploy key, no passphrase)
+2. Release flow via SemVer tag:
+   - Push a tag `vX.Y.Z` and GitHub Actions will build, push and deploy.
+3. Rollback flow:
+   - Start workflow `release-deploy` manually with `workflow_dispatch`
+   - Set `image_tag` to a previous tag, for example `1.0.0`
+
+Example release commands:
+
+```bash
+git tag v1.0.1
+git push origin v1.0.1
+```
 
 ## Security baseline
 
