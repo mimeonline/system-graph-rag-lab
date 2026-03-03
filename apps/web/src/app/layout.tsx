@@ -18,6 +18,10 @@ export const metadata: Metadata = {
   title: SITE_NAME,
   description:
     "Öffentlicher GraphRAG Showcase mit System-Thinking-Demo, nachvollziehbarer Herleitung und Story-getriebener Produktdarstellung.",
+  icons: {
+    icon: "/favicon.svg",
+    shortcut: "/favicon.svg",
+  },
   openGraph: {
     title: SITE_NAME,
     description:

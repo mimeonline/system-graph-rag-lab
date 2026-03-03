@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="System GraphRAG Lab Favicon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1324" />
+      <stop offset="100%" stop-color="#172554" />
+    </linearGradient>
+    <linearGradient id="edge" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#22d3ee" />
+      <stop offset="100%" stop-color="#38bdf8" />
+    </linearGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="14" fill="url(#bg)" />
+
+  <g fill="none" stroke="url(#edge)" stroke-width="3.2" stroke-linecap="round">
+    <path d="M18 46 L30 18 L46 26 L40 46 Z" />
+    <path d="M30 18 L40 46" />
+  </g>
+
+  <g fill="#f8fafc" stroke="#67e8f9" stroke-width="1.4">
+    <circle cx="18" cy="46" r="4.5" />
+    <circle cx="30" cy="18" r="4.5" />
+    <circle cx="46" cy="26" r="4.5" />
+    <circle cx="40" cy="46" r="4.5" />
+  </g>
+</svg>
