@@ -43,6 +43,13 @@ export default function RootLayout({
 }>): React.JSX.Element {
   return (
     <html lang="de">
+      <head>
+        <script
+          src="https://stats.meierhoff-systems.de/api/script.js"
+          data-site-id="377ab853f243"
+          defer
+        />
+      </head>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         {children}
       </body>
