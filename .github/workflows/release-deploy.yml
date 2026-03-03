@@ -87,33 +87,9 @@ jobs:
           docker push ghcr.io/mimeonline/system-graph-rag-lab:${IMAGE_TAG}
 
   deploy_prod:
-    name: Deploy To VPS
-    runs-on: ubuntu-latest
+    name: Deploy Production
     needs: release
-    environment: production
-    concurrency:
-      group: production-app-deploy-app
-      cancel-in-progress: false
-    steps:
-      - name: Load SSH key
-        uses: webfactory/ssh-agent@v0.9.0
-        with:
-          ssh-private-key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
-
-      - name: Deploy app service
-        env:
-          SSH_HOST: 212.227.38.133
-          SSH_USER: deploy
-          STACK_PATH: /opt/meierhoff-systems/graphrag-lab
-          COMPOSE_FILE: docker-compose.yml
-          SERVICE_NAME: app
-          APP_IMAGE: ghcr.io/mimeonline/system-graph-rag-lab
-          APP_IMAGE_TAG: ${{ needs.release.outputs.image_tag }}
-        run: |
-          set -euo pipefail
-          ssh -o StrictHostKeyChecking=no "${SSH_USER}@${SSH_HOST}" \
-            "set -euo pipefail; \
-             cd '${STACK_PATH}'; \
-             APP_IMAGE='${APP_IMAGE}' APP_IMAGE_TAG='${APP_IMAGE_TAG}' docker compose -f '${COMPOSE_FILE}' pull '${SERVICE_NAME}'; \
-             APP_IMAGE='${APP_IMAGE}' APP_IMAGE_TAG='${APP_IMAGE_TAG}' docker compose -f '${COMPOSE_FILE}' up -d '${SERVICE_NAME}'; \
-             docker compose -f '${COMPOSE_FILE}' ps '${SERVICE_NAME}'"
+    uses: ./.github/workflows/deploy-prod.yml
+    with:
+      image_tag: ${{ needs.release.outputs.image_tag }}
+    secrets: inherit

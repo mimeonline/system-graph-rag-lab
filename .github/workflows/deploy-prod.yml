@@ -1,0 +1,47 @@
+name: deploy-prod
+
+on:
+  workflow_call:
+    inputs:
+      image_tag:
+        description: "Docker image tag to deploy"
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      image_tag:
+        description: "Docker image tag to deploy"
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    name: Deploy To VPS
+    runs-on: ubuntu-latest
+    environment: production
+    concurrency:
+      group: production-app-deploy-app
+      cancel-in-progress: false
+    steps:
+      - name: Load SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.PROD_SSH_PRIVATE_KEY }}
+
+      - name: Deploy app service
+        env:
+          SSH_HOST: 212.227.38.133
+          SSH_USER: deploy
+          STACK_PATH: /opt/meierhoff-systems/graphrag-lab
+          COMPOSE_FILE: docker-compose.yml
+          SERVICE_NAME: app
+          APP_IMAGE: ghcr.io/mimeonline/system-graph-rag-lab
+          APP_IMAGE_TAG: ${{ inputs.image_tag }}
+        run: |
+          set -euo pipefail
+          ssh -o StrictHostKeyChecking=no "${SSH_USER}@${SSH_HOST}" \
+            "set -euo pipefail; \
+             cd '${STACK_PATH}'; \
+             APP_IMAGE='${APP_IMAGE}' APP_IMAGE_TAG='${APP_IMAGE_TAG}' docker compose -f '${COMPOSE_FILE}' pull '${SERVICE_NAME}'; \
+             APP_IMAGE='${APP_IMAGE}' APP_IMAGE_TAG='${APP_IMAGE_TAG}' docker compose -f '${COMPOSE_FILE}' up -d '${SERVICE_NAME}'; \
+             docker compose -f '${COMPOSE_FILE}' ps '${SERVICE_NAME}'"
