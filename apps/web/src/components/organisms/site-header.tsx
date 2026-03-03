@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { NAV_LINKS, PRIMARY_CTA } from "@/config/site";
+import { NAV_LINKS } from "@/config/site";
 import { TrackedLink } from "@/components/molecules/tracked-link";
 
 export function SiteHeader(): React.JSX.Element {
@@ -32,14 +32,6 @@ export function SiteHeader(): React.JSX.Element {
               />
             );
           })}
-          <TrackedLink
-            href={PRIMARY_CTA.href}
-            label={PRIMARY_CTA.label}
-            eventName="cta_click"
-            payload={{ surface: "header", priority: PRIMARY_CTA.priority }}
-            className="ml-1 rounded-md bg-sky-500 px-2.5 py-1.5 font-semibold text-white transition hover:bg-sky-400"
-            external={PRIMARY_CTA.href.startsWith("mailto:") || PRIMARY_CTA.href.startsWith("http")}
-          />
         </nav>
       </div>
     </header>

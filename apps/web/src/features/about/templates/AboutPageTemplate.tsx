@@ -2,7 +2,6 @@ import { TrackedLink } from "@/components/molecules/tracked-link";
 import { TrackedPageView } from "@/components/molecules/tracked-page-view";
 import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
-import { PROJECT_INQUIRY_URL } from "@/config/site";
 import { Blocks, ShieldCheck, Target } from "lucide-react";
 
 export function AboutPageTemplate(): React.JSX.Element {
@@ -106,14 +105,6 @@ export function AboutPageTemplate(): React.JSX.Element {
                 eventName="about_click"
                 payload={{ target: "linkedin" }}
                 className="rounded-md border border-slate-300 px-4 py-2 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-                external
-              />
-              <TrackedLink
-                href={PROJECT_INQUIRY_URL}
-                label="Projekt anfragen"
-                eventName="about_click"
-                payload={{ target: "project_inquiry" }}
-                className="rounded-md bg-slate-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-sky-700"
                 external
               />
             </div>

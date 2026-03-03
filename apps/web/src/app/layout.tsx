@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import {
-  PROJECT_INQUIRY_URL,
+  LINKEDIN_PROFILE_URL,
   SITE_AUTHOR,
   SITE_DESCRIPTION,
   SITE_KEYWORDS,
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   applicationName: SITE_NAME,
   description: SITE_DESCRIPTION,
   keywords: [...SITE_KEYWORDS],
-  authors: [{ name: SITE_AUTHOR, url: PROJECT_INQUIRY_URL }],
+  authors: [{ name: SITE_AUTHOR, url: LINKEDIN_PROFILE_URL }],
   creator: SITE_AUTHOR,
   publisher: SITE_AUTHOR,
   category: "technology",
@@ -81,7 +81,7 @@ const organizationJsonLd = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: SITE_AUTHOR,
-  url: PROJECT_INQUIRY_URL,
+  url: LINKEDIN_PROFILE_URL,
   sameAs: [
     "https://www.linkedin.com/in/michael-meierhoff-b5426458/",
     "https://github.com/mimeonline",

@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.0.4] - 2026-03-03
+
+### Changed
+
+1. Removed all "Projekt anfragen" calls to action from the header and about page.
+2. Simplified global site configuration by removing inquiry-specific CTA constants.
+3. Updated SEO metadata and organization URL references to use the LinkedIn profile URL.
+
 ## [1.0.3] - 2026-03-03
 
 ### Added

@@ -10,7 +10,7 @@ export const SITE_NAME = "System GraphRAG Lab";
 export const SITE_DESCRIPTION =
   "Öffentlicher GraphRAG Showcase mit System-Thinking-Demo, nachvollziehbarer Herleitung und Story-getriebener Produktdarstellung.";
 export const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL?.trim() || "http://localhost:3000";
-export const PROJECT_INQUIRY_URL = "https://meierhoff-systemde.de";
+export const LINKEDIN_PROFILE_URL = "https://www.linkedin.com/in/michael-meierhoff-b5426458/";
 export const SITE_LOCALE = "de_DE";
 export const SITE_AUTHOR = "Michael Meierhoff";
 export const SITE_KEYWORDS = [
@@ -24,17 +24,10 @@ export const SITE_KEYWORDS = [
   "OpenAI",
 ] as const;
 
-export const PRIMARY_CTA: SiteCTA = {
-  label: "Projekt anfragen",
-  href: PROJECT_INQUIRY_URL,
-  surface: "hero",
-  priority: "high",
-};
-
 export const SOCIAL_CTA: SiteCTA[] = [
   {
     label: "LinkedIn",
-    href: "https://www.linkedin.com/in/michael-meierhoff-b5426458/",
+    href: LINKEDIN_PROFILE_URL,
     surface: "hero",
     priority: "high",
   },
