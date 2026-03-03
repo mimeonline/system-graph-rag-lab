@@ -96,6 +96,11 @@ Nach jedem Story-Finish durch Dev gilt verbindlich:
 - PM gibt das finale `accepted` erst nach PM-Review auf Basis von `pass` frei.
 - Erst nach PM-OK gilt eine Story als abgeschlossen.
 
+## Release und Changelog
+- Nach jedem erzeugten Git-Tag muss im selben Run ein entsprechender Eintrag in `CHANGELOG.md` angelegt oder ergänzt werden.
+- Der Changelog-Eintrag muss mindestens Version, Datum und die wichtigsten Änderungen enthalten.
+- Tag und `CHANGELOG.md` müssen inhaltlich konsistent sein.
+
 ## Markdown-Regeln
 - Jede Markdown-Datei hat genau eine H1.
 - Weitere Struktur nur mit H2 und H3.

@@ -2,6 +2,34 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.0.3] - 2026-03-03
+
+### Added
+
+1. Global analytics script integration in the application head for `stats.meierhoff-systems.de`.
+
+## [1.0.2] - 2026-03-03
+
+### Changed
+
+1. Release pipeline now calls a dedicated reusable production deploy workflow.
+2. Deployment responsibilities were split into build-push and deploy stages for clearer operations.
+
+### Added
+
+1. New standalone workflow `.github/workflows/deploy-prod.yml` for production deployment by image tag.
+
+## [1.0.1] - 2026-03-03
+
+### Added
+
+1. Release deployment workflow with SemVer tag trigger and manual image tag dispatch.
+2. Automated image build and push to GHCR as part of release pipeline.
+
+### Changed
+
+1. CI now includes an explicit `typecheck` gate before test and build.
+
 ## [1.0.0] - 2026-03-02
 
 Initial public release of System GraphRAG Lab.
@@ -36,4 +64,3 @@ Initial public release of System GraphRAG Lab.
 1. Local-only files and runtime env files excluded from version control.
 2. Output artifacts removed from tracked files.
 3. Playwright CLI artifacts removed from repository history before public release.
-
