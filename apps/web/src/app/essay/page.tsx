@@ -4,13 +4,13 @@ import { getAllBlogPosts } from "@/features/blog/content";
 import { BlogIndexTemplate } from "@/features/blog/templates/BlogIndexTemplate";
 
 export const metadata: Metadata = {
-  title: "Essay | System GraphRAG Lab",
+  title: "GraphRAG Essays",
   description: "Praxisnahe Essays zu GraphRAG, Agent-Workflows und produktionsnahen KI-Systemen.",
   alternates: {
     canonical: withCanonical("/essay"),
   },
   openGraph: {
-    title: "Essay | System GraphRAG Lab",
+    title: "GraphRAG Essays",
     description: "Praxisnahe Essays zu GraphRAG, Agent-Workflows und produktionsnahen KI-Systemen.",
     url: withCanonical("/essay"),
     type: "website",

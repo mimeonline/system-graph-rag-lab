@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { withCanonical } from "@/config/site";
+import { SITE_AUTHOR, SITE_NAME, withCanonical } from "@/config/site";
 import { getAllBlogPosts, getBlogPostBySlug } from "@/features/blog/content";
 import { BlogArticleTemplate } from "@/features/blog/templates/BlogArticleTemplate";
 
@@ -18,14 +18,15 @@ export async function generateMetadata({ params }: EssayArticlePageProps): Promi
   const post = await getBlogPostBySlug(slug);
   if (!post) {
     return {
-      title: "Essay nicht gefunden | System GraphRAG Lab",
+      title: "Essay nicht gefunden",
     };
   }
 
   const canonical = post.frontmatter.canonicalUrl ?? withCanonical(`/essay/${slug}`);
   return {
-    title: `${post.frontmatter.title} | System GraphRAG Lab`,
+    title: post.frontmatter.title,
     description: post.frontmatter.excerpt,
+    keywords: post.frontmatter.tags,
     alternates: {
       canonical,
     },
@@ -53,5 +54,34 @@ export default async function EssayArticlePage({ params }: EssayArticlePageProps
     notFound();
   }
 
-  return <BlogArticleTemplate frontmatter={post.frontmatter} content={post.content} toc={post.toc} />;
+  const canonical = post.frontmatter.canonicalUrl ?? withCanonical(`/essay/${slug}`);
+  const articleJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    headline: post.frontmatter.title,
+    description: post.frontmatter.excerpt,
+    author: {
+      "@type": "Person",
+      name: SITE_AUTHOR,
+    },
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+    },
+    datePublished: post.frontmatter.publishedAt,
+    dateModified: post.frontmatter.updatedAt ?? post.frontmatter.publishedAt,
+    mainEntityOfPage: canonical,
+    url: canonical,
+    keywords: post.frontmatter.tags.join(", "),
+  };
+
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
+      />
+      <BlogArticleTemplate frontmatter={post.frontmatter} content={post.content} toc={post.toc} />
+    </>
+  );
 }

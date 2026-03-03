@@ -3,13 +3,13 @@ import { withCanonical } from "@/config/site";
 import { LegalPageTemplate } from "@/features/legal/templates/LegalPageTemplate";
 
 export const metadata: Metadata = {
-  title: "Impressum | System GraphRAG Lab",
+  title: "Impressum",
   description: "Anbieterkennzeichnung für das Projekt System GraphRAG Lab.",
   alternates: {
     canonical: withCanonical("/impressum"),
   },
   openGraph: {
-    title: "Impressum | System GraphRAG Lab",
+    title: "Impressum",
     description: "Anbieterkennzeichnung für das Projekt System GraphRAG Lab.",
     url: withCanonical("/impressum"),
     type: "website",
