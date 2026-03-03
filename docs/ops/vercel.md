@@ -10,15 +10,16 @@
 ## Required Environment Variables
 1. `OPENAI_API_KEY`
 2. `OPENAI_MODEL`
-3. `NEO4J_URI`
-4. `NEO4J_DATABASE`
-5. `NEO4J_USERNAME`
-6. `NEO4J_PASSWORD`
-7. `RATE_LIMIT_MAX_REQUESTS`
-8. `RATE_LIMIT_WINDOW_SECONDS`
-9. `RATE_LIMIT_IP_SALT`
-10. `KV_REST_API_URL`
-11. `KV_REST_API_TOKEN`
+3. `NEXT_PUBLIC_SITE_URL`
+4. `NEO4J_URI`
+5. `NEO4J_DATABASE`
+6. `NEO4J_USERNAME`
+7. `NEO4J_PASSWORD`
+8. `RATE_LIMIT_MAX_REQUESTS`
+9. `RATE_LIMIT_WINDOW_SECONDS`
+10. `RATE_LIMIT_IP_SALT`
+11. `KV_REST_API_URL`
+12. `KV_REST_API_TOKEN`
 
 ## Neo4j Aura Verbindung
 1. Aura Endpoint wird ueber `NEO4J_URI` gesetzt.
@@ -31,6 +32,10 @@
 2. Modellwahl erfolgt nur ueber `OPENAI_MODEL`.
 3. Default fuer `OPENAI_MODEL` bleibt `gpt-5-mini`.
 4. API Keys werden nicht in Repo, Logs oder Handoffs abgelegt.
+
+## Public URL Handling
+1. `NEXT_PUBLIC_SITE_URL` muss auf die produktive HTTPS-Domain gesetzt werden.
+2. Der Wert steuert Canonical-URL, OpenGraph-URL, `robots.txt`, `sitemap.xml` und `llms.txt`.
 
 ## Deploy Ablauf
 ### Betriebsablauf: Vercel Deploy und Smoke

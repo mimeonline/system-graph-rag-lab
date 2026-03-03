@@ -2,6 +2,17 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.0.5] - 2026-03-03
+
+### Fixed
+
+1. Hardened production site URL resolution to prevent `localhost` values in canonical URLs, OpenGraph metadata and sitemap output.
+2. Added guard logic to ignore localhost-like `NEXT_PUBLIC_SITE_URL` values in production.
+
+### Changed
+
+1. Updated environment documentation and examples to include `NEXT_PUBLIC_SITE_URL` as required public runtime configuration.
+
 ## [1.0.4] - 2026-03-03
 
 ### Changed
