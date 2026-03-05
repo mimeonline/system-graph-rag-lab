@@ -113,7 +113,7 @@ export function GraphRagTechnicalFlow(): React.JSX.Element {
         <article key={activeChapter.id} className="animate-chapter-enter space-y-4 rounded-xl border border-slate-300/80 bg-white p-4 sm:p-5">
           <header className="space-y-1.5">
             <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">{`Kapitel ${activeChapterIndex + 1} von ${STORY_CHAPTERS.length}`}</p>
-            <h2 className="text-[1.45rem] font-semibold tracking-tight text-slate-950">{`${activeChapter.label}: ${activeChapter.goal}`}</h2>
+            <h2 className="headline-wrap text-[1.25rem] font-semibold tracking-tight text-slate-950 sm:text-[1.45rem]">{`${activeChapter.label}: ${activeChapter.goal}`}</h2>
           </header>
 
           {/* A5: Section labels with visual guide – left border accent */}
@@ -144,12 +144,12 @@ export function GraphRagTechnicalFlow(): React.JSX.Element {
           </aside>
 
           {/* B2: Navigation buttons – Back + Forward */}
-          <div className="flex items-center gap-3 pt-1">
+          <div className="flex flex-wrap items-center gap-3 pt-1">
             {activeChapterIndex > 0 ? (
               <button
                 type="button"
                 onClick={handleBack}
-                className="inline-flex items-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:border-slate-400"
+                className="inline-flex w-full items-center justify-center rounded-lg border border-slate-300 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 sm:w-auto"
               >
                 ← Zurück
               </button>
@@ -161,13 +161,13 @@ export function GraphRagTechnicalFlow(): React.JSX.Element {
                 label={action.label}
                 eventName="story_demo_click"
                 payload={{ surface: "graphrag_technical_flow", chapter: activeChapter.id }}
-                className="inline-flex items-center rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-600"
+                className="inline-flex w-full items-center justify-center rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-sky-600 sm:w-auto"
               />
             ) : (
               <button
                 type="button"
                 onClick={handleAdvance}
-                className="inline-flex items-center rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700"
+                className="inline-flex w-full items-center justify-center rounded-lg bg-slate-900 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-700 sm:w-auto"
               >
                 {action.label} →
               </button>
@@ -222,4 +222,3 @@ export function GraphRagTechnicalFlow(): React.JSX.Element {
     </section>
   );
 }
-

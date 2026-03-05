@@ -14,7 +14,7 @@ export function AboutPageTemplate(): React.JSX.Element {
         <div className="mx-auto w-full max-w-295 space-y-8">
           <section className="space-y-4">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-sky-700">About</p>
-            <h1 className="max-w-[24ch] text-[2.1rem] font-bold tracking-tight text-slate-950 sm:text-[2.7rem]">
+            <h1 className="headline-wrap max-w-[24ch] text-[2.1rem] font-bold tracking-tight text-slate-950 sm:text-[2.7rem]">
               System GraphRAG Lab
             </h1>
             <p className="max-w-[85ch] text-[1.05rem] leading-relaxed text-slate-700">

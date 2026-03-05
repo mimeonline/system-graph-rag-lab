@@ -32,8 +32,8 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
                   transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
                   className="min-w-0 space-y-6 text-left"
                 >
-                  <h1 className="max-w-[16ch] text-[2.25rem] font-bold tracking-tight text-slate-950 sm:text-[3rem] leading-[1.1]">
-                    Entscheidungsfähigkeit
+                  <h1 className="headline-wrap max-w-full text-[1.85rem] font-bold tracking-tight text-slate-950 sm:max-w-[16ch] sm:text-[3rem] leading-[1.08]">
+                    Entscheidungs<wbr />fähigkeit
                     <br />
                     durch{" "}
                     <span className="text-gradient-primary">Struktur</span>.
@@ -97,10 +97,10 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
           </LandingReveal>
 
           <LandingReveal>
-            <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen py-16 sm:py-20 border-y border-slate-200/50 bg-slate-50/50">
+            <section className="full-bleed-safe relative border-y border-slate-200/50 bg-slate-50/50 py-16 sm:py-20">
               <div className="mx-auto w-full max-w-295 space-y-8 px-4 sm:px-6">
                 <div className="space-y-3">
-                  <h2 className="text-[1.5rem] font-bold tracking-tight text-slate-900 sm:text-[1.75rem]">
+                  <h2 className="headline-wrap text-[1.5rem] font-bold tracking-tight text-slate-900 sm:text-[1.75rem]">
                     Was Dich hier erwartet
                   </h2>
                   <p className="max-w-[88ch] text-[1.05rem] leading-relax text-slate-700 font-medium">
@@ -225,13 +225,13 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
           </LandingReveal>
 
           <LandingReveal>
-            <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen py-16 sm:py-20">
+            <section className="full-bleed-safe relative py-16 sm:py-20">
               <div className="mx-auto w-full max-w-295 space-y-8 px-4 sm:px-6">
                 <div className="space-y-2">
                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
                     Systemische Grenze
                   </p>
-                  <h2 className="text-[1.5rem] font-bold tracking-tight text-slate-900 sm:text-[1.75rem]">
+                  <h2 className="headline-wrap text-[1.5rem] font-bold tracking-tight text-slate-900 sm:text-[1.75rem]">
                     Warum reine LLM-Antworten nicht ausreichen
                   </h2>
                   <p className="max-w-[75ch] text-[1.05rem] text-slate-700 font-medium">
@@ -332,14 +332,14 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
           <LandingReveal>
             <section
               id="rag-vs-graphrag"
-              className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-slate-50 py-16 sm:py-20"
+              className="full-bleed-safe relative bg-slate-50 py-16 sm:py-20"
             >
               <div className="mx-auto w-full max-w-295 space-y-8 px-4 sm:px-6">
                 <div className="space-y-2">
                   <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
                     Methodik-Vergleich
                   </p>
-                  <h2 className="text-[1.5rem] font-bold tracking-tight text-slate-900 sm:text-[1.75rem]">
+                  <h2 className="headline-wrap text-[1.5rem] font-bold tracking-tight text-slate-900 sm:text-[1.75rem]">
                     RAG liefert Treffer. GraphRAG liefert Herleitung.
                   </h2>
                   <p className="max-w-[75ch] text-[1.05rem] text-slate-700 font-medium">
@@ -348,7 +348,8 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
                   </p>
                 </div>
                 <div className="overflow-hidden rounded-2xl glass-panel">
-                  <table className="w-full text-left text-sm">
+                  <div className="overflow-x-auto">
+                    <table className="min-w-[640px] w-full text-left text-sm">
                     <thead className="bg-slate-100/50">
                       <tr className="text-slate-600">
                         <th className="px-6 py-4 font-bold uppercase tracking-wider text-xs">
@@ -397,7 +398,8 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
                         </td>
                       </tr>
                     </tbody>
-                  </table>
+                    </table>
+                  </div>
                 </div>
 
                 <div className="grid gap-6 sm:grid-cols-2">
@@ -463,11 +465,11 @@ export function ExecutiveLandingTemplate(): React.JSX.Element {
           </LandingReveal>
 
           <LandingReveal>
-            <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen bg-white py-20 sm:py-28">
+            <section className="full-bleed-safe relative bg-white py-20 sm:py-28">
               <div className="mx-auto w-full max-w-3xl px-4 sm:px-6">
                 <div className="text-center space-y-8 glass-panel rounded-3xl p-10 sm:p-14 relative overflow-hidden">
                   <div className="absolute inset-0 bg-linear-to-br from-sky-50/50 to-indigo-50/50 -z-10" />
-                  <h2 className="text-[1.75rem] font-bold tracking-tight text-slate-900 sm:text-[2.25rem] leading-tight max-w-[20ch] mx-auto">
+                  <h2 className="headline-wrap mx-auto max-w-[20ch] text-[1.75rem] font-bold tracking-tight text-slate-900 sm:text-[2.25rem] leading-tight">
                     Von plausiblen Antworten zu{" "}
                     <span className="text-transparent bg-clip-text bg-linear-to-r from-sky-600 to-indigo-600">
                       prüfbaren Entscheidungen.

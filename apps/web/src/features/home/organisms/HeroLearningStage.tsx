@@ -9,7 +9,7 @@ export function HeroLearningStage(): React.JSX.Element {
         <div className="relative z-10 space-y-6">
           <div className="space-y-4">
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">System GraphRAG Sandbox</p>
-            <h1 className="max-w-3xl text-[2.25rem] font-bold tracking-tight text-slate-900 sm:text-[2.75rem] leading-tight">
+            <h1 className="headline-wrap max-w-3xl text-[1.95rem] font-bold tracking-tight text-slate-900 sm:text-[2.75rem] leading-tight">
               Entscheidungsarchitektur live testen.
             </h1>
             <p className="max-w-[70ch] text-[1.125rem] leading-relaxed text-slate-700 font-medium">

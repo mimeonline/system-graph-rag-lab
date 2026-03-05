@@ -26,7 +26,7 @@ export function LegalPageTemplate({
         <section className="mx-auto w-full max-w-295 space-y-8">
           <header className="space-y-3">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-sky-700">{badge}</p>
-            <h1 className="text-[2rem] font-bold tracking-tight text-slate-950 sm:text-[2.5rem]">{title}</h1>
+            <h1 className="headline-wrap text-[2rem] font-bold tracking-tight text-slate-950 sm:text-[2.5rem]">{title}</h1>
             <p className="max-w-[85ch] text-[1.02rem] leading-relaxed text-slate-700">{intro}</p>
           </header>
 

@@ -5,7 +5,6 @@ import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
 import { withCanonical } from "@/config/site";
 import type { BlogPostFrontmatter, BlogTocItem } from "@/features/blog/contracts";
-import * as motion from "framer-motion/client";
 import { Linkedin } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -97,21 +96,17 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
 
           {/* Article */}
           <article className="glass-panel rounded-2xl p-6 sm:p-10">
-            <motion.div
-              initial={{ opacity: 0, y: 12 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            >
+            <div>
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-600">
                 Systemische Praxis
               </p>
-              <h1 className="mt-4 text-[2.2rem] font-bold tracking-tight text-gradient-primary leading-[1.15] sm:text-[2.6rem]">
+              <h1 className="headline-wrap mt-4 text-[1.95rem] font-bold tracking-tight text-gradient-primary leading-[1.12] sm:text-[2.6rem]">
                 {frontmatter.title}
               </h1>
               <p className="mt-4 max-w-[72ch] text-[1.05rem] leading-relaxed text-slate-700 font-medium">
                 {frontmatter.excerpt}
               </p>
-            </motion.div>
+            </div>
 
             <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-500">
               <time dateTime={frontmatter.publishedAt}>{publishedDate}</time>
@@ -251,12 +246,7 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
 
           {/* Sidebar */}
           <aside className="space-y-6 lg:sticky lg:top-6 lg:self-start">
-            <motion.section
-              initial={{ opacity: 0, x: 8 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.15, ease: "easeOut" }}
-              className="glass-panel rounded-2xl p-5"
-            >
+            <section className="glass-panel rounded-2xl p-5">
               <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Inhaltsverzeichnis</p>
               <nav className="mt-4 space-y-2" aria-label="Inhaltsverzeichnis">
                 {toc.map((item) => (
@@ -271,15 +261,10 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                   </div>
                 ))}
               </nav>
-            </motion.section>
+            </section>
 
             {frontmatter.diagramImages && frontmatter.diagramImages.length > 0 ? (
-              <motion.section
-                initial={{ opacity: 0, x: 8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.4, delay: 0.25, ease: "easeOut" }}
-                className="glass-panel rounded-2xl p-5 max-w-[460px]"
-              >
+              <section className="glass-panel max-w-[460px] rounded-2xl p-5">
                 <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Visualisierungen</p>
                 <div className="mt-3 space-y-3 flex flex-col items-center">
                   {frontmatter.diagramImages.map((image) => (
@@ -295,7 +280,7 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                     />
                   ))}
                 </div>
-              </motion.section>
+              </section>
             ) : null}
 
             {/* Floating Back Link */}

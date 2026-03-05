@@ -4,11 +4,11 @@ export function SiteFooter(): React.JSX.Element {
   return (
     <footer className="border-t border-[#12335f] bg-[#0a1f3b] text-slate-200">
       <div className="mx-auto flex min-h-[56px] w-full max-w-[1180px] flex-wrap items-center justify-between gap-2 px-4 py-2 text-xs sm:px-6">
-        <div>
+        <div className="min-w-0">
           <p className="font-semibold text-slate-100">System GraphRAG Public MVP</p>
           <p className="text-[11px] text-slate-300">GraphRAG, Agent-Workflows und nachvollziehbare KI-Entscheidungen</p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <TrackedLink
             href="/about"
             label="About"

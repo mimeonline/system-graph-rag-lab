@@ -17,7 +17,7 @@ export function SectionTitle({
       <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700">
         {eyebrow}
       </p>
-      <h1 className="text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
+      <h1 className="headline-wrap text-3xl font-semibold tracking-tight text-slate-950 sm:text-4xl">
         {title}
       </h1>
       <p className="max-w-2xl text-base leading-7 text-slate-700">{description}</p>

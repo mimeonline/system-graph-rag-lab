@@ -14,15 +14,15 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
       <main className="flex-1 px-4 py-6 sm:px-6 sm:py-8">
         <div className="mx-auto w-full max-w-[1280px] space-y-8">
           <section className="space-y-4 pt-4">
-            <div className="flex items-center gap-4">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">GraphRAG Story</p>
               <span className="text-xs text-slate-400">·</span>
               <p className="text-xs text-slate-400">ca. 4 Min. Lesezeit</p>
             </div>
-            <h1 className="max-w-4xl text-[2.75rem] font-bold leading-tight tracking-tight sm:text-[3.25rem]">
+            <h1 className="headline-wrap max-w-4xl text-[1.9rem] font-bold leading-tight tracking-tight sm:text-[3.25rem]">
               Von der Frage zur Entscheidung in 5 klaren Schritten
             </h1>
-            <p className="max-w-3xl text-[1.125rem] leading-relaxed text-slate-700 font-medium">
+            <p className="max-w-3xl text-base leading-relaxed text-slate-700 font-medium sm:text-[1.125rem]">
               Wir zeigen Schritt für Schritt, wie aus einer ersten Frage eine klare Entscheidung entsteht.
               Dabei bleibt jeder Übergang nachvollziehbar: von der Auswahl des Kontexts über den Aufbau der Beziehungen
               bis zur begründeten Schlussfolgerung.
@@ -31,15 +31,15 @@ export function GraphRagStoryTemplate(): React.JSX.Element {
 
           <GraphRagTechnicalFlow />
 
-          <section className="glass-panel rounded-3xl p-8 sm:p-12 relative overflow-hidden mt-12">
+          <section className="glass-panel relative mt-12 overflow-hidden rounded-3xl p-6 sm:p-12">
             <div className="absolute inset-0 bg-gradient-to-br from-slate-50/50 to-slate-100/50 -z-10" />
 
             <div className="max-w-2xl">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Abschluss</p>
-              <h2 className="mt-4 text-[1.5rem] font-bold text-slate-900 sm:text-[1.75rem] leading-tight">
+              <h2 className="headline-wrap mt-4 text-[1.5rem] font-bold text-slate-900 sm:text-[1.75rem] leading-tight">
                 GraphRAG ist mehr als ein besseres Suchfeld.
               </h2>
-              <p className="text-[1.25rem] text-slate-700 font-medium mt-1">
+              <p className="mt-1 text-lg text-slate-700 font-medium sm:text-[1.25rem]">
                 Es hilft, Entscheidungen klar zu begründen und später erneut zu prüfen.
                 So bleibt Wissen nicht nur im Kopf einzelner Personen, sondern in einem gemeinsamen, nutzbaren
                 Entscheidungsweg.

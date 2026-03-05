@@ -77,8 +77,8 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
               transition={{ duration: 0.6, delay: 0.1, ease: "easeOut" }}
               className="space-y-5"
             >
-              <h1 className="max-w-[28ch] text-[2.5rem] font-bold tracking-tight text-slate-950 sm:text-[3.2rem] leading-[1.1]">
-                Vom Wahrscheinlichkeitsmodell zur <span className="text-gradient-primary">Entscheidungsarchitektur</span>.
+              <h1 className="headline-wrap max-w-[28ch] text-[2rem] font-bold tracking-tight text-slate-950 sm:text-[3.2rem] leading-[1.08]">
+                Vom Wahrscheinlichkeits<wbr />modell zur <span className="text-gradient-primary">Entscheidungs<wbr />architektur</span>.
               </h1>
               <p className="max-w-[66ch] text-lg font-medium leading-relaxed text-slate-700">
                 Diese Essayserie analysiert den strukturellen Übergang von deskriptivem RAG
@@ -134,7 +134,7 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
               className="space-y-3"
             >
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-600">Struktur des Arguments</p>
-              <h2 className="text-[1.75rem] font-bold tracking-tight text-slate-900 sm:text-[2.25rem]">Vom Problem zur Position</h2>
+              <h2 className="headline-wrap text-[1.75rem] font-bold tracking-tight text-slate-900 sm:text-[2.25rem]">Vom Problem zur Position</h2>
               <p className="max-w-[72ch] text-[1.05rem] leading-relaxed text-slate-600 font-medium">
                 Der Gedankengang folgt einer klaren Logik – von der Ausgangsfrage
                 bis zur organisatorischen Einordnung. Jeder Schritt baut auf dem vorherigen auf.

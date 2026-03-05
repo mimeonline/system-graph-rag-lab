@@ -594,7 +594,7 @@ export function GraphEssaysSurface(): React.JSX.Element {
 
   return (
     <TooltipProvider delayDuration={70}>
-      <section className="relative left-1/2 right-1/2 -mx-[50vw] w-screen overflow-hidden bg-slate-100 py-6 sm:py-8">
+      <section className="full-bleed-safe relative overflow-hidden bg-slate-100 py-6 sm:py-8">
 
         <div className="relative mx-auto w-full max-w-[1520px] px-4 md:px-16 lg:px-20 xl:px-24">
           <div

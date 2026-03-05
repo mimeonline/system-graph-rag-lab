@@ -36,8 +36,8 @@ export function GraphRagStateLab(): React.JSX.Element {
     <section className="space-y-5 rounded-2xl border border-slate-300/70 bg-white p-4 shadow-sm sm:p-5">
       <header className="space-y-2">
         <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Strukturraum</p>
-        <h2 className="text-[1.92rem] font-semibold tracking-tight text-slate-950">Drei-Zustände-Modell</h2>
-        <p className="text-[1.02rem] leading-7 text-slate-700">
+        <h2 className="headline-wrap text-[1.6rem] font-semibold tracking-tight text-slate-950 sm:text-[1.92rem]">Drei-Zustände-Modell</h2>
+        <p className="text-base leading-7 text-slate-700 sm:text-[1.02rem]">
           Direkter Vergleich zwischen textzentrierter Verdichtung, strukturierter Herleitung und stabilem
           Entscheidungszustand.
         </p>
@@ -69,7 +69,7 @@ export function GraphRagStateLab(): React.JSX.Element {
 
       <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_300px]">
         <section className="rounded-xl border border-slate-300/80 bg-slate-950 p-3">
-          <div className="h-[390px] overflow-hidden rounded-lg bg-[radial-gradient(circle_at_18%_18%,rgba(56,189,248,0.18),rgba(2,6,23,0.98))]">
+          <div className="h-[560px] overflow-hidden rounded-lg bg-[radial-gradient(circle_at_18%_18%,rgba(56,189,248,0.18),rgba(2,6,23,0.98))] sm:h-[390px]">
             {activeState === "text" ? (
               <TextStateCanvas />
             ) : null}
@@ -150,12 +150,12 @@ import { AnimatePresence, motion } from "framer-motion";
 
 function TextStateCanvas(): React.JSX.Element {
   return (
-    <div className="relative h-full w-full p-8 font-sans">
-      <div className="flex h-full items-center justify-between gap-12">
+    <div className="relative h-full w-full p-4 font-sans sm:p-8">
+      <div className="flex h-full flex-col items-stretch justify-center gap-5 sm:flex-row sm:items-center sm:justify-between sm:gap-12">
         <motion.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
-          className="flex-1 rounded-2xl bg-slate-200/90 p-6 shadow-sm ring-1 ring-slate-300"
+          className="flex-1 rounded-2xl bg-slate-200/90 p-4 shadow-sm ring-1 ring-slate-300 sm:p-6"
         >
           <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-700">Antworten</h4>
           <ul className="space-y-3">
@@ -183,10 +183,10 @@ function TextStateCanvas(): React.JSX.Element {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.4 }}
-          className="relative flex h-full items-center justify-center p-4"
+          className="relative flex min-h-16 items-center justify-center p-2 sm:h-full sm:p-4"
         >
-          <div className="absolute h-0.5 w-full bg-slate-500/30 border-t border-dashed border-slate-400" />
-          <span className="relative bg-[#0b1021] px-4 text-sm font-medium text-slate-400">
+          <div className="absolute h-full w-0.5 bg-slate-500/30 border-l border-dashed border-slate-400 sm:h-0.5 sm:w-full sm:border-l-0 sm:border-t" />
+          <span className="relative bg-[#0b1021] px-4 text-center text-xs font-medium text-slate-400 sm:text-sm">
             Keine explizite Beziehungslogik
           </span>
         </motion.div>
@@ -195,7 +195,7 @@ function TextStateCanvas(): React.JSX.Element {
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ delay: 0.2 }}
-          className="flex-1 rounded-2xl bg-slate-200/90 p-6 shadow-sm ring-1 ring-slate-300"
+          className="flex-1 rounded-2xl bg-slate-200/90 p-4 shadow-sm ring-1 ring-slate-300 sm:p-6"
         >
           <h4 className="mb-4 text-sm font-semibold uppercase tracking-wider text-slate-700">Quellenliste</h4>
           <ul className="space-y-3">
@@ -219,7 +219,7 @@ const Node = ({ title, active, colorClass }: { title: string; active?: boolean; 
     layout
     initial={{ opacity: 0, scale: 0.9 }}
     animate={{ opacity: 1, scale: 1 }}
-    className={`relative flex items-center justify-center min-w-[130px] rounded-xl border px-4 py-3 text-sm font-bold shadow-sm backdrop-blur-md transition-all ${colorClass}`}
+    className={`relative flex min-w-[110px] max-w-full items-center justify-center rounded-xl border px-3 py-2.5 text-center text-xs font-bold shadow-sm backdrop-blur-md transition-all sm:min-w-[130px] sm:px-4 sm:py-3 sm:text-sm ${colorClass}`}
   >
     {active && (
       <motion.div
@@ -247,47 +247,47 @@ function StructureStateCanvas({
   showEvidence: boolean;
 }): React.JSX.Element {
   return (
-    <div className="relative flex h-full w-full items-center justify-center p-8">
-      <div className="flex items-center justify-center gap-2 w-full max-w-4xl">
+    <div className="relative flex h-full w-full items-center justify-center p-4 sm:p-8">
+      <div className="flex w-full max-w-4xl flex-col items-center justify-center gap-3 sm:flex-row sm:gap-2">
         
         <div className="flex flex-col items-center z-10">
           <Node title="Kernfrage" colorClass="bg-slate-100/10 border-sky-400/50 text-white" />
         </div>
 
-        <div className="flex flex-col justify-center gap-[4.5rem] relative -mx-4 h-full">
+        <div className="relative flex h-10 w-full items-center justify-center sm:-mx-4 sm:h-full sm:w-auto sm:flex-col sm:justify-center sm:gap-[4.5rem]">
             <AnimatePresence>
               {showRelations && (
                 <>
-                  <Edge active className="w-20 absolute top-1/4 -rotate-12" />
-                  <Edge active className="w-20 absolute bottom-1/4 rotate-12" />
+                  <Edge active className="w-16 rotate-90 sm:absolute sm:top-1/4 sm:w-20 sm:-rotate-12" />
+                  <Edge active className="hidden w-16 -rotate-90 sm:absolute sm:bottom-1/4 sm:block sm:w-20 sm:rotate-12" />
                 </>
               )}
             </AnimatePresence>
         </div>
 
-        <div className="flex flex-col gap-6 z-10 pl-16">
+        <div className="z-10 flex flex-col gap-3 sm:gap-6 sm:pl-16">
           <Node title="Begriff A" colorClass="bg-sky-500/20 border-sky-400 text-sky-100" />
           <Node title="Begriff B" colorClass="bg-sky-500/20 border-sky-400 text-sky-100" />
         </div>
 
-        <div className="flex flex-col justify-center gap-[4.5rem] relative -mx-4 h-full">
+        <div className="relative flex h-10 w-full items-center justify-center sm:-mx-4 sm:h-full sm:w-auto sm:flex-col sm:justify-center sm:gap-[4.5rem]">
            <AnimatePresence>
              {showRelations && (
                 <>
-                  <Edge active className="w-20 absolute top-1/4 rotate-12" />
-                  <Edge active className="w-20 absolute bottom-1/4 -rotate-12" />
+                  <Edge active className="w-16 rotate-90 sm:absolute sm:top-1/4 sm:w-20 sm:rotate-12" />
+                  <Edge active className="hidden w-16 -rotate-90 sm:absolute sm:bottom-1/4 sm:block sm:w-20 sm:-rotate-12" />
                 </>
              )}
            </AnimatePresence>
         </div>
 
-        <div className="flex flex-col items-center z-10 pl-16">
+        <div className="z-10 flex flex-col items-center sm:pl-16">
           <Node title="Beleg" active={showEvidence} colorClass="bg-emerald-500/20 border-emerald-400 text-emerald-100" />
         </div>
 
-        <div className="flex flex-col justify-center items-center px-4">
+        <div className="flex flex-col items-center justify-center py-1 sm:px-4">
           <AnimatePresence>
-            {showEvidence && <Edge active={true} className="w-12" />}
+            {showEvidence && <Edge active={true} className="w-10 rotate-90 sm:w-12 sm:rotate-0" />}
           </AnimatePresence>
         </div>
 
@@ -308,9 +308,9 @@ function DecisionStateCanvas({
   simulateVariation: boolean;
 }): React.JSX.Element {
   return (
-    <div className="relative flex h-full w-full items-center justify-between p-8">
+    <div className="relative flex h-full w-full flex-col items-center justify-center gap-5 p-4 sm:flex-row sm:justify-between sm:p-8">
       
-      <div className="flex items-center gap-6 z-10">
+      <div className="z-10 flex w-full flex-col items-center gap-3 sm:w-auto sm:flex-row sm:gap-6">
         <div className="flex flex-col gap-4">
           <motion.div layout>
             <Node title="Frage A" colorClass="bg-slate-100/10 border-sky-400/50 text-white" />
@@ -329,13 +329,13 @@ function DecisionStateCanvas({
           </AnimatePresence>
         </div>
 
-        <div className="flex flex-col justify-center gap-[1.5rem] relative">
+        <div className="relative flex h-8 items-center justify-center sm:flex-col sm:justify-center sm:gap-[1.5rem]">
             <AnimatePresence>
               {showPath && (
                  <motion.div 
                   initial={{ scaleX: 0 }}
                   animate={{ scaleX: 1 }}
-                  className="h-0.5 w-16 origin-left rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)]"
+                  className="h-0.5 w-10 origin-left rounded-full bg-cyan-400 shadow-[0_0_8px_rgba(34,211,238,0.8)] sm:w-16"
                  />
               )}
             </AnimatePresence>
@@ -343,13 +343,13 @@ function DecisionStateCanvas({
 
         <Node title="Begriffsraum" active={showPath} colorClass="bg-sky-500/20 border-sky-400 text-sky-100" />
         
-        <div className="px-2">
+        <div className="py-1 sm:px-2">
             <AnimatePresence>
                   {showPath && (
                     <motion.div 
                       initial={{ scaleX: 0 }}
                       animate={{ scaleX: 1 }}
-                      className="h-0.5 w-12 origin-left rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)]"
+                      className="h-0.5 w-8 origin-left rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] sm:w-12"
                     />
                   )}
             </AnimatePresence>
@@ -357,13 +357,13 @@ function DecisionStateCanvas({
 
         <Node title="Belegpfad" active={showPath} colorClass="bg-emerald-500/20 border-emerald-400 text-emerald-100" />
         
-        <div className="px-2">
+        <div className="py-1 sm:px-2">
             <AnimatePresence>
                   {showPath && (
                     <motion.div 
                       initial={{ scaleX: 0 }}
                       animate={{ scaleX: 1 }}
-                      className="h-0.5 w-12 origin-left rounded-full bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.8)]"
+                      className="h-0.5 w-8 origin-left rounded-full bg-indigo-400 shadow-[0_0_8px_rgba(129,140,248,0.8)] sm:w-12"
                     />
                   )}
             </AnimatePresence>
@@ -375,7 +375,7 @@ function DecisionStateCanvas({
       <motion.div 
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="absolute bottom-6 right-6 rounded-xl border border-slate-700/50 bg-slate-900/80 p-5 backdrop-blur-md"
+        className="w-full rounded-xl border border-slate-700/50 bg-slate-900/80 p-4 backdrop-blur-md sm:absolute sm:bottom-6 sm:right-6 sm:w-auto sm:p-5"
       >
         <p className="mb-3 text-xs font-bold uppercase tracking-widest text-slate-400">Version-Layer</p>
         <div className="space-y-1.5 text-sm font-medium text-slate-300">

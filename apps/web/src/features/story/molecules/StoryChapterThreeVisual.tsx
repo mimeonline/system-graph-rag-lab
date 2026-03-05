@@ -739,7 +739,7 @@ export function StoryChapterThreeVisual({ chapterId }: StoryChapterThreeVisualPr
   };
 
   return (
-    <div className="relative h-[440px] w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-950/10">
+    <div className="relative h-[340px] w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-950/10 sm:h-[440px]">
       <Canvas
         key={displayChapter}
         shadows
@@ -786,17 +786,17 @@ export function StoryChapterThreeVisual({ chapterId }: StoryChapterThreeVisualPr
           <div className="pointer-events-none absolute left-4 top-4 rounded-md border border-slate-200/60 bg-white/75 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-600 backdrop-blur-sm">
             Shot: {shot.label}
           </div>
-          <div className="pointer-events-none absolute right-48 top-4 rounded-md border border-slate-200/60 bg-white/75 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-600 backdrop-blur-sm">
+          <div className="pointer-events-none absolute right-4 top-14 hidden rounded-md border border-slate-200/60 bg-white/75 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-600 backdrop-blur-sm sm:block sm:right-48 sm:top-4">
             Build: Step-by-step
           </div>
           <button
             type="button"
             onClick={handleResetView}
-            className="absolute right-4 top-4 rounded-md border border-slate-300/80 bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-700 shadow-sm backdrop-blur-sm transition hover:bg-white"
+            className="absolute right-4 top-4 rounded-md border border-slate-300/80 bg-white/90 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-700 shadow-sm backdrop-blur-sm transition hover:bg-white sm:px-2.5 sm:text-[10px]"
           >
             Reset View
           </button>
-          <aside className="pointer-events-none absolute bottom-4 left-4 rounded-md border border-slate-200/70 bg-white/85 px-2.5 py-2 text-[10px] text-slate-700 shadow-sm">
+          <aside className="pointer-events-none absolute bottom-14 left-3 rounded-md border border-slate-200/70 bg-white/85 px-2 py-1.5 text-[9px] text-slate-700 shadow-sm sm:bottom-4 sm:left-4 sm:px-2.5 sm:py-2 sm:text-[10px]">
             <p className="font-semibold uppercase tracking-[0.08em] text-slate-500">Legende</p>
             <p className="mt-1 flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />gesichert</p>
             <p className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-slate-400" />offen</p>
@@ -807,7 +807,7 @@ export function StoryChapterThreeVisual({ chapterId }: StoryChapterThreeVisualPr
       <button
         type="button"
         onClick={() => setIsCleanView((current) => !current)}
-        className="absolute bottom-4 right-4 rounded-md border border-slate-300/80 bg-white/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.08em] text-slate-700 shadow-sm backdrop-blur-sm transition hover:bg-white"
+        className="absolute bottom-4 right-4 rounded-md border border-slate-300/80 bg-white/90 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-700 shadow-sm backdrop-blur-sm transition hover:bg-white sm:px-2.5 sm:text-[10px]"
       >
         {isCleanView ? "Show UI" : "Clean View"}
       </button>
