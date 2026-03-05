@@ -2,6 +2,14 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.0.6] - 2026-03-06
+
+### Fixed
+
+1. Reworked mobile navigation with a dedicated burger menu and more reliable tap targets in the header.
+2. Stabilized the demo route so `/demo` presents a distinct operational demo surface instead of mirroring the home entry view.
+3. Improved responsive headline wrapping and graph legend layout to prevent mobile viewport overflow across landing, essay and story surfaces.
+
 ## [1.0.5] - 2026-03-03
 
 ### Fixed
