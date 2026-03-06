@@ -1,8 +1,10 @@
 import { TrackedLink } from "@/components/molecules/tracked-link";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
+import type { AppLocale } from "@/i18n/config";
 
 export function SiteFooter(): React.JSX.Element {
   const t = useTranslations("SiteFooter");
+  const locale = useLocale() as AppLocale;
 
   return (
     <footer className="border-t border-[#12335f] bg-[#0a1f3b] text-slate-200">
@@ -14,6 +16,7 @@ export function SiteFooter(): React.JSX.Element {
         <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
           <TrackedLink
             href="/about"
+            locale={locale}
             label={t("about")}
             eventName="footer_click"
             payload={{ target: "about" }}
@@ -37,6 +40,7 @@ export function SiteFooter(): React.JSX.Element {
           />
           <TrackedLink
             href="/datenschutz"
+            locale={locale}
             label={t("privacy")}
             eventName="footer_click"
             payload={{ target: "privacy" }}
@@ -44,6 +48,7 @@ export function SiteFooter(): React.JSX.Element {
           />
           <TrackedLink
             href="/impressum"
+            locale={locale}
             label={t("imprint")}
             eventName="footer_click"
             payload={{ target: "imprint" }}

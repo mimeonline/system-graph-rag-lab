@@ -33,6 +33,8 @@ const ROOM_HEIGHT = 3.45;
 const FLOOR_Y = -1.25;
 const RETRIEVAL_SAFE_ZONE_X = 3.6;
 const RETRIEVAL_SAFE_ZONE_Z = 2.2;
+const EDGE_NODE_OVERLAP = 0.06;
+const REVEAL_STEP_DURATION_SECONDS = 0.58;
 
 const SHOTS: Record<StoryChapterId, ShotConfig> = {
   question: { label: "Top", camera: [0.6, 2.15, 5.8], target: [0, 0.1, 0], orbit: false },
@@ -217,23 +219,11 @@ function RevealGroup({
   activeStep: number;
   children: React.ReactNode;
 }): React.JSX.Element {
-  const ref = useRef<THREE.Group>(null);
+  if (activeStep < step) {
+    return <group visible={false} />;
+  }
 
-  useFrame((_state, delta) => {
-    if (!ref.current) {
-      return;
-    }
-
-    const active = activeStep >= step;
-    const targetScale = active ? 1 : 0.78;
-    const targetY = active ? 0 : 0.22;
-    const alpha = 1 - Math.exp(-delta * 6.5);
-
-    ref.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), alpha);
-    ref.current.position.y = THREE.MathUtils.lerp(ref.current.position.y, targetY, alpha);
-  });
-
-  return <group ref={ref}>{children}</group>;
+  return <group>{children}</group>;
 }
 
 function Node({
@@ -325,9 +315,8 @@ function PathEdge({
           lineWidth={5.6}
           transparent
           opacity={1}
-          depthTest={false}
+          depthTest
           depthWrite={false}
-          renderOrder={12}
           frustumCulled={false}
         />
       ) : null}
@@ -337,9 +326,8 @@ function PathEdge({
         lineWidth={hero ? 3.2 : 2}
         transparent
         opacity={1}
-        depthTest={false}
+        depthTest
         depthWrite={false}
-        renderOrder={hero ? 13 : 11}
         frustumCulled={false}
       />
     </>
@@ -356,8 +344,10 @@ function buildAnchoredEdge(
   const to = new THREE.Vector3(...target);
   const direction = to.clone().sub(from).normalize();
 
-  const start = from.clone().add(direction.clone().multiplyScalar(sourceRadius));
-  const end = to.clone().sub(direction.clone().multiplyScalar(targetRadius));
+  const startInset = Math.max(0, sourceRadius - EDGE_NODE_OVERLAP);
+  const endInset = Math.max(0, targetRadius - EDGE_NODE_OVERLAP);
+  const start = from.clone().add(direction.clone().multiplyScalar(startInset));
+  const end = to.clone().sub(direction.clone().multiplyScalar(endInset));
 
   return [
     [start.x, start.y, start.z],
@@ -455,7 +445,7 @@ function ChapterScene({
       return;
     }
     timeRef.current += delta;
-    const nextStep = Math.min(6, Math.floor(timeRef.current / 1.15) + 1);
+    const nextStep = Math.min(6, Math.floor(timeRef.current / REVEAL_STEP_DURATION_SECONDS) + 1);
     setActiveStep((previous) => (previous === nextStep ? previous : nextStep));
   });
 
@@ -761,7 +751,7 @@ function ChapterScene({
             const value: [number, number, number] = [2.8, 0.5, 0];
             const nodeRadius = 0.23;
             const activeRadius = 0.33;
-            const mainA: Array<[number, number, number]> = [answer, decision];
+            const mainA = buildAnchoredEdge(answer, decision, nodeRadius, nodeRadius);
             const mainB = buildAnchoredEdge(decision, measure, nodeRadius, nodeRadius);
             const mainC = buildAnchoredEdge(measure, value, nodeRadius, activeRadius);
 
