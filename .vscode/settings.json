@@ -2,5 +2,9 @@
   "evenBetterToml.schema.enabled": false,
   "evenBetterToml.schema.catalogs": [],
   "evenBetterToml.schema.associations": {},
-  "evenBetterToml.schema.links": false
+  "evenBetterToml.schema.links": false,
+  "i18n-ally.localesPaths": [
+    "apps/web/messages",
+    "apps/web/src/i18n"
+  ]
 }
