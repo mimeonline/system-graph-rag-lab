@@ -2,6 +2,23 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.0.7] - 2026-03-06
+
+### Added
+
+1. Introduced bilingual `de`/`en` GraphRAG query handling with locale-aware prompts, structured answer fallbacks and English essay content.
+
+### Changed
+
+1. Completed locale-aware graph surfaces across landing, story and essay experiences, including localized SVG variants and language switching in the header.
+2. Expanded legal pages to a fuller shared template with localized header and footer chrome plus project-specific privacy and legal notice content.
+
+### Fixed
+
+1. Restored the dedicated demo hero stage and removed remaining German copy from key English routes.
+2. Improved error handling with structured localized 404 and 5xx pages.
+3. Stabilized story visualization timing and line-to-node attachment during chapter reveals.
+
 ## [1.0.6] - 2026-03-06
 
 ### Fixed
