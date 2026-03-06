@@ -1,3 +1,4 @@
+import { StatusPageShell } from "@/components/organisms/status-page-shell";
 import { Link } from "@/i18n/navigation";
 import { getTranslations } from "next-intl/server";
 
@@ -5,24 +6,37 @@ export default async function NotFound(): Promise<React.JSX.Element> {
   const t = await getTranslations("NotFound");
 
   return (
-    <main className="mx-auto flex min-h-[70vh] w-full max-w-4xl flex-col items-start justify-center gap-5 px-4 py-16 sm:px-6">
-      <p className="text-xs font-bold uppercase tracking-[0.18em] text-sky-700">{t("eyebrow")}</p>
-      <h1 className="text-4xl font-bold tracking-tight text-slate-950">{t("title")}</h1>
-      <p className="max-w-2xl text-base leading-7 text-slate-700">{t("description")}</p>
-      <div className="flex flex-wrap gap-3">
-        <Link href="/" className="rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white">
+    <StatusPageShell
+      code="404"
+      eyebrow={t("eyebrow")}
+      title={t("title")}
+      description={t("description")}
+      summary={t("summary")}
+      statusLabel={t("statusLabel")}
+      recoveryTitle={t("recoveryTitle")}
+      recoveryDescription={t("recoveryDescription")}
+      primaryAction={
+        <Link href="/" className="rounded-xl bg-slate-950 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:-translate-y-0.5 hover:bg-sky-700">
           {t("back")}
         </Link>
-        <Link href="/essay" className="rounded-lg border border-slate-300 px-4 py-2.5 text-sm font-semibold text-slate-700">
+      }
+      secondaryActions={[
+        <Link key="essay" href="/essay" className="rounded-xl border border-slate-300 bg-white/90 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-400 hover:bg-white">
           {t("browse")}
-        </Link>
-      </div>
-      <div className="space-y-2 text-sm text-slate-600">
-        <p className="font-semibold text-slate-900">{t("hintsTitle")}</p>
-        <p>{t("hint1")}</p>
-        <p>{t("hint2")}</p>
-        <p>{t("hint3")}</p>
-      </div>
-    </main>
+        </Link>,
+        <Link key="demo" href="/demo" className="rounded-xl border border-slate-300 bg-white/90 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:-translate-y-0.5 hover:border-slate-400 hover:bg-white">
+          {t("demo")}
+        </Link>,
+      ]}
+      checklistTitle={t("hintsTitle")}
+      checklistItems={[t("hint1"), t("hint2"), t("hint3")]}
+      routesTitle={t("routesTitle")}
+      routeLinks={[
+        { href: "/", label: t("routeHomeTitle"), description: t("routeHomeDescription") },
+        { href: "/demo", label: t("routeDemoTitle"), description: t("routeDemoDescription") },
+        { href: "/story/graphrag", label: t("routeStoryTitle"), description: t("routeStoryDescription") },
+        { href: "/essay", label: t("routeEssayTitle"), description: t("routeEssayDescription") },
+      ]}
+    />
   );
 }

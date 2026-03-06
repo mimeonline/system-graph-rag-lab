@@ -12,7 +12,6 @@ const NAV_LINKS = [
   { labelKey: "demo", href: "/demo" },
   { labelKey: "story", href: "/story/graphrag" },
   { labelKey: "essay", href: "/essay" },
-  { labelKey: "about", href: "/about" },
 ] as const;
 
 export function SiteHeader(): React.JSX.Element {

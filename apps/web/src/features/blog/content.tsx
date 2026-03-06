@@ -9,6 +9,7 @@ import type { BlogPostFrontmatter, BlogPostSummary, BlogTocItem } from "@/featur
 import { defaultLocale, locales, type AppLocale } from "@/i18n/config";
 
 const BLOG_CONTENT_ROOT = path.join(process.cwd(), "content");
+const PUBLIC_ROOT = path.join(process.cwd(), "public");
 
 function getBlogContentDir(locale: AppLocale): string {
   return path.join(BLOG_CONTENT_ROOT, locale, "blog");
@@ -42,6 +43,33 @@ function normalizeFrontmatter(raw: Partial<BlogPostFrontmatter>, sourcePath: str
     readingTime: raw.readingTime?.trim() || "5 min",
     featured: raw.featured === true,
     canonicalUrl: raw.canonicalUrl?.trim(),
+  };
+}
+
+function resolveLocalizedAssetPath(assetPath: string | undefined, locale: AppLocale): string | undefined {
+  if (!assetPath || locale === defaultLocale || !assetPath.startsWith("/")) {
+    return assetPath;
+  }
+
+  const extension = path.extname(assetPath);
+  if (!extension) {
+    return assetPath;
+  }
+
+  const localizedPath = `${assetPath.slice(0, -extension.length)}-${locale}${extension}`;
+  const localizedFsPath = path.join(PUBLIC_ROOT, localizedPath.replace(/^\//, ""));
+
+  return fsSync.existsSync(localizedFsPath) ? localizedPath : assetPath;
+}
+
+function resolveLocalizedFrontmatter(frontmatter: BlogPostFrontmatter, locale: AppLocale): BlogPostFrontmatter {
+  const diagramImages = frontmatter.diagramImages ?? [];
+
+  return {
+    ...frontmatter,
+    coverImage: resolveLocalizedAssetPath(frontmatter.coverImage, locale),
+    heroImage: resolveLocalizedAssetPath(frontmatter.heroImage, locale),
+    diagramImages: diagramImages.map((image) => resolveLocalizedAssetPath(image, locale) ?? image),
   };
 }
 
@@ -132,7 +160,7 @@ async function loadBlogPostFromLocale(
       img: ({ src, alt }) => (
         <span className="mt-5 block overflow-hidden rounded-xl border border-slate-200 bg-white">
           <Image
-            src={String(src ?? "")}
+            src={resolveLocalizedAssetPath(String(src ?? ""), locale) ?? String(src ?? "")}
             alt={alt ?? ""}
             width={1400}
             height={900}
@@ -149,7 +177,10 @@ async function loadBlogPostFromLocale(
     },
   });
 
-  const normalizedFrontmatter = normalizeFrontmatter(frontmatter as Partial<BlogPostFrontmatter>, match);
+  const normalizedFrontmatter = resolveLocalizedFrontmatter(
+    normalizeFrontmatter(frontmatter as Partial<BlogPostFrontmatter>, match),
+    locale,
+  );
   const toc = extractToc(source);
 
   return {
