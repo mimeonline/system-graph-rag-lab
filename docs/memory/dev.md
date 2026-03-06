@@ -1,5 +1,13 @@
 # Dev Memory
 
+## Update i18n Setup 2026-03-06
+1. `apps/web` nutzt jetzt `next-intl` mit `de` und `en`, Middleware, `[locale]`-Routing und Root-Redirect von `/` auf sprachspezifische URLs.
+2. SEO-Basis ist locale-aware: neue Helper in `src/lib/seo.ts` und `src/lib/page-metadata.ts`, sprachspezifische Canonicals/`hreflang`, locale-aware Sitemap und EN-Fallback-Seiten mit `sourceLocale`-Modell im Essay-Loader.
+3. Essay-Content liegt jetzt unter `apps/web/content/de/blog/**`; `apps/web/content/en/blog/**` ist für echte EN-Origin-Dateien vorgesehen. EN-Essayrouten dürfen via Loader auf DE fallen, werden dann aber nicht als echte EN-Quelle behandelt.
+4. Shared UI-Chrome ist teilweise an i18n angebunden: Header, Footer, TrackedLink, Query-Input, Status/Antwort-/Rationale-Karten und Fehlerseiten nutzen `messages/de.json` und `messages/en.json`.
+5. Root-Routen ohne Locale wurden auf Redirects zu `/de/...` umgestellt, damit Build und Laufzeit nicht mehr außerhalb des `NextIntlClientProvider` rendern.
+6. Verifikation für den Run erfolgreich: `pnpm --dir apps/web run typecheck`, `pnpm --dir apps/web run lint`, `pnpm --dir apps/web run build`.
+
 ## Current Implementation Status
 1. Story `E1-S6` ist nach Bug-0003-Fix wieder auf `qa` gesetzt.
 2. Story `E2-S1` liefert deterministische Kontextcandidates via Keyword-Index und Tokenbudget-Budgetierung; `state="answer"` sobald Referenzen existieren.

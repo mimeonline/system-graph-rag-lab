@@ -1,0 +1,96 @@
+{
+  "LocaleSwitcher": {
+    "label": "Switch language",
+    "locale": "English",
+    "targetLocale": "Deutsch"
+  },
+  "Navigation": {
+    "home": "Home",
+    "demo": "Demo",
+    "story": "GraphRAG Story",
+    "essay": "Graph Essays",
+    "about": "About"
+  },
+  "SiteHeader": {
+    "productBadge": "Public Showcase",
+    "menuOpen": "Open menu",
+    "menuClose": "Close menu",
+    "navigationLabel": "Primary navigation",
+    "mobileNavigationLabel": "Primary navigation mobile"
+  },
+  "SiteFooter": {
+    "title": "System GraphRAG Public MVP",
+    "tagline": "GraphRAG, agent workflows, and explainable AI decisions",
+    "about": "About",
+    "privacy": "Privacy",
+    "imprint": "Imprint"
+  },
+  "Status": {
+    "idle": "Ready",
+    "loading": "Analyzing context",
+    "success": "Answer ready",
+    "empty": "No matching context",
+    "error": "Request failed"
+  },
+  "Query": {
+    "defaultHelper": "Choose a question or write your own. Keep it short and concrete.",
+    "suggestionsTitle": "Helpful questions",
+    "suggestionPlaceholder": "Choose a question from a category…",
+    "selectionLocked": "Question selection is locked. Reset first to start a new question.",
+    "label": "Question",
+    "nextAction": "Next action",
+    "submit": "Analyze answer",
+    "submitting": "Loading answer…",
+    "reset": "Start new question",
+    "answerTitle": "Answer",
+    "currentQuestion": "Current question",
+    "contextBudget": "Context budget: {tokens} tokens (estimated usage of selected context).",
+    "summaryTitle": "Short answer",
+    "sectionSituation": "Situation",
+    "sectionRelations": "Relations",
+    "sectionConsequence": "Consequence",
+    "actionTitle": "What does this change now?",
+    "actionBadge": "next steps",
+    "rationaleTitle": "Why this answer holds",
+    "rationaleBadge": "evidence-based rationale",
+    "evidenceTitle": "Evidence base",
+    "rationaleMarker": "Traceable evidence base:",
+    "unnamedQuery": "Untitled request"
+  },
+  "QueryStatus": {
+    "idleText": "Ask a simple, concrete question. We will show the answer step by step.",
+    "idleAction": "Choose or enter a question and submit it.",
+    "loadingText": "We are finding the most relevant relations right now.",
+    "loadingAction": "Please wait a moment while the answer is assembled.",
+    "successText": "Done. You can now review the answer, evidence, and useful next steps.",
+    "successAction": "Read the result and ask a follow-up question if anything is still open.",
+    "errorText": "That did not work just now.",
+    "errorAction": "Please submit again.",
+    "emptyText": "We do not have enough matching context for that yet.",
+    "emptyAction": "Rephrase the question in a simpler or more specific way and try again."
+  },
+  "NotFound": {
+    "eyebrow": "Page not found",
+    "title": "This page does not exist here.",
+    "description": "Check the URL or return to a stable section of the lab.",
+    "back": "Back to home",
+    "browse": "Open essays",
+    "hintsTitle": "Helpful next steps",
+    "hint1": "Check whether the locale segment and slug are correct.",
+    "hint2": "For essay links, the English source version may not exist yet.",
+    "hint3": "Use the navigation to return to a known area."
+  },
+  "ErrorPage": {
+    "eyebrow": "System status",
+    "title": "Something went wrong",
+    "description": "The page could not be loaded reliably right now.",
+    "retry": "Try again",
+    "home": "Back to home",
+    "browse": "Open essays",
+    "hintsTitle": "What you can do now",
+    "hint1": "Reload the page or try the same step again.",
+    "hint2": "If the issue persists, go back one step or restart from the navigation.",
+    "hint3": "The error occurred without an additional reference id.",
+    "hint3WithDigest": "Internal reference: {digest}"
+  }
+}

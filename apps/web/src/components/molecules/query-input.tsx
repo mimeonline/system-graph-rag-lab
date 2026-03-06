@@ -1,6 +1,7 @@
 "use client";
 
 import type { FormEvent } from "react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   Select,
@@ -30,8 +31,6 @@ type QueryInputProps = {
   isQuestionSelectionLocked: boolean;
 };
 
-const DEFAULT_HELPER_TEXT = "Wähle eine Frage oder schreibe eine eigene. Halte sie konkret und kurz.";
-
 /**
  * Renders the query form with helper status text and submit action.
  */
@@ -47,13 +46,15 @@ export function QueryInput({
   isSubmitting,
   isQuestionSelectionLocked,
 }: QueryInputProps): React.JSX.Element {
+  const t = useTranslations("Query");
+
   return (
     <form className="space-y-4 rounded-xl border border-slate-200/70 bg-white/60 p-4 sm:p-5" onSubmit={onSubmit}>
       <div className="space-y-2">
-        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Hilfreiche Fragen</p>
+        <p className="text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">{t("suggestionsTitle")}</p>
         <Select onValueChange={onSuggestionSelect} disabled={isQuestionSelectionLocked}>
           <SelectTrigger className="w-full bg-slate-50 text-left text-sm text-slate-700">
-            <SelectValue placeholder="Frage aus Kategorie wählen…" />
+            <SelectValue placeholder={t("suggestionPlaceholder")} />
           </SelectTrigger>
           <SelectContent>
             {suggestionGroups.map((group) => (
@@ -70,13 +71,13 @@ export function QueryInput({
         </Select>
         {isQuestionSelectionLocked ? (
           <p className="text-xs text-slate-600">
-            Fragenauswahl gesperrt. Für eine neue Frage bitte zuerst zurücksetzen.
+            {t("selectionLocked")}
           </p>
         ) : null}
       </div>
 
       <label className="block space-y-2" htmlFor="query">
-        <span className="text-sm font-medium text-slate-900">Frage</span>
+        <span className="text-sm font-medium text-slate-900">{t("label")}</span>
         <textarea
           className="h-32 w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none focus:border-sky-500"
           id="query"
@@ -84,10 +85,10 @@ export function QueryInput({
           onChange={(event) => onQueryChange(event.currentTarget.value)}
         />
       </label>
-      <p className="text-sm text-slate-600">{helperText ?? DEFAULT_HELPER_TEXT}</p>
+      <p className="text-sm text-slate-600">{helperText ?? t("defaultHelper")}</p>
       {nextAction && (
         <p className="text-xs font-semibold text-slate-900">
-          Nächste Aktion: {nextAction}
+          {t("nextAction")}: {nextAction}
         </p>
       )}
       <div className="flex flex-wrap items-center gap-2">
@@ -96,7 +97,7 @@ export function QueryInput({
           className="w-full bg-sky-600 shadow-sm transition hover:bg-sky-700 sm:w-auto"
           disabled={isSubmitting}
         >
-          {isSubmitting ? "Antwort wird geladen…" : "Antwort analysieren"}
+          {isSubmitting ? t("submitting") : t("submit")}
         </Button>
         {isQuestionSelectionLocked ? (
           <Button
@@ -105,7 +106,7 @@ export function QueryInput({
             className="w-full sm:w-auto"
             onClick={onResetQuestionSession}
           >
-            Neue Frage starten
+            {t("reset")}
           </Button>
         ) : null}
       </div>

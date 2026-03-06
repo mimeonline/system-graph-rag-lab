@@ -1,15 +1,8 @@
 import type { QueryPanelStatus } from "@/components/organisms/query-panel-status";
+import { useTranslations } from "next-intl";
 
 type StatusBadgeProps = {
   status: QueryPanelStatus;
-};
-
-const STATUS_LABELS: Record<QueryPanelStatus, string> = {
-  idle: "Bereit",
-  loading: "Analysiere Kontext",
-  success: "Antwort erstellt",
-  empty: "Kein passender Kontext",
-  error: "Anfrage fehlgeschlagen",
 };
 
 const STATUS_TONE: Record<QueryPanelStatus, string> = {
@@ -24,13 +17,15 @@ const STATUS_TONE: Record<QueryPanelStatus, string> = {
  * Compact semantic status indicator used across query and learning workflow blocks.
  */
 export function StatusBadge({ status }: StatusBadgeProps): React.JSX.Element {
+  const t = useTranslations("Status");
+
   return (
     <span
       aria-live="polite"
       className={`inline-flex items-center gap-1.5 whitespace-nowrap rounded-lg border px-2.5 py-1 text-xs font-semibold shadow-sm ${STATUS_TONE[status]}`}
     >
       <span className="inline-block h-1.5 w-1.5 rounded-full bg-current opacity-70" />
-      {STATUS_LABELS[status]}
+      {t(status)}
     </span>
   );
 }

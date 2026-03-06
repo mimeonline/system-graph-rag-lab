@@ -23,5 +23,5 @@ export async function generateMetadata({ params }: BlogLegacyArticlePageProps): 
 
 export default async function BlogLegacyArticlePage({ params }: BlogLegacyArticlePageProps): Promise<never> {
   const { slug } = await params;
-  redirect(`/essay/${slug}`);
+  redirect(`/de/essay/${slug}`);
 }

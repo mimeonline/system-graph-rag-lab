@@ -1,3 +1,5 @@
+import type { AppLocale } from "@/i18n/config";
+
 export type BlogPostFrontmatter = {
   slug: string;
   title: string;
@@ -23,4 +25,6 @@ export type BlogTocItem = {
 
 export type BlogPostSummary = BlogPostFrontmatter & {
   sourcePath: string;
+  locale: AppLocale;
+  sourceLocale: AppLocale;
 };

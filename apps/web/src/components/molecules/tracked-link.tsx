@@ -1,6 +1,7 @@
 "use client";
 
-import Link from "next/link";
+import type { AppLocale } from "@/i18n/config";
+import { Link } from "@/i18n/navigation";
 import { trackLiteEvent } from "@/lib/analytics-lite";
 
 type TrackedLinkProps = {
@@ -10,6 +11,8 @@ type TrackedLinkProps = {
   payload?: Record<string, string | number | boolean>;
   className?: string;
   external?: boolean;
+  locale?: AppLocale;
+  onClick?: () => void;
   icon?: React.ReactNode;
   children?: React.ReactNode;
 };
@@ -21,14 +24,17 @@ export function TrackedLink({
   payload,
   className,
   external = false,
+  locale,
+  onClick,
   icon,
   children,
 }: TrackedLinkProps): React.JSX.Element {
   const handleClick = () => {
     trackLiteEvent(eventName, payload);
+    onClick?.();
   };
 
-  if (external) {
+  if (external || href.startsWith("#")) {
     return (
       <a
         href={href}
@@ -48,7 +54,7 @@ export function TrackedLink({
   }
 
   return (
-    <Link href={href} className={className} onClick={handleClick}>
+    <Link href={href} locale={locale} className={className} onClick={handleClick}>
       {children ?? (
         <>
           {icon ? <span className="mr-1.5 inline-flex items-center">{icon}</span> : null}

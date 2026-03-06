@@ -5,10 +5,6 @@ export type SiteCTA = {
   priority: "high" | "medium" | "low";
 };
 
-export const SITE_NAME = "System GraphRAG Lab";
-
-export const SITE_DESCRIPTION =
-  "Öffentlicher GraphRAG Showcase mit System-Thinking-Demo, nachvollziehbarer Herleitung und Story-getriebener Produktdarstellung.";
 const SITE_URL_FALLBACK =
   process.env.NODE_ENV === "production"
     ? "https://graphrag-lab.meierhoff-systems.de"
@@ -21,24 +17,36 @@ export const SITE_URL =
   process.env.NODE_ENV === "production" && (!siteUrlFromEnv || isLocalHostUrl)
     ? "https://graphrag-lab.meierhoff-systems.de"
     : siteUrlFromEnv || SITE_URL_FALLBACK;
-export const LINKEDIN_PROFILE_URL = "https://www.linkedin.com/in/michael-meierhoff-b5426458/";
+export const SITE = {
+  name: "System GraphRAG Lab",
+  description:
+    "Öffentlicher GraphRAG Showcase mit System-Thinking-Demo, nachvollziehbarer Herleitung und Story-getriebener Produktdarstellung.",
+  url: SITE_URL,
+  author: "Michael Meierhoff",
+  linkedInProfileUrl: "https://www.linkedin.com/in/michael-meierhoff-b5426458/",
+  keywords: [
+    "GraphRAG",
+    "System Thinking",
+    "KI Architektur",
+    "Explainable AI",
+    "Retrieval Augmented Generation",
+    "Decision Intelligence",
+    "Neo4j",
+    "OpenAI",
+  ] as const,
+} as const;
+
+export const SITE_NAME = SITE.name;
+export const SITE_DESCRIPTION = SITE.description;
+export const SITE_AUTHOR = SITE.author;
+export const SITE_KEYWORDS = SITE.keywords;
+export const LINKEDIN_PROFILE_URL = SITE.linkedInProfileUrl;
 export const SITE_LOCALE = "de_DE";
-export const SITE_AUTHOR = "Michael Meierhoff";
-export const SITE_KEYWORDS = [
-  "GraphRAG",
-  "System Thinking",
-  "KI Architektur",
-  "Explainable AI",
-  "Retrieval Augmented Generation",
-  "Decision Intelligence",
-  "Neo4j",
-  "OpenAI",
-] as const;
 
 export const SOCIAL_CTA: SiteCTA[] = [
   {
     label: "LinkedIn",
-    href: LINKEDIN_PROFILE_URL,
+    href: SITE.linkedInProfileUrl,
     surface: "hero",
     priority: "high",
   },
@@ -50,13 +58,7 @@ export const SOCIAL_CTA: SiteCTA[] = [
   },
 ];
 
-export const NAV_LINKS = [
-  { label: "Home", href: "/" },
-  { label: "Demo", href: "/demo" },
-  { label: "GraphRAG Story", href: "/story/graphrag" },
-  { label: "Graph Essays", href: "/essay" },
-] as const;
-
 export function withCanonical(pathname: string): string {
-  return `${SITE_URL}${pathname}`;
+  const normalized = pathname.startsWith("/") ? pathname : `/${pathname}`;
+  return `${SITE.url}${normalized}`;
 }

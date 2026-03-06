@@ -1,3 +1,4 @@
+import fsSync from "node:fs";
 import fs from "node:fs/promises";
 import path from "node:path";
 import matter from "gray-matter";
@@ -5,12 +6,23 @@ import Image from "next/image";
 import { compileMDX } from "next-mdx-remote/rsc";
 import remarkGfm from "remark-gfm";
 import type { BlogPostFrontmatter, BlogPostSummary, BlogTocItem } from "@/features/blog/contracts";
+import { defaultLocale, locales, type AppLocale } from "@/i18n/config";
 
-const BLOG_CONTENT_DIR = path.join(process.cwd(), "content", "blog");
+const BLOG_CONTENT_ROOT = path.join(process.cwd(), "content");
 
-async function getBlogFilePaths(): Promise<string[]> {
-  const entries = await fs.readdir(BLOG_CONTENT_DIR);
-  return entries.filter((entry) => entry.endsWith(".mdx")).map((entry) => path.join(BLOG_CONTENT_DIR, entry));
+function getBlogContentDir(locale: AppLocale): string {
+  return path.join(BLOG_CONTENT_ROOT, locale, "blog");
+}
+
+async function getLocaleBlogFilePaths(locale: AppLocale): Promise<string[]> {
+  try {
+    const entries = await fs.readdir(getBlogContentDir(locale));
+    return entries
+      .filter((entry) => entry.endsWith(".mdx"))
+      .map((entry) => path.join(getBlogContentDir(locale), entry));
+  } catch {
+    return [];
+  }
 }
 
 function normalizeFrontmatter(raw: Partial<BlogPostFrontmatter>, sourcePath: string): BlogPostFrontmatter {
@@ -33,9 +45,10 @@ function normalizeFrontmatter(raw: Partial<BlogPostFrontmatter>, sourcePath: str
   };
 }
 
-export async function getAllBlogPosts(): Promise<BlogPostSummary[]> {
-  const paths = await getBlogFilePaths();
-  const posts = await Promise.all(
+async function readBlogSummaries(locale: AppLocale, sourceLocale: AppLocale): Promise<BlogPostSummary[]> {
+  const paths = await getLocaleBlogFilePaths(sourceLocale);
+
+  return Promise.all(
     paths.map(async (sourcePath) => {
       const source = await fs.readFile(sourcePath, "utf8");
       const parsed = matter(source);
@@ -43,19 +56,43 @@ export async function getAllBlogPosts(): Promise<BlogPostSummary[]> {
       return {
         ...frontmatter,
         sourcePath,
+        locale,
+        sourceLocale,
       } satisfies BlogPostSummary;
     }),
   );
+}
+
+export async function getAllBlogPosts(locale: AppLocale = defaultLocale): Promise<BlogPostSummary[]> {
+  const defaultPosts = await readBlogSummaries(locale, defaultLocale);
+  if (locale === defaultLocale) {
+    return defaultPosts.sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
+  }
+
+  const localizedPosts = await readBlogSummaries(locale, locale);
+  const localizedBySlug = new Map(localizedPosts.map((post) => [post.slug, post]));
+  const merged = defaultPosts.map((post) => localizedBySlug.get(post.slug) ?? post);
+  const localizedOnly = localizedPosts.filter((post) => !defaultPosts.some((base) => base.slug === post.slug));
+  const posts = [...merged, ...localizedOnly];
 
   return posts.sort((a, b) => (a.publishedAt < b.publishedAt ? 1 : -1));
 }
 
-export async function getBlogPostBySlug(slug: string): Promise<{
+export type BlogPostContent = {
+  slug: string;
   frontmatter: BlogPostFrontmatter;
   content: React.ReactNode;
   toc: BlogTocItem[];
-} | null> {
-  const paths = await getBlogFilePaths();
+  locale: AppLocale;
+  sourceLocale: AppLocale;
+};
+
+async function loadBlogPostFromLocale(
+  slug: string,
+  locale: AppLocale,
+  sourceLocale: AppLocale,
+): Promise<BlogPostContent | null> {
+  const paths = await getLocaleBlogFilePaths(sourceLocale);
   const match = paths.find((sourcePath) => path.basename(sourcePath, ".mdx") === slug);
   if (!match) {
     return null;
@@ -116,10 +153,34 @@ export async function getBlogPostBySlug(slug: string): Promise<{
   const toc = extractToc(source);
 
   return {
+    slug: normalizedFrontmatter.slug,
     frontmatter: normalizedFrontmatter,
     content,
     toc,
+    locale,
+    sourceLocale,
   };
+}
+
+export async function getBlogPostBySlug(
+  slug: string,
+  locale: AppLocale = defaultLocale,
+): Promise<BlogPostContent | null> {
+  if (locale !== defaultLocale) {
+    const localizedMatch = await loadBlogPostFromLocale(slug, locale, locale);
+    if (localizedMatch) {
+      return localizedMatch;
+    }
+  }
+
+  return loadBlogPostFromLocale(slug, locale, defaultLocale);
+}
+
+export function getAvailableBlogPostLocales(slug: string): AppLocale[] {
+  return locales.filter((locale) => {
+    const filePath = path.join(getBlogContentDir(locale), `${slug}.mdx`);
+    return fsSync.existsSync(filePath);
+  });
 }
 
 function extractToc(source: string): BlogTocItem[] {

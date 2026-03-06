@@ -1,23 +1,27 @@
-import type { Metadata } from "next";
-import { withCanonical } from "@/config/site";
-import { ExecutiveLandingTemplate } from "@/features/landing/templates/ExecutiveLandingTemplate";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
+import { defaultLocale, locales, type AppLocale } from "@/i18n/config";
 
-export const metadata: Metadata = {
-  title: "GraphRAG für nachvollziehbare KI-Entscheidungen",
-  description:
-    "Nachvollziehbare AI Entscheidungen mit GraphRAG: Knoten, Kanten und Belege statt Blackbox-Antworten.",
-  alternates: {
-    canonical: withCanonical("/"),
-  },
-  openGraph: {
-    title: "GraphRAG für nachvollziehbare KI-Entscheidungen",
-    description:
-      "Nachvollziehbare AI Entscheidungen mit GraphRAG: Knoten, Kanten und Belege statt Blackbox-Antworten.",
-    url: withCanonical("/"),
-    type: "website",
-  },
-};
+function detectLocale(acceptLanguage: string | null): AppLocale {
+  if (!acceptLanguage) {
+    return defaultLocale;
+  }
 
-export default function Home(): React.JSX.Element {
-  return <ExecutiveLandingTemplate />;
+  const normalized = acceptLanguage.toLowerCase();
+  if (normalized.includes("en")) {
+    return "en";
+  }
+  if (normalized.includes("de")) {
+    return "de";
+  }
+
+  return defaultLocale;
+}
+
+export default async function RootRedirectPage(): Promise<never> {
+  const requestHeaders = await headers();
+  const locale = detectLocale(requestHeaders.get("accept-language"));
+  const targetLocale = locales.includes(locale) ? locale : defaultLocale;
+
+  redirect(`/${targetLocale}`);
 }

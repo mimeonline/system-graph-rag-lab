@@ -1,0 +1,96 @@
+{
+  "LocaleSwitcher": {
+    "label": "Sprache wechseln",
+    "locale": "Deutsch",
+    "targetLocale": "English"
+  },
+  "Navigation": {
+    "home": "Home",
+    "demo": "Demo",
+    "story": "GraphRAG Story",
+    "essay": "Graph Essays",
+    "about": "About"
+  },
+  "SiteHeader": {
+    "productBadge": "Public Showcase",
+    "menuOpen": "Menü öffnen",
+    "menuClose": "Menü schließen",
+    "navigationLabel": "Hauptnavigation",
+    "mobileNavigationLabel": "Hauptnavigation mobil"
+  },
+  "SiteFooter": {
+    "title": "System GraphRAG Public MVP",
+    "tagline": "GraphRAG, Agent-Workflows und nachvollziehbare KI-Entscheidungen",
+    "about": "About",
+    "privacy": "Datenschutz",
+    "imprint": "Impressum"
+  },
+  "Status": {
+    "idle": "Bereit",
+    "loading": "Analysiere Kontext",
+    "success": "Antwort erstellt",
+    "empty": "Kein passender Kontext",
+    "error": "Anfrage fehlgeschlagen"
+  },
+  "Query": {
+    "defaultHelper": "Wähle eine Frage oder schreibe eine eigene. Halte sie konkret und kurz.",
+    "suggestionsTitle": "Hilfreiche Fragen",
+    "suggestionPlaceholder": "Frage aus Kategorie wählen…",
+    "selectionLocked": "Fragenauswahl gesperrt. Für eine neue Frage bitte zuerst zurücksetzen.",
+    "label": "Frage",
+    "nextAction": "Nächste Aktion",
+    "submit": "Antwort analysieren",
+    "submitting": "Antwort wird geladen…",
+    "reset": "Neue Frage starten",
+    "answerTitle": "Antwort",
+    "currentQuestion": "Aktuelle Frage",
+    "contextBudget": "Kontextbudget: {tokens} Token (Schätzung der verwendeten Kontexte).",
+    "summaryTitle": "Kurzantwort",
+    "sectionSituation": "Lage",
+    "sectionRelations": "Zusammenhänge",
+    "sectionConsequence": "Konsequenz",
+    "actionTitle": "Was bringt mir das jetzt?",
+    "actionBadge": "nächste Schritte",
+    "rationaleTitle": "Warum diese Antwort stimmt",
+    "rationaleBadge": "Begründung mit Faktenbasis",
+    "evidenceTitle": "Faktenbasis",
+    "rationaleMarker": "Nachvollziehbare Faktenbasis:",
+    "unnamedQuery": "Unbenannte Anfrage"
+  },
+  "QueryStatus": {
+    "idleText": "Stell eine einfache, konkrete Frage. Dann zeigen wir dir die Antwort Schritt für Schritt.",
+    "idleAction": "Frage auswählen oder eingeben und absenden.",
+    "loadingText": "Wir suchen gerade die wichtigsten Zusammenhänge.",
+    "loadingAction": "Kurz warten, die Antwort wird aufgebaut.",
+    "successText": "Fertig. Du siehst jetzt die Kurzantwort, die Belege und sinnvolle nächste Schritte.",
+    "successAction": "Ergebnis lesen und eine Anschlussfrage stellen, wenn etwas offen ist.",
+    "errorText": "Das hat gerade nicht geklappt.",
+    "errorAction": "Bitte erneut senden.",
+    "emptyText": "Dazu haben wir noch zu wenig passenden Kontext.",
+    "emptyAction": "Frage einfacher oder konkreter formulieren und erneut senden."
+  },
+  "NotFound": {
+    "eyebrow": "Seite nicht gefunden",
+    "title": "Diese Seite gibt es hier nicht.",
+    "description": "Prüfe die URL oder springe zurück in einen bekannten Bereich des Labs.",
+    "back": "Zur Startseite",
+    "browse": "Zu den Essays",
+    "hintsTitle": "Hilfreiche nächste Schritte",
+    "hint1": "Prüfe, ob der Sprachpfad und der Slug korrekt sind.",
+    "hint2": "Bei Essay-Links kann es sein, dass die englische Variante noch nicht vorhanden ist.",
+    "hint3": "Nutze die Navigation, um wieder in einen stabilen Bereich einzusteigen."
+  },
+  "ErrorPage": {
+    "eyebrow": "Systemstatus",
+    "title": "Etwas ist schiefgelaufen",
+    "description": "Die Seite konnte gerade nicht zuverlässig geladen werden.",
+    "retry": "Erneut versuchen",
+    "home": "Zur Startseite",
+    "browse": "Zu den Essays",
+    "hintsTitle": "Was du jetzt tun kannst",
+    "hint1": "Lade die Seite neu oder versuche denselben Schritt noch einmal.",
+    "hint2": "Wenn der Fehler bestehen bleibt, gehe einen Schritt zurück oder starte über die Navigation neu.",
+    "hint3": "Der Fehler wurde ausgelöst, aber ohne zusätzliche Referenz-ID.",
+    "hint3WithDigest": "Interne Referenz: {digest}"
+  }
+}

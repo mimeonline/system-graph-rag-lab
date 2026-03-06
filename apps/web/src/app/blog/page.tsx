@@ -15,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function BlogLegacyPage(): never {
-  redirect("/essay");
+  redirect("/de/essay");
 }

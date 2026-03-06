@@ -1,37 +1,38 @@
-import { SITE_NAME, SITE_URL } from "@/config/site";
+import { SITE } from "@/config/site";
 import { getAllBlogPosts } from "@/features/blog/content";
 
 export async function GET(): Promise<Response> {
-  const posts = await getAllBlogPosts();
+  const posts = await getAllBlogPosts("de");
   const essayLinks = posts
     .slice(0, 20)
-    .map((post) => `- ${post.canonicalUrl?.trim() || `${SITE_URL}/essay/${post.slug}`}`)
+    .map((post) => `- ${SITE.url}/de/essay/${post.slug}`)
     .join("\n");
 
-  const content = `# ${SITE_NAME}
+  const content = `# ${SITE.name}
 
 > Public GraphRAG showcase for system thinking, explainable decision support, and transparent retrieval traces.
 
 ## Canonical
-- ${SITE_URL}
+- ${SITE.url}
 
 ## Important Pages
-- ${SITE_URL}/
-- ${SITE_URL}/demo
-- ${SITE_URL}/story/graphrag
-- ${SITE_URL}/essay
-- ${SITE_URL}/about
+- ${SITE.url}/de
+- ${SITE.url}/en
+- ${SITE.url}/de/demo
+- ${SITE.url}/de/story/graphrag
+- ${SITE.url}/de/essay
+- ${SITE.url}/de/about
 
 ## Essays
 ${essayLinks}
 
 ## Machine-Readable Discovery
-- ${SITE_URL}/sitemap.xml
-- ${SITE_URL}/robots.txt
+- ${SITE.url}/sitemap.xml
+- ${SITE.url}/robots.txt
 
 ## Contact and Legal
-- ${SITE_URL}/impressum
-- ${SITE_URL}/datenschutz
+- ${SITE.url}/de/impressum
+- ${SITE.url}/de/datenschutz
 `;
 
   return new Response(content, {

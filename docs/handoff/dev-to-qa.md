@@ -1,5 +1,26 @@
 # Dev Handoff
 
+## i18n Setup de/en
+### Was ist fertig
+1. `apps/web` verwendet jetzt `next-intl` mit `de` und `en`, locale-aware Routen unter `src/app/[locale]/**`, Middleware und Root-Redirect von `/` auf `/de` oder `/en`.
+2. SEO ist sprachsensitiv: neue Helper erzeugen Canonicals und `hreflang`, die Sitemap listet locale-spezifische URLs und EN-Essays nur bei echter EN-Quelle, EN-Fallback-Seiten basieren auf `sourceLocale` und werden per Metadata als Fallback behandelt.
+3. Essay-Content ist sprachgetrennt vorbereitet: bestehende Dateien wurden nach `apps/web/content/de/blog/**` verschoben; `apps/web/content/en/blog/**` ist der Zielpfad für künftige EN-Origin-Dateien.
+4. Shared UI-Chrome ist i18n-fähig für Header/Footer, locale-aware Navigation/TrackedLink, Query-Statusflächen und Fehlerseiten.
+5. Alte Root-Seiten ohne Locale rendern nicht mehr direkt, sondern leiten auf `/de/...` weiter, damit keine Build-/Hydration-Konflikte außerhalb des Locale-Kontexts entstehen.
+
+### Wie kann QA testen lokal inkl konkrete Startschritte
+1. `pnpm --dir apps/web dev` starten.
+2. `/` aufrufen und prüfen, dass je nach `Accept-Language` auf `/de` oder `/en` umgeleitet wird.
+3. `/de`, `/en`, `/de/about`, `/en/about`, `/de/essay`, `/en/essay`, `/de/essay/<slug>`, `/en/essay/<slug>` öffnen und prüfen, dass die Route stabil rendert.
+4. Für eine EN-Essayseite ohne echte EN-Datei prüfen, dass die Route erreichbar bleibt und der Build nicht bricht; die HTML-Metadaten müssen trotzdem auf das `sourceLocale`-Modell reagieren.
+5. `sitemap.xml` prüfen: statische Seiten in beiden Sprachen vorhanden, EN-Essays nur bei echter EN-Quelle.
+6. Header-Sprachumschalter testen: aktueller Pfad bleibt beim Wechsel zwischen `DE` und `EN` erhalten.
+
+### Genaue Testkommandos mit erwarteten Ergebnissen
+1. `pnpm --dir apps/web run typecheck` Exit Code `0`.
+2. `pnpm --dir apps/web run lint` Exit Code `0`.
+3. `pnpm --dir apps/web run build` Exit Code `0`.
+
 ## E1-S6 Neo4j lokal Seed Reset und Reseed
 ### Was ist fertig
 1. Runtime-Guard fuer destruktiven Seed-Reset ist hart lokal: nur `localhost`, `127.0.0.1`, `::1`.

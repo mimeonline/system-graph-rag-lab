@@ -1,15 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import {
-  LINKEDIN_PROFILE_URL,
-  SITE_AUTHOR,
-  SITE_DESCRIPTION,
-  SITE_KEYWORDS,
-  SITE_LOCALE,
-  SITE_NAME,
-  SITE_URL,
-  withCanonical,
-} from "@/config/site";
+import { LINKEDIN_PROFILE_URL, SITE, SITE_AUTHOR } from "@/config/site";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -23,58 +14,27 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(withCanonical("/")),
-  title: {
-    default: SITE_NAME,
-    template: `%s | ${SITE_NAME}`,
-  },
-  applicationName: SITE_NAME,
-  description: SITE_DESCRIPTION,
-  keywords: [...SITE_KEYWORDS],
+  metadataBase: new URL(SITE.url),
+  applicationName: SITE.name,
+  title: SITE.name,
+  description: SITE.description,
+  keywords: [...SITE.keywords],
   authors: [{ name: SITE_AUTHOR, url: LINKEDIN_PROFILE_URL }],
   creator: SITE_AUTHOR,
   publisher: SITE_AUTHOR,
-  category: "technology",
-  alternates: {
-    canonical: withCanonical("/"),
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
-  },
   icons: {
     icon: "/favicon.svg",
     shortcut: "/favicon.svg",
-  },
-  openGraph: {
-    title: SITE_NAME,
-    description: SITE_DESCRIPTION,
-    url: withCanonical("/"),
-    type: "website",
-    locale: SITE_LOCALE,
-    siteName: SITE_NAME,
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: SITE_NAME,
-    description: SITE_DESCRIPTION,
   },
 };
 
 const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
-  name: SITE_NAME,
-  url: SITE_URL,
+  name: SITE.name,
+  url: SITE.url,
   inLanguage: "de",
-  description: SITE_DESCRIPTION,
+  description: SITE.description,
 };
 
 const organizationJsonLd = {

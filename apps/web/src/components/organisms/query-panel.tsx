@@ -5,6 +5,7 @@ import { BookOpen, GitBranch, History, Network, Route, Scale, Search, ShieldChec
 import dynamic from "next/dynamic";
 import type { FormEvent } from "react";
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 
 import { GraphPreview } from "@/components/molecules/graph-preview";
 import type { QuerySuggestionGroup } from "@/components/molecules/query-input";
@@ -134,6 +135,8 @@ const QUERY_SUGGESTION_GROUPS: QuerySuggestionGroup[] = [
  * Renders the interactive query workflow and orchestrates API request state.
  */
 export function QueryPanel(): React.JSX.Element {
+  const tQuery = useTranslations("Query");
+  const tStatus = useTranslations("QueryStatus");
   const [query, setQuery] = useState(DEFAULT_QUERY);
   const [viewModel, setViewModel] = useState<QueryViewModel | null>(null);
   const [status, setStatus] = useState<QueryPanelStatus>("idle");
@@ -155,7 +158,17 @@ export function QueryPanel(): React.JSX.Element {
   const [isSessionMemoryExpanded, setIsSessionMemoryExpanded] = useState(true);
   const [didHydrateLocalState, setDidHydrateLocalState] = useState(false);
 
-  const statusHint = getStatusHint(status, errorMessage);
+  const statusHint = getStatusHint(
+    status,
+    {
+      idle: { statusText: tStatus("idleText"), nextAction: tStatus("idleAction") },
+      loading: { statusText: tStatus("loadingText"), nextAction: tStatus("loadingAction") },
+      success: { statusText: tStatus("successText"), nextAction: tStatus("successAction") },
+      error: { statusText: tStatus("errorText"), nextAction: tStatus("errorAction") },
+      empty: { statusText: tStatus("emptyText"), nextAction: tStatus("emptyAction") },
+    },
+    errorMessage,
+  );
   const helperText = statusHint.statusText;
   const statusAction = statusHint.nextAction;
 
@@ -815,9 +828,17 @@ export function QueryPanel(): React.JSX.Element {
               ? nextSteps
               : ["Noch keine Handlungsschritte verfügbar. Sende eine Frage, um konkrete Schritte zu erhalten."]
           }
+          title={tQuery("actionTitle")}
+          badge={tQuery("actionBadge")}
         />
 
-        <RationaleCard coreRationale={coreRationale} />
+        <RationaleCard
+          coreRationale={coreRationale}
+          title={tQuery("rationaleTitle")}
+          badge={tQuery("rationaleBadge")}
+          evidenceTitle={tQuery("evidenceTitle")}
+          rationaleMarker={tQuery("rationaleMarker")}
+        />
       </section>
 
       <section className="space-y-5 rounded-2xl border border-slate-200 bg-white p-5 sm:p-6">

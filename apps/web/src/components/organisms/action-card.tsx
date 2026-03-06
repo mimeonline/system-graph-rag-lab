@@ -1,18 +1,18 @@
 type ActionCardProps = {
   steps: string[];
+  title: string;
+  badge: string;
 };
 
 /**
  * Action-focused summary translating answer into immediate next steps.
  */
-export function ActionCard({ steps }: ActionCardProps): React.JSX.Element {
+export function ActionCard({ steps, title, badge }: ActionCardProps): React.JSX.Element {
   return (
     <section className="order-3 space-y-3 rounded-xl border border-slate-200 bg-slate-50 p-4 sm:p-5 lg:order-2">
       <div className="flex items-center justify-between">
-        <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
-          Was bringt mir das jetzt?
-        </h3>
-        <span className="text-xs font-semibold text-slate-500">nächste Schritte</span>
+        <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">{title}</h3>
+        <span className="text-xs font-semibold text-slate-500">{badge}</span>
       </div>
       <ol className="space-y-2">
         {steps.map((step, index) => (
