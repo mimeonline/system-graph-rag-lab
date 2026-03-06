@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.0.8] - 2026-03-06
+
+### Fixed
+
+1. Aligned locale-aware query API tests with the current localized OpenAI upstream error handling so CI and tag-triggered release workflows pass again.
+
 ## [1.0.7] - 2026-03-06
 
 ### Added
