@@ -254,7 +254,7 @@ describe("POST /api/query", () => {
       new Request("http://localhost:3000/api/query", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: "Was ist ein Hebelpunkt?" }),
+        body: JSON.stringify({ query: "Was ist ein Hebelpunkt?", locale: "en" }),
       }),
     );
 
@@ -293,7 +293,7 @@ describe("POST /api/query", () => {
       new Request("http://localhost:3000/api/query", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ query: "Was ist ein Hebelpunkt?" }),
+        body: JSON.stringify({ query: "Was ist ein Hebelpunkt?", locale: "en" }),
       }),
     );
 
