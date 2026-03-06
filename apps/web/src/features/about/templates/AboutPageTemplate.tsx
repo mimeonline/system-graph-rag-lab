@@ -3,10 +3,14 @@ import { TrackedPageView } from "@/components/molecules/tracked-page-view";
 import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
 import { Blocks, ShieldCheck, Target } from "lucide-react";
-import { getLocale } from "next-intl/server";
 
-export async function AboutPageTemplate(): Promise<React.JSX.Element> {
-  const locale = await getLocale();
+type AboutPageTemplateProps = {
+  locale: "de" | "en";
+};
+
+export async function AboutPageTemplate({
+  locale,
+}: AboutPageTemplateProps): Promise<React.JSX.Element> {
   const copy =
     locale === "en"
       ? {

@@ -70,7 +70,13 @@ export default async function EssayArticlePage({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(articleJsonLd) }}
       />
-      <BlogArticleTemplate frontmatter={post.frontmatter} content={post.content} toc={post.toc} />
+      <BlogArticleTemplate
+        frontmatter={post.frontmatter}
+        content={post.content}
+        locale={locale}
+        sourceLocale={post.sourceLocale}
+        toc={post.toc}
+      />
     </>
   );
 }

@@ -1,12 +1,18 @@
 import type { StoryChapter } from "@/features/story/story-flow-model";
 
 type StoryProgressProps = {
+  locale: "de" | "en";
   chapters: StoryChapter[];
   activeIndex: number;
   onStepClick: (index: number) => void;
 };
 
-export function StoryProgress({ chapters, activeIndex, onStepClick }: StoryProgressProps): React.JSX.Element {
+export function StoryProgress({
+  locale,
+  chapters,
+  activeIndex,
+  onStepClick,
+}: StoryProgressProps): React.JSX.Element {
   return (
     <section className="space-y-3 rounded-xl border border-slate-300/80 bg-white p-3 sm:p-4">
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-slate-200">
@@ -15,7 +21,7 @@ export function StoryProgress({ chapters, activeIndex, onStepClick }: StoryProgr
           style={{ width: `${((activeIndex + 1) / chapters.length) * 100}%` }}
         />
       </div>
-      <ol className="grid gap-2 sm:grid-cols-5" aria-label="Story Fortschritt">
+      <ol className="grid gap-2 sm:grid-cols-5" aria-label={locale === "en" ? "Story progress" : "Story Fortschritt"}>
         {chapters.map((chapter, index) => {
           const isActive = index === activeIndex;
           const isCompleted = index < activeIndex;
@@ -45,4 +51,3 @@ export function StoryProgress({ chapters, activeIndex, onStepClick }: StoryProgr
     </section>
   );
 }
-

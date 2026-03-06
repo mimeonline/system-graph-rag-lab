@@ -22,6 +22,10 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
   });
 }
 
-export default function LocalizedHomePage(): React.JSX.Element {
-  return <ExecutiveLandingTemplate />;
+export default async function LocalizedHomePage({
+  params,
+}: HomePageProps): Promise<React.JSX.Element> {
+  const { locale } = await params;
+
+  return <ExecutiveLandingTemplate locale={locale} />;
 }

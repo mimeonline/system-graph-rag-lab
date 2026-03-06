@@ -30,9 +30,6 @@ const QueryInput = dynamic(
   () => import("@/components/molecules/query-input").then((module) => module.QueryInput),
   { ssr: false },
 );
-const SESSION_HISTORY_KEY = "system-graph-rag-history-v1";
-const SESSION_ANALYSIS_KEY = "system-graph-rag-analysis-v1";
-const SESSION_SNAPSHOTS_KEY = "system-graph-rag-session-snapshots-v1";
 const SESSION_HISTORY_LIMIT = 8;
 
 type SessionHistoryEntry = {
@@ -58,6 +55,7 @@ type LlmOnlyAnswer = {
 };
 
 type PersistedAnalysisState = {
+  locale: "de" | "en";
   query: string;
   viewModel: QueryViewModel | null;
   llmOnlyAnswer: LlmOnlyAnswer | null;
@@ -70,6 +68,7 @@ type PersistedAnalysisState = {
 };
 
 type PersistedSessionSnapshot = {
+  locale: "de" | "en";
   sessionId: string;
   query: string;
   viewModel: QueryViewModel;
@@ -79,65 +78,218 @@ type PersistedSessionSnapshot = {
   createdAt: string;
 };
 
-const DEFAULT_QUERY =
-  "Wo verlieren wir im Alltag Zeit, weil Aufgaben zwischen Teams hin und her gehen?";
-const QUERY_SUGGESTION_GROUPS: QuerySuggestionGroup[] = [
-  {
-    category: "Teamarbeit & Übergaben",
-    questions: [
-      "Wo verlieren wir im Alltag Zeit, weil Aufgaben zwischen Teams hin und her gehen?",
-      "Warum gibt es trotz neuer Tools immer noch so viele Abstimmungen?",
-      "Wie reduzieren wir Rückfragen bei Übergaben zwischen Teams?",
-      "Welche Informationen fehlen typischerweise am Übergabepunkt?",
-    ],
-  },
-  {
-    category: "Lieferfähigkeit & Betrieb",
-    questions: [
-      "Was passiert, wenn wir schneller liefern wollen als unser Betrieb mitkommt?",
-      "Wie bekommen wir mehr Stabilität, ohne Releases komplett auszubremsen?",
-      "Woran merken wir früh, dass unser System überlastet läuft?",
-      "Wie vermeiden wir, dass Notfallarbeit den Plan dauerhaft verdrängt?",
-    ],
-  },
-  {
-    category: "Steuerung & Prioritäten",
-    questions: [
-      "Welche Nebenwirkungen hat es, wenn jedes Team nur lokal optimiert?",
-      "Warum kippen Prioritäten ständig, obwohl wir klare Ziele haben?",
-      "Wie erkennen wir Regeln oder Anreize, die falsches Verhalten fördern?",
-      "Wo lohnt ein kleiner Hebel mit großer Wirkung am meisten?",
-    ],
-  },
-  {
-    category: "Kommunikation & Entscheidungen",
-    questions: [
-      "Warum drehen wir uns in Meetings oft im Kreis, obwohl alle informiert sind?",
-      "Wie treffen wir schneller Entscheidungen, ohne wichtige Perspektiven zu verlieren?",
-      "Welche Signale zeigen, dass Informationen im System verzerrt ankommen?",
-      "Wie verhindern wir, dass Entscheidungen später wieder zurückgerollt werden?",
-      "Wo entstehen Missverständnisse zwischen Fachbereich und Technik am häufigsten?",
-    ],
-  },
-  {
-    category: "Lernen & Verbesserung",
-    questions: [
-      "Warum wiederholen sich dieselben Probleme trotz Retrospektiven?",
-      "Wie bauen wir eine Lernschleife auf, die im Alltag wirklich genutzt wird?",
-      "Welche kleinen Experimente helfen uns, Ursachen statt Symptome zu testen?",
-      "Wie erkennen wir früh, ob eine Verbesserung wirklich systemisch wirkt?",
-      "Wie vermeiden wir Aktionismus und priorisieren wirksame Verbesserungen?",
-    ],
-  },
-];
+function getDefaultQuery(locale: "de" | "en"): string {
+  return locale === "en"
+    ? "Where do we lose time day to day because work keeps bouncing between teams?"
+    : "Wo verlieren wir im Alltag Zeit, weil Aufgaben zwischen Teams hin und her gehen?";
+}
+
+function getSuggestionGroups(locale: "de" | "en"): QuerySuggestionGroup[] {
+  if (locale === "en") {
+    return [
+      {
+        category: "Teamwork & handoffs",
+        questions: [
+          "Where do we lose time day to day because work keeps bouncing between teams?",
+          "Why do we still need so much coordination even after introducing new tools?",
+          "How do we reduce follow-up questions at team handoff points?",
+          "Which information is typically missing at the handoff point?",
+        ],
+      },
+      {
+        category: "Delivery & operations",
+        questions: [
+          "What happens when we try to deliver faster than operations can absorb?",
+          "How do we gain more stability without slowing releases to a halt?",
+          "Which signals tell us early that the system is running overloaded?",
+          "How do we stop urgent work from permanently crowding out the plan?",
+        ],
+      },
+      {
+        category: "Steering & priorities",
+        questions: [
+          "What side effects appear when each team optimizes only locally?",
+          "Why do priorities keep shifting even though the goals are clear?",
+          "How do we spot rules or incentives that reward the wrong behavior?",
+          "Where is a small leverage point likely to have the biggest effect?",
+        ],
+      },
+      {
+        category: "Communication & decisions",
+        questions: [
+          "Why do meetings keep circling even when everyone is informed?",
+          "How do we make faster decisions without losing important perspectives?",
+          "Which signals show that information gets distorted inside the system?",
+          "How do we avoid decisions being rolled back later on?",
+          "Where do misunderstandings between business and engineering happen most often?",
+        ],
+      },
+      {
+        category: "Learning & improvement",
+        questions: [
+          "Why do the same problems repeat even after retrospectives?",
+          "How do we build a learning loop that people actually use in day-to-day work?",
+          "Which small experiments help us test causes instead of symptoms?",
+          "How do we notice early whether an improvement is truly systemic?",
+          "How do we avoid action bias and prioritize the improvements that really matter?",
+        ],
+      },
+    ];
+  }
+
+  return [
+    {
+      category: "Teamarbeit & Übergaben",
+      questions: [
+        "Wo verlieren wir im Alltag Zeit, weil Aufgaben zwischen Teams hin und her gehen?",
+        "Warum gibt es trotz neuer Tools immer noch so viele Abstimmungen?",
+        "Wie reduzieren wir Rückfragen bei Übergaben zwischen Teams?",
+        "Welche Informationen fehlen typischerweise am Übergabepunkt?",
+      ],
+    },
+    {
+      category: "Lieferfähigkeit & Betrieb",
+      questions: [
+        "Was passiert, wenn wir schneller liefern wollen als unser Betrieb mitkommt?",
+        "Wie bekommen wir mehr Stabilität, ohne Releases komplett auszubremsen?",
+        "Woran merken wir früh, dass unser System überlastet läuft?",
+        "Wie vermeiden wir, dass Notfallarbeit den Plan dauerhaft verdrängt?",
+      ],
+    },
+    {
+      category: "Steuerung & Prioritäten",
+      questions: [
+        "Welche Nebenwirkungen hat es, wenn jedes Team nur lokal optimiert?",
+        "Warum kippen Prioritäten ständig, obwohl wir klare Ziele haben?",
+        "Wie erkennen wir Regeln oder Anreize, die falsches Verhalten fördern?",
+        "Wo lohnt ein kleiner Hebel mit großer Wirkung am meisten?",
+      ],
+    },
+    {
+      category: "Kommunikation & Entscheidungen",
+      questions: [
+        "Warum drehen wir uns in Meetings oft im Kreis, obwohl alle informiert sind?",
+        "Wie treffen wir schneller Entscheidungen, ohne wichtige Perspektiven zu verlieren?",
+        "Welche Signale zeigen, dass Informationen im System verzerrt ankommen?",
+        "Wie verhindern wir, dass Entscheidungen später wieder zurückgerollt werden?",
+        "Wo entstehen Missverständnisse zwischen Fachbereich und Technik am häufigsten?",
+      ],
+    },
+    {
+      category: "Lernen & Verbesserung",
+      questions: [
+        "Warum wiederholen sich dieselben Probleme trotz Retrospektiven?",
+        "Wie bauen wir eine Lernschleife auf, die im Alltag wirklich genutzt wird?",
+        "Welche kleinen Experimente helfen uns, Ursachen statt Symptome zu testen?",
+        "Wie erkennen wir früh, ob eine Verbesserung wirklich systemisch wirkt?",
+        "Wie vermeiden wir Aktionismus und priorisieren wirksame Verbesserungen?",
+      ],
+    },
+  ];
+}
 
 /**
  * Renders the interactive query workflow and orchestrates API request state.
  */
-export function QueryPanel(): React.JSX.Element {
+type QueryPanelProps = {
+  locale: "de" | "en";
+};
+
+export function QueryPanel({ locale }: QueryPanelProps): React.JSX.Element {
+  const SESSION_HISTORY_KEY = `system-graph-rag-history-v1-${locale}`;
+  const SESSION_ANALYSIS_KEY = `system-graph-rag-analysis-v1-${locale}`;
+  const SESSION_SNAPSHOTS_KEY = `system-graph-rag-session-snapshots-v1-${locale}`;
   const tQuery = useTranslations("Query");
   const tStatus = useTranslations("QueryStatus");
-  const [query, setQuery] = useState(DEFAULT_QUERY);
+  const isEn = locale === "en";
+  const copy = {
+    workflowTitle: isEn ? "Answer flow" : "Antwortführung",
+    answerBuildTitle: isEn ? "Answer assembly" : "Antwortaufbau",
+    running: isEn ? "running" : "läuft",
+    answerBuildBody: isEn
+      ? "Context selection -> graph context -> synthesis. The answer is being assembled from selected nodes and evidence."
+      : "Kontextauswahl -> Graph-Kontext -> Synthese. Die Antwort wird gerade aus ausgewählten Knoten und Belegen aufgebaut.",
+    qualityGateIdle: isEn
+      ? "No analysis yet. Submit a question to inspect quality signals, references, and context budget."
+      : "Noch keine Analyse durchgeführt. Sende eine Frage, um Bewertung, Referenzen und Kontextbudget zu sehen.",
+    llmNodeTitle: isEn ? "Node selection for the LLM" : "Node-Auswahl fürs LLM",
+    llmNodeBadge: isEn ? "Context selection transparency" : "Transparenz der Kontextauswahl",
+    llmNodeBody: isEn
+      ? "The system first identifies fitting concepts through embedding match and graph score, adds related evidence, and expands to direct neighbors when needed. Only this selected set is sent to the LLM as structured context."
+      : "Das System ermittelt zuerst passende Konzepte über Embedding-Match und Graph-Score, ergänzt zugehörige Belege und erweitert bei Bedarf über einen Hop auf direkte Nachbarn. Nur diese Auswahl wird als strukturierter Kontext an das LLM übergeben.",
+    llmNodeEmpty: isEn
+      ? "No nodes selected yet. After the first run you will see the actual selection including score and hop."
+      : "Noch keine Knoten ausgewählt. Nach dem ersten Lauf siehst du hier die tatsächliche Auswahl inklusive Score und Hop.",
+    ragDiffTitle: "RAG vs GraphRAG",
+    ragDiffBadge: isEn ? "3 core differences" : "3 Kernunterschiede",
+    ragDiff1: isEn
+      ? "Context shape: classic RAG mainly returns text chunks; GraphRAG also returns explicit relations between nodes."
+      : "Kontextform: Klassisches RAG liefert primär Textabschnitte; GraphRAG liefert zusätzlich Beziehungen zwischen Knoten.",
+    ragDiff2: isEn
+      ? "Traceability: with GraphRAG the reasoning path across nodes and edges stays visible, not just text snippets."
+      : "Nachvollziehbarkeit: Bei GraphRAG ist die Herleitung über Knoten und Kanten sichtbar, nicht nur über Textausschnitte.",
+    ragDiff3: isEn
+      ? "Multi-hop logic: GraphRAG can intentionally include neighbors across hops and structure cause chains more clearly."
+      : "Mehrhop-Logik: GraphRAG kann Nachbarn gezielt über Hops einbeziehen und dadurch Ursachenketten strukturierter abbilden.",
+    graphHelpBadge: isEn ? "Why the graph helps" : "Warum der Graph hilft",
+    llmOnlyLabel: isEn ? "LLM only" : "Nur LLM",
+    llmOnlyLoading: isEn ? "Loading LLM-only answer..." : "Lade LLM-only Antwort…",
+    llmOnlyEmpty: isEn
+      ? "No request sent yet. Submit a question to compare both variants."
+      : "Noch keine Anfrage gesendet. Sende eine Frage, um beide Varianten zu vergleichen.",
+    graphStatsNoSteps: isEn ? "No steps returned (LLM only)." : "Keine Schritte geliefert (LLM-only).",
+    graphStatsSuffix: isEn ? "steps, without graph evidence." : "Schritte, ohne Graph-Belege.",
+    graphRagLabel: "GraphRAG",
+    more: isEn ? "Show more" : "Mehr anzeigen",
+    less: isEn ? "Show less" : "Weniger anzeigen",
+    promptInspector: isEn ? "Prompt inspector (read only)" : "Prompt-Inspector (Read only)",
+    llmPrompt: isEn ? "LLM-only prompt" : "Nur LLM Prompt",
+    graphPrompt: "GraphRAG Prompt",
+    graphContextPayload: isEn ? "GraphRAG context payload for the LLM" : "GraphRAG Kontext-Paket an das LLM",
+    sessionMemory: "Session Memory",
+    storedLocally: isEn ? "stored locally" : "lokal gespeichert",
+    collapse: isEn ? "Collapse" : "Einklappen",
+    expand: isEn ? "Expand" : "Ausklappen",
+    clearHistory: isEn ? "Clear history" : "Verlauf löschen",
+    noHistory: isEn ? "No local session history available yet." : "Noch keine lokalen Verlaufsdaten vorhanden.",
+    noNextSteps: isEn ? "No next steps available yet. Submit a question to generate concrete actions." : "Noch keine Handlungsschritte verfügbar. Sende eine Frage, um konkrete Schritte zu erhalten.",
+    contextAndTools: isEn ? "Context and tools" : "Kontext und Tools",
+    systemGraph: isEn ? "System thinking full graph" : "System Thinking Gesamtgraph",
+    graphExplorer: "Graph Explorer",
+    referencesTitle: isEn ? "Reference concepts" : "Referenzkonzepte",
+    waitingForAnswer: isEn ? "Waiting for answer" : "Warten auf Antwort",
+    referencesCount: (count: number) => (isEn ? `${count} reference${count > 1 ? "s" : ""}` : `${count} Referenz${count > 1 ? "en" : ""}`),
+    openExplanation: isEn ? "Open explanation" : "Erklärung öffnen",
+    referenceEmpty: isEn
+      ? "After a successful answer we will show up to three reference concepts here together with the concrete tools."
+      : "Nach erfolgreicher Antwort zeigen wir hier maximal drei Referenzkonzepte mit konkreten Tools an.",
+    derivationTitle: isEn ? "Derivation details" : "Herleitungsdetails",
+    derivationBadge: isEn ? "contextual depth" : "kontextuelle Tiefe",
+    source: isEn ? "Source" : "Quelle",
+    derivationEmpty: isEn
+      ? "After a successful answer, the most relevant context summaries and sources will appear here."
+      : "Nach erfolgreicher Antwort erscheinen hier die wichtigsten Kontextsummaries plus Quelle.",
+    explorerTitle: isEn ? "Traversable Graph Explorer" : "Traversierbarer Graph Explorer",
+    answerGraph: isEn ? "Answer graph" : "Antwortgraph",
+    fullGraph: isEn ? "Full graph" : "Gesamtgraph",
+    highlightEvidence: isEn ? "Highlight evidence nodes" : "Beleg-Knoten hervorheben",
+    on: isEn ? "On" : "An",
+    off: isEn ? "Off" : "Aus",
+    close: isEn ? "Close" : "Schließen",
+    systemGraphLoading: isEn ? "System graph is loading..." : "System-Graph wird geladen…",
+    noGraph: isEn ? "No graph available." : "Kein Graph verfügbar.",
+    invalidQuestion: isEn ? "Please enter a valid question." : "Bitte gib eine gültige Frage ein.",
+    answerLoadError: isEn ? "Could not load answer." : "Antwort konnte nicht geladen werden.",
+    llmOnlyLoadError: isEn ? "Could not load LLM-only answer." : "LLM-only Antwort konnte nicht geladen werden.",
+    unexpectedError: isEn ? "Unexpected error while running the request." : "Unerwarteter Fehler während der Anfrage.",
+    systemGraphLoadError: isEn ? "Could not load system graph." : "System-Graph konnte nicht geladen werden.",
+    systemGraphCaption: (nodes: number, edges: number) =>
+      isEn
+        ? `System thinking full graph: ${nodes} nodes, ${edges} edges.`
+        : `System Thinking Gesamtgraph: ${nodes} Knoten, ${edges} Kanten.`,
+  };
+  const suggestionGroups = getSuggestionGroups(locale);
+  const [query, setQuery] = useState(getDefaultQuery(locale));
   const [viewModel, setViewModel] = useState<QueryViewModel | null>(null);
   const [status, setStatus] = useState<QueryPanelStatus>("idle");
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -204,7 +356,11 @@ export function QueryPanel(): React.JSX.Element {
       } else {
         const parsed = JSON.parse(raw) as PersistedSessionSnapshot[];
         if (Array.isArray(parsed)) {
-          setSessionSnapshots(parsed.slice(0, SESSION_HISTORY_LIMIT));
+          setSessionSnapshots(
+            parsed
+              .filter((entry) => !entry.locale || entry.locale === locale)
+              .slice(0, SESSION_HISTORY_LIMIT),
+          );
         }
       }
     } catch {
@@ -215,6 +371,9 @@ export function QueryPanel(): React.JSX.Element {
       const raw = window.localStorage.getItem(SESSION_ANALYSIS_KEY);
       if (raw) {
         const parsed = JSON.parse(raw) as PersistedAnalysisState;
+        if (parsed.locale && parsed.locale !== locale) {
+          return;
+        }
         if (typeof parsed.query === "string") {
           setQuery(parsed.query);
         }
@@ -240,7 +399,7 @@ export function QueryPanel(): React.JSX.Element {
     } finally {
       setDidHydrateLocalState(true);
     }
-  }, []);
+  }, [SESSION_ANALYSIS_KEY, SESSION_HISTORY_KEY, SESSION_SNAPSHOTS_KEY, locale]);
 
   useEffect(() => {
     try {
@@ -248,7 +407,7 @@ export function QueryPanel(): React.JSX.Element {
     } catch {
       // Ignore storage quota/browser restrictions.
     }
-  }, [sessionHistory]);
+  }, [SESSION_HISTORY_KEY, sessionHistory]);
 
   useEffect(() => {
     try {
@@ -259,7 +418,7 @@ export function QueryPanel(): React.JSX.Element {
     } catch {
       // Ignore storage quota/browser restrictions.
     }
-  }, [sessionSnapshots]);
+  }, [SESSION_SNAPSHOTS_KEY, sessionSnapshots]);
 
   useEffect(() => {
     if (!didHydrateLocalState || status === "loading") {
@@ -267,6 +426,7 @@ export function QueryPanel(): React.JSX.Element {
     }
 
     const payload: PersistedAnalysisState = {
+      locale,
       query,
       viewModel,
       llmOnlyAnswer,
@@ -296,7 +456,9 @@ export function QueryPanel(): React.JSX.Element {
     isQuestionSelectionLocked,
     llmOnlyAnswer,
     llmOnlyError,
+    locale,
     query,
+    SESSION_ANALYSIS_KEY,
     status,
     viewModel,
     isLlmOnlyExpanded,
@@ -310,7 +472,7 @@ export function QueryPanel(): React.JSX.Element {
   const runQuery = async (rawQuery: string, addToHistory: boolean) => {
     const trimmedQuery = rawQuery.trim();
     if (!trimmedQuery) {
-      setErrorMessage("Bitte gib eine gültige Frage ein.");
+      setErrorMessage(copy.invalidQuestion);
       setStatus("error");
       return;
     }
@@ -340,7 +502,7 @@ export function QueryPanel(): React.JSX.Element {
 
       if (!graphResponse.ok) {
         const remoteMessage = await graphResponse.text();
-        throw new Error(remoteMessage || "Antwort konnte nicht geladen werden.");
+        throw new Error(remoteMessage || copy.answerLoadError);
       }
 
       const payload = (await graphResponse.json()) as QuerySuccessResponse;
@@ -361,7 +523,7 @@ export function QueryPanel(): React.JSX.Element {
         setLlmOnlyAnswer(llmOnlyPayload.answer);
       } else {
         const llmErrorText = await llmOnlyResponse.text();
-        llmOnlyErrorSnapshot = llmErrorText || "LLM-only Antwort konnte nicht geladen werden.";
+        llmOnlyErrorSnapshot = llmErrorText || copy.llmOnlyLoadError;
         setLlmOnlyError(llmOnlyErrorSnapshot);
       }
 
@@ -380,6 +542,7 @@ export function QueryPanel(): React.JSX.Element {
         });
         setSessionSnapshots((current) => {
           const next: PersistedSessionSnapshot = {
+            locale,
             sessionId,
             query: trimmedQuery,
             viewModel,
@@ -393,7 +556,7 @@ export function QueryPanel(): React.JSX.Element {
       }
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Unerwarteter Fehler während der Anfrage.";
+        error instanceof Error ? error.message : copy.unexpectedError;
       setErrorMessage(message);
       setStatus("error");
     } finally {
@@ -435,11 +598,15 @@ export function QueryPanel(): React.JSX.Element {
   const hasDerivationDetails = derivationDetails.length > 0;
   const mainAnswer =
     viewModel?.answer.main ??
-    "Bereit zur Analyse. Stelle eine Frage und starte die Auswertung.";
+    isEn
+      ? "Ready for analysis. Submit a question to start the evaluation."
+      : "Bereit zur Analyse. Stelle eine Frage und starte die Auswertung.";
   const coreRationale =
     viewModel?.answer.coreRationale ??
-    "Hier wird der knappe P0-Kernnachweis angezeigt, sobald eine Antwort vorliegt.";
-  const graphModel = buildHomeGraphModel(viewModel, query);
+    (isEn
+      ? "The concise P0 core evidence will appear here once an answer is available."
+      : "Hier wird der knappe P0-Kernnachweis angezeigt, sobald eine Antwort vorliegt.");
+  const graphModel = buildHomeGraphModel(viewModel, query, locale);
   const explorerGraphModel = explorerMode === "system" ? systemGraphModel : graphModel;
   const qualitySignals = buildQualitySignals(
     references.length,
@@ -470,7 +637,7 @@ export function QueryPanel(): React.JSX.Element {
     try {
       const response = await fetch("/api/graph/full", { cache: "no-store" });
       if (!response.ok) {
-        throw new Error("System-Graph konnte nicht geladen werden.");
+        throw new Error(copy.systemGraphLoadError);
       }
 
       const payload = (await response.json()) as {
@@ -490,7 +657,7 @@ export function QueryPanel(): React.JSX.Element {
 
       const fullGraph: HomeGraphModel = {
         isFallback: false,
-        caption: `System Thinking Gesamtgraph: ${payload.graph.nodes.length} Knoten, ${payload.graph.edges.length} Kanten.`,
+        caption: copy.systemGraphCaption(payload.graph.nodes.length, payload.graph.edges.length),
         nodes: payload.graph.nodes.map((node) => ({
           id: node.id,
           label: `${node.nodeType}: ${node.label}`,
@@ -513,7 +680,7 @@ export function QueryPanel(): React.JSX.Element {
 
       setSystemGraphModel(fullGraph);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "System-Graph konnte nicht geladen werden.";
+      const message = error instanceof Error ? error.message : copy.systemGraphLoadError;
       setErrorMessage(message);
     } finally {
       setIsSystemGraphLoading(false);
@@ -547,14 +714,14 @@ export function QueryPanel(): React.JSX.Element {
         <div className="absolute inset-0 bg-gradient-to-br from-white/60 to-slate-50/30 -z-10" />
         <h2 className="flex items-center gap-2 text-[1.125rem] font-bold text-slate-900 border-b border-slate-200/60 pb-4">
           <Route className="h-5 w-5 text-sky-600" aria-hidden />
-          <span>Antwortführung</span>
+          <span>{copy.workflowTitle}</span>
         </h2>
 
-        <PipelineStepper status={status} />
+        <PipelineStepper locale={locale} status={status} />
 
         <QueryInput
           query={query}
-          suggestionGroups={QUERY_SUGGESTION_GROUPS}
+          suggestionGroups={suggestionGroups}
           onSuggestionSelect={setQuery}
           onQueryChange={setQuery}
           onSubmit={handleSubmit}
@@ -569,13 +736,12 @@ export function QueryPanel(): React.JSX.Element {
             <div className="mb-1 flex flex-wrap items-center justify-between gap-2">
               <h3 className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">
                 <Route className="h-3.5 w-3.5" aria-hidden />
-                <span>Antwortaufbau</span>
+                <span>{copy.answerBuildTitle}</span>
               </h3>
-              <span className="text-xs text-sky-700">läuft</span>
+              <span className="text-xs text-sky-700">{copy.running}</span>
             </div>
             <p className="text-xs leading-6 text-slate-700">
-              Kontextauswahl {"->"} Graph-Kontext {"->"} Synthese. Die Antwort wird gerade aus ausgewählten Knoten und
-              Belegen aufgebaut.
+              {copy.answerBuildBody}
             </p>
           </section>
         ) : null}
@@ -593,11 +759,7 @@ export function QueryPanel(): React.JSX.Element {
             ) : null}
           </div>
           {status === "idle" ? (
-            <p className="text-xs leading-6 text-slate-700">
-              Noch keine Analyse durchgeführt.
-              <br />
-              Sende eine Frage, um Bewertung, Referenzen und Kontextbudget zu sehen.
-            </p>
+            <p className="text-xs leading-6 text-slate-700">{copy.qualityGateIdle}</p>
           ) : (
             <div className="grid gap-2 text-xs text-slate-700 sm:grid-cols-2">
               {qualitySignals.map((signal) => (
@@ -615,15 +777,11 @@ export function QueryPanel(): React.JSX.Element {
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
             <h3 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
               <Network className="h-4 w-4 text-slate-400" aria-hidden />
-              <span>Node-Auswahl fürs LLM</span>
+              <span>{copy.llmNodeTitle}</span>
             </h3>
-            <span className="text-xs text-slate-500">Transparenz der Kontextauswahl</span>
+            <span className="text-xs text-slate-500">{copy.llmNodeBadge}</span>
           </div>
-          <p className="text-xs leading-6 text-slate-700">
-            Das System ermittelt zuerst passende Konzepte über Embedding-Match und Graph-Score, ergänzt zugehörige
-            Belege und erweitert bei Bedarf über einen Hop auf direkte Nachbarn. Nur diese Auswahl wird als
-            strukturierter Kontext an das LLM übergeben.
-          </p>
+          <p className="text-xs leading-6 text-slate-700">{copy.llmNodeBody}</p>
           {references.length > 0 ? (
             <ul className="mt-2 space-y-1 rounded-md border border-slate-200 bg-slate-50 p-2">
               {references.slice(0, 3).map((reference) => (
@@ -637,8 +795,7 @@ export function QueryPanel(): React.JSX.Element {
             </ul>
           ) : (
             <p className="mt-2 text-xs text-slate-500">
-              Noch keine Knoten ausgewählt. Nach dem ersten Lauf siehst du hier die tatsächliche Auswahl inklusive
-              Score und Hop.
+              {copy.llmNodeEmpty}
             </p>
           )}
         </section>
@@ -649,18 +806,12 @@ export function QueryPanel(): React.JSX.Element {
               <GitBranch className="h-4 w-4 text-slate-400" aria-hidden />
               <span>RAG vs GraphRAG</span>
             </h3>
-            <span className="text-xs text-slate-500">3 Kernunterschiede</span>
+            <span className="text-xs text-slate-500">{copy.ragDiffBadge}</span>
           </div>
           <ul className="space-y-1 text-xs leading-6 text-slate-700">
-            <li>
-              <span className="font-semibold text-slate-800">Kontextform:</span> Klassisches RAG liefert primär Textabschnitte; GraphRAG liefert zusätzlich Beziehungen zwischen Knoten.
-            </li>
-            <li>
-              <span className="font-semibold text-slate-800">Nachvollziehbarkeit:</span> Bei GraphRAG ist die Herleitung über Knoten und Kanten sichtbar, nicht nur über Textausschnitte.
-            </li>
-            <li>
-              <span className="font-semibold text-slate-800">Mehrhop-Logik:</span> GraphRAG kann Nachbarn gezielt über Hops einbeziehen und dadurch Ursachenketten strukturierter abbilden.
-            </li>
+            <li>{copy.ragDiff1}</li>
+            <li>{copy.ragDiff2}</li>
+            <li>{copy.ragDiff3}</li>
           </ul>
         </section>
 
@@ -670,13 +821,13 @@ export function QueryPanel(): React.JSX.Element {
               <Scale className="h-4 w-4 text-slate-400" aria-hidden />
               <span>LLM-only vs GraphRAG</span>
             </h3>
-            <span className="text-xs text-slate-500">Warum der Graph hilft</span>
+            <span className="text-xs text-slate-500">{copy.graphHelpBadge}</span>
           </div>
           <div className="grid gap-2 text-xs text-slate-700 sm:grid-cols-2">
             <div className="rounded-md border border-slate-200 bg-slate-50 p-2">
-              <p className="font-semibold text-slate-800">Nur LLM</p>
+              <p className="font-semibold text-slate-800">{copy.llmOnlyLabel}</p>
               {isLlmOnlyLoading ? (
-                <p className="mt-1">Lade LLM-only Antwort…</p>
+                <p className="mt-1">{copy.llmOnlyLoading}</p>
               ) : llmOnlyError ? (
                 <p className="mt-1 text-rose-700">{llmOnlyError}</p>
               ) : llmOnlyAnswer ? (
@@ -690,23 +841,23 @@ export function QueryPanel(): React.JSX.Element {
                       className="mt-1 text-xs font-semibold text-sky-700 underline decoration-sky-300 underline-offset-2"
                       onClick={() => setIsLlmOnlyExpanded((current) => !current)}
                     >
-                      {isLlmOnlyExpanded ? "Weniger anzeigen" : "Mehr anzeigen"}
+                      {isLlmOnlyExpanded ? copy.less : copy.more}
                     </button>
                   ) : null}
                   <p className="mt-1 text-[11px] text-slate-500">
                     {llmOnlyAnswer.nextSteps.length > 0
-                      ? `${llmOnlyAnswer.nextSteps.length} Schritte, ohne Graph-Belege.`
-                      : "Keine Schritte geliefert (LLM-only)."}
+                      ? `${llmOnlyAnswer.nextSteps.length} ${copy.graphStatsSuffix}`
+                      : copy.graphStatsNoSteps}
                   </p>
                 </>
               ) : (
-                <p className="mt-1">Noch keine Anfrage gesendet. Sende eine Frage, um beide Varianten zu vergleichen.</p>
+                <p className="mt-1">{copy.llmOnlyEmpty}</p>
               )}
             </div>
             <div className="rounded-md border border-sky-200 bg-sky-50 p-2">
-              <p className="font-semibold text-slate-800">GraphRAG</p>
+              <p className="font-semibold text-slate-800">{copy.graphRagLabel}</p>
               {status === "idle" ? (
-                <p className="mt-1">Noch keine Anfrage gesendet. Sende eine Frage, um beide Varianten zu vergleichen.</p>
+                <p className="mt-1">{copy.llmOnlyEmpty}</p>
               ) : (
                 <>
                   <p className="mt-1 leading-6">
@@ -718,7 +869,7 @@ export function QueryPanel(): React.JSX.Element {
                       className="mt-1 text-xs font-semibold text-sky-700 underline decoration-sky-300 underline-offset-2"
                       onClick={() => setIsGraphRagExpanded((current) => !current)}
                     >
-                      {isGraphRagExpanded ? "Weniger anzeigen" : "Mehr anzeigen"}
+                      {isGraphRagExpanded ? copy.less : copy.more}
                     </button>
                   ) : null}
                   <p className="mt-1 text-[11px] text-slate-500">
@@ -730,11 +881,11 @@ export function QueryPanel(): React.JSX.Element {
           </div>
           <details className="mt-3 rounded-md border border-slate-200 bg-slate-50 p-2">
             <summary className="cursor-pointer text-xs font-semibold uppercase tracking-[0.1em] text-slate-600">
-              Prompt-Inspector (Read only)
+              {copy.promptInspector}
             </summary>
             <div className="mt-2 grid gap-2 sm:grid-cols-2">
               <div className="rounded-md border border-slate-200 bg-white p-2">
-                <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">Nur LLM Prompt</p>
+                <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">{copy.llmPrompt}</p>
                 <pre className="max-h-44 overflow-auto whitespace-pre-wrap text-[11px] leading-5 text-slate-700">
                   {llmOnlyPromptPreview}
                 </pre>
@@ -748,7 +899,7 @@ export function QueryPanel(): React.JSX.Element {
             </div>
             <div className="mt-2 rounded-md border border-slate-200 bg-white p-2">
               <p className="mb-1 text-[11px] font-semibold uppercase tracking-[0.08em] text-slate-500">
-                GraphRAG Kontext-Paket an das LLM
+                {copy.graphContextPayload}
               </p>
               <pre className="max-h-44 overflow-auto whitespace-pre-wrap text-[11px] leading-5 text-slate-700">
                 {graphRagContextPayloadPreview}
@@ -761,16 +912,16 @@ export function QueryPanel(): React.JSX.Element {
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/60 pb-3">
             <h3 className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
               <History className="h-4 w-4 text-slate-400" aria-hidden />
-              <span>Session Memory</span>
+              <span>{copy.sessionMemory}</span>
             </h3>
             <div className="flex flex-wrap items-center gap-2">
-              <span className="text-xs text-slate-500">lokal gespeichert</span>
+              <span className="text-xs text-slate-500">{copy.storedLocally}</span>
               <button
                 type="button"
                 className="rounded border border-slate-300 bg-white px-2 py-1 text-[11px] font-semibold text-slate-700 hover:bg-slate-50"
                 onClick={() => setIsSessionMemoryExpanded((current) => !current)}
               >
-                {isSessionMemoryExpanded ? "Einklappen" : "Ausklappen"}
+                {isSessionMemoryExpanded ? copy.collapse : copy.expand}
               </button>
               <button
                 type="button"
@@ -786,7 +937,7 @@ export function QueryPanel(): React.JSX.Element {
                   }
                 }}
               >
-                Verlauf löschen
+                {copy.clearHistory}
               </button>
             </div>
           </div>
@@ -804,13 +955,13 @@ export function QueryPanel(): React.JSX.Element {
                     </button>
                     <p className="mt-1 text-xs text-slate-600">{entry.answerPreview}...</p>
                     <p className="mt-1 text-[11px] text-slate-500">
-                      {new Date(entry.createdAt).toLocaleString("de-DE")} · {entry.referenceCount} Referenzen
+                      {new Date(entry.createdAt).toLocaleString(isEn ? "en-US" : "de-DE")} · {copy.referencesCount(entry.referenceCount)}
                     </p>
                   </li>
                 ))}
               </ul>
             ) : (
-              <p className="text-sm text-slate-600">Noch keine lokalen Verlaufsdaten vorhanden.</p>
+              <p className="text-sm text-slate-600">{copy.noHistory}</p>
             )
           ) : null}
         </section>
@@ -826,7 +977,7 @@ export function QueryPanel(): React.JSX.Element {
           steps={
             nextSteps.length > 0
               ? nextSteps
-              : ["Noch keine Handlungsschritte verfügbar. Sende eine Frage, um konkrete Schritte zu erhalten."]
+              : [copy.noNextSteps]
           }
           title={tQuery("actionTitle")}
           badge={tQuery("actionBadge")}
@@ -845,7 +996,7 @@ export function QueryPanel(): React.JSX.Element {
         <div className="space-y-3">
           <h2 className="flex items-center gap-2 text-base font-semibold text-slate-900">
             <BookOpen className="h-4.5 w-4.5 text-sky-700" aria-hidden />
-            <span>Kontext und Tools</span>
+            <span>{copy.contextAndTools}</span>
           </h2>
           <div className="flex w-full gap-2">
             <button
@@ -854,7 +1005,7 @@ export function QueryPanel(): React.JSX.Element {
               className="inline-flex flex-1 items-center justify-center gap-1 rounded-full border border-indigo-200 bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700 transition hover:bg-indigo-100"
             >
               <Network className="h-3.5 w-3.5" aria-hidden />
-              System Thinking Gesamtgraph
+              {copy.systemGraph}
             </button>
             <button
               type="button"
@@ -867,18 +1018,16 @@ export function QueryPanel(): React.JSX.Element {
           </div>
         </div>
 
-        <GraphPreview model={graphModel} />
+        <GraphPreview model={graphModel} locale={locale} />
 
         <section className="space-y-4 rounded-xl border border-slate-200 bg-white p-4 sm:p-5">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="flex items-center gap-1.5 text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
               <BookOpen className="h-3.5 w-3.5" aria-hidden />
-              <span>Referenzkonzepte</span>
+              <span>{copy.referencesTitle}</span>
             </h3>
             <span className="text-xs font-semibold text-slate-500">
-              {hasReferences
-                ? `${references.length} Referenz${references.length > 1 ? "en" : ""}`
-                : "Warten auf Antwort"}
+              {hasReferences ? copy.referencesCount(references.length) : copy.waitingForAnswer}
             </span>
           </div>
           {hasReferences ? (
@@ -902,7 +1051,7 @@ export function QueryPanel(): React.JSX.Element {
                         target="_blank"
                         rel="noreferrer noopener"
                       >
-                        Erklärung öffnen
+                        {copy.openExplanation}
                       </a>
                     </p>
                   )}
@@ -930,7 +1079,7 @@ export function QueryPanel(): React.JSX.Element {
             </ul>
           ) : (
             <p className="text-sm text-slate-600">
-              Nach erfolgreicher Antwort zeigen wir hier maximal drei Referenzkonzepte mit konkreten Tools an.
+              {copy.referenceEmpty}
             </p>
           )}
         </section>
@@ -939,9 +1088,9 @@ export function QueryPanel(): React.JSX.Element {
           <div className="flex flex-wrap items-center justify-between gap-2">
             <h3 className="flex items-center gap-1.5 text-sm font-semibold uppercase tracking-[0.12em] text-slate-500">
               <Route className="h-3.5 w-3.5" aria-hidden />
-              <span>Herleitungsdetails</span>
+              <span>{copy.derivationTitle}</span>
             </h3>
-            <span className="text-xs font-semibold text-slate-500">kontextuelle Tiefe</span>
+            <span className="text-xs font-semibold text-slate-500">{copy.derivationBadge}</span>
           </div>
           {hasDerivationDetails ? (
             <ul className="space-y-3">
@@ -960,11 +1109,11 @@ export function QueryPanel(): React.JSX.Element {
                       className="text-xs font-semibold text-sky-700 underline decoration-sky-300 underline-offset-2"
                       onClick={() => toggleDerivationDetail(detail.nodeId)}
                     >
-                      {expandedDerivationIds[detail.nodeId] ? "Weniger anzeigen" : "Mehr anzeigen"}
+                      {expandedDerivationIds[detail.nodeId] ? copy.less : copy.more}
                     </button>
                   ) : null}
                   <div className="text-xs text-slate-600">
-                    <span className="font-semibold uppercase tracking-[0.2em] text-slate-500">Quelle:</span>{" "}
+                    <span className="font-semibold uppercase tracking-[0.2em] text-slate-500">{copy.source}:</span>{" "}
                     {detail.sourceUrl ? (
                       <a
                         className="underline decoration-slate-300 underline-offset-2"
@@ -983,7 +1132,7 @@ export function QueryPanel(): React.JSX.Element {
             </ul>
           ) : (
             <p className="text-sm text-slate-600">
-              Nach erfolgreicher Antwort erscheinen hier die wichtigsten Kontextsummaries plus Quelle.
+              {copy.derivationEmpty}
             </p>
           )}
         </section>
@@ -1009,7 +1158,7 @@ export function QueryPanel(): React.JSX.Element {
             >
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-slate-200/60 pb-3">
                 <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">
-                  Traversierbarer Graph Explorer
+                  {copy.explorerTitle}
                 </p>
                 <div className="flex items-center gap-2">
                   <button
@@ -1021,7 +1170,7 @@ export function QueryPanel(): React.JSX.Element {
                         : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
                     }`}
                   >
-                    Antwortgraph
+                    {copy.answerGraph}
                   </button>
                   <button
                     type="button"
@@ -1032,7 +1181,7 @@ export function QueryPanel(): React.JSX.Element {
                         : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
                     }`}
                   >
-                    Gesamtgraph
+                    {copy.fullGraph}
                   </button>
                   {explorerMode === "system" ? (
                     <button
@@ -1044,7 +1193,7 @@ export function QueryPanel(): React.JSX.Element {
                           : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
                       }`}
                     >
-                      Beleg-Knoten hervorheben: {isSelectionHighlightEnabled ? "An" : "Aus"}
+                      {copy.highlightEvidence}: {isSelectionHighlightEnabled ? copy.on : copy.off}
                     </button>
                   ) : null}
                   <button
@@ -1052,7 +1201,7 @@ export function QueryPanel(): React.JSX.Element {
                     onClick={() => setIsExplorerOpen(false)}
                     className="rounded-full border border-slate-300 bg-white px-3 py-1 text-xs font-semibold text-slate-700 transition hover:bg-slate-50"
                   >
-                    Schließen
+                    {copy.close}
                   </button>
                 </div>
               </div>
@@ -1061,6 +1210,7 @@ export function QueryPanel(): React.JSX.Element {
                   <div className="relative">
                     <GraphPreview
                       model={explorerGraphModel}
+                      locale={locale}
                       variant="expanded"
                       interactive
                       initialLayout={explorerMode === "system" ? "force" : "hierarchy-vertical"}
@@ -1072,16 +1222,14 @@ export function QueryPanel(): React.JSX.Element {
                     />
                     {explorerMode === "system" && isSystemGraphLoading ? (
                       <div className="pointer-events-none absolute right-3 top-3 rounded-md border border-slate-200 bg-white/95 px-2 py-1 text-xs font-semibold text-slate-600 shadow-sm">
-                        System-Graph wird geladen…
+                        {copy.systemGraphLoading}
                       </div>
                     ) : null}
                   </div>
                 ) : (
                   <div className="flex min-h-[700px] items-center justify-center rounded-xl border border-slate-200 bg-slate-50">
                     <p className="text-sm text-slate-600">
-                      {explorerMode === "system" && isSystemGraphLoading
-                        ? "System-Graph wird geladen…"
-                        : "Kein Graph verfügbar."}
+                      {explorerMode === "system" && isSystemGraphLoading ? copy.systemGraphLoading : copy.noGraph}
                     </p>
                   </div>
                 )}

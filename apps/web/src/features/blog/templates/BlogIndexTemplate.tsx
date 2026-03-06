@@ -8,6 +8,7 @@ import * as motion from "framer-motion/client";
 import { Fragment } from "react";
 
 type BlogIndexTemplateProps = {
+  locale: "de" | "en";
   posts: BlogPostSummary[];
 };
 
@@ -18,40 +19,77 @@ type FlowStep = {
   slug: string;
 };
 
-const FLOW_STEPS: FlowStep[] = [
-  {
-    step: "01",
-    title: "Problemraum",
-    description: "Warum plausible KI-Antworten für belastbare Entscheidungen nicht ausreichen.",
-    slug: "warum-ki-antworten-fuer-entscheidungen-nicht-ausreichen",
-  },
-  {
-    step: "02",
-    title: "Struktur",
-    description: "Wie GraphRAG Beziehungen und Belegpfade explizit modelliert.",
-    slug: "was-graphrag-strukturell-anders-macht-als-klassisches-rag",
-  },
-  {
-    step: "03",
-    title: "Qualität",
-    description: "Welche Kriterien ein produktives System für Kontextauswahl und Herleitung erfüllen muss.",
-    slug: "qualitaetskriterien-fuer-ein-produktives-graphrag-system",
-  },
-  {
-    step: "04",
-    title: "Organisation",
-    description: "Wie GraphRAG als Entscheidungs-Interface in Organisationen wirkt.",
-    slug: "graphrag-als-entscheidungs-interface-fuer-organisationen",
-  },
-  {
-    step: "05",
-    title: "Positionierung",
-    description: "Von plausiblen Antworten zu prüfbaren, verteidigbaren Entscheidungen.",
-    slug: "von-plausiblen-antworten-zu-pruefbaren-entscheidungen",
-  },
-];
+function getFlowSteps(locale: "de" | "en"): FlowStep[] {
+  return locale === "en"
+    ? [
+        {
+          step: "01",
+          title: "Problem space",
+          description: "Why plausible AI answers are not enough for defensible decisions.",
+          slug: "warum-ki-antworten-fuer-entscheidungen-nicht-ausreichen",
+        },
+        {
+          step: "02",
+          title: "Structure",
+          description: "How GraphRAG models relationships and evidence paths explicitly.",
+          slug: "was-graphrag-strukturell-anders-macht-als-klassisches-rag",
+        },
+        {
+          step: "03",
+          title: "Quality",
+          description: "Which criteria a production-grade system must meet for context selection and derivation.",
+          slug: "qualitaetskriterien-fuer-ein-produktives-graphrag-system",
+        },
+        {
+          step: "04",
+          title: "Organization",
+          description: "How GraphRAG acts as a decision interface inside organizations.",
+          slug: "graphrag-als-entscheidungs-interface-fuer-organisationen",
+        },
+        {
+          step: "05",
+          title: "Positioning",
+          description: "From plausible answers to reviewable, defensible decisions.",
+          slug: "von-plausiblen-antworten-zu-pruefbaren-entscheidungen",
+        },
+      ]
+    : [
+        {
+          step: "01",
+          title: "Problemraum",
+          description: "Warum plausible KI-Antworten für belastbare Entscheidungen nicht ausreichen.",
+          slug: "warum-ki-antworten-fuer-entscheidungen-nicht-ausreichen",
+        },
+        {
+          step: "02",
+          title: "Struktur",
+          description: "Wie GraphRAG Beziehungen und Belegpfade explizit modelliert.",
+          slug: "was-graphrag-strukturell-anders-macht-als-klassisches-rag",
+        },
+        {
+          step: "03",
+          title: "Qualität",
+          description: "Welche Kriterien ein produktives System für Kontextauswahl und Herleitung erfüllen muss.",
+          slug: "qualitaetskriterien-fuer-ein-produktives-graphrag-system",
+        },
+        {
+          step: "04",
+          title: "Organisation",
+          description: "Wie GraphRAG als Entscheidungs-Interface in Organisationen wirkt.",
+          slug: "graphrag-als-entscheidungs-interface-fuer-organisationen",
+        },
+        {
+          step: "05",
+          title: "Positionierung",
+          description: "Von plausiblen Antworten zu prüfbaren, verteidigbaren Entscheidungen.",
+          slug: "von-plausiblen-antworten-zu-pruefbaren-entscheidungen",
+        },
+      ];
+}
 
-export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.Element {
+export function BlogIndexTemplate({ locale, posts }: BlogIndexTemplateProps): React.JSX.Element {
+  const isEn = locale === "en";
+  const flowSteps = getFlowSteps(locale);
   void posts.length;
 
   return (
@@ -69,7 +107,7 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="text-xs font-bold uppercase tracking-[0.2em] text-sky-600"
             >
-              Systemische Praxis
+              {isEn ? "Systemic practice" : "Systemische Praxis"}
             </motion.p>
             <motion.div
               initial={{ opacity: 0, y: 15 }}
@@ -78,11 +116,20 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
               className="space-y-5"
             >
               <h1 className="headline-wrap max-w-[28ch] text-[2rem] font-bold tracking-tight text-slate-950 sm:text-[3.2rem] leading-[1.08]">
-                Vom Wahrscheinlichkeits<wbr />modell zur <span className="text-gradient-primary">Entscheidungs<wbr />architektur</span>.
+                {isEn ? (
+                  <>
+                    From the probability<wbr /> model to <span className="text-gradient-primary">decision<wbr /> architecture</span>.
+                  </>
+                ) : (
+                  <>
+                    Vom Wahrscheinlichkeits<wbr />modell zur <span className="text-gradient-primary">Entscheidungs<wbr />architektur</span>.
+                  </>
+                )}
               </h1>
               <p className="max-w-[66ch] text-lg font-medium leading-relaxed text-slate-700">
-                Diese Essayserie analysiert den strukturellen Übergang von deskriptivem RAG
-                zu einer prüfbaren, graphbasierten Entscheidungslogik.
+                {isEn
+                  ? "This essay series analyzes the structural transition from descriptive RAG to a reviewable, graph-based decision logic."
+                  : "Diese Essayserie analysiert den strukturellen Übergang von deskriptivem RAG zu einer prüfbaren, graphbasierten Entscheidungslogik."}
               </p>
             </motion.div>
             <motion.div
@@ -92,10 +139,9 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
               className="max-w-[80ch] space-y-4 text-slate-600 sm:text-[1.05rem] leading-relaxed"
             >
               <p>
-                Jeder Beitrag ist ein Baustein in einem integrierten Denkmodell.
-                Der Argumentationsfluss beginnt im Problemraum klassischer RAG-Systeme,
-                leitet die notwendige Struktur ab und definiert Qualitätskriterien
-                für den produktiven Einsatz.
+                {isEn
+                  ? "Each article is one building block in an integrated model of thought. The argument starts in the problem space of classic RAG systems, derives the required structure, and defines quality criteria for productive use."
+                  : "Jeder Beitrag ist ein Baustein in einem integrierten Denkmodell. Der Argumentationsfluss beginnt im Problemraum klassischer RAG-Systeme, leitet die notwendige Struktur ab und definiert Qualitätskriterien für den produktiven Einsatz."}
               </p>
             </motion.div>
           </div>
@@ -111,12 +157,18 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
           <div className="mx-auto max-w-295 px-4 sm:px-6">
             <div className="glass-panel inline-flex items-center gap-4 rounded-xl px-5 py-3">
               <div className="space-y-0.5">
-                <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-700">Argumentationsfluss</h2>
-                <p className="text-sm text-slate-500 font-medium">Problemraum → Struktur → Qualität → Organisation → Positionierung</p>
+                <h2 className="text-xs font-bold uppercase tracking-[0.2em] text-slate-700">
+                  {isEn ? "Argument flow" : "Argumentationsfluss"}
+                </h2>
+                <p className="text-sm text-slate-500 font-medium">
+                  {isEn
+                    ? "Problem space → Structure → Quality → Organization → Positioning"
+                    : "Problemraum → Struktur → Qualität → Organisation → Positionierung"}
+                </p>
               </div>
             </div>
           </div>
-          <GraphEssaysSurface />
+          <GraphEssaysSurface locale={locale} />
         </section>
 
         {/* Gradient Divider */}
@@ -133,17 +185,22 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
               transition={{ duration: 0.5, ease: "easeOut" }}
               className="space-y-3"
             >
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-600">Struktur des Arguments</p>
-              <h2 className="headline-wrap text-[1.75rem] font-bold tracking-tight text-slate-900 sm:text-[2.25rem]">Vom Problem zur Position</h2>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-600">
+                {isEn ? "Structure of the argument" : "Struktur des Arguments"}
+              </p>
+              <h2 className="headline-wrap text-[1.75rem] font-bold tracking-tight text-slate-900 sm:text-[2.25rem]">
+                {isEn ? "From problem to position" : "Vom Problem zur Position"}
+              </h2>
               <p className="max-w-[72ch] text-[1.05rem] leading-relaxed text-slate-600 font-medium">
-                Der Gedankengang folgt einer klaren Logik – von der Ausgangsfrage
-                bis zur organisatorischen Einordnung. Jeder Schritt baut auf dem vorherigen auf.
+                {isEn
+                  ? "The line of reasoning follows a clear logic, from the initial problem to the organizational positioning. Each step builds on the previous one."
+                  : "Der Gedankengang folgt einer klaren Logik – von der Ausgangsfrage bis zur organisatorischen Einordnung. Jeder Schritt baut auf dem vorherigen auf."}
               </p>
             </motion.div>
 
             {/* Step Cards with Connection Arrows */}
             <div className="flex flex-col md:grid md:grid-cols-3 lg:flex lg:flex-row lg:items-stretch gap-5 lg:gap-0">
-              {FLOW_STEPS.map((flowStep, index) => (
+              {flowSteps.map((flowStep, index) => (
                 <Fragment key={flowStep.step}>
                   {/* Arrow connector between cards (desktop only) */}
                   {index > 0 ? (
@@ -169,7 +226,7 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
                       href={`/essay/${flowStep.slug}`}
                       className="mt-auto pt-5 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-[0.14em] text-sky-700 hover:text-sky-900 transition-colors"
                     >
-                      Essay lesen
+                      {isEn ? "Read essay" : "Essay lesen"}
                       <span className="transition-transform duration-300 group-hover:translate-x-1" aria-hidden>→</span>
                     </a>
                   </motion.article>
@@ -178,8 +235,9 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
             </div>
 
             <p className="max-w-[66ch] text-sm leading-relaxed text-slate-500 font-medium">
-              Der Argumentationspfad lässt sich chronologisch verfolgen –
-              oder gezielt an dem Punkt einsteigen, der für Ihre aktuelle Architektur- oder Governance-Frage relevant ist.
+              {isEn
+                ? "You can follow the argument path chronologically or enter directly at the point most relevant to your current architecture or governance question."
+                : "Der Argumentationspfad lässt sich chronologisch verfolgen – oder gezielt an dem Punkt einsteigen, der für Ihre aktuelle Architektur- oder Governance-Frage relevant ist."}
             </p>
 
             {/* CTA Section */}
@@ -191,14 +249,14 @@ export function BlogIndexTemplate({ posts }: BlogIndexTemplateProps): React.JSX.
             >
               <TrackedLink
                 href="/demo"
-                label="Demo starten"
+                label={isEn ? "Open demo" : "Demo starten"}
                 eventName="essay_cta_click"
                 payload={{ target: "/demo", surface: "essay-bottom-cta" }}
                 className="inline-flex rounded-lg bg-slate-900 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-slate-900/20 transition-all hover:bg-sky-700 hover:-translate-y-0.5"
               />
               <TrackedLink
                 href="/story/graphrag"
-                label="Zur Architektur-Story"
+                label={isEn ? "Open architecture story" : "Zur Architektur-Story"}
                 eventName="essay_cta_click"
                 payload={{ target: "/story/graphrag", surface: "essay-bottom-secondary" }}
                 className="inline-flex rounded-lg border border-slate-300 glass-panel px-6 py-3.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 hover:text-slate-900"

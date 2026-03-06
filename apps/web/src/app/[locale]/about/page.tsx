@@ -20,6 +20,8 @@ export async function generateMetadata({ params }: AboutPageProps): Promise<Meta
   });
 }
 
-export default function AboutPage(): React.JSX.Element {
-  return <AboutPageTemplate />;
+export default async function AboutPage({ params }: AboutPageProps): Promise<React.JSX.Element> {
+  const { locale } = await params;
+
+  return <AboutPageTemplate locale={locale} />;
 }

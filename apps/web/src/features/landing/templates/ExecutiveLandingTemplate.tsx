@@ -5,10 +5,14 @@ import { SiteHeader } from "@/components/organisms/site-header";
 import { ExecutiveHeroGraph } from "@/features/landing/molecules/ExecutiveHeroGraph";
 import { LandingReveal } from "@/features/landing/molecules/LandingReveal";
 import * as motion from "framer-motion/client";
-import { getLocale } from "next-intl/server";
 
-export async function ExecutiveLandingTemplate(): Promise<React.JSX.Element> {
-  const locale = await getLocale();
+type ExecutiveLandingTemplateProps = {
+  locale: "de" | "en";
+};
+
+export async function ExecutiveLandingTemplate({
+  locale,
+}: ExecutiveLandingTemplateProps): Promise<React.JSX.Element> {
   const isEn = locale === "en";
 
   return (

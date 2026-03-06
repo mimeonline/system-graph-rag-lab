@@ -17,6 +17,7 @@ type MiniMapSnapshot = {
 
 type GraphPreviewProps = {
   model: HomeGraphModel;
+  locale?: "de" | "en";
   variant?: "default" | "expanded";
   interactive?: boolean;
   initialLayout?: GraphLayoutMode;
@@ -68,21 +69,23 @@ function withCySafely(cy: Core | null | undefined, action: (activeCy: Core) => v
   }
 }
 
-const NODE_TYPE_LEGEND: Array<{
+function getNodeTypeLegend(locale: "de" | "en"): Array<{
   key: string;
   label: string;
   bgClass: string;
   borderClass: string;
-}> = [
-  { key: "query", label: "Frage", bgClass: "bg-blue-100", borderClass: "border-blue-800" },
-  { key: "concept", label: "Concept", bgClass: "bg-blue-100", borderClass: "border-blue-700" },
-  { key: "tool", label: "Tool", bgClass: "bg-emerald-100", borderClass: "border-emerald-700" },
-  { key: "problem", label: "Problem", bgClass: "bg-orange-100", borderClass: "border-orange-700" },
-  { key: "book", label: "Book", bgClass: "bg-violet-100", borderClass: "border-violet-700" },
-  { key: "author", label: "Author", bgClass: "bg-amber-100", borderClass: "border-amber-700" },
-  { key: "evidence", label: "Beleg", bgClass: "bg-slate-100", borderClass: "border-slate-500" },
-  { key: "answer", label: "Antwort", bgClass: "bg-indigo-100", borderClass: "border-indigo-700" },
-];
+}> {
+  return [
+    { key: "query", label: locale === "en" ? "Question" : "Frage", bgClass: "bg-blue-100", borderClass: "border-blue-800" },
+    { key: "concept", label: "Concept", bgClass: "bg-blue-100", borderClass: "border-blue-700" },
+    { key: "tool", label: "Tool", bgClass: "bg-emerald-100", borderClass: "border-emerald-700" },
+    { key: "problem", label: "Problem", bgClass: "bg-orange-100", borderClass: "border-orange-700" },
+    { key: "book", label: "Book", bgClass: "bg-violet-100", borderClass: "border-violet-700" },
+    { key: "author", label: "Author", bgClass: "bg-amber-100", borderClass: "border-amber-700" },
+    { key: "evidence", label: locale === "en" ? "Evidence" : "Beleg", bgClass: "bg-slate-100", borderClass: "border-slate-500" },
+    { key: "answer", label: locale === "en" ? "Answer" : "Antwort", bgClass: "bg-indigo-100", borderClass: "border-indigo-700" },
+  ];
+}
 
 function ensureDagreRegistered(): void {
   if (!dagreRegistered) {
@@ -531,11 +534,30 @@ function runInitialNodePulse(cy: Core): () => void {
  */
 export function GraphPreview({
   model,
+  locale = "de",
   variant = "default",
   interactive = false,
   initialLayout = "hierarchy-vertical",
   highlightNodeIds = [],
 }: GraphPreviewProps): React.JSX.Element {
+  const copy =
+    locale === "en"
+      ? {
+          title: "Graph view",
+          fallback: "Learning view",
+          current: "For the current question",
+          legend: "Legend",
+          passiveHint: "Drag to explore and scroll to zoom. Open Graph Explorer to change the layout.",
+          activeHint: "Drag to explore, scroll to zoom, and switch layouts freely.",
+        }
+      : {
+          title: "Graph-Ansicht",
+          fallback: "Lernansicht",
+          current: "Zur aktuellen Frage",
+          legend: "Legende",
+          passiveHint: "Drag zum Traversieren und Scroll zum Zoomen. Für Layoutwechsel den Graph Explorer öffnen.",
+          activeHint: "Drag zum Traversieren, Scroll zum Zoomen, Layout frei wechselbar.",
+        };
   const baseGraphHeightPx = GRAPH_HEIGHT_PX_BY_VARIANT[variant];
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -621,8 +643,8 @@ export function GraphPreview({
   }, [filteredModel, forceSeedPositions]);
   const visibleLegendItems = useMemo(() => {
     const presentTypes = new Set(filteredModel.nodes.map((node) => normalizeNodeType(node)));
-    return NODE_TYPE_LEGEND.filter((entry) => presentTypes.has(entry.key));
-  }, [filteredModel.nodes]);
+    return getNodeTypeLegend(locale).filter((entry) => presentTypes.has(entry.key));
+  }, [filteredModel.nodes, locale]);
   const selectedNodeDetails = useMemo(() => {
     if (!selectedNodeId) {
       return null;
@@ -1152,9 +1174,9 @@ export function GraphPreview({
       }`}
     >
       <div className="flex items-center justify-between gap-3 border-b border-slate-200/60 pb-3">
-        <h3 className="text-sm font-bold uppercase tracking-[0.14em] text-slate-500">Graph-Ansicht</h3>
+        <h3 className="text-sm font-bold uppercase tracking-[0.14em] text-slate-500">{copy.title}</h3>
         <span className="text-xs font-semibold text-slate-500">
-          {model.isFallback ? "Lernansicht" : "Zur aktuellen Frage"}
+          {model.isFallback ? copy.fallback : copy.current}
         </span>
       </div>
 
@@ -1339,7 +1361,7 @@ export function GraphPreview({
 
       {visibleLegendItems.length > 0 ? (
         <div className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-2">
-          <span className="block px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Legende</span>
+          <span className="block px-1 text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">{copy.legend}</span>
           <div className="mt-1 flex flex-wrap items-center gap-2">
             {visibleLegendItems.map((item) => (
               <span
@@ -1386,9 +1408,7 @@ export function GraphPreview({
       </div>
 
       <p className="text-xs text-slate-500">
-        {interactive
-          ? "Drag zum Traversieren, Scroll zum Zoomen, Layout frei wechselbar."
-          : "Drag zum Traversieren und Scroll zum Zoomen. Für Layoutwechsel den Graph Explorer öffnen."}
+        {interactive ? copy.activeHint : copy.passiveHint}
       </p>
 
       {interactive ? (

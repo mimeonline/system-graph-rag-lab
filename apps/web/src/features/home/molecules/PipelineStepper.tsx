@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import type { QueryPanelStatus } from "@/components/organisms/query-panel-status";
 
 type PipelineStepperProps = {
+  locale: "de" | "en";
   status: QueryPanelStatus;
 };
 
@@ -11,13 +12,25 @@ type PipelineStep = {
   detail: string;
 };
 
-const STEPS: PipelineStep[] = [
-  { id: "question", label: "Frage", detail: "Systemproblem formulieren" },
-  { id: "retrieval", label: "Kontextauswahl", detail: "Kontext priorisieren" },
-  { id: "graph", label: "Graph", detail: "Knoten verknüpfen" },
-  { id: "synthesis", label: "Synthese", detail: "Antwort herleiten" },
-  { id: "action", label: "Handlung", detail: "Nächste Schritte nutzen" },
-];
+function getSteps(locale: "de" | "en"): PipelineStep[] {
+  if (locale === "en") {
+    return [
+      { id: "question", label: "Question", detail: "Frame the system problem" },
+      { id: "retrieval", label: "Context", detail: "Prioritize context" },
+      { id: "graph", label: "Graph", detail: "Connect nodes" },
+      { id: "synthesis", label: "Synthesis", detail: "Derive the answer" },
+      { id: "action", label: "Action", detail: "Use next steps" },
+    ];
+  }
+
+  return [
+    { id: "question", label: "Frage", detail: "Systemproblem formulieren" },
+    { id: "retrieval", label: "Kontextauswahl", detail: "Kontext priorisieren" },
+    { id: "graph", label: "Graph", detail: "Knoten verknüpfen" },
+    { id: "synthesis", label: "Synthese", detail: "Antwort herleiten" },
+    { id: "action", label: "Handlung", detail: "Nächste Schritte nutzen" },
+  ];
+}
 
 function getActiveStep(status: QueryPanelStatus): number {
   if (status === "loading") {
@@ -38,15 +51,18 @@ function getActiveStep(status: QueryPanelStatus): number {
 /**
  * Visual learning pipeline that makes the GraphRAG processing path scannable.
  */
-export function PipelineStepper({ status }: PipelineStepperProps): React.JSX.Element {
+export function PipelineStepper({ locale, status }: PipelineStepperProps): React.JSX.Element {
+  const steps = getSteps(locale);
   const activeStep = getActiveStep(status);
-  const progress = (activeStep / STEPS.length) * 100;
+  const progress = (activeStep / steps.length) * 100;
 
   return (
     <section className="space-y-3 rounded-xl border border-sky-200/70 bg-gradient-to-br from-sky-50 to-indigo-50 p-4 sm:p-5">
       <div className="flex items-center justify-between gap-3">
         <h3 className="text-sm font-semibold uppercase tracking-[0.12em] text-slate-700">Guided Mode</h3>
-        <p className="text-xs font-semibold text-slate-600">Lernpfad sichtbar</p>
+        <p className="text-xs font-semibold text-slate-600">
+          {locale === "en" ? "Learning path visible" : "Lernpfad sichtbar"}
+        </p>
       </div>
       <div className="h-1.5 w-full overflow-hidden rounded-full bg-sky-100">
         <motion.div
@@ -57,7 +73,7 @@ export function PipelineStepper({ status }: PipelineStepperProps): React.JSX.Ele
         />
       </div>
       <ol className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
-        {STEPS.map((step, index) => {
+        {steps.map((step, index) => {
           const number = index + 1;
           const isActive = number <= activeStep;
 

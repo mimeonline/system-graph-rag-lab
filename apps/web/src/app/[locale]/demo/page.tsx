@@ -20,6 +20,8 @@ export async function generateMetadata({ params }: DemoPageProps): Promise<Metad
   });
 }
 
-export default function DemoPage(): React.JSX.Element {
-  return <HomeDemoTemplate />;
+export default async function DemoPage({ params }: DemoPageProps): Promise<React.JSX.Element> {
+  const { locale } = await params;
+
+  return <HomeDemoTemplate locale={locale} />;
 }

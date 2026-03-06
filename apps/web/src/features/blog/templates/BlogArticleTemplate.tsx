@@ -4,87 +4,140 @@ import { TrackedPageView } from "@/components/molecules/tracked-page-view";
 import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
 import { withCanonical } from "@/config/site";
+import { Link } from "@/i18n/navigation";
 import type { BlogPostFrontmatter, BlogTocItem } from "@/features/blog/contracts";
 import { Linkedin } from "lucide-react";
 import Image from "next/image";
-import Link from "next/link";
 
 type BlogArticleTemplateProps = {
   frontmatter: BlogPostFrontmatter;
   content: React.ReactNode;
+  locale: "de" | "en";
+  sourceLocale: "de" | "en";
   toc: BlogTocItem[];
 };
 
-/** Ordered essay slugs for the "Next Essay" navigation */
-const ESSAY_ORDER: { slug: string; title: string; step: string }[] = [
-  { slug: "warum-ki-antworten-fuer-entscheidungen-nicht-ausreichen", title: "Problemraum", step: "01" },
-  { slug: "was-graphrag-strukturell-anders-macht-als-klassisches-rag", title: "Struktur", step: "02" },
-  { slug: "qualitaetskriterien-fuer-ein-produktives-graphrag-system", title: "Qualität", step: "03" },
-  { slug: "graphrag-als-entscheidungs-interface-fuer-organisationen", title: "Organisation", step: "04" },
-  { slug: "von-plausiblen-antworten-zu-pruefbaren-entscheidungen", title: "Positionierung", step: "05" },
-];
+function getEssayOrder(locale: "de" | "en"): { slug: string; title: string; step: string }[] {
+  return locale === "en"
+    ? [
+        { slug: "warum-ki-antworten-fuer-entscheidungen-nicht-ausreichen", title: "Problem Space", step: "01" },
+        { slug: "was-graphrag-strukturell-anders-macht-als-klassisches-rag", title: "Structure", step: "02" },
+        { slug: "qualitaetskriterien-fuer-ein-produktives-graphrag-system", title: "Quality", step: "03" },
+        { slug: "graphrag-als-entscheidungs-interface-fuer-organisationen", title: "Organization", step: "04" },
+        { slug: "von-plausiblen-antworten-zu-pruefbaren-entscheidungen", title: "Positioning", step: "05" },
+      ]
+    : [
+        { slug: "warum-ki-antworten-fuer-entscheidungen-nicht-ausreichen", title: "Problemraum", step: "01" },
+        { slug: "was-graphrag-strukturell-anders-macht-als-klassisches-rag", title: "Struktur", step: "02" },
+        { slug: "qualitaetskriterien-fuer-ein-produktives-graphrag-system", title: "Qualität", step: "03" },
+        { slug: "graphrag-als-entscheidungs-interface-fuer-organisationen", title: "Organisation", step: "04" },
+        { slug: "von-plausiblen-antworten-zu-pruefbaren-entscheidungen", title: "Positionierung", step: "05" },
+      ];
+}
 
-const ESSAY_DRILLDOWNS: Record<string, { slug: string; title: string }> = {
-  "was-graphrag-strukturell-anders-macht-als-klassisches-rag": {
-    slug: "kontextdisziplin-warum-weniger-kontext-oft-bessere-antworten-erzeugt",
-    title: "Kontextdisziplin",
-  },
-  "qualitaetskriterien-fuer-ein-produktives-graphrag-system": {
-    slug: "prompt-transparenz-als-vertrauensfaktor",
-    title: "Prompt-Transparenz",
-  },
-  "graphrag-als-entscheidungs-interface-fuer-organisationen": {
-    slug: "system-thinking-als-idealer-use-case-fuer-graphrag",
-    title: "System Thinking Use Case",
-  },
-};
+function getEssayDrilldowns(locale: "de" | "en"): Record<string, { slug: string; title: string }> {
+  return locale === "en"
+    ? {
+        "was-graphrag-strukturell-anders-macht-als-klassisches-rag": {
+          slug: "kontextdisziplin-warum-weniger-kontext-oft-bessere-antworten-erzeugt",
+          title: "Context Discipline",
+        },
+        "qualitaetskriterien-fuer-ein-produktives-graphrag-system": {
+          slug: "prompt-transparenz-als-vertrauensfaktor",
+          title: "Prompt Transparency",
+        },
+        "graphrag-als-entscheidungs-interface-fuer-organisationen": {
+          slug: "system-thinking-als-idealer-use-case-fuer-graphrag",
+          title: "System Thinking Use Case",
+        },
+      }
+    : {
+        "was-graphrag-strukturell-anders-macht-als-klassisches-rag": {
+          slug: "kontextdisziplin-warum-weniger-kontext-oft-bessere-antworten-erzeugt",
+          title: "Kontextdisziplin",
+        },
+        "qualitaetskriterien-fuer-ein-produktives-graphrag-system": {
+          slug: "prompt-transparenz-als-vertrauensfaktor",
+          title: "Prompt-Transparenz",
+        },
+        "graphrag-als-entscheidungs-interface-fuer-organisationen": {
+          slug: "system-thinking-als-idealer-use-case-fuer-graphrag",
+          title: "System Thinking Use Case",
+        },
+      };
+}
 
-const DRILLDOWN_PARENT: Record<string, string> = Object.fromEntries(
-  Object.entries(ESSAY_DRILLDOWNS).map(([parentSlug, drilldown]) => [drilldown.slug, parentSlug]),
-);
-
-function getNextEssay(currentSlug: string): { slug: string; title: string; step: string } | null {
-  const currentIndex = ESSAY_ORDER.findIndex((e) => e.slug === currentSlug);
-  if (currentIndex === -1 || currentIndex >= ESSAY_ORDER.length - 1) {
+function getNextEssay(
+  currentSlug: string,
+  essayOrder: { slug: string; title: string; step: string }[],
+): { slug: string; title: string; step: string } | null {
+  const currentIndex = essayOrder.findIndex((e) => e.slug === currentSlug);
+  if (currentIndex === -1 || currentIndex >= essayOrder.length - 1) {
     return null;
   }
-  return ESSAY_ORDER[currentIndex + 1] ?? null;
+  return essayOrder[currentIndex + 1] ?? null;
 }
 
-function getDrilldownEssay(currentSlug: string): { slug: string; title: string } | null {
-  return ESSAY_DRILLDOWNS[currentSlug] ?? null;
+function getDrilldownEssay(
+  currentSlug: string,
+  drilldowns: Record<string, { slug: string; title: string }>,
+): { slug: string; title: string } | null {
+  return drilldowns[currentSlug] ?? null;
 }
 
-function getDrilldownParentEssay(currentSlug: string): { slug: string; title: string; step: string } | null {
-  const parentSlug = DRILLDOWN_PARENT[currentSlug];
+function getDrilldownParentEssay(
+  currentSlug: string,
+  essayOrder: { slug: string; title: string; step: string }[],
+  drilldowns: Record<string, { slug: string; title: string }>,
+): { slug: string; title: string; step: string } | null {
+  const drilldownParent = Object.fromEntries(
+    Object.entries(drilldowns).map(([parentSlug, drilldown]) => [drilldown.slug, parentSlug]),
+  ) as Record<string, string>;
+  const parentSlug = drilldownParent[currentSlug];
   if (!parentSlug) {
     return null;
   }
-  const parent = ESSAY_ORDER.find((essay) => essay.slug === parentSlug);
+  const parent = essayOrder.find((essay) => essay.slug === parentSlug);
   return parent ?? null;
 }
 
-function getDrilldownContinueEssay(currentSlug: string): { slug: string; title: string; step: string } | null {
-  const parentSlug = DRILLDOWN_PARENT[currentSlug];
+function getDrilldownContinueEssay(
+  currentSlug: string,
+  essayOrder: { slug: string; title: string; step: string }[],
+  drilldowns: Record<string, { slug: string; title: string }>,
+): { slug: string; title: string; step: string } | null {
+  const drilldownParent = Object.fromEntries(
+    Object.entries(drilldowns).map(([parentSlug, drilldown]) => [drilldown.slug, parentSlug]),
+  ) as Record<string, string>;
+  const parentSlug = drilldownParent[currentSlug];
   if (!parentSlug) {
     return null;
   }
-  const parentIndex = ESSAY_ORDER.findIndex((essay) => essay.slug === parentSlug);
-  if (parentIndex === -1 || parentIndex >= ESSAY_ORDER.length - 1) {
+  const parentIndex = essayOrder.findIndex((essay) => essay.slug === parentSlug);
+  if (parentIndex === -1 || parentIndex >= essayOrder.length - 1) {
     return null;
   }
-  return ESSAY_ORDER[parentIndex + 1] ?? null;
+  return essayOrder[parentIndex + 1] ?? null;
 }
 
-export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTemplateProps): React.JSX.Element {
+export function BlogArticleTemplate({
+  frontmatter,
+  content,
+  locale,
+  sourceLocale,
+  toc,
+}: BlogArticleTemplateProps): React.JSX.Element {
+  const isEn = locale === "en";
   const canonical = frontmatter.canonicalUrl ?? withCanonical(`/essay/${frontmatter.slug}`);
   const linkedInShare = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonical)}`;
   const xShare = `https://twitter.com/intent/tweet?url=${encodeURIComponent(canonical)}&text=${encodeURIComponent(frontmatter.title)}`;
-  const publishedDate = new Intl.DateTimeFormat("de-DE", { timeZone: "UTC" }).format(new Date(frontmatter.publishedAt));
-  const nextEssay = getNextEssay(frontmatter.slug);
-  const drilldownEssay = getDrilldownEssay(frontmatter.slug);
-  const drilldownParentEssay = getDrilldownParentEssay(frontmatter.slug);
-  const drilldownContinueEssay = getDrilldownContinueEssay(frontmatter.slug);
+  const publishedDate = new Intl.DateTimeFormat(isEn ? "en-US" : "de-DE", { timeZone: "UTC" }).format(new Date(frontmatter.publishedAt));
+  const essayOrder = getEssayOrder(locale);
+  const drilldowns = getEssayDrilldowns(locale);
+  const nextEssay = getNextEssay(frontmatter.slug, essayOrder);
+  const drilldownEssay = getDrilldownEssay(frontmatter.slug, drilldowns);
+  const drilldownParentEssay = getDrilldownParentEssay(frontmatter.slug, essayOrder, drilldowns);
+  const drilldownContinueEssay = getDrilldownContinueEssay(frontmatter.slug, essayOrder, drilldowns);
 
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
@@ -98,7 +151,7 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
           <article className="glass-panel rounded-2xl p-6 sm:p-10">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-600">
-                Systemische Praxis
+                {isEn ? "Systemic practice" : "Systemische Praxis"}
               </p>
               <h1 className="headline-wrap mt-4 text-[1.95rem] font-bold tracking-tight text-gradient-primary leading-[1.12] sm:text-[2.6rem]">
                 {frontmatter.title}
@@ -107,6 +160,14 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
                 {frontmatter.excerpt}
               </p>
             </div>
+
+            {sourceLocale !== locale ? (
+              <section className="mt-6 rounded-2xl border border-amber-200/70 bg-amber-50/70 p-4 text-sm leading-relaxed text-slate-800">
+                {isEn
+                  ? "This essay is currently only available in German. You are viewing the German source version because no English source file exists yet."
+                  : "Dieser Essay liegt aktuell nur auf Deutsch vor. Du siehst deshalb die deutsche Quellfassung."}
+              </section>
+            ) : null}
 
             <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-slate-500">
               <time dateTime={frontmatter.publishedAt}>{publishedDate}</time>
@@ -145,7 +206,9 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
               <section className="mt-6 rounded-2xl border-l-4 border-l-indigo-500 border border-indigo-200/50 bg-gradient-to-br from-indigo-50/50 to-indigo-50/20 p-5 shadow-sm">
                 <div className="flex items-center gap-2">
                   <div className="h-1.5 w-1.5 rounded-full bg-indigo-500 shadow-[0_0_6px_rgba(99,102,241,0.5)]" />
-                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-indigo-800">Kernaussage</p>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-indigo-800">
+                    {isEn ? "Core statement" : "Kernaussage"}
+                  </p>
                 </div>
                 <p className="mt-3 text-[1rem] leading-relaxed text-slate-800 italic">{frontmatter.linkedinHook}</p>
               </section>
@@ -155,7 +218,9 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
 
             {/* Share */}
             <div className="mt-6 flex flex-wrap items-center gap-3">
-              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">Teilen</span>
+              <span className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">
+                {isEn ? "Share" : "Teilen"}
+              </span>
               <TrackedLink
                 href={linkedInShare}
                 label="LinkedIn"
@@ -179,66 +244,74 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
             {/* Next Essay Navigation */}
             {nextEssay ? (
               <>
-                <a
+                <Link
                   href={`/essay/${nextEssay.slug}`}
                   className="group mt-6 flex items-center justify-between gap-4 glass-panel rounded-2xl p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgb(14,165,233,0.12)] hover:border-sky-300/50"
                 >
                   <div className="space-y-1">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Weiter im Argumentationsfluss</p>
+                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">
+                      {isEn ? "Continue in the argument flow" : "Weiter im Argumentationsfluss"}
+                    </p>
                     <p className="text-base font-bold text-slate-900 group-hover:text-sky-700 transition-colors">
-                      Schritt {nextEssay.step}: {nextEssay.title}
+                      {isEn ? "Step" : "Schritt"} {nextEssay.step}: {nextEssay.title}
                     </p>
                   </div>
                   <span className="text-xl text-slate-400 group-hover:text-sky-600 transition-all group-hover:translate-x-1" aria-hidden>→</span>
-                </a>
+                </Link>
               </>
             ) : null}
 
             {drilldownEssay ? (
-              <a
+              <Link
                 href={`/essay/${drilldownEssay.slug}`}
                 className="group mt-4 flex items-center justify-between gap-4 rounded-2xl border border-indigo-200/60 bg-gradient-to-br from-indigo-50/70 to-sky-50/60 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-[0_8px_30px_rgb(79,70,229,0.14)] hover:border-indigo-300/70"
               >
                 <div className="space-y-1">
-                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-indigo-700">Vertiefung im Strang</p>
+                  <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-indigo-700">
+                    {isEn ? "Drill-down in this thread" : "Vertiefung im Strang"}
+                  </p>
                   <p className="text-base font-bold text-slate-900 group-hover:text-indigo-800 transition-colors">
                     {drilldownEssay.title}
                   </p>
                 </div>
                 <span className="text-xl text-indigo-400 group-hover:text-indigo-600 transition-all group-hover:translate-x-1" aria-hidden>↗</span>
-              </a>
+              </Link>
             ) : null}
 
             {drilldownParentEssay || drilldownContinueEssay ? (
               <div className="mt-4 grid gap-3 sm:grid-cols-2">
                 {drilldownParentEssay ? (
-                  <a
+                  <Link
                     href={`/essay/${drilldownParentEssay.slug}`}
                     className="group flex items-center justify-between gap-3 rounded-2xl border border-slate-200/70 bg-white/90 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-slate-300 hover:shadow-sm"
                   >
                     <div className="space-y-1">
-                      <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">Zurück im Strang</p>
+                      <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-slate-500">
+                        {isEn ? "Back in thread" : "Zurück im Strang"}
+                      </p>
                       <p className="text-sm font-semibold text-slate-900 group-hover:text-slate-950">
-                        Schritt {drilldownParentEssay.step}: {drilldownParentEssay.title}
+                        {isEn ? "Step" : "Schritt"} {drilldownParentEssay.step}: {drilldownParentEssay.title}
                       </p>
                     </div>
                     <span className="text-lg text-slate-400 group-hover:text-slate-600 transition-transform group-hover:-translate-x-1" aria-hidden>←</span>
-                  </a>
+                  </Link>
                 ) : null}
 
                 {drilldownContinueEssay ? (
-                  <a
+                  <Link
                     href={`/essay/${drilldownContinueEssay.slug}`}
                     className="group flex items-center justify-between gap-3 rounded-2xl border border-sky-200/70 bg-gradient-to-br from-sky-50/70 to-slate-50/80 p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-sky-300 hover:shadow-sm"
                   >
                     <div className="space-y-1">
-                      <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-sky-700">Weiter im Flow</p>
+                      <p className="text-[11px] font-bold uppercase tracking-[0.14em] text-sky-700">
+                        {isEn ? "Continue in flow" : "Weiter im Flow"}
+                      </p>
                       <p className="text-sm font-semibold text-slate-900 group-hover:text-sky-800">
-                        Schritt {drilldownContinueEssay.step}: {drilldownContinueEssay.title}
+                        {isEn ? "Step" : "Schritt"} {drilldownContinueEssay.step}: {drilldownContinueEssay.title}
                       </p>
                     </div>
                     <span className="text-lg text-sky-400 group-hover:text-sky-600 transition-transform group-hover:translate-x-1" aria-hidden>→</span>
-                  </a>
+                  </Link>
                 ) : null}
               </div>
             ) : null}
@@ -247,8 +320,10 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
           {/* Sidebar */}
           <aside className="space-y-6 lg:sticky lg:top-6 lg:self-start">
             <section className="glass-panel rounded-2xl p-5">
-              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Inhaltsverzeichnis</p>
-              <nav className="mt-4 space-y-2" aria-label="Inhaltsverzeichnis">
+              <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">
+                {isEn ? "Table of contents" : "Inhaltsverzeichnis"}
+              </p>
+              <nav className="mt-4 space-y-2" aria-label={isEn ? "Table of contents" : "Inhaltsverzeichnis"}>
                 {toc.map((item) => (
                   <div key={item.id} className={item.level === 3 ? "pl-4" : ""}>
                     <a
@@ -265,13 +340,15 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
 
             {frontmatter.diagramImages && frontmatter.diagramImages.length > 0 ? (
               <section className="glass-panel max-w-[460px] rounded-2xl p-5">
-                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">Visualisierungen</p>
+                <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-slate-500">
+                  {isEn ? "Visualizations" : "Visualisierungen"}
+                </p>
                 <div className="mt-3 space-y-3 flex flex-col items-center">
                   {frontmatter.diagramImages.map((image) => (
                     <Image
                       key={image}
                       src={image}
-                      alt="Diagramm"
+                      alt={isEn ? "Diagram" : "Diagramm"}
                       width={1200}
                       height={800}
                       className="block h-auto w-full rounded-lg border border-slate-200/60 shadow-sm"
@@ -289,7 +366,7 @@ export function BlogArticleTemplate({ frontmatter, content, toc }: BlogArticleTe
               className="inline-flex glass-panel items-center gap-2 rounded-full px-5 py-2.5 text-xs font-bold uppercase tracking-[0.14em] text-slate-600 transition-all hover:text-sky-700 hover:-translate-y-0.5 hover:shadow-md"
             >
               <span className="text-lg leading-none transition-transform group-hover:-translate-x-1" aria-hidden>←</span>
-              Zurück zur Übersicht
+              {isEn ? "Back to overview" : "Zurück zur Übersicht"}
             </Link>
           </aside>
         </div>

@@ -1,0 +1,245 @@
+---
+slug: qualitaetskriterien-fuer-ein-produktives-graphrag-system
+title: "Quality Criteria for a Production-Grade GraphRAG System"
+excerpt: "A GraphRAG system does not become productive just because it has a graph. It becomes productive when five quality dimensions hold under real operating conditions."
+publishedAt: "2026-02-28"
+tags:
+  - Quality
+  - Architecture
+  - Operations
+readingTime: "11 min"
+featured: false
+heroImage: "/images/essay/graphrag-quality-hero.png"
+diagramImages:
+  - "/images/essay/graphrag-quality-diagram.svg"
+linkedinHook: "Many GraphRAG projects do not fail because of the idea, but because of missing quality criteria. Five dimensions decide whether your system remains a demo or becomes productive."
+tldr: "Five quality dimensions matter most: conceptual clarity, relation discipline, evidence paths, context control, and runtime stability. Without these gates, GraphRAG remains a demo."
+---
+
+## Core Thesis
+
+Many GraphRAG experiments do not fail because of the idea, but because of missing quality criteria. Concepts grow uncontrollably, relations become fuzzy, evidence remains loosely attached, and runtime effects are not monitored systematically.
+
+A production-grade system needs explicit criteria against which architecture, data model, and operations can be measured.
+
+![GraphRAG Quality Hero](/images/essay/graphrag-quality-hero.png)
+
+## Problem Context
+
+Typical false assumptions in early GraphRAG projects:
+
+- "More nodes automatically improve quality."
+- "A visible graph is enough for traceability."
+- "If answers sound plausible, the system works."
+- "We can clean up seed data later."
+
+These assumptions lead to:
+
+- inconsistent concept systems,
+- contradictory relation types,
+- unstable evidence paths,
+- context-selection setups that are difficult to maintain.
+
+Productivity does not emerge from feature breadth, but from discipline. That is exactly why a catalog of criteria is more than documentation. It is the operational contract between domain logic, engineering, and operations.
+
+## The Five Quality Dimensions
+
+### 1. Conceptual Clarity
+
+A production-grade GraphRAG system needs an explicit and controlled concept model.
+
+Review criteria:
+
+- Are central concepts defined unambiguously?
+- Do clear node types exist with consistent semantics?
+- Are concepts used consistently over time?
+- Are similar concepts explicitly distinguished from one another?
+
+Missing conceptual clarity leads to pseudo-consistency. The system looks structured, but remains semantically diffuse. In practice, this often becomes visible only in follow-up questions, when the same label is interpreted differently in different contexts.
+
+### 2. Relation Discipline
+
+Relations are not decorative elements. They are the actual logic of the decision system.
+
+Review criteria:
+
+- Is every relation type clearly defined?
+- Is the set of relation types limited and controlled?
+- Are cause-and-effect chains modeled explicitly?
+- Are relations reviewed from a domain perspective?
+
+If relation types stay vague, such as "is connected to," the graph loses its value. Clean relation types reduce interpretive ambiguity and make team discussions much more precise.
+
+### 3. Evidence-Path Transparency
+
+GraphRAG only becomes structurally different from RAG when derivation paths are visible.
+
+Review criteria:
+
+- Can every central claim be traced through an explicit path?
+- Is it clear which piece of evidence supports which argumentative step?
+- Can evidence be versioned and referenced?
+- Does the evidence path remain stable under follow-up questions?
+
+A source list is not enough. What matters is the visible derivation path. Without it, even a well-supported answer remains difficult to audit.
+
+### 4. Context Control
+
+A production-grade system must actively control context selection and context size.
+
+Review criteria:
+
+- Are there defined rules for context selection?
+- Are context hops limited or consciously controlled?
+- Is context overload measured?
+- Do answers remain stable for semantically similar questions?
+
+Context discipline is an engineering topic, not an accidental by-product. Many instabilities do not start in the model itself, but in uncontrolled context growth.
+
+### 5. Runtime and Operational Stability
+
+Production systems must function consistently under real conditions.
+
+Review criteria:
+
+- clean error paths instead of silent failure,
+- status indicators for context selection and synthesis,
+- logging of context packages,
+- separation between seed data, test environments, and production environments,
+- protection against uncontrolled context escalation.
+
+A GraphRAG system without guardrails quickly becomes fragile in public operation. Productivity therefore does not show up in one impressive demo answer, but in reproducible quality across many runs.
+
+![Five quality dimensions as an operational cycle](/images/essay/graphrag-quality-diagram.svg)
+
+## Practical Relevance
+
+Assume a company uses GraphRAG to support architecture decisions.
+
+A prototype delivers:
+
+- visible nodes,
+- good text,
+- plausible arguments.
+
+A production-grade system additionally delivers:
+
+- stable concept systems,
+- reviewable relation models,
+- explicit evidence chains,
+- reproducible context packages,
+- measurable quality indicators.
+
+The difference becomes visible not on the first demo day, but in the third review cycle. That is where "it works" separates from "it is resilient."
+
+## Measurable Quality Indicators
+
+Quality must be observable.
+
+Examples of useful metrics:
+
+- **Path completeness**: share of central claims with an explicit evidence path
+- **Answer stability**: variance across semantically similar follow-up questions
+- **Review effort**: time required until domain approval
+- **Concept drift**: number of semantic inconsistencies per iteration
+- **Context size vs. answer clarity**: relationship between context volume and clarity of the core argument
+
+These indicators turn GraphRAG into a steerable system rather than a demonstration object.
+
+It is important not to view metrics in isolation. Increasing path completeness while answer clarity drops is not success, but a signal of over-modeling.
+
+## Operating Patterns for Sustainable Quality
+
+If quality is meant to be more than a concept, it needs clear operating routines:
+
+1. **Schema gate** before introducing new node or edge types
+2. **Evidence gate** before releasing critical claims
+3. **Regression gate** when changing context-selection logic or ranking
+4. **Runtime gate** for failures, timeouts, and fallback behavior
+
+These gates are not bureaucratic overhead. They reduce downstream cost. They prevent domain inconsistencies from becoming visible only late in production answers.
+
+## Limits and Trade-Offs
+
+A production-grade GraphRAG system requires:
+
+- curated seed data,
+- modeling discipline,
+- UX transparency,
+- continuous maintenance.
+
+Costs arise in:
+
+- the initial structure setup,
+- concept alignment across teams,
+- review processes,
+- maintenance of the graph model.
+
+GraphRAG only pays off where decision robustness truly matters. For simple FAQ scenarios, classic RAG is often enough.
+
+The key point is therefore not "GraphRAG everywhere," but "GraphRAG where explainability and consistency are operationally critical."
+
+## Typical Anti-Patterns in Production Setup
+
+The same patterns appear again and again when teams try to turn a showcase into a product. Three anti-patterns are especially common:
+
+### 1. Visualization Before Semantics
+
+The graph is built as an interface first, while concepts and relation types are still vague. The result looks impressive, but does not produce resilient reasoning.
+
+Countermeasure: stabilize semantics first, visualize second.
+
+### 2. Unlimited Type Expansion
+
+Every new domain question creates new node and relation types. The model grows quickly, but loses consistency.
+
+Countermeasure: introduce new types only through an explicit review gate, and reuse existing types whenever possible.
+
+### 3. Missing Operational Feedback
+
+Problems in context selection and answer quality are discussed case by case, without systematic logging or metric reference.
+
+Countermeasure: treat every production request as an observable run, including context package, path quality, and error state.
+
+A mature GraphRAG system is not one in which no errors occur. It is one in which errors are visible, classifiable, and quick to fix.
+
+## Quick Assessment for Teams
+
+A simple self-check can help assess maturity quickly. If two or more questions are answered with "no," a central quality gate is usually missing.
+
+- Can we trace the evidence path for critical answers in under one minute?
+- Are the most important relation types defined from a domain perspective and understood consistently across the team?
+- Do answers remain stable in their core conclusion under semantically similar follow-up questions?
+- Do we capture context packages and error paths systematically in operations?
+
+This assessment does not replace deeper evaluation, but it provides an early signal of whether the system is already decision-ready or still in demo mode.
+
+It is useful to repeat the same self-check quarterly using the same example questions. That makes it visible whether quality discipline remains stable as data volume and team size grow, or whether it starts eroding gradually.
+
+## Conclusion
+
+GraphRAG becomes productive when it combines structural discipline with technical stability.
+
+A resilient system is characterized by:
+
+- explicit concepts,
+- controlled relations,
+- traceable evidence paths,
+- managed context,
+- robust runtime guardrails.
+
+Without these criteria, GraphRAG remains a visualization experiment.
+
+With them, it becomes scalable decision infrastructure.
+
+**In GraphRAG, productivity is not a UI effect. It is the result of measurable quality discipline.**
+
+How prompt transparency makes this quality discipline visible and discussable for stakeholders is the subject of the next essay.
+
+## Next Steps
+
+1. Define 5 to 10 core concepts and test their consistency across multiple answers.
+2. Reduce relation types to a clearly defined set with explicit semantics.
+3. Implement logging for the full context package of every request.
+4. Measure answer stability across slightly varied phrasings.
+5. Introduce a formal review gate for new node and relation types.

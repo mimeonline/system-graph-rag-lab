@@ -5,6 +5,7 @@ import { HeroLearningStage } from "@/features/home/organisms/HeroLearningStage";
 
 type HomeTemplateProps = {
   heroSlot?: React.ReactNode;
+  locale?: "de" | "en";
 };
 
 /**
@@ -23,7 +24,7 @@ type HomeTemplateProps = {
  * Beispiel:
  * - <HomeTemplate />
  */
-export function HomeTemplate({ heroSlot }: HomeTemplateProps = {}): React.JSX.Element {
+export function HomeTemplate({ heroSlot, locale = "de" }: HomeTemplateProps = {}): React.JSX.Element {
   return (
     <div className="flex min-h-screen flex-col bg-slate-50 text-slate-900">
       <SiteHeader />
@@ -31,13 +32,13 @@ export function HomeTemplate({ heroSlot }: HomeTemplateProps = {}): React.JSX.El
       <main className="flex-1">
         {heroSlot ?? (
           <section className="full-bleed-safe relative overflow-x-clip">
-            <HeroLearningStage />
+            <HeroLearningStage locale={locale} />
           </section>
         )}
 
         <div className="mx-auto grid w-full max-w-295 gap-10 px-4 py-12 sm:px-6 sm:py-16">
           <div id="antwortfuehrung" className="scroll-mt-24 sm:scroll-mt-28">
-            <QueryPanel />
+            <QueryPanel locale={locale} />
           </div>
         </div>
       </main>

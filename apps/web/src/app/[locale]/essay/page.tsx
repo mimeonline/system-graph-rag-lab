@@ -24,5 +24,5 @@ export async function generateMetadata({ params }: EssayPageProps): Promise<Meta
 export default async function EssayPage({ params }: EssayPageProps): Promise<React.JSX.Element> {
   const { locale } = await params;
   const posts = await getAllBlogPosts(locale);
-  return <BlogIndexTemplate posts={posts} />;
+  return <BlogIndexTemplate locale={locale} posts={posts} />;
 }

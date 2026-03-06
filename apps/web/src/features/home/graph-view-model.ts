@@ -30,6 +30,7 @@ export type HomeGraphModel = {
 };
 
 const FALLBACK_QUERY = "Beispielfrage";
+const FALLBACK_QUERY_EN = "Sample question";
 
 const REFERENCE_LAYOUT_BY_COUNT: Record<number, Array<{ x: number; y: number }>> = {
   1: [{ x: 50, y: 50 }],
@@ -50,7 +51,9 @@ const REFERENCE_LAYOUT_BY_COUNT: Record<number, Array<{ x: number; y: number }>>
 export function buildHomeGraphModel(
   viewModel: QueryViewModel | null,
   currentQuery: string,
+  locale: "de" | "en",
 ): HomeGraphModel {
+  const isEn = locale === "en";
   const references = viewModel?.references ?? [];
   const derivationDetails = viewModel?.derivationDetails ?? [];
   const contextElements = viewModel?.contextElements ?? [];
@@ -60,14 +63,16 @@ export function buildHomeGraphModel(
   if (references.length === 0) {
     return {
       isFallback: true,
-      caption: "Lernansicht: So entsteht aus Frage, Konzept und Beleg eine nachvollziehbare Antwort.",
+      caption: isEn
+        ? "Learning view: this is how a traceable answer emerges from question, concept, and evidence."
+        : "Lernansicht: So entsteht aus Frage, Konzept und Beleg eine nachvollziehbare Antwort.",
       nodes: [
         {
           id: "query-fallback",
-          label: cleanedQuery.length > 0 ? cleanedQuery : "Frage",
-          compactLabel: "Frage",
-          shortDescription: "Ausgangsfrage für die Analyse.",
-          longDescription: "Ausgangsfrage für die Analyse.",
+          label: cleanedQuery.length > 0 ? cleanedQuery : isEn ? "Question" : "Frage",
+          compactLabel: isEn ? "Question" : "Frage",
+          shortDescription: isEn ? "Starting question for the analysis." : "Ausgangsfrage für die Analyse.",
+          longDescription: isEn ? "Starting question for the analysis." : "Ausgangsfrage für die Analyse.",
           kind: "query",
           nodeType: "Query",
           x: 50,
@@ -75,10 +80,14 @@ export function buildHomeGraphModel(
         },
         {
           id: "top-concept-fallback",
-          label: "Top-Konzept",
-          compactLabel: "Konzept",
-          shortDescription: "Relevantes Konzept zur Einordnung der Frage.",
-          longDescription: "Relevantes Konzept zur Einordnung der Frage.",
+          label: isEn ? "Top concept" : "Top-Konzept",
+          compactLabel: isEn ? "Concept" : "Konzept",
+          shortDescription: isEn
+            ? "Relevant concept for framing the question."
+            : "Relevantes Konzept zur Einordnung der Frage.",
+          longDescription: isEn
+            ? "Relevant concept for framing the question."
+            : "Relevantes Konzept zur Einordnung der Frage.",
           kind: "reference",
           nodeType: "Concept",
           x: 24,
@@ -86,10 +95,10 @@ export function buildHomeGraphModel(
         },
         {
           id: "evidence-fallback",
-          label: "Beleg",
-          compactLabel: "Beleg",
-          shortDescription: "Quelle oder Fakt zur Begründung.",
-          longDescription: "Quelle oder Fakt zur Begründung.",
+          label: isEn ? "Evidence" : "Beleg",
+          compactLabel: isEn ? "Evidence" : "Beleg",
+          shortDescription: isEn ? "Source or fact supporting the answer." : "Quelle oder Fakt zur Begründung.",
+          longDescription: isEn ? "Source or fact supporting the answer." : "Quelle oder Fakt zur Begründung.",
           kind: "evidence",
           nodeType: "Evidence",
           x: 58,
@@ -97,10 +106,14 @@ export function buildHomeGraphModel(
         },
         {
           id: "answer-fallback",
-          label: "Antwort",
-          compactLabel: "Antwort",
-          shortDescription: "Abgeleitete Antwort aus Konzept und Beleg.",
-          longDescription: "Abgeleitete Antwort aus Konzept und Beleg.",
+          label: isEn ? "Answer" : "Antwort",
+          compactLabel: isEn ? "Answer" : "Antwort",
+          shortDescription: isEn
+            ? "Derived answer based on concept and evidence."
+            : "Abgeleitete Antwort aus Konzept und Beleg.",
+          longDescription: isEn
+            ? "Derived answer based on concept and evidence."
+            : "Abgeleitete Antwort aus Konzept und Beleg.",
           kind: "reference",
           nodeType: "Answer",
           x: 78,
@@ -112,19 +125,19 @@ export function buildHomeGraphModel(
           id: "fallback-step-1",
           source: "query-fallback",
           target: "top-concept-fallback",
-          label: "1 Klären",
+          label: isEn ? "1 Clarify" : "1 Klären",
         },
         {
           id: "fallback-step-2",
           source: "top-concept-fallback",
           target: "evidence-fallback",
-          label: "2 Prüfen",
+          label: isEn ? "2 Verify" : "2 Prüfen",
         },
         {
           id: "fallback-step-3",
           source: "evidence-fallback",
           target: "answer-fallback",
-          label: "3 Ableiten",
+          label: isEn ? "3 Derive" : "3 Ableiten",
         },
       ],
     };
@@ -154,10 +167,10 @@ export function buildHomeGraphModel(
 
   const queryNode: HomeGraphNode = {
     id: "query",
-    label: viewModel?.query ?? (cleanedQuery.length > 0 ? cleanedQuery : FALLBACK_QUERY),
-    compactLabel: "Frage",
-    shortDescription: "Aktuelle Nutzerfrage als Ausgangspunkt.",
-    longDescription: "Aktuelle Nutzerfrage als Ausgangspunkt.",
+    label: viewModel?.query ?? (cleanedQuery.length > 0 ? cleanedQuery : isEn ? FALLBACK_QUERY_EN : FALLBACK_QUERY),
+    compactLabel: isEn ? "Question" : "Frage",
+    shortDescription: isEn ? "Current user question as the starting point." : "Aktuelle Nutzerfrage als Ausgangspunkt.",
+    longDescription: isEn ? "Current user question as the starting point." : "Aktuelle Nutzerfrage als Ausgangspunkt.",
     kind: "query",
     nodeType: "Query",
     x: 50,
@@ -183,7 +196,7 @@ export function buildHomeGraphModel(
     id: `query-${node.id}`,
     source: queryNode.id,
     target: node.id,
-    label: "1 Relevanz",
+    label: isEn ? "1 Relevance" : "1 Relevanz",
   }));
 
   const evidenceEdges: HomeGraphEdge[] =
@@ -192,23 +205,29 @@ export function buildHomeGraphModel(
           id: `evidence-link-${node.id}`,
           source: referenceNodes[index % referenceNodes.length].id,
           target: node.id,
-          label: `2 Beleg ${index + 1}`,
+          label: isEn ? `2 Evidence ${index + 1}` : `2 Beleg ${index + 1}`,
         }))
       : [
           {
             id: "core-rationale-link",
             source: referenceNodes[0].id,
             target: referenceNodes[referenceNodes.length - 1].id,
-            label: "2 Begründen",
+            label: isEn ? "2 Ground" : "2 Begründen",
           },
         ];
 
   const answerNode: HomeGraphNode = {
     id: "answer",
-    label: "Antwort",
-    compactLabel: "Antwort",
-    shortDescription: "Abgeleitete Antwort auf Basis der relevanten Konzepte und Belege.",
-    longDescription: viewModel?.answer.main ?? "Abgeleitete Antwort auf Basis der relevanten Konzepte und Belege.",
+    label: isEn ? "Answer" : "Antwort",
+    compactLabel: isEn ? "Answer" : "Antwort",
+    shortDescription: isEn
+      ? "Derived answer based on the relevant concepts and evidence."
+      : "Abgeleitete Antwort auf Basis der relevanten Konzepte und Belege.",
+    longDescription:
+      viewModel?.answer.main ??
+      (isEn
+        ? "Derived answer based on the relevant concepts and evidence."
+        : "Abgeleitete Antwort auf Basis der relevanten Konzepte und Belege."),
     kind: "reference",
     nodeType: "Answer",
     x: 50,
@@ -220,7 +239,7 @@ export function buildHomeGraphModel(
           id: `answer-link-${node.id}`,
           source: node.id,
           target: answerNode.id,
-          label: `3 Ableiten ${index + 1}`,
+          label: isEn ? `3 Derive ${index + 1}` : `3 Ableiten ${index + 1}`,
         }))
       : [];
   const referencedIdsWithEvidence = new Set(
@@ -232,7 +251,7 @@ export function buildHomeGraphModel(
       id: `answer-link-direct-${referenceNode.id}`,
       source: referenceNode.id,
       target: answerNode.id,
-      label: `3 Ableiten direkt ${index + 1}`,
+      label: isEn ? `3 Derive direct ${index + 1}` : `3 Ableiten direkt ${index + 1}`,
     }));
   const answerEdges: HomeGraphEdge[] =
     answerEdgesFromEvidence.length > 0 || answerEdgesFromUnpairedReferences.length > 0
@@ -242,7 +261,7 @@ export function buildHomeGraphModel(
             id: "answer-link-fallback",
             source: referenceNodes[referenceNodes.length - 1].id,
             target: answerNode.id,
-            label: "3 Ableiten",
+            label: isEn ? "3 Derive" : "3 Ableiten",
           },
         ];
 
@@ -250,7 +269,9 @@ export function buildHomeGraphModel(
     nodes: [queryNode, ...referenceNodes, ...evidenceNodes, answerNode],
     edges: [...queryEdges, ...evidenceEdges, ...answerEdges],
     isFallback: false,
-    caption: `Aktuelle Frage: ${limitedReferences.length} relevante Konzepte führen zur Antwortbegründung.`,
+    caption: isEn
+      ? `Current question: ${limitedReferences.length} relevant concepts support the answer rationale.`
+      : `Aktuelle Frage: ${limitedReferences.length} relevante Konzepte führen zur Antwortbegründung.`,
   };
 }
 

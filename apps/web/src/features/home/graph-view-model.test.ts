@@ -73,7 +73,7 @@ function createResponse(): QuerySuccessResponse {
 
 describe("buildHomeGraphModel", () => {
   it("returns fallback graph when no query data is available", () => {
-    const model = buildHomeGraphModel(null, "");
+    const model = buildHomeGraphModel(null, "", "de");
     const queryNode = model.nodes.find((node) => node.id === "query-fallback");
     const referenceNode = model.nodes.find((node) => node.id === "top-concept-fallback");
 
@@ -87,7 +87,7 @@ describe("buildHomeGraphModel", () => {
   it("derives nodes and edges from query view model data", () => {
     const viewModel = buildQueryViewModel(createResponse(), "Wie wirken Feedback Loops?");
 
-    const model = buildHomeGraphModel(viewModel, viewModel.query);
+    const model = buildHomeGraphModel(viewModel, viewModel.query, "de");
     const queryNode = model.nodes.find((node) => node.id === "query");
     const feedbackNode = model.nodes.find((node) => node.id === "concept:feedback-loops");
 

@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
 import cytoscape, { type Core, type ElementDefinition, type StylesheetCSS } from "cytoscape";
 import { Focus, MousePointer2 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
+import { useRouter } from "@/i18n/navigation";
 
 type EssayNodeKind = "cluster" | "essay";
 type GraphNodeKind = EssayNodeKind | "cluster-label";
@@ -15,13 +15,6 @@ type EssayClusterData = {
   id: string;
   titleDesktop: string;
   titleMobile: string;
-};
-
-type ClusterLabelNodeData = {
-  id: string;
-  clusterId: string;
-  labelDesktop: string;
-  labelMobile: string;
 };
 
 type EssayNodeData = {
@@ -47,13 +40,6 @@ const CLUSTERS: EssayClusterData[] = [
   { id: "cluster-organization", titleDesktop: "Organisation", titleMobile: "Organisation" },
   { id: "cluster-positioning", titleDesktop: "Positionierung", titleMobile: "Positionierung" },
 ];
-
-const CLUSTER_LABELS: ClusterLabelNodeData[] = CLUSTERS.map((cluster) => ({
-  id: `label-${cluster.id}`,
-  clusterId: cluster.id,
-  labelDesktop: cluster.titleDesktop,
-  labelMobile: cluster.titleMobile,
-}));
 
 const ESSAYS: EssayNodeData[] = [
   {
@@ -159,8 +145,93 @@ function truncateLabel(label: string, maxLength: number): string {
   return `${label.slice(0, Math.max(0, maxLength - 1))}…`;
 }
 
-function buildElements(): ElementDefinition[] {
-  const clusterNodes: ElementDefinition[] = CLUSTERS.map((cluster) => ({
+function getClusters(locale: "de" | "en"): EssayClusterData[] {
+  return locale === "en"
+    ? [
+        { id: "cluster-problem", titleDesktop: "Problem space", titleMobile: "Problem" },
+        { id: "cluster-structure", titleDesktop: "Structure", titleMobile: "Structure" },
+        { id: "cluster-quality", titleDesktop: "Quality", titleMobile: "Quality" },
+        { id: "cluster-organization", titleDesktop: "Organization", titleMobile: "Organization" },
+        { id: "cluster-positioning", titleDesktop: "Positioning", titleMobile: "Positioning" },
+      ]
+    : CLUSTERS;
+}
+
+function getEssays(locale: "de" | "en"): EssayNodeData[] {
+  if (locale === "en") {
+    return [
+      {
+        id: "essay-problem-1",
+        parent: "cluster-problem",
+        slug: "warum-ki-antworten-fuer-entscheidungen-nicht-ausreichen",
+        title: "Why AI answers are not enough for decisions",
+        thesis: "Plausibility does not replace traceable reasoning in decision-relevant contexts.",
+      },
+      {
+        id: "essay-structure-1",
+        parent: "cluster-structure",
+        slug: "was-graphrag-strukturell-anders-macht-als-klassisches-rag",
+        title: "What GraphRAG changes structurally compared with classic RAG",
+        thesis: "GraphRAG adds explicit relations to context selection and makes the reasoning path visible.",
+      },
+      {
+        id: "essay-structure-2",
+        parent: "cluster-structure",
+        slug: "kontextdisziplin-warum-weniger-kontext-oft-bessere-antworten-erzeugt",
+        title: "Context discipline: why less context often leads to better answers",
+        thesis: "Focused context selection reduces noise and increases answer robustness.",
+      },
+      {
+        id: "essay-quality-1",
+        parent: "cluster-quality",
+        slug: "qualitaetskriterien-fuer-ein-produktives-graphrag-system",
+        title: "Quality criteria for a production-grade GraphRAG system",
+        thesis: "A productive system needs clear criteria for context selection, derivation, and answer stability.",
+      },
+      {
+        id: "essay-quality-2",
+        parent: "cluster-quality",
+        slug: "prompt-transparenz-als-vertrauensfaktor",
+        title: "Prompt transparency as a trust factor",
+        thesis: "Transparent prompt building blocks make answer generation reviewable and discussable.",
+      },
+      {
+        id: "essay-organization-1",
+        parent: "cluster-organization",
+        slug: "graphrag-als-entscheidungs-interface-fuer-organisationen",
+        title: "GraphRAG as a decision interface for organizations",
+        thesis: "GraphRAG connects domain context, evidence, and decision paths inside a workable interface.",
+      },
+      {
+        id: "essay-organization-2",
+        parent: "cluster-organization",
+        slug: "system-thinking-als-idealer-use-case-fuer-graphrag",
+        title: "System thinking as an ideal use case for GraphRAG",
+        thesis: "System thinking shows why relational context structure matters in complex problem spaces.",
+      },
+      {
+        id: "essay-positioning-1",
+        parent: "cluster-positioning",
+        slug: "von-plausiblen-antworten-zu-pruefbaren-entscheidungen",
+        title: "From plausible answers to reviewable decisions",
+        thesis: "The real value appears when answers are not only plausible but can also be verified with confidence.",
+      },
+    ];
+  }
+
+  return ESSAYS;
+}
+
+function buildElements(locale: "de" | "en"): ElementDefinition[] {
+  const clusters = getClusters(locale);
+  const clusterLabels = clusters.map((cluster) => ({
+    id: `label-${cluster.id}`,
+    clusterId: cluster.id,
+    labelDesktop: cluster.titleDesktop,
+    labelMobile: cluster.titleMobile,
+  }));
+  const essays = getEssays(locale);
+  const clusterNodes: ElementDefinition[] = clusters.map((cluster) => ({
     data: {
       id: cluster.id,
       clusterLabel: cluster.titleDesktop,
@@ -168,7 +239,7 @@ function buildElements(): ElementDefinition[] {
     },
   }));
 
-  const essayNodes: ElementDefinition[] = ESSAYS.map((essay) => ({
+  const essayNodes: ElementDefinition[] = essays.map((essay) => ({
     data: {
       id: essay.id,
       parent: essay.parent,
@@ -180,7 +251,7 @@ function buildElements(): ElementDefinition[] {
     },
   }));
 
-  const clusterLabelNodes: ElementDefinition[] = CLUSTER_LABELS.map((labelNode) => ({
+  const clusterLabelNodes: ElementDefinition[] = clusterLabels.map((labelNode) => ({
     data: {
       id: labelNode.id,
       clusterId: labelNode.clusterId,
@@ -192,7 +263,20 @@ function buildElements(): ElementDefinition[] {
   return [...clusterNodes, ...essayNodes, ...clusterLabelNodes, ...ROUTE_EDGES];
 }
 
-function applyDeterministicPositions(cy: Core, mode: FlowMode, width: number, height: number): void {
+function applyDeterministicPositions(
+  cy: Core,
+  mode: FlowMode,
+  width: number,
+  height: number,
+  locale: "de" | "en",
+): void {
+  const clusters = getClusters(locale);
+  const clusterLabels = clusters.map((cluster) => ({
+    id: `label-${cluster.id}`,
+    clusterId: cluster.id,
+    labelDesktop: cluster.titleDesktop,
+    labelMobile: cluster.titleMobile,
+  }));
   const safeWidth = Math.max(width, 380);
   const safeHeight = Math.max(height, mode === "desktop" ? 620 : 1260);
 
@@ -233,12 +317,12 @@ function applyDeterministicPositions(cy: Core, mode: FlowMode, width: number, he
   cy.batch(() => {
     cy.nodes().unlock();
 
-    for (const cluster of CLUSTERS) {
+    for (const cluster of clusters) {
       cy.$id(cluster.id).data("clusterLabel", mode === "desktop" ? cluster.titleDesktop : cluster.titleMobile);
     }
 
-    for (const clusterLabel of CLUSTER_LABELS) {
-      const clusterIndex = CLUSTERS.findIndex((cluster) => cluster.id === clusterLabel.clusterId);
+    for (const clusterLabel of clusterLabels) {
+      const clusterIndex = clusters.findIndex((cluster) => cluster.id === clusterLabel.clusterId);
       const center = clusterCenter(Math.max(0, clusterIndex));
       cy.$id(clusterLabel.id).data("label", mode === "desktop" ? clusterLabel.labelDesktop : clusterLabel.labelMobile);
       cy.$id(clusterLabel.id).position({
@@ -262,7 +346,11 @@ function applyDeterministicPositions(cy: Core, mode: FlowMode, width: number, he
   cy.center();
 }
 
-export function GraphEssaysSurface(): React.JSX.Element {
+type GraphEssaysSurfaceProps = {
+  locale: "de" | "en";
+};
+
+export function GraphEssaysSurface({ locale }: GraphEssaysSurfaceProps): React.JSX.Element {
   const router = useRouter();
   const graphBoxRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -276,7 +364,7 @@ export function GraphEssaysSurface(): React.JSX.Element {
     side: "top",
   });
 
-  const elements = useMemo(() => buildElements(), []);
+  const elements = useMemo(() => buildElements(locale), [locale]);
 
   useEffect(() => {
     const container = containerRef.current;
@@ -453,7 +541,7 @@ export function GraphEssaysSurface(): React.JSX.Element {
       }
       const canvasWidth = container.clientWidth;
       const mode: FlowMode = canvasWidth >= MIN_DESKTOP_CANVAS_WIDTH ? "desktop" : "mobile";
-      applyDeterministicPositions(cy, mode, container.clientWidth, container.clientHeight);
+      applyDeterministicPositions(cy, mode, container.clientWidth, container.clientHeight, locale);
       setTooltipState((current) => ({ ...current, open: false }));
     };
 
@@ -590,7 +678,7 @@ export function GraphEssaysSurface(): React.JSX.Element {
       cyRef.current = null;
       didAnimateRef.current = false;
     };
-  }, [elements, router]);
+  }, [elements, locale, router]);
 
   return (
     <TooltipProvider delayDuration={70}>
@@ -605,7 +693,7 @@ export function GraphEssaysSurface(): React.JSX.Element {
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(255,255,255,0.06)_0%,rgba(255,255,255,0)_35%,rgba(15,23,42,0.24)_100%)]" />
             <p className="pointer-events-none absolute left-3 top-3 z-40 inline-flex items-center gap-1.5 text-[11px] font-medium text-slate-200/85 md:left-4 md:top-4">
               <MousePointer2 className="h-3.5 w-3.5 text-slate-200/90" aria-hidden />
-              <span>Mit Maus verschiebbar, per Mausrad zoombar.</span>
+              <span>{locale === "en" ? "Draggable by mouse, zoom with the wheel." : "Mit Maus verschiebbar, per Mausrad zoombar."}</span>
             </p>
             <div ref={containerRef} className="h-full w-full" aria-label="Graph Essays Cytoscape Surface" />
 
@@ -620,11 +708,11 @@ export function GraphEssaysSurface(): React.JSX.Element {
                     return;
                   }
                   const mode: FlowMode = container.clientWidth >= MIN_DESKTOP_CANVAS_WIDTH ? "desktop" : "mobile";
-                  applyDeterministicPositions(cy, mode, container.clientWidth, container.clientHeight);
+                  applyDeterministicPositions(cy, mode, container.clientWidth, container.clientHeight, locale);
                 }}
               >
                 <Focus className="h-3 w-3" aria-hidden />
-                <span>Fit</span>
+                <span>{locale === "en" ? "Fit" : "Fit"}</span>
               </button>
               <button
                 type="button"

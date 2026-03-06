@@ -1,17 +1,25 @@
 import type { StoryPerspective } from "@/features/story/story-flow-model";
-import { STORY_PERSPECTIVES } from "@/features/story/story-flow-model";
 
 type StoryPerspectiveSwitchProps = {
+  locale: "de" | "en";
+  options: Array<{ id: StoryPerspective; label: string }>;
   perspective: StoryPerspective;
   onChange: (next: StoryPerspective) => void;
 };
 
-export function StoryPerspectiveSwitch({ perspective, onChange }: StoryPerspectiveSwitchProps): React.JSX.Element {
+export function StoryPerspectiveSwitch({
+  locale,
+  options,
+  perspective,
+  onChange,
+}: StoryPerspectiveSwitchProps): React.JSX.Element {
   return (
     <section className="space-y-2 rounded-xl border border-slate-300/80 bg-white p-3">
-      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">Perspektive</p>
+      <p className="text-[11px] font-semibold uppercase tracking-[0.12em] text-slate-500">
+        {locale === "en" ? "Perspective" : "Perspektive"}
+      </p>
       <div className="inline-flex w-full rounded-lg border border-slate-300 bg-slate-50 p-1">
-        {STORY_PERSPECTIVES.map((option) => {
+        {options.map((option) => {
           const active = option.id === perspective;
           return (
             <button

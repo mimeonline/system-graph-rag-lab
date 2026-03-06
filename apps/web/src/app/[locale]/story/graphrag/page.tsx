@@ -20,6 +20,10 @@ export async function generateMetadata({ params }: StoryPageProps): Promise<Meta
   });
 }
 
-export default function StoryPage(): React.JSX.Element {
-  return <GraphRagStoryTemplate />;
+export default async function StoryPage({
+  params,
+}: StoryPageProps): Promise<React.JSX.Element> {
+  const { locale } = await params;
+
+  return <GraphRagStoryTemplate locale={locale} />;
 }

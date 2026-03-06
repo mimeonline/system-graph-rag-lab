@@ -1,0 +1,219 @@
+---
+slug: was-graphrag-strukturell-anders-macht-als-klassisches-rag
+title: "What GraphRAG Changes Structurally Compared with Classic RAG"
+excerpt: "RAG delivers text. GraphRAG delivers structure. That difference determines whether an answer merely sounds plausible or can support a decision."
+publishedAt: "2026-02-28"
+tags:
+  - GraphRAG
+  - RAG
+  - Structure
+readingTime: "11 min"
+featured: false
+heroImage: "/images/essay/graphrag-structure-hero.png"
+diagramImages:
+  - "/images/essay/graphrag-structure-diagram.svg"
+linkedinHook: "RAG finds relevant passages. GraphRAG also shows how concepts, evidence, and dependencies relate to one another. That is exactly what determines decision quality."
+tldr: "Classic RAG retrieves relevant text passages. GraphRAG additionally models explicit concepts, relations, and traceable evidence paths. That makes answers more stable, more reviewable, and easier to integrate into decision processes."
+---
+
+## Problem Context
+
+Classic RAG (Retrieval-Augmented Generation) follows a linear logic:
+
+1. Formulate the request
+2. Retrieve relevant text passages
+3. Pass them to the LLM as context
+4. Generate an answer
+
+That works well as long as questions are document-centric and relatively linear. Many productive use cases fall into this category: support answers, policies, product documentation, internal FAQ.
+
+Things become more difficult when the problem involves:
+
+- causal chains,
+- dependencies between concepts,
+- trade-offs,
+- multi-step reasoning.
+
+This is where document-based context selection reaches structural limits. Not because it is "bad," but because the problem itself is no longer linear.
+
+![From RAG to GraphRAG: the structural transition](/images/essay/graphrag-structure-hero.png)
+
+## Structural Analysis
+
+### 1. Context Shape: Document vs. Concept
+
+**RAG**  
+Context consists primarily of text passages. Relevance is usually determined through semantic similarity.
+
+**GraphRAG**  
+Context consists of explicit nodes and edges: concepts, categories, evidence, and their relations.
+
+The key difference:
+RAG delivers text.  
+GraphRAG delivers structure.
+
+That distinction is central. Text can contain many things, but it is not automatically organized as a decision model. GraphRAG makes that organization explicit.
+
+### 2. Relation Layer: Implicit vs. Explicit
+
+In classic RAG, relations are implicit in the text. The LLM has to reconstruct them on its own.
+
+GraphRAG models relations explicitly:
+
+- causes
+- influences
+- contradicts
+- specifies
+- belongs to
+
+These relation types reduce interpretive ambiguity and improve consistency under follow-up questions. At the same time, they force conceptual discipline: a team must define clearly what it actually means by "influence" or "contradiction."
+
+### 3. Multi-Hop Logic
+
+RAG works primarily in a document-centric way.  
+GraphRAG can navigate intentionally across multiple hops:
+
+Concept -> dependent factor -> risk -> intervention
+
+That makes it possible to represent cause-and-effect chains much more systematically. For architecture and organizational decisions, this is a clear advantage, because relevant relationships often run across several layers.
+
+### 4. Evidence Path Instead of Source List
+
+Classic RAG often appends source references.  
+GraphRAG can show the actual derivation path:
+
+Question -> concept -> relation -> evidence -> synthesis
+
+That is the decisive difference:
+not just "where does the text come from?"
+but "how was the conclusion formed?"
+
+This path logic makes reviews much more efficient. Teams no longer debate "answer quality" in the abstract, but concrete nodes, edges, and evidence.
+
+### 5. Stability Across Follow-Up Questions
+
+With slightly changed phrasing, classic RAG can select different documents. As a result, the argumentative basis shifts.
+
+GraphRAG remains more stable because:
+
+- core concepts are modeled persistently,
+- relations are structurally anchored,
+- follow-up questions build on the same concept nodes.
+
+That increases consistency across multiple iterations. For decision processes involving multiple stakeholders, this stability is exactly what matters.
+
+## Practical Relevance
+
+Imagine an architecture decision:
+"Should we outsource service X or keep it in-house?"
+
+With classic RAG, you get:
+
+- pro and con arguments,
+- references from comparable cases,
+- best practices.
+
+With GraphRAG, you additionally get:
+
+- explicit dependencies such as compliance -> data sovereignty -> risk,
+- visibly modeled trade-offs,
+- traceable evidence paths.
+
+The difference is not in the amount of information, but in its structural ability to carry forward into decision work.
+
+## Decision Readiness: When Is RAG Enough, and When Does GraphRAG Pay Off?
+
+Not every question needs a graph model. For linear information retrieval, classic RAG is usually faster and cheaper.
+
+GraphRAG becomes relevant when at least two of the following are true:
+
+- multiple domains are involved,
+- causal chains or side effects matter,
+- decisions must be documented in an auditable way,
+- follow-up questions should be answered consistently,
+- results flow into formal approval processes.
+
+![Structural explicitness across three maturity levels](/images/essay/graphrag-structure-diagram.svg)
+
+A pragmatic approach is therefore not "either or," but staged usage: RAG for linear questions, GraphRAG for connected decision logic.
+
+## Limits and Trade-Offs
+
+GraphRAG is not a silver bullet.
+
+Typical trade-offs:
+
+- higher modeling effort,
+- need for curated seed data,
+- additional maintenance effort,
+- more UI complexity.
+
+For simple FAQ or summary scenarios, classic RAG is often sufficient and more efficient.
+
+GraphRAG pays off primarily in:
+
+- complex decision chains,
+- interdisciplinary contexts,
+- governance-relevant questions,
+- recurring review processes.
+
+The important point is expectation management: the value does not come automatically from "graph" as a technology label, but from disciplined concept modeling and consistent relation types.
+
+## Implementation Pattern for a Realistic Start
+
+A common mistake is trying to build a complete enterprise graph from day one. A better approach is to start with a tightly scoped decision case.
+
+A proven path:
+
+1. Choose one clearly bounded decision scenario.
+2. Define 5 to 10 core concepts as the first node classes.
+3. Define 4 to 6 relation types with precise semantics.
+4. Attach at least one robust piece of evidence to every critical node.
+5. Evaluate the same questions across LLM-only, RAG, and GraphRAG.
+
+This kind of iteration produces useful learning value early, without overwhelming the team with modeling overhead.
+
+## Organizational Effect
+
+The structural difference between RAG and GraphRAG affects not only the quality of individual answers, but also collaboration within the team.
+
+With classic RAG, the discussion often stays text-centered: who saw which paragraph, which source has not yet been considered, which wording sounds more plausible? That is useful, but it does not scale well when multiple roles are involved.
+
+GraphRAG shifts the discussion onto model elements:
+
+- Which concepts are in scope?
+- Which relation is correct from a domain perspective?
+- Which piece of evidence supports which step?
+
+That makes reviews more precise. Product, architecture, and domain experts talk about the same structural model instead of different interpretations of isolated text snippets. The result is less friction in coordination and better quality in decision records.
+
+## What You Should Measure
+
+If you evaluate GraphRAG in practice, you should not only look at "answer quality." Structural metrics are more important:
+
+1. **Path completeness**  
+   How often can a central conclusion be traced via an explicit evidence path?
+
+2. **Consistency across follow-up questions**  
+   Does the justification remain stable under semantically similar follow-up questions?
+
+3. **Review effort**  
+   Does the time to approval decrease because reasoning and evidence are more transparent?
+
+4. **Conflict resolution**  
+   Are domain conflicts resolved more quickly because relations can be discussed explicitly?
+
+This perspective helps evaluate GraphRAG as decision infrastructure, not merely as a variant of context selection.
+
+## Conclusion
+
+The difference between RAG and GraphRAG is structural, not cosmetic.
+
+RAG optimizes document relevance.  
+GraphRAG optimizes decision structure.
+
+The higher the context complexity and the decision impact, the more important explicit modeling of concepts, relations, and evidence paths becomes.
+
+That shifts the focus from "better answer" to "robust derivation."
+
+**If RAG delivers retrieval quality, GraphRAG delivers decision capability.**

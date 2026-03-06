@@ -17,17 +17,161 @@ export type StoryChapter = {
 };
 
 export type StoryPrimaryAction = {
-  label: "Weiter" | "Zur Demo";
+  label: string;
   isDemoLink: boolean;
 };
 
-export const STORY_PERSPECTIVES: Array<{ id: StoryPerspective; label: string }> = [
-  { id: "architecture", label: "Architektur" },
-  { id: "product", label: "Produkt" },
-  { id: "governance", label: "Governance" },
-];
+export function getStoryPerspectives(locale: "de" | "en"): Array<{ id: StoryPerspective; label: string }> {
+  return locale === "en"
+    ? [
+        { id: "architecture", label: "Architecture" },
+        { id: "product", label: "Product" },
+        { id: "governance", label: "Governance" },
+      ]
+    : [
+        { id: "architecture", label: "Architektur" },
+        { id: "product", label: "Produkt" },
+        { id: "governance", label: "Governance" },
+      ];
+}
 
-export const STORY_CHAPTERS: StoryChapter[] = [
+export function getStoryChapters(locale: "de" | "en"): StoryChapter[] {
+  if (locale === "en") {
+    return [
+      {
+        id: "question",
+        label: "Question",
+        goal: "Frame the system problem",
+        technicalFlow:
+          "We turn the initial request into a clear core question. We name the objective, the boundary, and the expected effect explicitly so that everyone starts from the same point. We also clarify terms that could otherwise be understood differently.",
+        structuralRelevance:
+          "If the question stays vague, the later answers will also stay vague or contradictory. A clean focus at the beginning avoids misunderstandings and keeps the decision space stable throughout the flow.",
+        visualSpec:
+          "Only the core question sits in the center. The surrounding space shows that assumptions already exist, but are not yet modeled as explicit relations. The visual makes one thing clear: we do not start with answers, we start with a precise shared understanding.",
+        keyInsight: "Good decisions start with a clear question, not with data.",
+        keyTerms: ["Decision space", "Problem node", "Implicit assumptions", "Goal framing"],
+        beforeAfter: {
+          before: "Vague text request to a model",
+          after: "Precise problem node with objective and boundary",
+        },
+        nextStepHint: "With the clarified question, we now search for relevant context.",
+        perspectiveCopy: {
+          architecture:
+            "Architecture: which system boundaries and dependencies truly matter here, and what is intentionally outside this decision space? This prevents secondary technical topics from overshadowing the core decision.",
+          product:
+            "Product: which user or business effect should this question clarify, and how will we later know that the decision helped? This keeps the flow tied to actual outcomes.",
+          governance:
+            "Governance: which rules, evidence requirements, and risks must be considered from the beginning so the decision can stand up to review?",
+        },
+      },
+      {
+        id: "retrieval",
+        label: "Context",
+        goal: "Prioritize context",
+        technicalFlow:
+          "We calculate the proximity between the core question and possible context nodes via embeddings and rank them by graph score. If needed, we expand by one hop to direct neighbors. Only these prioritized nodes move on as context for the LLM prompt.",
+        structuralRelevance:
+          "More context is not automatically better. Too much material weakens focus. Prioritization keeps the prompt precise and makes the selection path reproducible and reviewable.",
+        visualSpec:
+          "You see a centered context package containing the selected nodes for the prompt. Context with medium or low relevance remains visible on the outside. Selection follows score and hop rules, not chance.",
+        keyInsight: "What matters is not the amount of context, but the discipline of selection.",
+        keyTerms: ["Embedding match", "Graph score", "Hop expansion", "Prompt context"],
+        beforeAfter: {
+          before: "Unstructured full context inside the prompt",
+          after: "Score-based node selection with optional hop expansion",
+        },
+        nextStepHint: "The prioritized nodes are now linked into a usable structure.",
+        perspectiveCopy: {
+          architecture:
+            "Architecture: which sources truly clarify dependencies, and which only make the picture noisier without adding value?",
+          product:
+            "Product: which context actually changes the next step, and which is merely interesting but not decision-relevant?",
+          governance:
+            "Governance: which contexts are reliable, current, and documented well enough for later review and audit?",
+        },
+      },
+      {
+        id: "graph",
+        label: "Graph",
+        goal: "Select nodes for the LLM",
+        technicalFlow:
+          "We calculate the semantic proximity between the core question and graph nodes via embeddings. Then we select fitting concept nodes, add their supporting evidence, and expand to direct neighbors if needed. Exactly this subnet is then passed to the LLM as structured context.",
+        structuralRelevance:
+          "This keeps it visible which nodes enter the prompt and why. The context stays focused rather than arbitrarily large and becomes reproducible for identical inputs.",
+        visualSpec:
+          "The visualization first shows the core question, then fitting concepts, then their evidence. An additional edge marks optional hop expansion, so you can see exactly which nodes were selected for the LLM context.",
+        keyInsight: "GraphRAG gains quality through traceable node selection, not through more text.",
+        keyTerms: ["Embedding match", "Node selection", "Hop expansion", "Evidence link"],
+        beforeAfter: {
+          before: "Unfiltered context for the LLM",
+          after: "Embedding-based node selection with evidence",
+        },
+        nextStepHint: "The network now turns into a reviewable reasoning path.",
+        perspectiveCopy: {
+          architecture:
+            "Architecture: which nodes and edges must enter the prompt so technical dependencies are represented correctly?",
+          product:
+            "Product: which concepts really support the answer, and which intentionally stay outside the prompt context?",
+          governance:
+            "Governance: is it documented which nodes were selected with which score, and which were added through a hop?",
+        },
+      },
+      {
+        id: "synthesis",
+        label: "Synthesis",
+        goal: "Derive the answer",
+        technicalFlow:
+          "We pass the prioritized context package into the prompt and derive the answer along explicit nodes. The path from question to context to evidence to answer remains visible.",
+        structuralRelevance:
+          "A list of sources alone does not show reasoning logic. The derivation path makes visible how the answer was formed and where it can be inspected.",
+        visualSpec:
+          "You see a clear path from question to answer via context package and evidence. That makes the factual support of the final claim understandable at a glance.",
+        keyInsight: "Traceability emerges from the derivation path, not from a source list.",
+        keyTerms: ["Context package", "Prompt context", "Evidence path", "Traceability"],
+        beforeAfter: {
+          before: "Answer with an attached source list",
+          after: "Traceable path: question -> context -> evidence -> answer",
+        },
+        nextStepHint: "The derivation now becomes an operational decision.",
+        perspectiveCopy: {
+          architecture:
+            "Architecture: is the technical decision consistent across multiple steps, or does the rationale break at specific edges?",
+          product:
+            "Product: can we justify the prioritized action so that priority, impact, and risk stay understandable together?",
+          governance:
+            "Governance: can a review follow the conclusion without insider knowledge or oral explanation?",
+        },
+      },
+      {
+        id: "action",
+        label: "Action",
+        goal: "Use next steps",
+        technicalFlow:
+          "We take the evidence-based answer from the previous step and turn it into a clear decision. That decision is translated into a concrete action with ownership and a next checkpoint.",
+        structuralRelevance:
+          "Only when an evidence-backed answer becomes a concrete action does real impact emerge. This step makes visible how analysis turns into accountable execution.",
+        visualSpec:
+          "You see the direct path from answer to decision and from there to action. A final node marks the expected value in the next cycle.",
+        keyInsight: "An evidence-backed answer only becomes valuable when it leads to a clear action.",
+        keyTerms: ["Decision", "Action", "Ownership", "Execution path"],
+        beforeAfter: {
+          before: "One-off recommendation without follow-through",
+          after: "Answer leads to decision and concrete action",
+        },
+        nextStepHint: "The demo shows this entire process live.",
+        perspectiveCopy: {
+          architecture:
+            "Architecture: which technical decision is implemented concretely, and which dependencies must be managed actively?",
+          product:
+            "Product: which next steps are directly actionable, and how do we measure their effect in the next cycle?",
+          governance:
+            "Governance: who owns the action, when is it reviewed, and which criteria decide whether to continue or correct it?",
+        },
+      },
+    ];
+  }
+
+  return [
   {
     id: "question",
     label: "Frage",
@@ -163,12 +307,20 @@ export const STORY_CHAPTERS: StoryChapter[] = [
         "Governance: Wer verantwortet die Maßnahme, wann wird überprüft, und welche Kriterien entscheiden über Fortführung oder Korrektur? Damit bleiben Verantwortung und Nachweisführung klar verteilt.",
     },
   },
-];
+  ];
+}
 
-export function getPrimaryActionForChapter(chapterIndex: number): StoryPrimaryAction {
-  if (chapterIndex >= STORY_CHAPTERS.length - 1) {
-    return { label: "Zur Demo", isDemoLink: true };
+export function getPrimaryActionForChapter(
+  chapterIndex: number,
+  chapterCount = STORY_CHAPTERS.length,
+  locale: "de" | "en" = "de",
+): StoryPrimaryAction {
+  if (chapterIndex >= chapterCount - 1) {
+    return { label: locale === "en" ? "Open demo" : "Zur Demo", isDemoLink: true };
   }
 
-  return { label: "Weiter", isDemoLink: false };
+  return { label: locale === "en" ? "Next" : "Weiter", isDemoLink: false };
 }
+
+export const STORY_PERSPECTIVES = getStoryPerspectives("de");
+export const STORY_CHAPTERS = getStoryChapters("de");
