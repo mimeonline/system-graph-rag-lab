@@ -4,28 +4,33 @@ import { useEffect, useRef, useState } from "react";
 import cytoscape, { type Core, type ElementDefinition } from "cytoscape";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
-const ELEMENTS: ElementDefinition[] = [
-  {
-    data: { id: "q", label: "Frage", kind: "question" },
-  },
-  {
-    data: { id: "c1", label: "Konzept", kind: "concept" },
-  },
-  {
-    data: { id: "c2", label: "Konzept", kind: "concept" },
-  },
-  {
-    data: { id: "c3", label: "Konzept", kind: "concept" },
-  },
-  {
-    data: { id: "e1", label: "Beleg", kind: "evidence" },
-  },
-  {
-    data: { id: "e2", label: "Beleg", kind: "evidence" },
-  },
-  {
-    data: { id: "w", label: "Entscheidung", kind: "impact" },
-  },
+type QueryLocale = "de" | "en";
+
+function getElements(locale: QueryLocale): ElementDefinition[] {
+  const isEn = locale === "en";
+
+  return [
+    {
+      data: { id: "q", label: isEn ? "Question" : "Frage", kind: "question" },
+    },
+    {
+      data: { id: "c1", label: isEn ? "Concept" : "Konzept", kind: "concept" },
+    },
+    {
+      data: { id: "c2", label: isEn ? "Concept" : "Konzept", kind: "concept" },
+    },
+    {
+      data: { id: "c3", label: isEn ? "Concept" : "Konzept", kind: "concept" },
+    },
+    {
+      data: { id: "e1", label: isEn ? "Evidence" : "Beleg", kind: "evidence" },
+    },
+    {
+      data: { id: "e2", label: isEn ? "Evidence" : "Beleg", kind: "evidence" },
+    },
+    {
+      data: { id: "w", label: isEn ? "Decision" : "Entscheidung", kind: "impact" },
+    },
   { data: { id: "q-c1", source: "q", target: "c1", etype: "relevance" } },
   { data: { id: "q-c2", source: "q", target: "c2", etype: "relevance" } },
   { data: { id: "q-c3", source: "q", target: "c3", etype: "relevance" } },
@@ -35,7 +40,8 @@ const ELEMENTS: ElementDefinition[] = [
   { data: { id: "c3-e2", source: "c3", target: "e2", etype: "evidence" } },
   { data: { id: "e1-w", source: "e1", target: "w", etype: "impact" } },
   { data: { id: "e2-w", source: "e2", target: "w", etype: "impact" } },
-];
+  ];
+}
 
 function isCyActive(cy: Core | null | undefined): cy is Core {
   if (!cy) {
@@ -58,12 +64,23 @@ type HeroTooltipState = {
   side: TooltipSide;
 };
 
-const TOOLTIP_TEXT_BY_KIND: Record<TooltipKind, string> = {
-  question: "Welches Problem oder welche Entscheidung soll geklärt werden?",
-  concept: "Strukturierende Begriffe, die die Herleitung ordnen.",
-  evidence: "Prüfbare Grundlage: Dokument, Messwert oder Quelle.",
-  impact: "Ableitung aus Beziehungen, nachvollziehbar als Pfad.",
-};
+function getTooltipTextByKind(locale: QueryLocale): Record<TooltipKind, string> {
+  if (locale === "en") {
+    return {
+      question: "Which problem or decision should be clarified?",
+      concept: "Structuring concepts that organize the reasoning path.",
+      evidence: "Verifiable basis: document, metric, or source.",
+      impact: "Derived from relations and reviewable as a path.",
+    };
+  }
+
+  return {
+    question: "Welches Problem oder welche Entscheidung soll geklärt werden?",
+    concept: "Strukturierende Begriffe, die die Herleitung ordnen.",
+    evidence: "Prüfbare Grundlage: Dokument, Messwert oder Quelle.",
+    impact: "Ableitung aus Beziehungen, nachvollziehbar als Pfad.",
+  };
+}
 
 function clamp(value: number, min: number, max: number): number {
   return Math.min(Math.max(value, min), max);
@@ -104,9 +121,16 @@ function setDeterministicPositions(cy: Core, width: number, height: number): voi
   cy.zoom(1);
 }
 
-export function ExecutiveHeroGraph(): React.JSX.Element {
+type ExecutiveHeroGraphProps = {
+  locale: QueryLocale;
+};
+
+export function ExecutiveHeroGraph({ locale }: ExecutiveHeroGraphProps): React.JSX.Element {
   const graphBoxRef = useRef<HTMLDivElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const elements = getElements(locale);
+  const tooltipTextByKind = getTooltipTextByKind(locale);
+  const isEn = locale === "en";
   const [tooltipState, setTooltipState] = useState<HeroTooltipState>({
     open: false,
     text: "",
@@ -124,7 +148,7 @@ export function ExecutiveHeroGraph(): React.JSX.Element {
 
     const cy = cytoscape({
       container,
-      elements: ELEMENTS,
+      elements,
       layout: { name: "preset" },
       userZoomingEnabled: false,
       userPanningEnabled: false,
@@ -285,7 +309,7 @@ export function ExecutiveHeroGraph(): React.JSX.Element {
       }
       const node = event.target;
       const kind = String(node.data("kind") ?? "concept") as TooltipKind;
-      const text = TOOLTIP_TEXT_BY_KIND[kind] ?? TOOLTIP_TEXT_BY_KIND.concept;
+      const text = tooltipTextByKind[kind] ?? tooltipTextByKind.concept;
       const rendered = node.renderedPosition();
       const boxWidth = container.clientWidth;
       const boxHeight = container.clientHeight;
@@ -323,7 +347,7 @@ export function ExecutiveHeroGraph(): React.JSX.Element {
         cy.destroy();
       }
     };
-  }, []);
+  }, [elements, tooltipTextByKind]);
 
   return (
     <TooltipProvider delayDuration={70}>
@@ -339,7 +363,11 @@ export function ExecutiveHeroGraph(): React.JSX.Element {
           ref={graphBoxRef}
           className="relative h-[clamp(250px,38vh,360px)] w-full overflow-hidden rounded-xl border border-slate-200 bg-[#f7fafc]"
         >
-          <div ref={containerRef} className="h-full w-full" aria-label="Kuratiertes, read-only Cytoscape Hero Graph" />
+          <div
+            ref={containerRef}
+            className="h-full w-full"
+            aria-label={isEn ? "Curated, read-only Cytoscape hero graph" : "Kuratiertes, read-only Cytoscape Hero Graph"}
+          />
 
           <Tooltip open={tooltipState.open}>
             <TooltipTrigger asChild>
@@ -360,7 +388,7 @@ export function ExecutiveHeroGraph(): React.JSX.Element {
           </Tooltip>
 
           <p className="pointer-events-none absolute bottom-2 left-3 text-[11px] text-slate-500">
-            Strukturierte Herleitung statt isolierter Textantwort.
+            {isEn ? "Structured reasoning instead of an isolated text answer." : "Strukturierte Herleitung statt isolierter Textantwort."}
           </p>
         </div>
       </div>

@@ -155,7 +155,7 @@ export function GraphRagTechnicalFlow({
           </section>
 
           {/* 3D chapter visual (Three.js) */}
-          <StoryChapterThreeVisual chapterId={activeChapter.id} />
+          <StoryChapterThreeVisual chapterId={activeChapter.id} locale={locale} />
 
           {/* C2: Key insight */}
           <aside className="rounded-lg border border-sky-200/60 bg-sky-50/50 px-4 py-3">

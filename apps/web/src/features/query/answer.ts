@@ -12,6 +12,7 @@ export const MAX_REFERENCES_IN_RESPONSE = 3;
 const ESTIMATED_TOKEN_DIVISOR = 4;
 
 export type BuildStructuredAnswerInput = {
+  locale?: "de" | "en";
   query: string;
   references: QueryReference[];
   contextElements: QueryContextElement[];
@@ -37,9 +38,9 @@ function estimateTokensFromText(value: string): number {
 }
 
 /**
- * Joins concept titles into a German-readable list with proper conjunction.
+ * Joins concept titles into a locale-aware list with proper conjunction.
  */
-function formatConceptList(titles: string[]): string {
+function formatConceptList(titles: string[], locale: "de" | "en"): string {
   if (titles.length === 0) {
     return "";
   }
@@ -49,18 +50,19 @@ function formatConceptList(titles: string[]): string {
   }
 
   if (titles.length === 2) {
-    return `${titles[0]} und ${titles[1]}`;
+    return locale === "en" ? `${titles[0]} and ${titles[1]}` : `${titles[0]} und ${titles[1]}`;
   }
 
   const last = titles.at(-1);
   const initial = titles.slice(0, -1).join(", ");
-  return `${initial} und ${last}`;
+  return locale === "en" ? `${initial} and ${last}` : `${initial} und ${last}`;
 }
 
 /**
  * Builds the final structured answer with capped references and context rationale.
  */
 export function buildStructuredAnswer({
+  locale = "de",
   query,
   references,
   contextElements,
@@ -72,11 +74,18 @@ export function buildStructuredAnswer({
   const finalContextElements = contextElements.slice(0, finalReferences.length);
 
   if (finalReferences.length === 0) {
-    const fallbackMain = query
-      ? `Auf "${query}" können wir gerade noch keine verlässliche Antwort geben.`
-      : "Wir können gerade noch keine verlässliche Antwort geben.";
+    const fallbackMain =
+      locale === "en"
+        ? query
+          ? `We cannot provide a reliable answer to "${query}" yet.`
+          : "We cannot provide a reliable answer yet."
+        : query
+          ? `Auf "${query}" können wir gerade noch keine verlässliche Antwort geben.`
+          : "Wir können gerade noch keine verlässliche Antwort geben.";
     const fallbackRationale =
-      "Formuliere die Frage etwas konkreter. Hilfreich sind Team, Zeitraum oder ein konkreter Fall.";
+      locale === "en"
+        ? "Make the question a bit more specific. Helpful anchors are team, timeframe, or one concrete case."
+        : "Formuliere die Frage etwas konkreter. Hilfreich sind Team, Zeitraum oder ein konkreter Fall.";
 
     return {
       answer: {
@@ -91,8 +100,11 @@ export function buildStructuredAnswer({
   }
 
   const quotedTitles = finalReferences.map((reference) => `«${reference.title}»`);
-  const conceptList = formatConceptList(quotedTitles);
-  const fallbackMain = `Kurzantwort zu "${query}": Diese Konzepte helfen dir am meisten weiter: ${conceptList}.`;
+  const conceptList = formatConceptList(quotedTitles, locale);
+  const fallbackMain =
+    locale === "en"
+      ? `Short answer to "${query}": these concepts are the most useful starting points: ${conceptList}.`
+      : `Kurzantwort zu "${query}": Diese Konzepte helfen dir am meisten weiter: ${conceptList}.`;
 
   const rationaleSegments =
     finalContextElements.length > 0
@@ -118,9 +130,15 @@ export function buildStructuredAnswer({
         .slice(0, 4)
     : [];
   const main = llmMain ?? fallbackMain;
-  const coreRationaleBase = llmRationale ?? "Herleitung aus den ausgewählten Kontextstellen.";
+  const coreRationaleBase =
+    llmRationale ??
+    (locale === "en"
+      ? "Derived from the selected context snippets."
+      : "Herleitung aus den ausgewählten Kontextstellen.");
   const expectationText = expectationFallback ? ` ${expectationFallback}` : "";
-  const coreRationale = `${coreRationaleBase}\n\nNachvollziehbare Faktenbasis: ${traceText}${expectationText}`;
+  const evidenceLabel =
+    locale === "en" ? "Traceable factual basis" : "Nachvollziehbare Faktenbasis";
+  const coreRationale = `${coreRationaleBase}\n\n${evidenceLabel}: ${traceText}${expectationText}`;
 
   const contextTokens = finalContextElements.reduce(
     (sum, element) => sum + estimateTokensFromText(element.title) + estimateTokensFromText(element.summary),

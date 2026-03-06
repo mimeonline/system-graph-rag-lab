@@ -10,6 +10,7 @@ export const CONTEXT_BUDGET_TOKENS = 1400;
 export type QueryRequest = {
   query: string;
   clientRequestId?: string;
+  locale?: "de" | "en";
 };
 
 export type QueryReferenceLink = {

@@ -103,7 +103,7 @@ export async function ExecutiveLandingTemplate({
                 </motion.div>
 
                 <div className="w-full max-w-140 self-start justify-self-center rounded-2xl border border-slate-200 bg-linear-to-b from-white to-slate-50 p-4 sm:p-5 lg:justify-self-end">
-                  <ExecutiveHeroGraph />
+                  <ExecutiveHeroGraph locale={locale} />
                 </div>
               </div>
             </section>

@@ -23,6 +23,8 @@ type QueryHandlerResult = {
   headers: Record<string, string>;
 };
 
+type QueryLocale = "de" | "en";
+
 /**
  * Zweck:
  * Baut ein contract-konformes Fehlerobjekt fuer API-Antworten.
@@ -77,6 +79,7 @@ function buildErrorResponse(
  * - buildEmptySuccessResponse("req-1", 20, 30, 60)
  */
 function buildEmptySuccessResponse(
+  locale: QueryLocale,
   requestId: string,
   latencyMs: number,
   rateLimitLimit: number,
@@ -87,9 +90,14 @@ function buildEmptySuccessResponse(
     state: "empty",
     requestId,
     answer: {
-      main: "Bootstrap-Skelett aktiv. Retrieval und LLM-Pipeline folgen in den Storys.",
+      main:
+        locale === "en"
+          ? "Bootstrap skeleton active. Retrieval and LLM pipeline are wired up in the demo flow."
+          : "Bootstrap-Skelett aktiv. Retrieval und LLM-Pipeline folgen in den Storys.",
       coreRationale:
-        "Das API-Skelett erfüllt bereits Request-Validierung und Contract-konformes Response-Mapping.",
+        locale === "en"
+          ? "The API skeleton already provides request validation and contract-compliant response mapping."
+          : "Das API-Skelett erfüllt bereits Request-Validierung und Contract-konformes Response-Mapping.",
       nextSteps: [],
     },
     references: [],
@@ -235,6 +243,7 @@ function extractOpenAiErrorDetails(text: string): OpenAiErrorDetails | null {
 }
 
 function buildOpenAiErrorMessage(
+  locale: QueryLocale,
   status: number,
   rawBody: string,
   details?: OpenAiErrorDetails | null,
@@ -259,22 +268,30 @@ function buildOpenAiErrorMessage(
     if (sanitized) {
       segments.push(sanitized);
     } else {
-      segments.push(`Status ${status} ohne zusätzliche Details.`);
+      segments.push(
+        locale === "en"
+          ? `Status ${status} without additional details.`
+          : `Status ${status} ohne zusätzliche Details.`,
+      );
     }
   }
 
-  return `OpenAI API error ${status}: ${segments.join("; ")}`;
+  return locale === "en"
+    ? `OpenAI API error ${status}: ${segments.join("; ")}`
+    : `OpenAI API-Fehler ${status}: ${segments.join("; ")}`;
 }
 
 /**
  * Parses and validates OpenAI JSON content into the internal answer shape.
  */
-function parseOpenAiJson(content: string): OpenAiAnswer {
+function parseOpenAiJson(content: string, locale: QueryLocale): OpenAiAnswer {
   const trimmed = content.trim();
   const candidate = tryParseJson(trimmed);
   if (!candidate) {
     throw new OpenAiUpstreamError(
-      "OpenAI lieferte kein gültiges JSON im erwarteten Format.",
+      locale === "en"
+        ? "OpenAI did not return valid JSON in the expected format."
+        : "OpenAI lieferte kein gültiges JSON im erwarteten Format.",
       200,
       true,
     );
@@ -285,7 +302,9 @@ function parseOpenAiJson(content: string): OpenAiAnswer {
   const nextSteps = candidate.nextSteps;
   if (typeof main !== "string" || typeof coreRationale !== "string") {
     throw new OpenAiUpstreamError(
-      "OpenAI-Antwort enthält keine Strings für 'main' und 'coreRationale'.",
+      locale === "en"
+        ? "OpenAI response does not contain strings for 'main' and 'coreRationale'."
+        : "OpenAI-Antwort enthält keine Strings für 'main' und 'coreRationale'.",
       200,
       true,
     );
@@ -369,12 +388,13 @@ function extractAssistantContent(payload: OpenAiChatPayload): {
 async function fetchOpenAiAnswer(options: {
   apiKey: string;
   model: string;
+  locale: QueryLocale;
   query: string;
   references: QueryReference[];
   contextElements: QueryContextElement[];
 }): Promise<OpenAiAnswer> {
-  const { apiKey, model, query, references, contextElements } = options;
-  const messages = buildGraphRagPromptMessages(query, references, contextElements);
+  const { apiKey, model, locale, query, references, contextElements } = options;
+  const messages = buildGraphRagPromptMessages(query, references, contextElements, locale);
 
   async function requestCompletion(maxCompletionTokens: number): Promise<OpenAiChatPayload> {
     const requestPayload = {
@@ -395,14 +415,22 @@ async function fetchOpenAiAnswer(options: {
       });
     } catch (error) {
       const message =
-        error instanceof Error ? error.message : "Fehler bei der Verbindung zur OpenAI API.";
-      throw new OpenAiUpstreamError(`OpenAI API error: ${message}`, 0, true);
+        error instanceof Error
+          ? error.message
+          : locale === "en"
+            ? "Error while connecting to the OpenAI API."
+            : "Fehler bei der Verbindung zur OpenAI API.";
+      throw new OpenAiUpstreamError(
+        locale === "en" ? `OpenAI API error: ${message}` : `OpenAI API-Fehler: ${message}`,
+        0,
+        true,
+      );
     }
 
     if (!response.ok) {
       const rawBody = await response.text();
       const details = extractOpenAiErrorDetails(rawBody);
-      const composedMessage = buildOpenAiErrorMessage(response.status, rawBody, details);
+      const composedMessage = buildOpenAiErrorMessage(locale, response.status, rawBody, details);
       const retryable = response.status === 429 || response.status >= 500;
       throw new OpenAiUpstreamError(
         composedMessage,
@@ -429,16 +457,22 @@ async function fetchOpenAiAnswer(options: {
   if (!extracted.content) {
     if (extracted.refusal) {
       throw new OpenAiUpstreamError(
-        `OpenAI hat die Antwort verweigert: ${extracted.refusal}`,
+        locale === "en"
+          ? `OpenAI refused the answer: ${extracted.refusal}`
+          : `OpenAI hat die Antwort verweigert: ${extracted.refusal}`,
         200,
         false,
       );
     }
 
-    throw new OpenAiUpstreamError("OpenAI lieferte keine Assistant-Antwort.", 200, false);
+    throw new OpenAiUpstreamError(
+      locale === "en" ? "OpenAI did not return an assistant answer." : "OpenAI lieferte keine Assistant-Antwort.",
+      200,
+      false,
+    );
   }
 
-  return parseOpenAiJson(extracted.content);
+  return parseOpenAiJson(extracted.content, locale);
 }
 
 /**
@@ -480,6 +514,7 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
       ),
     };
   }
+  const locale = parsed.data.locale;
 
   const env = getQueryRuntimeEnv();
   if (!env.openAiModel) {
@@ -491,7 +526,7 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
         requestId,
         latencyMs,
         "INTERNAL_ERROR",
-        "OPENAI_MODEL fehlt oder ist leer.",
+        locale === "en" ? "OPENAI_MODEL is missing or empty." : "OPENAI_MODEL fehlt oder ist leer.",
         false,
       ),
     };
@@ -506,7 +541,7 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
         requestId,
         latencyMs,
         "INTERNAL_ERROR",
-        "OPENAI_API_KEY fehlt oder ist leer.",
+        locale === "en" ? "OPENAI_API_KEY is missing or empty." : "OPENAI_API_KEY fehlt oder ist leer.",
         false,
       ),
     };
@@ -525,7 +560,9 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
           requestId,
           latencyMs,
           "GRAPH_BACKEND_UNAVAILABLE",
-          "Der Graph-Backend-Service ist derzeit nicht erreichbar.",
+          locale === "en"
+            ? "The graph backend service is currently unavailable."
+            : "Der Graph-Backend-Service ist derzeit nicht erreichbar.",
           true,
         ),
       };
@@ -533,6 +570,7 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
     throw error;
   }
   const composedAnswer = buildStructuredAnswer({
+    locale,
     query: parsed.data.query,
     references: retrievalResult.references,
     contextElements: retrievalResult.contextElements,
@@ -543,6 +581,7 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
     openAiAnswer = await fetchOpenAiAnswer({
       apiKey: env.openAiApiKey,
       model: env.openAiModel,
+      locale,
       query: parsed.data.query,
       references: composedAnswer.references,
       contextElements: composedAnswer.contextElements,
@@ -552,7 +591,11 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
     const isOpenAiError = error instanceof OpenAiUpstreamError;
     const retryable = isOpenAiError ? error.retryable : false;
     const message =
-      error instanceof Error ? error.message : "Fehler bei der Antwortgenerierung.";
+      error instanceof Error
+        ? error.message
+        : locale === "en"
+          ? "Error while generating the answer."
+          : "Fehler bei der Antwortgenerierung.";
 
     return {
       status: isOpenAiError ? 502 : 500,
@@ -569,12 +612,14 @@ export async function handleQueryRequest(rawBody: unknown): Promise<QueryHandler
 
   const latencyMs = Date.now() - startedAt;
   const baseSuccess = buildEmptySuccessResponse(
+    locale,
     requestId,
     latencyMs,
     env.rateLimitMaxRequests,
     env.rateLimitWindowSeconds,
   );
   const finalizedAnswer = buildStructuredAnswer({
+    locale,
     query: parsed.data.query,
     references: composedAnswer.references,
     contextElements: composedAnswer.contextElements,

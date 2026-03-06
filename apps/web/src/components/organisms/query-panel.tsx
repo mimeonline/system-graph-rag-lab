@@ -489,13 +489,13 @@ export function QueryPanel({ locale }: QueryPanelProps): React.JSX.Element {
         fetch("/api/query", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query: trimmedQuery }),
+          body: JSON.stringify({ query: trimmedQuery, locale }),
           cache: "no-store",
         }),
         fetch("/api/query/llm-only", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ query: trimmedQuery }),
+          body: JSON.stringify({ query: trimmedQuery, locale }),
           cache: "no-store",
         }),
       ]);
@@ -616,9 +616,9 @@ export function QueryPanel({ locale }: QueryPanelProps): React.JSX.Element {
   );
   const overallQualityState = getOverallQualityState(qualitySignals);
   const graphRagPromptPreview = formatPromptMessagesForDisplay(
-    buildGraphRagPromptMessages(query, references, viewModel?.contextElements ?? []),
+    buildGraphRagPromptMessages(query, references, viewModel?.contextElements ?? [], locale),
   );
-  const llmOnlyPromptPreview = formatPromptMessagesForDisplay(buildLlmOnlyPromptMessages(query));
+  const llmOnlyPromptPreview = formatPromptMessagesForDisplay(buildLlmOnlyPromptMessages(query, locale));
   const graphRagContextPayloadPreview = buildGraphContextPayloadPreview(
     query,
     references,

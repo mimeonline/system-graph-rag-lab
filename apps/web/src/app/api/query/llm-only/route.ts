@@ -18,6 +18,8 @@ type LlmOnlyResponse = {
   };
 };
 
+type QueryLocale = "de" | "en";
+
 function tryParseJson(text: string): Record<string, unknown> | null {
   try {
     return JSON.parse(text);
@@ -60,7 +62,15 @@ function extractNextStepsFromText(text: string): string[] {
   return candidates.slice(0, 3);
 }
 
-function buildFallbackNextSteps(): string[] {
+function buildFallbackNextSteps(locale: QueryLocale): string[] {
+  if (locale === "en") {
+    return [
+      "Phrase the question precisely and name the concrete system context.",
+      "Test two or three core assumptions with traceable evidence.",
+      "Define one small next step with owner and timing.",
+    ];
+  }
+
   return [
     "Formuliere die Frage präzise und benenne den konkreten Systemkontext.",
     "Prüfe zwei bis drei zentrale Annahmen mit nachvollziehbaren Belegen.",
@@ -78,16 +88,23 @@ export async function POST(request: Request): Promise<Response> {
     });
   }
 
+  const locale = parsed.data.locale;
   const env = getQueryRuntimeEnv();
   if (!env.openAiApiKey || !env.openAiModel) {
-    return new Response(JSON.stringify({ status: "error", message: "OpenAI Konfiguration fehlt." }), {
-      status: 500,
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-    });
+    return new Response(
+      JSON.stringify({
+        status: "error",
+        message: locale === "en" ? "OpenAI configuration is missing." : "OpenAI Konfiguration fehlt.",
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+      },
+    );
   }
 
   const query = parsed.data.query.trim();
-  const messages = buildLlmOnlyPromptMessages(query);
+  const messages = buildLlmOnlyPromptMessages(query, locale);
 
   const completionResponse = await fetch(OPENAI_CHAT_ENDPOINT, {
     method: "POST",
@@ -105,10 +122,16 @@ export async function POST(request: Request): Promise<Response> {
 
   if (!completionResponse.ok) {
     const reason = (await completionResponse.text()).slice(0, 400);
-    return new Response(JSON.stringify({ status: "error", message: reason || "LLM-only fehlgeschlagen." }), {
-      status: 502,
-      headers: { "Content-Type": "application/json; charset=utf-8" },
-    });
+    return new Response(
+      JSON.stringify({
+        status: "error",
+        message: reason || (locale === "en" ? "LLM-only request failed." : "LLM-only fehlgeschlagen."),
+      }),
+      {
+        status: 502,
+        headers: { "Content-Type": "application/json; charset=utf-8" },
+      },
+    );
   }
 
   const payload = (await completionResponse.json()) as {
@@ -123,7 +146,9 @@ export async function POST(request: Request): Promise<Response> {
   const fallbackMainFromContent =
     content.length > 0
       ? content
-      : "LLM-only hat keine auswertbare Antwort geliefert. Bitte Anfrage erneut ausführen.";
+      : locale === "en"
+        ? "LLM-only did not return a usable answer. Please run the request again."
+        : "LLM-only hat keine auswertbare Antwort geliefert. Bitte Anfrage erneut ausführen.";
 
   const parsedNextSteps = Array.isArray(parsedJson.nextSteps)
     ? parsedJson.nextSteps
@@ -137,7 +162,7 @@ export async function POST(request: Request): Promise<Response> {
       ? parsedNextSteps.slice(0, 3)
       : inferredNextSteps.length > 0
         ? inferredNextSteps
-        : buildFallbackNextSteps();
+        : buildFallbackNextSteps(locale);
 
   const body: LlmOnlyResponse = {
     status: "ok",
@@ -145,7 +170,9 @@ export async function POST(request: Request): Promise<Response> {
       main: rawMain.length > 0 ? rawMain : fallbackMainFromContent,
       coreRationale: toSafeString(
         parsedJson.coreRationale,
-        "Kurzbegründung konnte nicht strukturiert extrahiert werden.",
+        locale === "en"
+          ? "Structured rationale could not be extracted."
+          : "Kurzbegründung konnte nicht strukturiert extrahiert werden.",
       ),
       nextSteps: resolvedNextSteps,
     },

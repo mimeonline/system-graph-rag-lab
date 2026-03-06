@@ -8,6 +8,7 @@ import type { StoryChapterId } from "../story-flow-model";
 
 type StoryChapterThreeVisualProps = {
   chapterId: StoryChapterId;
+  locale: "de" | "en";
 };
 
 type ShotConfig = {
@@ -17,7 +18,7 @@ type ShotConfig = {
   orbit: boolean;
 };
 
-type NodeStatus = "gesichert" | "offen" | "hypothese";
+type NodeStatus = "confirmed" | "open" | "hypothesis";
 
 type LightingConfig = {
   ambient: number;
@@ -73,6 +74,91 @@ const LIGHTING: Record<StoryChapterId, LightingConfig> = {
     fillB: { intensity: 0.44, color: "#f59e0b", position: [4, 1.5, -3.8] },
   },
 };
+
+function getNodeLabel(
+  key:
+    | "coreQuestion"
+    | "assumptionA"
+    | "assumptionB"
+    | "contextHigh"
+    | "contextMedium"
+    | "contextLow"
+    | "conceptMatch"
+    | "conceptHop"
+    | "evidence"
+    | "question"
+    | "contextPackage"
+    | "answer"
+    | "decision"
+    | "measure"
+    | "value",
+  locale: "de" | "en",
+): string {
+  const copy = {
+    de: {
+      coreQuestion: "Kernfrage",
+      assumptionA: "Annahme A",
+      assumptionB: "Annahme B",
+      contextHigh: "Kontext hoch",
+      contextMedium: "Kontext mittel",
+      contextLow: "Kontext niedrig",
+      conceptMatch: "Konzept (Match)",
+      conceptHop: "Konzept (Hop)",
+      evidence: "Beleg",
+      question: "Frage",
+      contextPackage: "Kontextpaket",
+      answer: "Antwort",
+      decision: "Entscheidung",
+      measure: "Maßnahme",
+      value: "Mehrwert",
+    },
+    en: {
+      coreQuestion: "Core question",
+      assumptionA: "Assumption A",
+      assumptionB: "Assumption B",
+      contextHigh: "High context",
+      contextMedium: "Medium context",
+      contextLow: "Low context",
+      conceptMatch: "Concept (match)",
+      conceptHop: "Concept (hop)",
+      evidence: "Evidence",
+      question: "Question",
+      contextPackage: "Context package",
+      answer: "Answer",
+      decision: "Decision",
+      measure: "Measure",
+      value: "Value",
+    },
+  } as const;
+
+  return copy[locale][key];
+}
+
+function getStoryVisualCopy(locale: "de" | "en") {
+  return locale === "en"
+    ? {
+        shot: "Shot",
+        build: "Build: step by step",
+        resetView: "Reset view",
+        legend: "Legend",
+        confirmed: "confirmed",
+        open: "open",
+        hypothesis: "hypothesis",
+        cleanView: "Clean view",
+        showUi: "Show UI",
+      }
+    : {
+        shot: "Shot",
+        build: "Build: Schritt für Schritt",
+        resetView: "Ansicht zurücksetzen",
+        legend: "Legende",
+        confirmed: "gesichert",
+        open: "offen",
+        hypothesis: "hypothese",
+        cleanView: "Clean View",
+        showUi: "UI anzeigen",
+      };
+}
 
 function useReducedMotion(): boolean {
   if (typeof window === "undefined") {
@@ -158,6 +244,7 @@ function Node({
   status,
   radius,
   hideLabel = false,
+  locale,
 }: {
   position: [number, number, number];
   color: string;
@@ -166,15 +253,16 @@ function Node({
   status?: NodeStatus;
   radius?: number;
   hideLabel?: boolean;
+  locale: "de" | "en";
 }): React.JSX.Element {
   const meshRef = useRef<THREE.Mesh>(null);
   const materialRef = useRef<THREE.MeshStandardMaterial>(null);
-  const isCore = label.toLowerCase() === "kernfrage";
-  const statusLabel = status ?? (isCore ? "gesichert" : "offen");
+  const isCore = label === getNodeLabel("coreQuestion", locale);
+  const statusLabel = status ?? (isCore ? "confirmed" : "open");
   const statusClass =
-    statusLabel === "gesichert"
+    statusLabel === "confirmed"
       ? "bg-emerald-500"
-      : statusLabel === "hypothese"
+      : statusLabel === "hypothesis"
         ? "bg-amber-500"
         : "bg-slate-400";
 
@@ -350,10 +438,12 @@ function ChapterScene({
   chapterId,
   reducedMotion,
   hideNodeLabels,
+  locale,
 }: {
   chapterId: StoryChapterId;
   reducedMotion: boolean;
   hideNodeLabels: boolean;
+  locale: "de" | "en";
 }): React.JSX.Element {
   const timeRef = useRef(0);
   const [activeStep, setActiveStep] = useState(() => (reducedMotion ? 6 : 1));
@@ -429,13 +519,13 @@ function ChapterScene({
             );
           })()}
           <RevealGroup step={1} activeStep={visibleStep}>
-            <Node position={[0, 0.2, 0]} color="#0ea5e9" label="Kernfrage" emphasis status="gesichert" hideLabel={hideNodeLabels} />
+            <Node position={[0, 0.2, 0]} color="#0ea5e9" label={getNodeLabel("coreQuestion", locale)} emphasis status="confirmed" hideLabel={hideNodeLabels} locale={locale} />
           </RevealGroup>
           <RevealGroup step={2} activeStep={visibleStep}>
-            <Node position={[-1.8, 0.5, -0.4]} color="#94a3b8" label="Annahme A" status="hypothese" hideLabel={hideNodeLabels} />
+            <Node position={[-1.8, 0.5, -0.4]} color="#94a3b8" label={getNodeLabel("assumptionA", locale)} status="hypothesis" hideLabel={hideNodeLabels} locale={locale} />
           </RevealGroup>
           <RevealGroup step={3} activeStep={visibleStep}>
-            <Node position={[1.9, 0.62, 0.3]} color="#94a3b8" label="Annahme B" status="offen" hideLabel={hideNodeLabels} />
+            <Node position={[1.9, 0.62, 0.3]} color="#94a3b8" label={getNodeLabel("assumptionB", locale)} status="open" hideLabel={hideNodeLabels} locale={locale} />
           </RevealGroup>
         </>
       ) : null}
@@ -471,96 +561,107 @@ function ChapterScene({
             <Node
               position={retrievalSafe([-0.5, 0.62, -0.2])}
               color="#34d399"
-              label="Kontext hoch"
-              status="gesichert"
+              label={getNodeLabel("contextHigh", locale)}
+              status="confirmed"
               radius={0.31}
               hideLabel={hideNodeLabels}
+              locale={locale}
             />
           </RevealGroup>
           <RevealGroup step={2} activeStep={visibleStep}>
             <Node
               position={retrievalSafe([2.95, 0.3, 1.25])}
               color="#6366f1"
-              label="Kontext mittel"
-              status="offen"
+              label={getNodeLabel("contextMedium", locale)}
+              status="open"
               radius={0.23}
               hideLabel={hideNodeLabels}
+              locale={locale}
             />
             <Node
               position={retrievalSafe([-3.0, 0.16, 1.2])}
               color="#6366f1"
-              label="Kontext mittel"
-              status="offen"
+              label={getNodeLabel("contextMedium", locale)}
+              status="open"
               radius={0.23}
               hideLabel={hideNodeLabels}
+              locale={locale}
             />
             <Node
               position={retrievalSafe([2.75, -0.08, -1.4])}
               color="#6366f1"
-              label="Kontext mittel"
-              status="offen"
+              label={getNodeLabel("contextMedium", locale)}
+              status="open"
               radius={0.23}
               hideLabel={hideNodeLabels}
+              locale={locale}
             />
             <Node
               position={retrievalSafe([-2.85, -0.16, -1.45])}
               color="#6366f1"
-              label="Kontext mittel"
-              status="offen"
+              label={getNodeLabel("contextMedium", locale)}
+              status="open"
               radius={0.23}
               hideLabel={hideNodeLabels}
+              locale={locale}
             />
           </RevealGroup>
           <RevealGroup step={3} activeStep={visibleStep}>
             <Node
               position={retrievalSafe([0, -0.38, -2.15])}
               color="#64748b"
-              label="Kontext niedrig"
-              status="hypothese"
+              label={getNodeLabel("contextLow", locale)}
+              status="hypothesis"
               radius={0.16}
               hideLabel={hideNodeLabels}
+              locale={locale}
             />
             <Node
               position={retrievalSafe([3.2, -0.5, -0.45])}
               color="#64748b"
-              label="Kontext niedrig"
-              status="hypothese"
+              label={getNodeLabel("contextLow", locale)}
+              status="hypothesis"
               radius={0.16}
               hideLabel={hideNodeLabels}
+              locale={locale}
             />
             <Node
               position={retrievalSafe([-3.2, -0.52, -0.35])}
               color="#64748b"
-              label="Kontext niedrig"
-              status="hypothese"
+              label={getNodeLabel("contextLow", locale)}
+              status="hypothesis"
               radius={0.16}
               hideLabel={hideNodeLabels}
+              locale={locale}
             />
             <Node
               position={retrievalSafe([1.85, -0.56, 1.65])}
               color="#64748b"
-              label="Kontext niedrig"
-              status="hypothese"
+              label={getNodeLabel("contextLow", locale)}
+              status="hypothesis"
               radius={0.16}
               hideLabel={hideNodeLabels}
+              locale={locale}
             />
             <Node
               position={retrievalSafe([-1.95, -0.54, 1.6])}
               color="#64748b"
-              label="Kontext niedrig"
-              status="hypothese"
+              label={getNodeLabel("contextLow", locale)}
+              status="hypothesis"
               radius={0.16}
               hideLabel={hideNodeLabels}
+              locale={locale}
             />
           </RevealGroup>
           <RevealGroup step={4} activeStep={visibleStep}>
             <Node
               position={retrievalSafe([0, 0.72, 0.35])}
               color="#34d399"
-              label="Kontext hoch"
-              status="gesichert"
+              label={getNodeLabel("contextHigh", locale)}
+              status="confirmed"
               radius={0.31}
               hideLabel={hideNodeLabels}
+              locale={locale}
             />
           </RevealGroup>
         </>
@@ -586,16 +687,16 @@ function ChapterScene({
             return (
               <>
                 <RevealGroup step={1} activeStep={visibleStep}>
-                  <Node position={core} color="#0ea5e9" label="Kernfrage" emphasis status="gesichert" hideLabel={hideNodeLabels} />
+                  <Node position={core} color="#0ea5e9" label={getNodeLabel("coreQuestion", locale)} emphasis status="confirmed" hideLabel={hideNodeLabels} locale={locale} />
                 </RevealGroup>
                 <RevealGroup step={2} activeStep={visibleStep}>
-                  <Node position={conceptMatchA} color="#22c55e" label="Konzept (Match)" status="gesichert" hideLabel={hideNodeLabels} />
-                  <Node position={conceptMatchB} color="#22c55e" label="Konzept (Match)" status="gesichert" hideLabel={hideNodeLabels} />
+                  <Node position={conceptMatchA} color="#22c55e" label={getNodeLabel("conceptMatch", locale)} status="confirmed" hideLabel={hideNodeLabels} locale={locale} />
+                  <Node position={conceptMatchB} color="#22c55e" label={getNodeLabel("conceptMatch", locale)} status="confirmed" hideLabel={hideNodeLabels} locale={locale} />
                 </RevealGroup>
                 <RevealGroup step={3} activeStep={visibleStep}>
-                  <Node position={conceptHopA} color="#a78bfa" label="Konzept (Hop)" status="offen" hideLabel={hideNodeLabels} />
-                  <Node position={evidenceA} color="#f59e0b" label="Beleg" status="gesichert" hideLabel={hideNodeLabels} />
-                  <Node position={evidenceB} color="#f59e0b" label="Beleg" status="gesichert" hideLabel={hideNodeLabels} />
+                  <Node position={conceptHopA} color="#a78bfa" label={getNodeLabel("conceptHop", locale)} status="open" hideLabel={hideNodeLabels} locale={locale} />
+                  <Node position={evidenceA} color="#f59e0b" label={getNodeLabel("evidence", locale)} status="confirmed" hideLabel={hideNodeLabels} locale={locale} />
+                  <Node position={evidenceB} color="#f59e0b" label={getNodeLabel("evidence", locale)} status="confirmed" hideLabel={hideNodeLabels} locale={locale} />
                 </RevealGroup>
                 <RevealGroup step={4} activeStep={visibleStep}>
                   <PathEdge points={edgeCoreToMatchA} color="#22c55e" />
@@ -631,14 +732,14 @@ function ChapterScene({
             return (
               <>
                 <RevealGroup step={1} activeStep={visibleStep}>
-                  <Node position={question} color="#0ea5e9" label="Frage" status="gesichert" hideLabel={hideNodeLabels} />
+                  <Node position={question} color="#0ea5e9" label={getNodeLabel("question", locale)} status="confirmed" hideLabel={hideNodeLabels} locale={locale} />
                 </RevealGroup>
                 <RevealGroup step={2} activeStep={visibleStep}>
-                  <Node position={contextPackage} color="#22c55e" label="Kontextpaket" status="gesichert" hideLabel={hideNodeLabels} />
+                  <Node position={contextPackage} color="#22c55e" label={getNodeLabel("contextPackage", locale)} status="confirmed" hideLabel={hideNodeLabels} locale={locale} />
                 </RevealGroup>
                 <RevealGroup step={3} activeStep={visibleStep}>
-                  <Node position={evidence} color="#f59e0b" label="Beleg" status="gesichert" hideLabel={hideNodeLabels} />
-                  <Node position={answer} color="#06b6d4" label="Antwort" emphasis status="gesichert" hideLabel={hideNodeLabels} />
+                  <Node position={evidence} color="#f59e0b" label={getNodeLabel("evidence", locale)} status="confirmed" hideLabel={hideNodeLabels} locale={locale} />
+                  <Node position={answer} color="#06b6d4" label={getNodeLabel("answer", locale)} emphasis status="confirmed" hideLabel={hideNodeLabels} locale={locale} />
                 </RevealGroup>
                 <RevealGroup step={4} activeStep={visibleStep}>
                   <PathEdge points={mainA} color="#06b6d4" />
@@ -667,14 +768,14 @@ function ChapterScene({
             return (
               <>
                 <RevealGroup step={1} activeStep={visibleStep}>
-                  <Node position={answer} color="#06b6d4" label="Antwort" status="gesichert" hideLabel={hideNodeLabels} />
+                  <Node position={answer} color="#06b6d4" label={getNodeLabel("answer", locale)} status="confirmed" hideLabel={hideNodeLabels} locale={locale} />
                 </RevealGroup>
                 <RevealGroup step={2} activeStep={visibleStep}>
-                  <Node position={decision} color="#22c55e" label="Entscheidung" status="gesichert" hideLabel={hideNodeLabels} />
+                  <Node position={decision} color="#22c55e" label={getNodeLabel("decision", locale)} status="confirmed" hideLabel={hideNodeLabels} locale={locale} />
                 </RevealGroup>
                 <RevealGroup step={3} activeStep={visibleStep}>
-                  <Node position={measure} color="#f59e0b" label="Maßnahme" status="gesichert" hideLabel={hideNodeLabels} />
-                  <Node position={value} color="#0ea5e9" label="Mehrwert" emphasis status="offen" hideLabel={hideNodeLabels} />
+                  <Node position={measure} color="#f59e0b" label={getNodeLabel("measure", locale)} status="confirmed" hideLabel={hideNodeLabels} locale={locale} />
+                  <Node position={value} color="#0ea5e9" label={getNodeLabel("value", locale)} emphasis status="open" hideLabel={hideNodeLabels} locale={locale} />
                 </RevealGroup>
                 <RevealGroup step={4} activeStep={visibleStep}>
                   <PathEdge points={mainA} color="#0ea5e9" />
@@ -690,8 +791,9 @@ function ChapterScene({
   );
 }
 
-export function StoryChapterThreeVisual({ chapterId }: StoryChapterThreeVisualProps): React.JSX.Element {
+export function StoryChapterThreeVisual({ chapterId, locale }: StoryChapterThreeVisualProps): React.JSX.Element {
   const reducedMotion = useReducedMotion();
+  const copy = getStoryVisualCopy(locale);
   const [displayChapter, setDisplayChapter] = useState<StoryChapterId>(chapterId);
   const shot = SHOTS[displayChapter];
   const [isUserControlling, setIsUserControlling] = useState(false);
@@ -749,7 +851,7 @@ export function StoryChapterThreeVisual({ chapterId }: StoryChapterThreeVisualPr
       >
         <Suspense fallback={null}>
           <CameraDirector chapterId={displayChapter} reducedMotion={reducedMotion} locked={isUserControlling || introDone} />
-          <ChapterScene chapterId={displayChapter} reducedMotion={reducedMotion} hideNodeLabels={isCleanView} />
+          <ChapterScene chapterId={displayChapter} reducedMotion={reducedMotion} hideNodeLabels={isCleanView} locale={locale} />
         </Suspense>
 
         <OrbitControls
@@ -784,23 +886,23 @@ export function StoryChapterThreeVisual({ chapterId }: StoryChapterThreeVisualPr
       {!isCleanView ? (
         <>
           <div className="pointer-events-none absolute left-4 top-4 rounded-md border border-slate-200/60 bg-white/75 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-600 backdrop-blur-sm">
-            Shot: {shot.label}
+            {copy.shot}: {shot.label}
           </div>
           <div className="pointer-events-none absolute right-4 top-14 hidden rounded-md border border-slate-200/60 bg-white/75 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-600 backdrop-blur-sm sm:block sm:right-48 sm:top-4">
-            Build: Step-by-step
+            {copy.build}
           </div>
           <button
             type="button"
             onClick={handleResetView}
             className="absolute right-4 top-4 rounded-md border border-slate-300/80 bg-white/90 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-700 shadow-sm backdrop-blur-sm transition hover:bg-white sm:px-2.5 sm:text-[10px]"
           >
-            Reset View
+            {copy.resetView}
           </button>
           <aside className="pointer-events-none absolute bottom-14 left-3 rounded-md border border-slate-200/70 bg-white/85 px-2 py-1.5 text-[9px] text-slate-700 shadow-sm sm:bottom-4 sm:left-4 sm:px-2.5 sm:py-2 sm:text-[10px]">
-            <p className="font-semibold uppercase tracking-[0.08em] text-slate-500">Legende</p>
-            <p className="mt-1 flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />gesichert</p>
-            <p className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-slate-400" />offen</p>
-            <p className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-amber-500" />hypothese</p>
+            <p className="font-semibold uppercase tracking-[0.08em] text-slate-500">{copy.legend}</p>
+            <p className="mt-1 flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />{copy.confirmed}</p>
+            <p className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-slate-400" />{copy.open}</p>
+            <p className="flex items-center gap-1.5"><span className="h-1.5 w-1.5 rounded-full bg-amber-500" />{copy.hypothesis}</p>
           </aside>
         </>
       ) : null}
@@ -809,7 +911,7 @@ export function StoryChapterThreeVisual({ chapterId }: StoryChapterThreeVisualPr
         onClick={() => setIsCleanView((current) => !current)}
         className="absolute bottom-4 right-4 rounded-md border border-slate-300/80 bg-white/90 px-2 py-1 text-[9px] font-semibold uppercase tracking-[0.08em] text-slate-700 shadow-sm backdrop-blur-sm transition hover:bg-white sm:px-2.5 sm:text-[10px]"
       >
-        {isCleanView ? "Show UI" : "Clean View"}
+        {isCleanView ? copy.showUi : copy.cleanView}
       </button>
     </div>
   );

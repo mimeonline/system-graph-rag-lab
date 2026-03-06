@@ -1,8 +1,12 @@
 import type { QueryRequest } from "@/features/query/contracts";
 
+type NormalizedQueryRequest = Omit<QueryRequest, "locale"> & {
+  locale: "de" | "en";
+};
+
 type ParseSuccess = {
   ok: true;
-  data: QueryRequest;
+  data: NormalizedQueryRequest;
 };
 
 type ParseFailure = {
@@ -60,11 +64,20 @@ export function parseQueryRequest(input: unknown): ParseQueryRequestResult {
     };
   }
 
+  const locale = payload.locale;
+  if (locale !== undefined && locale !== "de" && locale !== "en") {
+    return {
+      ok: false,
+      message: "locale muss 'de' oder 'en' sein.",
+    };
+  }
+
   return {
     ok: true,
     data: {
       query: normalizedQuery,
       clientRequestId: clientRequestId as string | undefined,
+      locale: (locale as "de" | "en" | undefined) ?? "de",
     },
   };
 }
