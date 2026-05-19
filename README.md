@@ -10,7 +10,7 @@
   <a href="https://pnpm.io/"><img alt="pnpm" src="https://img.shields.io/badge/pnpm-workspace-F69220?style=for-the-badge&logo=pnpm&logoColor=white"></a>
   <a href="https://neo4j.com/"><img alt="Neo4j" src="https://img.shields.io/badge/Neo4j-Graph%20Backend-008CC1?style=for-the-badge&logo=neo4j&logoColor=white"></a>
   <a href="https://graphrag-lab.meierhoff-systems.de/"><img alt="Live Demo" src="https://img.shields.io/badge/Live-graphrag--lab.meierhoff--systems.de-0ea5e9?style=for-the-badge"></a>
-  <a href="https://github.com/mimeonline/system-graph-rag-lab/releases/tag/v1.0.0"><img alt="Release" src="https://img.shields.io/badge/Release-v1.0.0-0ea5e9?style=for-the-badge"></a>
+  <a href="https://github.com/mimeonline/system-graph-rag-lab/releases/latest"><img alt="Release" src="https://img.shields.io/github/v/release/mimeonline/system-graph-rag-lab?style=for-the-badge&color=0ea5e9"></a>
   <a href="./LICENSE"><img alt="License" src="https://img.shields.io/badge/License-MIT-0f172a?style=for-the-badge"></a>
 </p>
 
