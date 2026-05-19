@@ -1,5 +1,4 @@
 import type { MetadataRoute } from "next";
-import { SITE } from "@/config/site";
 import { defaultLocale, locales } from "@/i18n/config";
 import { getAllBlogPosts } from "@/features/blog/content";
 import { getAbsoluteUrl } from "@/lib/seo";
@@ -15,14 +14,6 @@ const STATIC_ROUTES = [
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
-  const rootEntry: MetadataRoute.Sitemap = [
-    {
-      url: SITE.url,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 1,
-    },
-  ];
 
   const staticEntries: MetadataRoute.Sitemap = locales.flatMap((locale) =>
     ["/", ...STATIC_ROUTES].map((route) => ({
@@ -60,5 +51,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  return [...rootEntry, ...staticEntries, ...postEntries];
+  return [...staticEntries, ...postEntries];
 }

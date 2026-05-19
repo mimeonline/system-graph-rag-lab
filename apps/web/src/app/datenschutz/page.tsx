@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 export default function DatenschutzPage(): never {
-  redirect("/de/datenschutz");
+  permanentRedirect("/de/datenschutz");
 }

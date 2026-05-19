@@ -13,7 +13,7 @@ export async function GET(): Promise<Response> {
 > Public GraphRAG showcase for system thinking, explainable decision support, and transparent retrieval traces.
 
 ## Canonical
-- ${SITE.url}
+- ${SITE.url}/de
 
 ## Important Pages
 - ${SITE.url}/de

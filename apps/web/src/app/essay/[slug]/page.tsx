@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 type EssayArticlePageProps = {
   params: Promise<{ slug: string }>;
@@ -6,5 +6,5 @@ type EssayArticlePageProps = {
 
 export default async function EssayArticlePage({ params }: EssayArticlePageProps): Promise<never> {
   const { slug } = await params;
-  redirect(`/de/essay/${slug}`);
+  permanentRedirect(`/de/essay/${slug}`);
 }

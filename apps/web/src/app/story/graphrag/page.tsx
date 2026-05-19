@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 export default function GraphRagStoryPage(): never {
-  redirect("/de/story/graphrag");
+  permanentRedirect("/de/story/graphrag");
 }

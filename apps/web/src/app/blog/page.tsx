@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 import { withCanonical } from "@/config/site";
 
 export const metadata: Metadata = {
   title: "Essay",
   description: "Legacy route redirect to the current essay index.",
   alternates: {
-    canonical: withCanonical("/essay"),
+    canonical: withCanonical("/de/essay"),
   },
   robots: {
     index: false,
@@ -15,5 +15,5 @@ export const metadata: Metadata = {
 };
 
 export default function BlogLegacyPage(): never {
-  redirect("/de/essay");
+  permanentRedirect("/de/essay");
 }

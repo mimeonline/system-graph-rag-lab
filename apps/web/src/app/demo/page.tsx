@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 export default function DemoPage(): never {
-  redirect("/de/demo");
+  permanentRedirect("/de/demo");
 }

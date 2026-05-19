@@ -1,5 +1,5 @@
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 
 export default function EssayPage(): never {
-  redirect("/de/essay");
+  permanentRedirect("/de/essay");
 }

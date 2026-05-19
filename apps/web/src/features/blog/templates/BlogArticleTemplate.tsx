@@ -128,7 +128,7 @@ export function BlogArticleTemplate({
   toc,
 }: BlogArticleTemplateProps): React.JSX.Element {
   const isEn = locale === "en";
-  const canonical = frontmatter.canonicalUrl ?? withCanonical(`/essay/${frontmatter.slug}`);
+  const canonical = frontmatter.canonicalUrl ?? withCanonical(`/${sourceLocale}/essay/${frontmatter.slug}`);
   const linkedInShare = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(canonical)}`;
   const xShare = `https://twitter.com/intent/tweet?url=${encodeURIComponent(canonical)}&text=${encodeURIComponent(frontmatter.title)}`;
   const publishedDate = new Intl.DateTimeFormat(isEn ? "en-US" : "de-DE", { timeZone: "UTC" }).format(new Date(frontmatter.publishedAt));

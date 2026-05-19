@@ -4,7 +4,7 @@ export const websiteJsonLd = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   name: SITE.name,
-  url: SITE.url,
+  url: `${SITE.url}/de`,
   inLanguage: "de",
   description: SITE.description,
 };

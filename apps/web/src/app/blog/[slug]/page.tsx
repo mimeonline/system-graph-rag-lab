@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { redirect } from "next/navigation";
+import { permanentRedirect } from "next/navigation";
 import { withCanonical } from "@/config/site";
 
 type BlogLegacyArticlePageProps = {
@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: BlogLegacyArticlePageProps): 
     title: "Essay",
     description: "Legacy article route redirect to the current essay URL.",
     alternates: {
-      canonical: withCanonical(`/essay/${slug}`),
+      canonical: withCanonical(`/de/essay/${slug}`),
     },
     robots: {
       index: false,
@@ -23,5 +23,5 @@ export async function generateMetadata({ params }: BlogLegacyArticlePageProps): 
 
 export default async function BlogLegacyArticlePage({ params }: BlogLegacyArticlePageProps): Promise<never> {
   const { slug } = await params;
-  redirect(`/de/essay/${slug}`);
+  permanentRedirect(`/de/essay/${slug}`);
 }

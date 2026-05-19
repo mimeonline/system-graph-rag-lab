@@ -2,6 +2,21 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.1.0] - 2026-05-19
+
+### Changed
+
+1. Upgraded the web Docker image and CI release workflows to Node 24 with pinned `pnpm@10.25.0`.
+2. Added explicit `packageManager` and runtime engine constraints for the Next.js web app.
+3. Converted root and legacy route handling to permanent canonical redirects for stronger indexing signals.
+4. Removed redirecting root URLs from the sitemap and aligned canonical discovery around localized `/de` and `/en` routes.
+5. Disabled automatic next-intl HTTP hreflang headers so canonical HTML metadata remains the single hreflang source.
+
+### Fixed
+
+1. Removed the legacy `/blog/` robots block so old blog URLs can consolidate into essay URLs.
+2. Localized essay share and structured data canonical URLs to avoid redirecting `/essay/...` references.
+
 ## [1.0.8] - 2026-03-06
 
 ### Fixed
