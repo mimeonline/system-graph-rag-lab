@@ -14,6 +14,10 @@ on:
         required: true
         type: string
 
+permissions:
+  contents: read
+  packages: read
+
 jobs:
   deploy:
     name: Deploy To VPS
@@ -37,10 +41,13 @@ jobs:
           SERVICE_NAME: app
           APP_IMAGE: ghcr.io/mimeonline/system-graph-rag-lab
           APP_IMAGE_TAG: ${{ inputs.image_tag }}
+          GHCR_USERNAME: ${{ github.actor }}
+          GHCR_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          ssh -o StrictHostKeyChecking=no "${SSH_USER}@${SSH_HOST}" \
+          printf '%s' "${GHCR_TOKEN}" | ssh -o StrictHostKeyChecking=no "${SSH_USER}@${SSH_HOST}" \
             "set -euo pipefail; \
+             docker login ghcr.io -u '${GHCR_USERNAME}' --password-stdin >/dev/null; \
              cd '${STACK_PATH}'; \
              APP_IMAGE='${APP_IMAGE}' APP_IMAGE_TAG='${APP_IMAGE_TAG}' docker compose -f '${COMPOSE_FILE}' pull '${SERVICE_NAME}'; \
              APP_IMAGE='${APP_IMAGE}' APP_IMAGE_TAG='${APP_IMAGE_TAG}' docker compose -f '${COMPOSE_FILE}' up -d '${SERVICE_NAME}'; \

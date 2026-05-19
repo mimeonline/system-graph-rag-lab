@@ -16,6 +16,7 @@ All notable changes to this project are documented in this file.
 
 1. Removed the legacy `/blog/` robots block so old blog URLs can consolidate into essay URLs.
 2. Localized essay share and structured data canonical URLs to avoid redirecting `/essay/...` references.
+3. Restored GHCR authentication on the production VPS before pulling release images.
 
 ## [1.0.8] - 2026-03-06
 
