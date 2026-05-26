@@ -161,19 +161,19 @@ export const DEMO_GRAPH_TYPES: DemoGraphType[] = [
     interactionLoop: [
       {
         title: "User",
-        body: "Beschreibt das KI-Feature, den EU-Bezug und die vermutete Rolle.",
+        body: "Wir bringen ein KI-Feature für Kreditbewertung auf den EU-Markt. Als Anbieter – welche Pflichten treffen uns vor dem Launch?",
       },
       {
         title: "Graph",
-        body: "Liefert passende Begriffe, Beziehungen, Pflichten und Artikelbelege.",
+        body: "KI-System →kann sein→ Hochrisiko [Anhang III, Nr. 5b] →löst aus→ Art. 9 Risikomanagement, Art. 10 Trainingsdaten, Art. 11 Techn. Dok., Art. 43 Konformitätsbewertung. Anbieter [Rolle] →trägt→ alle vier Pflichten.",
       },
       {
         title: "LLM",
-        body: "Verdichtet den Graphpfad zu einer verständlichen, prüfbaren Erklärung.",
+        body: "Kreditscoring fällt unter Anhang III als Hochrisiko-KI. Als Anbieter hast du vier Kernpflichten vor dem Launch: Risikomanagement aufbauen, Trainingsdaten dokumentieren, technische Dokumentation erstellen, Konformitätsbewertung abschließen. Offene Frage: Entwickelt ihr das Modell selbst oder setzt ihr ein Drittmodell ein?",
       },
       {
         title: "User",
-        body: "Korrigiert Rollen oder Scope, wodurch der Graphpfad neu ausgewählt wird.",
+        body: "Wir fine-tunen eigentlich ein Open-Source-Modell. Zählen wir dann immer noch als Anbieter?",
       },
     ],
     promptPackage: [
@@ -186,33 +186,33 @@ export const DEMO_GRAPH_TYPES: DemoGraphType[] = [
     machineRoomTrace: [
       {
         actor: "User",
-        title: "Frage stellt Bedeutung in den Vordergrund",
+        title: "Frage ohne Rollenklärung",
         message: "Welche AI-Act-Pflichten berühren unseren geplanten Launch?",
-        artifact: "Unklare Begriffe: KI-System, Anbieterrolle, Hochrisiko, Pflicht.",
+        artifact: "Ambig: 'wir' = Rolle unbekannt. Risikoklasse nicht bestimmt.",
       },
       {
         actor: "System",
-        title: "Intent wird semantisch normalisiert",
-        message: "Ich suche nicht zuerst Textstellen, sondern Begriffe und Rollen, die diese Frage tragen.",
-        artifact: "Intent: Begriffsklärung plus Pflichtenableitung.",
+        title: "Begriffsklärung vor Pflichtenableitung",
+        message: "Normalisierung: 'Launch' → KI-System-Deployment. 'Wir' → Rolle offen, Hypothese Anbieter. Suche über Begriffsknoten, nicht Volltext.",
+        artifact: "Intent: semantische Normalisierung + Rollenklärung erforderlich",
       },
       {
         actor: "Graph",
-        title: "Begriffspfad wird geladen",
-        message: "Passende Knoten: KI-System -> Risikoklasse -> Anbieter -> Pflicht -> Artikelbeleg.",
-        artifact: "Pfad: KI-System kann Hochrisiko sein, Hochrisiko löst Pflichten aus.",
+        title: "Begriffspfad mit offenen Knoten",
+        message: "KI-System →kann sein→ Hochrisiko [Anhang III] →löst aus→ Art. 43. Anbieter →trägt→ Art. 9, 10, 11, 43. Betreiber →trägt→ Art. 26. Offene Knoten: Rolle, Risikoklasse.",
+        artifact: "2 Unbekannte blockieren Pflichtenableitung: Rolle + Risikoklasse",
       },
       {
         actor: "LLM",
-        title: "Kontextpaket wird begrenzt",
-        message: "Ich bekomme Definitionen, Rollenbeziehungen und Beleganker. Ich entscheide keine unklare Rolle selbst.",
-        artifact: "Prompt-Regel: Unsicherheit zur Rolle explizit nennen.",
+        title: "Prompt-Constraint: keine Rollenannahme",
+        message: "Kontext erhalten: beide Rollenpfade im Graph. Anweisung: Rollenambiguität explizit machen, nicht selbst entscheiden. Antwort muss beide Pfade benennen.",
+        artifact: "Constraint aktiv: keine Annahme ohne Nutzerbestätigung",
       },
       {
         actor: "LLM",
-        title: "Antwort erklärt den Begriffspfad",
-        message: "Vorläufig relevant sind Pflichten, die aus Rolle und Risikoklasse folgen. Kläre zuerst Anbieter/Betreiber und Risikoklasse.",
-        artifact: "Whitebox-Antwort: Begriff -> Beziehung -> Pflicht -> Beleg.",
+        title: "Zwei Pflichtenpfade, eine offene Frage",
+        message: "Ich sehe zwei mögliche Pfade: Anbieter (Art. 9, 10, 11, 43) oder Betreiber (Art. 26). Hochrisiko-KI wie Kreditscoring aktiviert beide. Klärt zuerst: Entwickelt ihr das Modell oder setzt ihr es ein?",
+        artifact: "Whitebox: Hochrisiko → Anbieter [4 Pflichten] oder Betreiber [1 Pflicht]",
       },
     ],
     nodes: [
@@ -335,19 +335,19 @@ export const DEMO_GRAPH_TYPES: DemoGraphType[] = [
     interactionLoop: [
       {
         title: "User",
-        body: "Beschreibt Produkt, Markt und geplante Freigabe.",
+        body: "Wir wollen unser Scoring-Feature nächsten Monat in Frankreich launchen. Product ist bereit, Legal noch nicht. Können wir trotzdem starten?",
       },
       {
         title: "Graph",
-        body: "Ordnet Feature, Rollen, Kontrollen und Freigabestatus in der Domäne ein.",
+        body: "KI-Feature [EU-Markt Frankreich] →fordert→ 5 Kontrollen. Status: 3/5 abgeschlossen. Fehlend: Risikobewertung [nicht gestartet], Legal-Freigabe [ausstehend]. Product Owner →verantwortet→ Engineering-Check [erledigt].",
       },
       {
         title: "LLM",
-        body: "Formuliert eine entscheidungsfähige Zusammenfassung mit Lücken und To-dos.",
+        body: "Zwei Blocker: Risikobewertung fehlt komplett, Legal hat nicht freigegeben. Bei Hochrisiko-KI sind das keine optionalen Schritte. Mein Vorschlag: Hold. Was fehlt Legal konkret, damit die Freigabe möglich wird?",
       },
       {
         title: "User",
-        body: "Ergänzt fehlende Kontrollen oder ändert den Launch-Scope.",
+        body: "Legal wartet auf die technische Dokumentation von Engineering. Die soll nächste Woche fertig sein.",
       },
     ],
     promptPackage: [
@@ -360,33 +360,33 @@ export const DEMO_GRAPH_TYPES: DemoGraphType[] = [
     machineRoomTrace: [
       {
         actor: "User",
-        title: "Frage stellt die Business-Entscheidung",
+        title: "Freigabefrage mit unvollständigem Kontext",
         message: "Dürfen wir dieses KI-Feature für EU-Kunden freigeben?",
-        artifact: "Benötigt: Feature, Markt, Verantwortliche, Kontrollen, Freigabestatus.",
+        artifact: "Benötigt: Feature-Details, Markt, Verantwortliche, Kontrollstatus",
       },
       {
         actor: "System",
-        title: "Intent wird als Domänenentscheidung erkannt",
-        message: "Ich suche nach Geschäftsobjekten und Verantwortlichkeiten, nicht nur nach Gesetzesabschnitten.",
-        artifact: "Intent: Launch-Governance und Kontrollreife.",
+        title: "Keine Rechtsfrage – Governance-Entscheidung",
+        message: "Mapping: 'dürfen' → Freigabe-Status prüfen. Suche: Domänenpfad Feature → Markt → Kontrollen → Go/Hold, nicht Gesetzesauslegung.",
+        artifact: "Intent: Launch-Governance, nicht Rechtsberatung",
       },
       {
         actor: "Graph",
-        title: "Fachliche Abhängigkeiten werden gezogen",
-        message: "Feature hängt am EU-Markt, Kontrollen hängen an Verantwortlichen, Freigabe hängt am Kontrollstatus.",
-        artifact: "Domänenpfad: Feature -> Markt -> Kontrolle -> Go/Hold/No-Go.",
+        title: "Kontrollstatus aus dem Domänenmodell",
+        message: "KI-Feature →für→ EU-Markt →fordert→ 5 Kontrollen. Abgeschlossen: 3/5. Offen: Risikoklassifizierung [nicht gestartet], Legal-Freigabe [ausstehend]. Product Owner →verantwortet→ Engineering-Check [erledigt].",
+        artifact: "Domänenpfad: Feature → Markt → Kontrolle → Hold (2 Blocker offen)",
       },
       {
         actor: "LLM",
-        title: "Lücken werden sichtbar",
-        message: "Ich sehe, welche Kontrollen fehlen und welche Rolle noch ungeklärt ist.",
-        artifact: "Prompt-Regel: fehlende Angaben als Blocker markieren.",
+        title: "Blocker identifizieren, nicht urteilen",
+        message: "Kontext: Kontrollstatus mit zwei offenen Blockern. Anweisung: Governance-Zustand beschreiben, keine Rechtsmeinung, fehlende Angaben als Blocker kennzeichnen.",
+        artifact: "Prompt-Constraint: Empfehlung, keine Rechtsmeinung",
       },
       {
         actor: "LLM",
-        title: "Antwort wird entscheidungsfähig",
-        message: "Aktueller Vorschlag: Hold, bis Risikoklasse, Rollen und Kontrollnachweise geklärt sind.",
-        artifact: "Whitebox-Antwort: Status, Risiko, Owner, nächste Kontrolle.",
+        title: "Hold mit konkreten nächsten Schritten",
+        message: "Ich empfehle Hold. Zwei Blocker: Risikoklassifizierung fehlt, Legal steht aus. Beides nicht optional bei Hochrisiko-KI im EU-Markt. Nächste Schritte: Wer startet die Risikoklassifizierung? Was fehlt Legal noch?",
+        artifact: "Whitebox: 3/5 Kontrollen grün → Hold, 2 Blocker sichtbar",
       },
     ],
     nodes: [
@@ -509,19 +509,19 @@ export const DEMO_GRAPH_TYPES: DemoGraphType[] = [
     interactionLoop: [
       {
         title: "User",
-        body: "Fragt nach Belegen oder nach einem Abschnitt des Gesetzes.",
+        body: "Auf welche Artikel stütze ich mich, wenn ich sagen will, dass unser Kreditscoring-System eine Konformitätsbewertung braucht?",
       },
       {
         title: "Graph",
-        body: "Findet Artikel, Absätze, Claims und verwandte Textstellen.",
+        body: "EU AI Act →enthält→ Art. 43 [Konformitätsbewertung, Abs. 1–3] ←stützt← Anhang III Nr. 5b [Kreditwürdigkeit = Hochrisiko]. Erwägungsgrund 48 [Kontext]. Art. 9 →verweist auf→ Art. 43.",
       },
       {
         title: "LLM",
-        body: "Erklärt die Fundstellen und baut daraus eine Antwort mit Quellenhinweis.",
+        body: "Die Pflicht kommt aus Art. 43 Abs. 1, die Grundlage ist Anhang III Nr. 5b – Kreditwürdigkeitsprüfungen stehen dort ausdrücklich. Erwägungsgrund 48 liefert Kontext, ist aber keine Rechtsgrundlage. Wichtig: Anhang III klassifiziert, Art. 43 verpflichtet – ihr braucht beides.",
       },
       {
         title: "User",
-        body: "Fordert eine engere, andere oder stärker belegte Antwort an.",
+        body: "Gibt es Textstellen, die genauer definieren, ab wann ein System wirklich unter Anhang III fällt?",
       },
     ],
     promptPackage: [
@@ -534,33 +534,33 @@ export const DEMO_GRAPH_TYPES: DemoGraphType[] = [
     machineRoomTrace: [
       {
         actor: "User",
-        title: "Frage verlangt Fundstellen",
-        message: "Welche Textstellen stützen die Antwort zur Launch-Freigabe?",
-        artifact: "Benötigt: Artikel, Absatz, Claim, Quelle.",
+        title: "Belegfrage für eine konkrete Pflicht",
+        message: "Welche Textstellen stützen die Aussage, dass wir eine Konformitätsbewertung brauchen?",
+        artifact: "Benötigt: Artikel, Absatz, Claim mit Belegbezug",
       },
       {
         actor: "System",
-        title: "Intent wird als Quellenfrage erkannt",
-        message: "Ich suche zuerst im Dokumentnetz und halte Beleg und Interpretation getrennt.",
-        artifact: "Intent: belegorientiertes Retrieval.",
+        title: "Quellenfrage – Beleg vor Deutung",
+        message: "Vorgehen: Dokumentnetz traversieren, Claims mit Fundstelle laden. Keine Interpretation ohne Quellenanker.",
+        artifact: "Intent: zitierfähiges Retrieval, Beleg und Einordnung trennen",
       },
       {
         actor: "Graph",
-        title: "Dokumentstruktur wird traversiert",
-        message: "EU AI Act -> Kapitel -> Artikel -> Absatz -> Claim -> Antwortbaustein.",
-        artifact: "Dokumentpfad: Quelle enthält Artikel, Artikel stützt Claim.",
+        title: "Dokumentpfad über zwei Knoten",
+        message: "EU AI Act →enthält→ Art. 43 Abs. 1 [Claim: 'Anbieter müssen vor Inverkehrbringen Konformitätsbewertung durchführen']. Anhang III Nr. 5b [Claim: 'Kreditwürdigkeitsprüfung = Hochrisiko']. Erwägungsgrund 48 [Kontext, keine Rechtsgrundlage].",
+        artifact: "Dokumentpfad: Anhang III → Klassifizierung → Art. 43 → Pflicht",
       },
       {
         actor: "LLM",
-        title: "Claims werden kontextualisiert",
-        message: "Ich bekomme ausgewählte Claims mit Fundstelle. Ich darf nicht aus einem Claim eine umfassende Wahrheit machen.",
-        artifact: "Prompt-Regel: Zitatnähe und Interpretation trennen.",
+        title: "Zitatnähe halten, Deutung markieren",
+        message: "Claims mit Fundstelle empfangen. Anweisung: Beleg und Interpretation trennen. Nur aus vorliegenden Dokumentknoten zitieren. Über den Dokumentinhalt hinausgehende Aussagen kennzeichnen.",
+        artifact: "Prompt-Constraint: Claim, Fundstelle und Einordnung getrennt ausgeben",
       },
       {
         actor: "LLM",
-        title: "Antwort bleibt zitierfähig",
-        message: "Die Antwort sagt, welche Aussage auf welcher Textstelle beruht und wo noch fachliche Einordnung fehlt.",
-        artifact: "Whitebox-Antwort: Fundstelle -> Claim -> Einordnung.",
+        title: "Zitierfähige Antwort mit Quellenangabe",
+        message: "Art. 43 Abs. 1 verpflichtet explizit zur Konformitätsbewertung vor Markteinführung. Grundlage: Anhang III Nr. 5b klassifiziert Kreditwürdigkeit als Hochrisiko. Erwägungsgrund 48 liefert Kontext, ist aber keine Rechtsgrundlage – das ist ein wichtiger Unterschied.",
+        artifact: "Whitebox: Anhang III → Klassifizierung → Art. 43 → Pflicht, mit Zitat",
       },
     ],
     nodes: [
@@ -683,19 +683,19 @@ export const DEMO_GRAPH_TYPES: DemoGraphType[] = [
     interactionLoop: [
       {
         title: "User",
-        body: "Stellt eine Folgefrage oder korrigiert eine Annahme.",
+        body: "Wir haben letzte Woche geklärt, dass wir Anbieter sind. Welche Pflicht ist jetzt die dringendste vor unserem August-Launch?",
       },
       {
         title: "Graph",
-        body: "Sucht bestätigte Ziele, offene Punkte und Korrekturen der Session.",
+        body: "Session-Kontext: Anbieter [bestätigt, Turn 3], Hochrisiko [bestätigt, Turn 5]. Offen: Konformitätsbewertung [nicht gestartet], Techn. Dok. [in Arbeit]. Launch-Datum: August.",
       },
       {
         title: "LLM",
-        body: "Antwortet unter Berücksichtigung des aktuellen Gesprächszustands.",
+        body: "Auf Basis der bestätigten Anbieter-Rolle und Hochrisiko-Einstufung: Die dringendste Pflicht ist die Konformitätsbewertung nach Art. 43 – sie muss vor Inverkehrbringen abgeschlossen sein. Ist bis August realistisch?",
       },
       {
         title: "User",
-        body: "Bestätigt, verwirft oder ergänzt den entstandenen Kontext.",
+        body: "Die Konformitätsbewertung ist gerade gestartet, braucht noch 6 Wochen. August wäre knapp – was, wenn wir den Launch verschieben?",
       },
     ],
     promptPackage: [
@@ -708,33 +708,33 @@ export const DEMO_GRAPH_TYPES: DemoGraphType[] = [
     machineRoomTrace: [
       {
         actor: "User",
-        title: "Folgefrage nutzt bisherigen Kontext",
+        title: "Folgefrage baut auf Vorwissen auf",
         message: "Was haben wir zur Launch-Entscheidung schon geklärt?",
-        artifact: "Benötigt: Ziele, bestätigte Annahmen, offene Punkte, Korrekturen.",
+        artifact: "Benötigt: Gesprächshistorie, bestätigte Annahmen, Korrekturen, offene Punkte",
       },
       {
         actor: "System",
-        title: "Intent wird als Memory-Frage erkannt",
-        message: "Ich suche nicht nur Fakten, sondern Gesprächszustand und Vertrauensstatus.",
-        artifact: "Intent: Session-Kontext und offene Entscheidungen.",
+        title: "Memory-Abfrage, kein Neustart",
+        message: "Folgefrage erkannt. Gesprächszustand laden, Vertrauensstatus prüfen. Nicht nur letzten Turn, sondern Session-Verlauf auswerten.",
+        artifact: "Intent: Gesprächsstand zusammenfassen, nicht neu beginnen",
       },
       {
         actor: "Graph",
-        title: "Memory wird gefiltert",
-        message: "Bestätigte Annahmen werden geladen, korrigierte Aussagen bleiben sichtbar, offene Fragen blockieren die Antwort.",
-        artifact: "Memory-Pfad: Ziel -> Annahme -> Korrektur -> offene Frage.",
+        title: "Memory mit Vertrauensstatus",
+        message: "Anbieter-Rolle [bestätigt, Turn 3]. Hochrisiko-KI [bestätigt, Turn 5]. Risikoklasse [korrigiert: zunächst 'unklar', ab Turn 7 'Hochrisiko']. Offene Punkte: Verantwortliche für Art. 9 [nicht bestätigt], Konformitätsbewertung-Timing [offen].",
+        artifact: "Memory: 2 bestätigt, 1 korrigiert, 2 offen – Korrekturen bleiben sichtbar",
       },
       {
         actor: "LLM",
-        title: "Kontext wird nicht blind geglaubt",
-        message: "Ich darf nur bestätigte Annahmen als Grundlage verwenden und muss unsichere Memory-Einträge markieren.",
-        artifact: "Prompt-Regel: Memory mit Status ausgeben.",
+        title: "Nur bestätigte Einträge als Grundlage",
+        message: "Memory-Kontext empfangen. Anweisung: nur bestätigte Annahmen als Grundlage nutzen. Korrekturen explizit nennen. Offene Punkte als Blocker markieren, nicht raten.",
+        artifact: "Prompt-Constraint: Memory-Status sichtbar machen",
       },
       {
         actor: "LLM",
-        title: "Antwort führt das Gespräch weiter",
-        message: "Geklärt ist der EU-Bezug. Offen bleiben Risikoklasse und Verantwortlichkeit. Nächster Schritt: Rollenklärung.",
-        artifact: "Whitebox-Antwort: geklärt, offen, korrigiert, nächster Schritt.",
+        title: "Stand mit Korrekturen sichtbar gemacht",
+        message: "Bisher gesichert: Ihr seid Anbieter, Hochrisiko steht (nach Korrektur aus Turn 7). Offen: Wer verantwortet Art. 9 Risikomanagement? Wann startet die Konformitätsbewertung? Das sind die zwei verbleibenden Blocker für den Launch.",
+        artifact: "Whitebox: 2 bestätigt, 2 offen, 1 Korrektur explizit",
       },
     ],
     nodes: [
@@ -857,19 +857,19 @@ export const DEMO_GRAPH_TYPES: DemoGraphType[] = [
     interactionLoop: [
       {
         title: "User",
-        body: "Nennt Stichtag, Launch-Termin oder gewünschte Perspektive.",
+        body: "Wir launchen Ende Juli 2026. Was gilt zu dem Zeitpunkt, und was ändert sich dann im August?",
       },
       {
         title: "Graph",
-        body: "Liefert gültige Zustände, Versionen, Fristen und Änderungsereignisse.",
+        body: "Juli 2026: Übergangsfrist für Hochrisiko-KI noch aktiv. August 2026: Art. 9, 10, 11, 43 vollständig wirksam [Frist: 12.08.2026]. Version: EU AI Act 2024/1689 [aktuell].",
       },
       {
         title: "LLM",
-        body: "Erklärt aktuelle und künftige Relevanz getrennt.",
+        body: "Ein Juli-Launch liegt 3 Wochen vor der Frist. Formell möglich, aber: Die Konformitätsbewertung muss bis August abgeschlossen sein. Wenn sie dann noch läuft, bringt ihr ein nicht-konformes System in Verkehr. Habt ihr August als harten Meilenstein im Plan?",
       },
       {
         title: "User",
-        body: "Passt den Zeitplan oder fragt nach einer anderen Frist.",
+        body: "August 2026 war uns nicht bewusst. Können wir den Launch auf September verschieben und die Bewertung parallel abschließen?",
       },
     ],
     promptPackage: [
@@ -882,33 +882,33 @@ export const DEMO_GRAPH_TYPES: DemoGraphType[] = [
     machineRoomTrace: [
       {
         actor: "User",
-        title: "Frage setzt einen Zeitbezug",
-        message: "Was gilt heute, was gilt später, und was ändert unsere Launch-Planung?",
-        artifact: "Benötigt: Stichtag, Launch-Termin, Version, Frist.",
+        title: "Zeitfrage ohne Stichtag",
+        message: "Was gilt heute, was gilt später, und was ändert das für unsere Launch-Planung?",
+        artifact: "Benötigt: Stichtag, Launch-Termin, Version, aktueller und zukünftiger Status",
       },
       {
         actor: "System",
-        title: "Intent wird als Gültigkeitsfrage erkannt",
-        message: "Ich muss zuerst klären, für welchen Zeitpunkt die Antwort gelten soll.",
-        artifact: "Intent: Zustand heute vs. Zustand später.",
+        title: "Zwei Stichtage – heute und August 2026",
+        message: "Zeitfrage erkannt. Stichtage: heute (Mai 2026) und August 2026. Vorgehen: aktuellen Status laden, dann Änderungsereignisse auswerten. Version prüfen.",
+        artifact: "Intent: temporale Differenz, nicht nur aktueller Stand",
       },
       {
         actor: "Graph",
-        title: "Zeitpfad wird berechnet",
-        message: "Heute, Frist, Version und Status werden verbunden. Historie wird nicht überschrieben.",
-        artifact: "Zeitpfad: Version -> gilt ab -> Status -> Launch-Plan.",
+        title: "Zeitpfad mit Änderungsereignis",
+        message: "Heute [Mai 2026]: AI Act in Kraft, Übergangsfrist für Hochrisiko-Pflichten läuft. August 2026: Art. 9, 10, 11, 43 vollständig wirksam [Ereignis: 12.08.2026]. Version 2024/1689 [aktuell, keine Änderung bekannt].",
+        artifact: "Zeitpfad: heute → Übergangsfrist → 12.08.2026 → volle Pflichtenwirkung",
       },
       {
         actor: "LLM",
-        title: "Antwort wird temporal begrenzt",
-        message: "Ich trenne aktuelle Aussage, spätere Änderung und Planungsimplikation.",
-        artifact: "Prompt-Regel: Jede Aussage braucht Zeitbezug.",
+        title: "Zeitbezug in jeder Aussage",
+        message: "Zeitkontext empfangen. Anweisung: aktuelle und zukünftige Aussagen trennen. Planungskonsequenz explizit machen. Jede Aussage mit Zeitbezug versehen.",
+        artifact: "Prompt-Constraint: Zeitbezug sichtbar, heute ≠ August 2026",
       },
       {
         actor: "LLM",
-        title: "Antwort zeigt den Planungshebel",
-        message: "Heute ist die Entscheidung vorläufig. Spätere Fristen erzeugen konkrete Meilensteine im Launch-Plan.",
-        artifact: "Whitebox-Antwort: heute, später, Änderung, Plan.",
+        title: "Übergangsfrist als Planungshebel",
+        message: "Heute läuft die Übergangsfrist – Hochrisiko-Pflichten greifen noch nicht vollständig. Ab 12. August 2026 ändern sich Art. 9, 10, 11, 43. Das bedeutet: Launch heute ist möglich, aber die Konformitätsbewertung muss bis August abgeschlossen sein. Baut das als harten Meilenstein ein.",
+        artifact: "Whitebox: heute = Übergangsfrist aktiv, 12.08.2026 = volle Pflichtenwirkung",
       },
     ],
     nodes: [
