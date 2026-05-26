@@ -1,11 +1,12 @@
 "use client";
 
-import { Menu, X } from "lucide-react";
+import { ChevronDown, Menu, X } from "lucide-react";
 import { useState } from "react";
 import { TrackedLink } from "@/components/molecules/tracked-link";
 import { useLocale, useTranslations } from "next-intl";
 import type { AppLocale } from "@/i18n/config";
 import { usePathname } from "@/i18n/navigation";
+import { DEMO_GRAPH_TYPES } from "@/features/demo/graph-type-learning-model";
 
 const NAV_LINKS = [
   { labelKey: "home", href: "/" },
@@ -13,6 +14,14 @@ const NAV_LINKS = [
   { labelKey: "story", href: "/story/graphrag" },
   { labelKey: "essay", href: "/essay" },
 ] as const;
+
+function isActivePath(pathname: string, href: string): boolean {
+  if (href === "/") {
+    return pathname === href;
+  }
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
 
 export function SiteHeader(): React.JSX.Element {
   const tNav = useTranslations("Navigation");
@@ -50,7 +59,56 @@ export function SiteHeader(): React.JSX.Element {
             aria-label={tHeader("navigationLabel")}
           >
             {NAV_LINKS.map((link) => {
-              const isActive = pathname === link.href;
+              const isActive = isActivePath(pathname, link.href);
+              if (link.labelKey === "demo") {
+                return (
+                  <div key={link.href} className="group relative">
+                    <TrackedLink
+                      href={link.href}
+                      label={tNav(link.labelKey)}
+                      eventName="nav_click"
+                      payload={{ href: link.href }}
+                      className={`inline-flex items-center justify-center gap-1 rounded-md px-3 py-1.5 text-center transition ${
+                        isActive
+                          ? "bg-white/20 text-white"
+                          : "text-slate-100 hover:bg-white/10"
+                      }`}
+                    >
+                      <span>{tNav(link.labelKey)}</span>
+                      <ChevronDown className="h-3.5 w-3.5 text-white/70" aria-hidden />
+                    </TrackedLink>
+                    <div className="invisible absolute left-0 top-full z-50 w-72 pt-2 opacity-0 transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                      <div className="rounded-2xl border border-white/10 bg-[#102b54] p-2 shadow-xl shadow-slate-950/25">
+                        <TrackedLink
+                          href="/demo"
+                          label={locale === "en" ? "Overview" : "Übersicht"}
+                          eventName="nav_demo_sub_click"
+                          payload={{ href: "/demo" }}
+                          className="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-100 transition hover:bg-white/10"
+                        />
+                        {DEMO_GRAPH_TYPES.map((type) => (
+                          <TrackedLink
+                            key={type.id}
+                            href={`/demo/${type.slug}`}
+                            label={type.title}
+                            eventName="nav_demo_sub_click"
+                            payload={{ href: `/demo/${type.slug}` }}
+                            className="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-100 transition hover:bg-white/10"
+                          />
+                        ))}
+                        <TrackedLink
+                          href="/demo/live"
+                          label={locale === "en" ? "Live mode" : "Live-Modus"}
+                          eventName="nav_demo_sub_click"
+                          payload={{ href: "/demo/live" }}
+                          className="mt-1 block rounded-xl border-t border-white/10 px-3 py-2.5 text-sm font-semibold text-slate-100 transition hover:bg-white/10"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                );
+              }
+
               return (
                 <TrackedLink
                   key={link.href}
@@ -126,8 +184,8 @@ export function SiteHeader(): React.JSX.Element {
               )}
             </div>
             {NAV_LINKS.map((link) => {
-              const isActive = pathname === link.href;
-              return (
+              const isActive = isActivePath(pathname, link.href);
+              const primaryLink = (
                 <TrackedLink
                   key={link.href}
                   href={link.href}
@@ -135,12 +193,43 @@ export function SiteHeader(): React.JSX.Element {
                   eventName="nav_click"
                   payload={{ href: link.href }}
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className={`inline-flex min-h-11 items-center justify-center rounded-md px-4 py-3 text-sm font-medium text-center transition ${
+                  className={`inline-flex min-h-11 items-center justify-center rounded-md px-4 py-3 text-center text-sm font-medium transition ${
                     isActive
                       ? "bg-white/20 text-white"
                       : "bg-white/5 text-slate-100 hover:bg-white/10"
                   }`}
                 />
+              );
+
+              if (link.labelKey !== "demo") {
+                return primaryLink;
+              }
+
+              return (
+                <div key={link.href} className="grid gap-2">
+                  {primaryLink}
+                  <div className="grid gap-1 rounded-xl bg-white/5 p-2">
+                    {DEMO_GRAPH_TYPES.map((type) => (
+                      <TrackedLink
+                        key={type.id}
+                        href={`/demo/${type.slug}`}
+                        label={type.title}
+                        eventName="nav_demo_sub_click"
+                        payload={{ href: `/demo/${type.slug}`, surface: "mobile" }}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        className="inline-flex min-h-10 items-center rounded-lg px-3 text-sm font-medium text-slate-100 transition hover:bg-white/10"
+                      />
+                    ))}
+                    <TrackedLink
+                      href="/demo/live"
+                      label={locale === "en" ? "Live mode" : "Live-Modus"}
+                      eventName="nav_demo_sub_click"
+                      payload={{ href: "/demo/live", surface: "mobile" }}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="inline-flex min-h-10 items-center rounded-lg px-3 text-sm font-medium text-slate-100 transition hover:bg-white/10"
+                    />
+                  </div>
+                </div>
               );
             })}
           </nav>

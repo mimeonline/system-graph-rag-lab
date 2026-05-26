@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { HomeDemoTemplate } from "@/features/demo/templates/HomeDemoTemplate";
+import { DemoOverviewTemplate } from "@/features/demo/templates/DemoOverviewTemplate";
 import { buildLocalizedMetadata } from "@/lib/seo";
 
 type DemoPageProps = {
@@ -12,16 +12,16 @@ export async function generateMetadata({ params }: DemoPageProps): Promise<Metad
   return buildLocalizedMetadata({
     locale,
     pathname: "/demo",
-    title: locale === "en" ? "GraphRAG demo" : "GraphRAG Demo",
+    title: locale === "en" ? "EU AI Act GraphRAG learning mode" : "EU-AI-Act-GraphRAG-Lernmodus",
     description:
       locale === "en"
-        ? "Interactive GraphRAG demo: ask a question, inspect the graph reasoning, review evidence, and derive next steps."
-        : "Interaktive GraphRAG-Demo: Frage stellen, Graph-Herleitung sehen, Belege prüfen und nächste Schritte ableiten.",
+        ? "Overview of five simulated GraphRAG graph types for an EU AI Act launch decision."
+        : "Übersicht über fünf simulierte GraphRAG-Graph-Typen anhand einer EU-AI-Act-Launch-Entscheidung.",
   });
 }
 
 export default async function DemoPage({ params }: DemoPageProps): Promise<React.JSX.Element> {
   const { locale } = await params;
 
-  return <HomeDemoTemplate locale={locale} />;
+  return <DemoOverviewTemplate locale={locale} />;
 }
