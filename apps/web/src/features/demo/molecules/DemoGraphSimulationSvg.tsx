@@ -121,14 +121,13 @@ export function DemoGraphSimulationSvg({ graphType }: DemoGraphSimulationSvgProp
         opacity="0.6"
       />
 
-      {/* Edges */}
+      {/* Pass 1: edge lines + packets (rendered below nodes) */}
       {graphType.edges.map((edge) => {
         const s = nodeById.get(edge.source);
         const t = nodeById.get(edge.target);
         if (!s || !t) return null;
         const isActive = activeEdgeIds.has(edge.id);
-        const { x1, y1, x2, y2, midX, midY } = edgeLine(s, t);
-        const labelLen = edge.label.length * 6.5 + 10;
+        const { x1, y1, x2, y2 } = edgeLine(s, t);
 
         return (
           <g key={edge.id}>
@@ -143,32 +142,6 @@ export function DemoGraphSimulationSvg({ graphType }: DemoGraphSimulationSvgProp
               }}
               transition={{ duration: 0.4 }}
             />
-
-            {/* Edge label with white pill */}
-            <motion.g animate={{ opacity: isActive ? 1 : 0 }} transition={{ duration: 0.3, delay: 0.1 }}>
-              <rect
-                x={midX - labelLen / 2} y={midY - 10}
-                width={labelLen} height={14}
-                rx={5}
-                fill="white"
-                stroke="#e2e8f0"
-                strokeWidth="1"
-              />
-              <text
-                x={midX} y={midY}
-                textAnchor="middle"
-                dominantBaseline="middle"
-                fontSize="8.5"
-                fontWeight="700"
-                fontFamily="system-ui,sans-serif"
-                fill="#64748b"
-                style={{ textTransform: "uppercase", letterSpacing: "0.08em" }}
-              >
-                {edge.label}
-              </text>
-            </motion.g>
-
-            {/* Traveling packet dot — uses transform, not cx/cy animation */}
             {isActive && (
               <motion.g
                 animate={{ x: [0, x2 - x1], y: [0, y2 - y1], opacity: [0, 1, 1, 0] }}
@@ -244,6 +217,34 @@ export function DemoGraphSimulationSvg({ graphType }: DemoGraphSimulationSvgProp
                 {line1}
               </text>
             )}
+          </motion.g>
+        );
+      })}
+
+      {/* Pass 3: edge labels (rendered above nodes so they're never overlapped) */}
+      {graphType.edges.map((edge) => {
+        const s = nodeById.get(edge.source);
+        const t = nodeById.get(edge.target);
+        if (!s || !t) return null;
+        const isActive = activeEdgeIds.has(edge.id);
+        const { midX, midY } = edgeLine(s, t);
+        const labelLen = edge.label.length * 6.5 + 14;
+
+        return (
+          <motion.g key={`label-${edge.id}`} animate={{ opacity: isActive ? 1 : 0 }} transition={{ duration: 0.3, delay: 0.15 }}>
+            <rect x={midX - labelLen / 2} y={midY - 10} width={labelLen} height={15} rx={5} fill="white" stroke="#e2e8f0" strokeWidth="1" />
+            <text
+              x={midX} y={midY}
+              textAnchor="middle"
+              dominantBaseline="middle"
+              fontSize="8.5"
+              fontWeight="700"
+              fontFamily="system-ui,sans-serif"
+              fill="#64748b"
+              style={{ textTransform: "uppercase", letterSpacing: "0.08em" }}
+            >
+              {edge.label}
+            </text>
           </motion.g>
         );
       })}
