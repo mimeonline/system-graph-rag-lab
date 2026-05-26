@@ -13,12 +13,12 @@ export async function generateMetadata({ params }: HomePageProps): Promise<Metad
     locale,
     title:
       locale === "en"
-        ? "GraphRAG for traceable AI decisions"
-        : "GraphRAG für nachvollziehbare KI-Entscheidungen",
+        ? "GraphRAG learning lab for five graph types"
+        : "GraphRAG Lernlabor für fünf Graph-Typen",
     description:
       locale === "en"
-        ? "Traceable AI decisions with GraphRAG: nodes, relations, and evidence instead of black-box answers."
-        : "Nachvollziehbare AI Entscheidungen mit GraphRAG: Knoten, Kanten und Belege statt Blackbox-Antworten.",
+        ? "Understand GraphRAG through document, domain, knowledge, conversational, and dynamic graphs in an EU AI Act launch decision."
+        : "GraphRAG verstehen über Dokument-Graph, Domänen-Graph, Wissensgraph, Conversational Graph und dynamischen Graph in einer EU-AI-Act-Launch-Entscheidung.",
   });
 }
 

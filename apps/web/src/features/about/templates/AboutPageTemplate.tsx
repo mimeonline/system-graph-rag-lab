@@ -16,18 +16,18 @@ export async function AboutPageTemplate({
       ? {
           eyebrow: "About",
           intro1:
-            "System GraphRAG Lab is a public architecture project for productive AI usage in organizations. The focus is not on better phrasing, but on reliable decision paths.",
+            "System GraphRAG Lab is a public learning and architecture project for understanding GraphRAG through five graph types.",
           intro2:
-            "The central question is how model outputs become traceable, reviewable, and integrable decisions.",
+            "The current learning path uses an EU AI Act launch decision to show how user intent, graph context, and LLM synthesis interact.",
           whyTitle: "Why",
           whyBody:
-            "Many AI initiatives produce visible results quickly but fail on reproducibility, governance, and operational fitness. This lab demonstrates an approach where context, evidence, and reasoning are treated as architecture.",
+            "Many GraphRAG discussions stay too vague: they say 'we need a graph' without clarifying which reality the graph represents. This lab makes document, domain, knowledge, conversational, and dynamic graphs distinguishable.",
           whoTitle: "Who for",
           whoBody:
-            "For people responsible across architecture, product, and governance who want to operate AI reliably instead of only testing it. The focus is on decision quality, accountability, and compatibility with existing system landscapes.",
+            "For people in product, architecture, compliance, and governance who want to understand how AI answers become explainable and reviewable.",
           howTitle: "How",
           howBody:
-            "Through demo, story, and essays in one shared logic. Which question is answered, which context matters, which evidence supports the statement, and how this becomes an operational decision.",
+            "Through a simulated learning mode, detailed graph-type pages, a GraphRAG story, and background essays. Live integrations remain optional experiments.",
           aboutMeTitle: "About me",
           aboutMe1:
             "I am Michael Meierhoff, an independent software and systems architect from Hamburg. I have worked in IT for more than 20 years with a focus on system design, complexity reduction, and architecture governance.",
@@ -35,28 +35,28 @@ export async function AboutPageTemplate({
             "My background ranges from software engineering to enterprise architecture in international organizations.",
           aboutMe3:
             "System GraphRAG Lab is built as a working reference. It makes transparent how AI can be embedded into real architectural decisions across business, technology, and organization.",
-          guideline: "Guiding principle: less hype, more resilient structure for decisions.",
+          guideline: "Guiding principle: GraphRAG is not one graph. It is a modelling decision.",
           statusTitle: "Project status",
           statusBody:
-            "The project is being built as a public MVP and extended iteratively. The goal is a clear, testable architecture frame for AI systems with a focus on traceability, governance, and integration fitness.",
+            "The project is currently being refocused around a simulated EU AI Act learning mode. The goal is to make intermediate GraphRAG steps observable before connecting additional live services.",
           github: "GitHub profile",
           linkedin: "LinkedIn profile",
         }
       : {
           eyebrow: "About",
           intro1:
-            "System GraphRAG Lab ist ein öffentliches Architekturprojekt für den produktiven Einsatz von KI in Organisationen. Der Fokus liegt nicht auf besser formulierten Antworten, sondern auf belastbaren Entscheidungswegen.",
+            "System GraphRAG Lab ist ein öffentliches Lern- und Architekturprojekt, das GraphRAG über fünf Graph-Typen verständlich macht.",
           intro2:
-            "Die zentrale Frage ist, wie aus Modellausgaben nachvollziehbare, prüfbare und integrierbare Entscheidungen entstehen.",
+            "Der aktuelle Lernpfad nutzt eine EU-AI-Act-Launch-Entscheidung, um sichtbar zu machen, wie Nutzerintention, Graphkontext und LLM-Synthese zusammenspielen.",
           whyTitle: "Wozu",
           whyBody:
-            "Viele KI Initiativen liefern schnell sichtbare Ergebnisse, scheitern aber bei Reproduzierbarkeit, Governance und Betriebsfähigkeit. Dieses Lab zeigt einen Ansatz, bei dem Kontext, Belege und Ableitung als Architektur behandelt werden.",
+            "Viele GraphRAG-Diskussionen bleiben zu grob: Sie sagen nur „wir brauchen einen Graph“, ohne zu klären, welche Realität der Graph abbilden soll. Dieses Lab unterscheidet Dokument-Graph, Domänen-Graph, Wissensgraph, Conversational Graph und dynamischen Graph.",
           whoTitle: "Für wen",
           whoBody:
-            "Für Verantwortliche aus Architektur, Produkt und Governance, die KI nicht nur testen, sondern verlässlich betreiben wollen. Im Mittelpunkt stehen Entscheidungsqualität, Verantwortbarkeit und Anschlussfähigkeit an bestehende Systemlandschaften.",
+            "Für Menschen aus Produkt, Architektur, Compliance und Governance, die verstehen wollen, wie KI-Antworten erklärbar, begrenzbar und überprüfbar werden.",
           howTitle: "Wie",
           howBody:
-            "Über Demo, Story und Essays in einer gemeinsamen Logik. Welche Frage wird beantwortet, welcher Kontext ist relevant, welche Belege tragen die Aussage und wie wird daraus eine operative Entscheidung.",
+            "Über einen simulierten Lernmodus, detaillierte Graph-Typ-Seiten, eine GraphRAG Story und Hintergrundessays. Live-Integrationen bleiben optionale Experimente.",
           aboutMeTitle: "Über mich",
           aboutMe1:
             "Ich bin Michael Meierhoff, Independent Software und Systems Architect aus Hamburg. Seit über 20 Jahren arbeite ich in der IT mit Schwerpunkten in Systemdesign, Komplexitätsreduktion und Architektur Governance.",
@@ -64,10 +64,10 @@ export async function AboutPageTemplate({
             "Mein Hintergrund reicht von Softwareentwicklung bis zu Enterprise Architektur in internationalen Organisationen.",
           aboutMe3:
             "System GraphRAG Lab ist als Arbeitsreferenz aufgebaut. Es macht transparent, wie KI in reale Architekturentscheidungen eingebettet werden kann, fachlich, technisch und organisatorisch.",
-          guideline: "Leitlinie: weniger Hype, mehr belastbare Struktur für Entscheidungen.",
+          guideline: "Leitlinie: GraphRAG ist nicht ein Graph. Es ist eine Modellierungsentscheidung.",
           statusTitle: "Projektstatus",
           statusBody:
-            "Das Projekt ist als Public MVP im Aufbau und wird iterativ erweitert. Der Anspruch ist ein klarer, überprüfbarer Architekturrahmen für KI Systeme mit Fokus auf Nachvollziehbarkeit, Governance und Integrationsfähigkeit.",
+            "Das Projekt wird gerade auf einen simulierten EU-AI-Act-Lernmodus fokussiert. Ziel ist, GraphRAG-Zwischenschritte beobachtbar zu machen, bevor weitere Live-Dienste angebunden werden.",
           github: "GitHub Profil",
           linkedin: "LinkedIn Profil",
         };

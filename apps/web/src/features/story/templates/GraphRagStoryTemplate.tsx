@@ -4,6 +4,7 @@ import { TrackedLink } from "@/components/molecules/tracked-link";
 import { TrackedPageView } from "@/components/molecules/tracked-page-view";
 import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
+import { DEMO_GRAPH_TYPES } from "@/features/demo/graph-type-learning-model";
 import { GraphRagTechnicalFlow } from "@/features/story/organisms/GraphRagTechnicalFlow";
 
 type GraphRagStoryTemplateProps = {
@@ -31,14 +32,34 @@ export function GraphRagStoryTemplate({
             </div>
             <h1 className="headline-wrap max-w-4xl text-[1.9rem] font-bold leading-tight tracking-tight sm:text-[3.25rem]">
               {isEn
-                ? "From the question to the decision in 5 clear steps"
-                : "Von der Frage zur Entscheidung in 5 klaren Schritten"}
+                ? "Why GraphRAG needs more than one graph"
+                : "Warum GraphRAG mehr als einen Graph braucht"}
             </h1>
             <p className="max-w-3xl text-base leading-relaxed text-slate-700 font-medium sm:text-[1.125rem]">
               {isEn
-                ? "We show step by step how an initial question turns into a clear decision. Every transition stays traceable: from selecting context to building relations and arriving at a grounded conclusion."
-                : "Wir zeigen Schritt für Schritt, wie aus einer ersten Frage eine klare Entscheidung entsteht. Dabei bleibt jeder Übergang nachvollziehbar: von der Auswahl des Kontexts über den Aufbau der Beziehungen bis zur begründeten Schlussfolgerung."}
+                ? "The story explains how a user question becomes a structured answer when documents, domain context, semantic knowledge, conversation memory, and time are modelled separately."
+                : "Die Story erklärt, wie aus einer Nutzerfrage eine strukturierte Antwort wird, wenn Dokumente, Domänenkontext, semantisches Wissen, Gesprächs-Memory und Zeit getrennt modelliert werden."}
             </p>
+          </section>
+
+          <section className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+            {DEMO_GRAPH_TYPES.map((graphType) => {
+              const Icon = graphType.icon;
+              return (
+                <TrackedLink
+                  key={graphType.id}
+                  href={`/demo/${graphType.slug}`}
+                  label={graphType.title}
+                  eventName="story_graph_type_click"
+                  payload={{ graphType: graphType.id }}
+                  className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-1 hover:border-sky-300 hover:shadow-md"
+                >
+                  <Icon className="h-5 w-5 text-sky-600" aria-hidden />
+                  <h2 className="mt-4 text-base font-bold text-slate-950">{graphType.title}</h2>
+                  <p className="mt-2 text-xs font-bold uppercase tracking-[0.14em] text-slate-500">{graphType.badge}</p>
+                </TrackedLink>
+              );
+            })}
           </section>
 
           <GraphRagTechnicalFlow locale={locale} />
@@ -51,12 +72,12 @@ export function GraphRagStoryTemplate({
                 {isEn ? "Conclusion" : "Abschluss"}
               </p>
               <h2 className="headline-wrap mt-4 text-[1.5rem] font-bold text-slate-900 sm:text-[1.75rem] leading-tight">
-                {isEn ? "GraphRAG is more than a better search box." : "GraphRAG ist mehr als ein besseres Suchfeld."}
+                {isEn ? "GraphRAG is a modelling discipline." : "GraphRAG ist eine Modellierungsdisziplin."}
               </h2>
               <p className="mt-1 text-lg text-slate-700 font-medium sm:text-[1.25rem]">
                 {isEn
-                  ? "It helps make decisions easier to justify and easier to review later on. Knowledge no longer stays only in individual heads, but becomes a shared and usable decision path."
-                  : "Es hilft, Entscheidungen klar zu begründen und später erneut zu prüfen. So bleibt Wissen nicht nur im Kopf einzelner Personen, sondern in einem gemeinsamen, nutzbaren Entscheidungsweg."}
+                  ? "The architecture becomes useful when each graph type does its own job and the LLM receives a controlled context package."
+                  : "Die Architektur wird nützlich, wenn jeder Graph-Typ seine eigene Aufgabe erfüllt und das LLM ein kontrolliertes Kontextpaket bekommt."}
               </p>
 
               <div className="mt-8">
