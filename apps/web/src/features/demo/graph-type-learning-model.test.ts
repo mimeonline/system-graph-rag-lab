@@ -29,7 +29,15 @@ describe("DEMO_GRAPH_TYPES", () => {
       const nodeIds = new Set(graphType.nodes.map((node) => node.id));
 
       expect(graphType.steps).toHaveLength(3);
+      expect(graphType.machineRoomTrace).toHaveLength(5);
       expect(graphType.edges.length).toBeGreaterThanOrEqual(5);
+      expect(graphType.machineRoomTrace.map((trace) => trace.actor)).toEqual([
+        "User",
+        "System",
+        "Graph",
+        "LLM",
+        "LLM",
+      ]);
 
       for (const edge of graphType.edges) {
         expect(nodeIds.has(edge.source)).toBe(true);

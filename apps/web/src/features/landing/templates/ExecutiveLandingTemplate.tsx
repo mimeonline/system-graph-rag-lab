@@ -1,4 +1,4 @@
-import { ArrowRight, CheckCircle2, HelpCircle, Scale } from "lucide-react";
+import { ArrowRight, CheckCircle2, Eye, HelpCircle, Route, Scale } from "lucide-react";
 import * as motion from "framer-motion/client";
 
 import { TrackedLink } from "@/components/molecules/tracked-link";
@@ -50,6 +50,51 @@ export async function ExecutiveLandingTemplate({
           question: "Braucht die Demo echte KI-Aufrufe?",
           answer:
             "Der Lernmodus ist bewusst simuliert. Dadurch werden Zwischenschritte sichtbar und die Demo hängt nicht von externen Diensten ab.",
+        },
+      ];
+  const learningPath = isEn
+    ? [
+        {
+          title: "Document Graph",
+          body: "Start with evidence: which source, chunk, claim, and citation is actually relevant?",
+        },
+        {
+          title: "Knowledge Graph",
+          body: "Then clarify meaning: which concepts, roles, and obligations must stay separate?",
+        },
+        {
+          title: "Domain Graph",
+          body: "Translate the law into a launch decision: product, market, responsibility, risk, and release.",
+        },
+        {
+          title: "Conversational Graph",
+          body: "Make follow-up questions useful by showing what the system remembers, rejects, or asks back.",
+        },
+        {
+          title: "Dynamic Graph",
+          body: "Add time: what is valid now, what changes later, and which answer expires?",
+        },
+      ]
+    : [
+        {
+          title: "Dokument-Graph",
+          body: "Starte bei den Belegen: Welche Quelle, welcher Chunk, welcher Claim und welche Fundstelle sind wirklich relevant?",
+        },
+        {
+          title: "Wissensgraph",
+          body: "Kläre danach Bedeutung: Welche Begriffe, Rollen und Pflichten müssen sauber getrennt bleiben?",
+        },
+        {
+          title: "Domänen-Graph",
+          body: "Übersetze das Gesetz in eine Launch-Entscheidung: Produkt, Markt, Verantwortung, Risiko und Freigabe.",
+        },
+        {
+          title: "Conversational Graph",
+          body: "Mache Folgefragen nutzbar, indem sichtbar wird, was das System erinnert, verwirft oder zurückfragt.",
+        },
+        {
+          title: "Dynamischer Graph",
+          body: "Ergänze Zeit: Was gilt jetzt, was ändert sich später, und welche Antwort läuft ab?",
         },
       ];
 
@@ -144,6 +189,112 @@ export async function ExecutiveLandingTemplate({
                   </TrackedLink>
                 );
               })}
+            </div>
+          </section>
+        </LandingReveal>
+
+        <LandingReveal>
+          <section className="full-bleed-safe border-y border-slate-200 bg-white px-4 py-12 sm:px-6 sm:py-16">
+            <div className="mx-auto grid w-full max-w-295 gap-10 lg:grid-cols-[minmax(0,0.8fr)_minmax(420px,0.9fr)] lg:items-start">
+              <div className="lg:sticky lg:top-24">
+                <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-sky-700">
+                  <Route className="h-4 w-4" aria-hidden />
+                  <span>{isEn ? "Guided learning path" : "Geführter Lernpfad"}</span>
+                </p>
+                <h2 className="mt-3 text-2xl font-bold text-slate-950 sm:text-3xl">
+                  {isEn ? "One question, five lenses" : "Eine Frage, fünf Blickwinkel"}
+                </h2>
+                <p className="mt-4 max-w-2xl text-base font-medium leading-relaxed text-slate-700">
+                  {isEn
+                    ? "The demo is designed like a machine-room tour. Each page opens a different part of the GraphRAG pipeline and shows what changes inside the answer."
+                    : "Die Demo ist wie ein Maschinenraum-Rundgang aufgebaut. Jede Seite öffnet einen anderen Teil der GraphRAG-Pipeline und zeigt, was sich in der Antwortlogik verändert."}
+                </p>
+                <TrackedLink
+                  href="/demo/dokument-graph"
+                  label={isEn ? "Start with evidence" : "Mit Belegen starten"}
+                  eventName="landing_learning_path_click"
+                  payload={{ target: "/demo/dokument-graph" }}
+                  className="mt-6 inline-flex items-center gap-2 rounded-xl bg-slate-950 px-5 py-3 text-sm font-bold text-white transition hover:-translate-y-0.5 hover:bg-sky-700"
+                  icon={<ArrowRight className="h-4 w-4" aria-hidden />}
+                />
+              </div>
+
+              <div className="relative">
+                <div className="absolute left-4 top-4 bottom-4 hidden w-px bg-slate-200 sm:block" />
+                <div className="space-y-4">
+                  {learningPath.map((item, index) => (
+                    <article key={item.title} className="relative grid gap-3 sm:grid-cols-[3rem_minmax(0,1fr)]">
+                      <span className="z-10 flex h-8 w-8 items-center justify-center rounded-full bg-slate-950 text-xs font-black text-white shadow-sm sm:mt-1">
+                        {index + 1}
+                      </span>
+                      <div className="border-b border-slate-200 pb-4">
+                        <h3 className="text-lg font-bold text-slate-950">{item.title}</h3>
+                        <p className="mt-1 text-sm font-medium leading-relaxed text-slate-700">{item.body}</p>
+                      </div>
+                    </article>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        </LandingReveal>
+
+        <LandingReveal>
+          <section className="mx-auto w-full max-w-295 px-4 py-12 sm:px-6 sm:py-16">
+            <div className="grid gap-8 lg:grid-cols-[minmax(0,0.75fr)_minmax(420px,0.9fr)] lg:items-center">
+              <div>
+                <p className="flex items-center gap-2 text-xs font-bold uppercase tracking-[0.2em] text-sky-700">
+                  <Eye className="h-4 w-4" aria-hidden />
+                  <span>{isEn ? "Blackbox to whitebox" : "Blackbox zu Whitebox"}</span>
+                </p>
+                <h2 className="mt-3 text-2xl font-bold text-slate-950 sm:text-3xl">
+                  {isEn ? "The answer is not the demo. The path to the answer is." : "Nicht die Antwort ist die Demo. Der Weg zur Antwort ist die Demo."}
+                </h2>
+                <p className="mt-4 max-w-2xl text-base font-medium leading-relaxed text-slate-700">
+                  {isEn
+                    ? "A normal chat hides retrieval, context selection, and uncertainty. GraphRAG Lab makes these steps inspectable."
+                    : "Ein normaler Chat versteckt Retrieval, Kontextauswahl und Unsicherheit. GraphRAG Lab macht diese Schritte inspizierbar."}
+                </p>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <section className="rounded-3xl border border-slate-200 bg-slate-50 p-6">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-slate-500">
+                    {isEn ? "Blackbox chat" : "Blackbox-Chat"}
+                  </p>
+                  <h3 className="mt-3 text-xl font-bold text-slate-950">
+                    {isEn ? "Plausible, but opaque" : "Plausibel, aber undurchsichtig"}
+                  </h3>
+                  <ul className="mt-4 space-y-3 text-sm font-medium leading-relaxed text-slate-700">
+                    {(isEn
+                      ? ["The LLM answers directly.", "Evidence and graph path stay hidden.", "The user cannot see what was ignored."]
+                      : ["Das LLM antwortet direkt.", "Belege und Graphpfad bleiben unsichtbar.", "Der User sieht nicht, was verworfen wurde."]).map((item) => (
+                      <li key={item} className="border-l-2 border-slate-300 pl-3">
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+
+                <section className="rounded-3xl border border-sky-200 bg-sky-50 p-6">
+                  <p className="text-xs font-bold uppercase tracking-[0.16em] text-sky-700">
+                    {isEn ? "Whitebox trace" : "Whitebox-Trace"}
+                  </p>
+                  <h3 className="mt-3 text-xl font-bold text-slate-950">
+                    {isEn ? "Visible and debuggable" : "Sichtbar und prüfbar"}
+                  </h3>
+                  <ul className="mt-4 space-y-3 text-sm font-medium leading-relaxed text-slate-800">
+                    {(isEn
+                      ? ["User intent is separated from graph context.", "The prompt package is visible.", "The answer shows its boundary."]
+                      : ["User-Intent wird vom Graphkontext getrennt.", "Das Prompt-Paket wird sichtbar.", "Die Antwort zeigt ihre Grenze."]).map((item) => (
+                      <li key={item} className="flex gap-3">
+                        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-sky-700" aria-hidden />
+                        <span>{item}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              </div>
             </div>
           </section>
         </LandingReveal>

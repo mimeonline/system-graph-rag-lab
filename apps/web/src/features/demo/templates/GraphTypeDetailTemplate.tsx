@@ -189,6 +189,50 @@ export function GraphTypeDetailTemplate({
           </div>
         </section>
 
+        {/* Machine room trace */}
+        <section className="mx-auto w-full max-w-295 px-4 pb-12 sm:px-6">
+          <div className="mb-6 max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-sky-700">
+              {locale === "en" ? "Inside the machine room" : "Blick in den Maschinenraum"}
+            </p>
+            <h2 className="mt-3 text-2xl font-bold text-slate-950">
+              {locale === "en" ? "The black box opened as a trace" : "Die Blackbox als Trace geöffnet"}
+            </h2>
+            <p className="mt-3 text-base font-medium leading-relaxed text-slate-700">
+              {locale === "en"
+                ? "This is the didactic core: user input becomes system intent, graph context, LLM context, and finally an answer."
+                : "Das ist der didaktische Kern: Aus Nutzereingabe werden System-Intent, Graphkontext, LLM-Kontext und schließlich eine Antwort."}
+            </p>
+          </div>
+
+          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
+            <div className="grid gap-4">
+              {graphType.machineRoomTrace.map((trace, index) => (
+                <article
+                  key={`${trace.actor}-${trace.title}`}
+                  className={[
+                    "grid gap-3 rounded-2xl border p-4 sm:grid-cols-[8rem_minmax(0,1fr)]",
+                    getTraceTone(trace.actor),
+                  ].join(" ")}
+                >
+                  <div>
+                    <span className="inline-flex h-8 min-w-16 items-center justify-center rounded-full bg-white/85 px-3 text-xs font-black uppercase tracking-[0.12em] text-slate-800 shadow-sm">
+                      {index + 1}. {trace.actor}
+                    </span>
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-slate-950">{trace.title}</h3>
+                    <p className="mt-1 text-sm font-medium leading-relaxed text-slate-800">{trace.message}</p>
+                    <p className="mt-3 rounded-xl border border-white/70 bg-white/75 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-600">
+                      {trace.artifact}
+                    </p>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </div>
+        </section>
+
         {/* User / Graph / LLM */}
         <section className="relative overflow-hidden py-12 sm:py-14">
           <div className="absolute inset-0 -z-10 bg-linear-to-b from-slate-100/60 via-white/80 to-transparent" />
@@ -333,6 +377,20 @@ export function GraphTypeDetailTemplate({
       <SiteFooter />
     </div>
   );
+}
+
+function getTraceTone(actor: "User" | "System" | "Graph" | "LLM"): string {
+  if (actor === "User") {
+    return "border-sky-200 bg-sky-50";
+  }
+  if (actor === "System") {
+    return "border-slate-200 bg-slate-50";
+  }
+  if (actor === "Graph") {
+    return "border-emerald-200 bg-emerald-50";
+  }
+
+  return "border-violet-200 bg-violet-50";
 }
 
 const ACCENT_CLASSES = {

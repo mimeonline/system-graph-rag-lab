@@ -36,6 +36,13 @@ export type DemoLearningBox = {
   body: string;
 };
 
+export type DemoMachineRoomTrace = {
+  actor: "User" | "System" | "Graph" | "LLM";
+  title: string;
+  message: string;
+  artifact: string;
+};
+
 export type DemoGraphType = {
   id: DemoGraphTypeId;
   slug: string;
@@ -60,6 +67,7 @@ export type DemoGraphType = {
   llmActions: DemoLearningBox[];
   interactionLoop: DemoLearningBox[];
   promptPackage: string[];
+  machineRoomTrace: DemoMachineRoomTrace[];
   nodes: DemoGraphNode[];
   edges: DemoGraphEdge[];
   steps: DemoGraphStep[];
@@ -174,6 +182,38 @@ export const DEMO_GRAPH_TYPES: DemoGraphType[] = [
       "Rollen- und Pflichtbeziehungen als strukturierte Kanten",
       "Artikelbelege mit kurzer Quellenangabe",
       "Explizite Unsicherheiten, die nicht entschieden werden dürfen",
+    ],
+    machineRoomTrace: [
+      {
+        actor: "User",
+        title: "Frage stellt Bedeutung in den Vordergrund",
+        message: "Welche AI-Act-Pflichten berühren unseren geplanten Launch?",
+        artifact: "Unklare Begriffe: KI-System, Anbieterrolle, Hochrisiko, Pflicht.",
+      },
+      {
+        actor: "System",
+        title: "Intent wird semantisch normalisiert",
+        message: "Ich suche nicht zuerst Textstellen, sondern Begriffe und Rollen, die diese Frage tragen.",
+        artifact: "Intent: Begriffsklärung plus Pflichtenableitung.",
+      },
+      {
+        actor: "Graph",
+        title: "Begriffspfad wird geladen",
+        message: "Passende Knoten: KI-System -> Risikoklasse -> Anbieter -> Pflicht -> Artikelbeleg.",
+        artifact: "Pfad: KI-System kann Hochrisiko sein, Hochrisiko löst Pflichten aus.",
+      },
+      {
+        actor: "LLM",
+        title: "Kontextpaket wird begrenzt",
+        message: "Ich bekomme Definitionen, Rollenbeziehungen und Beleganker. Ich entscheide keine unklare Rolle selbst.",
+        artifact: "Prompt-Regel: Unsicherheit zur Rolle explizit nennen.",
+      },
+      {
+        actor: "LLM",
+        title: "Antwort erklärt den Begriffspfad",
+        message: "Vorläufig relevant sind Pflichten, die aus Rolle und Risikoklasse folgen. Kläre zuerst Anbieter/Betreiber und Risikoklasse.",
+        artifact: "Whitebox-Antwort: Begriff -> Beziehung -> Pflicht -> Beleg.",
+      },
     ],
     nodes: [
       { id: "q", label: "Launch-Frage", kind: "query", x: 70, y: 170 },
@@ -317,6 +357,38 @@ export const DEMO_GRAPH_TYPES: DemoGraphType[] = [
       "Zuordenbare AI-Act-Pflichten",
       "Entscheidungsformat für Go, Hold oder No-Go",
     ],
+    machineRoomTrace: [
+      {
+        actor: "User",
+        title: "Frage stellt die Business-Entscheidung",
+        message: "Dürfen wir dieses KI-Feature für EU-Kunden freigeben?",
+        artifact: "Benötigt: Feature, Markt, Verantwortliche, Kontrollen, Freigabestatus.",
+      },
+      {
+        actor: "System",
+        title: "Intent wird als Domänenentscheidung erkannt",
+        message: "Ich suche nach Geschäftsobjekten und Verantwortlichkeiten, nicht nur nach Gesetzesabschnitten.",
+        artifact: "Intent: Launch-Governance und Kontrollreife.",
+      },
+      {
+        actor: "Graph",
+        title: "Fachliche Abhängigkeiten werden gezogen",
+        message: "Feature hängt am EU-Markt, Kontrollen hängen an Verantwortlichen, Freigabe hängt am Kontrollstatus.",
+        artifact: "Domänenpfad: Feature -> Markt -> Kontrolle -> Go/Hold/No-Go.",
+      },
+      {
+        actor: "LLM",
+        title: "Lücken werden sichtbar",
+        message: "Ich sehe, welche Kontrollen fehlen und welche Rolle noch ungeklärt ist.",
+        artifact: "Prompt-Regel: fehlende Angaben als Blocker markieren.",
+      },
+      {
+        actor: "LLM",
+        title: "Antwort wird entscheidungsfähig",
+        message: "Aktueller Vorschlag: Hold, bis Risikoklasse, Rollen und Kontrollnachweise geklärt sind.",
+        artifact: "Whitebox-Antwort: Status, Risiko, Owner, nächste Kontrolle.",
+      },
+    ],
     nodes: [
       { id: "q", label: "Launch-Entscheidung", kind: "query", x: 75, y: 170 },
       { id: "feature", label: "KI-Feature", kind: "concept", x: 235, y: 90 },
@@ -458,6 +530,38 @@ export const DEMO_GRAPH_TYPES: DemoGraphType[] = [
       "Extrahierte Claims mit Quellenanker",
       "Hinweise auf verwandte Erwägungsgründe",
       "Regel, Beleg und Interpretation getrennt auszugeben",
+    ],
+    machineRoomTrace: [
+      {
+        actor: "User",
+        title: "Frage verlangt Fundstellen",
+        message: "Welche Textstellen stützen die Antwort zur Launch-Freigabe?",
+        artifact: "Benötigt: Artikel, Absatz, Claim, Quelle.",
+      },
+      {
+        actor: "System",
+        title: "Intent wird als Quellenfrage erkannt",
+        message: "Ich suche zuerst im Dokumentnetz und halte Beleg und Interpretation getrennt.",
+        artifact: "Intent: belegorientiertes Retrieval.",
+      },
+      {
+        actor: "Graph",
+        title: "Dokumentstruktur wird traversiert",
+        message: "EU AI Act -> Kapitel -> Artikel -> Absatz -> Claim -> Antwortbaustein.",
+        artifact: "Dokumentpfad: Quelle enthält Artikel, Artikel stützt Claim.",
+      },
+      {
+        actor: "LLM",
+        title: "Claims werden kontextualisiert",
+        message: "Ich bekomme ausgewählte Claims mit Fundstelle. Ich darf nicht aus einem Claim eine umfassende Wahrheit machen.",
+        artifact: "Prompt-Regel: Zitatnähe und Interpretation trennen.",
+      },
+      {
+        actor: "LLM",
+        title: "Antwort bleibt zitierfähig",
+        message: "Die Antwort sagt, welche Aussage auf welcher Textstelle beruht und wo noch fachliche Einordnung fehlt.",
+        artifact: "Whitebox-Antwort: Fundstelle -> Claim -> Einordnung.",
+      },
     ],
     nodes: [
       { id: "q", label: "Belegfrage", kind: "query", x: 70, y: 170 },
@@ -601,6 +705,38 @@ export const DEMO_GRAPH_TYPES: DemoGraphType[] = [
       "Offene Entscheidungen und blockierende Fragen",
       "Regel, unsichere Memory-Einträge nicht als Fakt zu behandeln",
     ],
+    machineRoomTrace: [
+      {
+        actor: "User",
+        title: "Folgefrage nutzt bisherigen Kontext",
+        message: "Was haben wir zur Launch-Entscheidung schon geklärt?",
+        artifact: "Benötigt: Ziele, bestätigte Annahmen, offene Punkte, Korrekturen.",
+      },
+      {
+        actor: "System",
+        title: "Intent wird als Memory-Frage erkannt",
+        message: "Ich suche nicht nur Fakten, sondern Gesprächszustand und Vertrauensstatus.",
+        artifact: "Intent: Session-Kontext und offene Entscheidungen.",
+      },
+      {
+        actor: "Graph",
+        title: "Memory wird gefiltert",
+        message: "Bestätigte Annahmen werden geladen, korrigierte Aussagen bleiben sichtbar, offene Fragen blockieren die Antwort.",
+        artifact: "Memory-Pfad: Ziel -> Annahme -> Korrektur -> offene Frage.",
+      },
+      {
+        actor: "LLM",
+        title: "Kontext wird nicht blind geglaubt",
+        message: "Ich darf nur bestätigte Annahmen als Grundlage verwenden und muss unsichere Memory-Einträge markieren.",
+        artifact: "Prompt-Regel: Memory mit Status ausgeben.",
+      },
+      {
+        actor: "LLM",
+        title: "Antwort führt das Gespräch weiter",
+        message: "Geklärt ist der EU-Bezug. Offen bleiben Risikoklasse und Verantwortlichkeit. Nächster Schritt: Rollenklärung.",
+        artifact: "Whitebox-Antwort: geklärt, offen, korrigiert, nächster Schritt.",
+      },
+    ],
     nodes: [
       { id: "q", label: "Aktuelle Frage", kind: "query", x: 80, y: 170 },
       { id: "goal", label: "Launch-Ziel", kind: "decision", x: 240, y: 80 },
@@ -742,6 +878,38 @@ export const DEMO_GRAPH_TYPES: DemoGraphType[] = [
       "Aktuelle Zustände und spätere Fristen",
       "Änderungsereignisse mit Ursache",
       "Regel, Zeitbezug in jeder Aussage sichtbar zu machen",
+    ],
+    machineRoomTrace: [
+      {
+        actor: "User",
+        title: "Frage setzt einen Zeitbezug",
+        message: "Was gilt heute, was gilt später, und was ändert unsere Launch-Planung?",
+        artifact: "Benötigt: Stichtag, Launch-Termin, Version, Frist.",
+      },
+      {
+        actor: "System",
+        title: "Intent wird als Gültigkeitsfrage erkannt",
+        message: "Ich muss zuerst klären, für welchen Zeitpunkt die Antwort gelten soll.",
+        artifact: "Intent: Zustand heute vs. Zustand später.",
+      },
+      {
+        actor: "Graph",
+        title: "Zeitpfad wird berechnet",
+        message: "Heute, Frist, Version und Status werden verbunden. Historie wird nicht überschrieben.",
+        artifact: "Zeitpfad: Version -> gilt ab -> Status -> Launch-Plan.",
+      },
+      {
+        actor: "LLM",
+        title: "Antwort wird temporal begrenzt",
+        message: "Ich trenne aktuelle Aussage, spätere Änderung und Planungsimplikation.",
+        artifact: "Prompt-Regel: Jede Aussage braucht Zeitbezug.",
+      },
+      {
+        actor: "LLM",
+        title: "Antwort zeigt den Planungshebel",
+        message: "Heute ist die Entscheidung vorläufig. Spätere Fristen erzeugen konkrete Meilensteine im Launch-Plan.",
+        artifact: "Whitebox-Antwort: heute, später, Änderung, Plan.",
+      },
     ],
     nodes: [
       { id: "q", label: "Zeitfrage", kind: "query", x: 75, y: 170 },
