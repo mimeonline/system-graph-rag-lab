@@ -4,7 +4,7 @@ import { TrackedLink } from "@/components/molecules/tracked-link";
 import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
 import { DEMO_GRAPH_TYPES, type DemoGraphType } from "@/features/demo/graph-type-learning-model";
-import { DemoGraphSimulationSvg } from "@/features/demo/molecules/DemoGraphSimulationSvg";
+import { DemoGraphSimulationPreview } from "@/features/demo/molecules/DemoGraphSimulationPreview";
 
 type GraphTypeDetailTemplateProps = {
   graphType: DemoGraphType;
@@ -149,14 +149,14 @@ export function GraphTypeDetailTemplate({
                 Simulation
               </span>
             </div>
-            <DemoGraphSimulationSvg
+            <DemoGraphSimulationPreview
               graphType={{
                 id: graphType.id,
                 title: graphType.title,
                 nodes: graphType.nodes,
                 edges: graphType.edges,
               }}
-              activeStepIndex={1}
+              locale={locale}
             />
           </div>
 

@@ -5,10 +5,11 @@ output/*
 .venv-imagegen/*
 tmp/*
 .playwright-cli/*
+.playwright-mcp/*
+playwright/*
 node_modules/*
 apps/web/node_modules/*
 .env.local
 **/.env.local
 .claude/*
-.playwright-mcp/*
 wissensgraph-*.png
