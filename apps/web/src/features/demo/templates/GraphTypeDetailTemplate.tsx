@@ -1,4 +1,4 @@
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Bot, GitBranch, UserRound } from "lucide-react";
 
 import { TrackedLink } from "@/components/molecules/tracked-link";
 import { SiteFooter } from "@/components/organisms/site-footer";
@@ -205,31 +205,24 @@ export function GraphTypeDetailTemplate({
             </p>
           </div>
 
-          <div className="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
-            <div className="grid gap-4">
-              {graphType.machineRoomTrace.map((trace, index) => (
-                <article
-                  key={`${trace.actor}-${trace.title}`}
-                  className={[
-                    "grid gap-3 rounded-2xl border p-4 sm:grid-cols-[8rem_minmax(0,1fr)]",
-                    getTraceTone(trace.actor),
-                  ].join(" ")}
-                >
-                  <div>
-                    <span className="inline-flex h-8 min-w-16 items-center justify-center rounded-full bg-white/85 px-3 text-xs font-black uppercase tracking-[0.12em] text-slate-800 shadow-sm">
-                      {index + 1}. {trace.actor}
-                    </span>
-                  </div>
-                  <div>
-                    <h3 className="text-base font-bold text-slate-950">{trace.title}</h3>
-                    <p className="mt-1 text-sm font-medium leading-relaxed text-slate-800">{trace.message}</p>
-                    <p className="mt-3 rounded-xl border border-white/70 bg-white/75 px-3 py-2 text-xs font-bold uppercase tracking-[0.12em] text-slate-600">
-                      {trace.artifact}
-                    </p>
-                  </div>
-                </article>
-              ))}
+          <div className="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+            <div className="flex items-center gap-2 border-b border-slate-200 bg-white px-4 py-3">
+              <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
+              <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+              <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+              <span className="ml-2 text-xs font-semibold text-slate-400">Trace</span>
             </div>
+            <ul className="space-y-3 p-4">
+              {graphType.machineRoomTrace.map((trace, index) => (
+                <ChatBubble
+                  key={`${trace.actor}-${index}`}
+                  actor={trace.actor}
+                  title={trace.title}
+                  body={trace.message}
+                  artifact={trace.artifact}
+                />
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -285,18 +278,20 @@ export function GraphTypeDetailTemplate({
             <h2 className="mt-3 text-2xl font-bold text-slate-950">
               {locale === "en" ? "How the LLM interacts with the graph" : "Wie das LLM mit dem Graph interagiert"}
             </h2>
-            <div className="mt-6 grid gap-4">
-              {graphType.interactionLoop.map((item, index) => (
-                <div key={`${item.title}-${index}`} className="grid gap-3 sm:grid-cols-[3rem_minmax(0,1fr)] sm:items-start">
-                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-sky-600 text-sm font-bold text-white shadow-sm">
-                    {index + 1}
-                  </span>
-                  <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-                    <h3 className="text-base font-bold text-slate-950">{item.title}</h3>
-                    <p className="mt-1 text-sm font-medium leading-relaxed text-slate-700">{item.body}</p>
-                  </div>
-                </div>
-              ))}
+            <div className="mt-5 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50">
+              <div className="flex items-center gap-2 border-b border-slate-200 bg-white px-4 py-3">
+                <span className="h-2.5 w-2.5 rounded-full bg-red-400" />
+                <span className="h-2.5 w-2.5 rounded-full bg-amber-400" />
+                <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                <span className="ml-2 text-xs font-semibold text-slate-400">
+                  {locale === "en" ? "Dialog" : "Dialog"}
+                </span>
+              </div>
+              <ul className="space-y-3 p-4">
+                {graphType.interactionLoop.map((item, index) => (
+                  <ChatBubble key={`${item.title}-${index}`} actor={item.title} body={item.body} />
+                ))}
+              </ul>
             </div>
           </div>
 
@@ -379,18 +374,75 @@ export function GraphTypeDetailTemplate({
   );
 }
 
-function getTraceTone(actor: "User" | "System" | "Graph" | "LLM"): string {
-  if (actor === "User") {
-    return "border-sky-200 bg-sky-50";
-  }
-  if (actor === "System") {
-    return "border-slate-200 bg-slate-50";
-  }
-  if (actor === "Graph") {
-    return "border-emerald-200 bg-emerald-50";
-  }
+const CHAT_ACTOR_CONFIG = {
+  User: {
+    side: "right" as const,
+    bubbleCls: "bg-sky-600 text-white",
+    artifactCls: "bg-sky-700/30 text-sky-100",
+    avatarCls: "bg-sky-100 text-sky-700",
+    nameCls: "text-sky-700",
+    Icon: UserRound,
+  },
+  Graph: {
+    side: "left" as const,
+    bubbleCls: "border border-emerald-200 bg-emerald-50 text-emerald-950",
+    artifactCls: "bg-emerald-100 text-emerald-700",
+    avatarCls: "bg-emerald-100 text-emerald-700",
+    nameCls: "text-emerald-700",
+    Icon: GitBranch,
+  },
+  LLM: {
+    side: "left" as const,
+    bubbleCls: "border border-violet-200 bg-violet-50 text-violet-950",
+    artifactCls: "bg-violet-100 text-violet-700",
+    avatarCls: "bg-violet-100 text-violet-700",
+    nameCls: "text-violet-700",
+    Icon: Bot,
+  },
+  System: {
+    side: "left" as const,
+    bubbleCls: "border border-slate-200 bg-slate-100 text-slate-900",
+    artifactCls: "bg-slate-200 text-slate-600",
+    avatarCls: "bg-slate-200 text-slate-600",
+    nameCls: "text-slate-500",
+    Icon: GitBranch,
+  },
+} as const;
 
-  return "border-violet-200 bg-violet-50";
+function ChatBubble({
+  actor,
+  body,
+  title,
+  artifact,
+}: {
+  actor: string;
+  body: string;
+  title?: string;
+  artifact?: string;
+}): React.JSX.Element {
+  const config = CHAT_ACTOR_CONFIG[actor as keyof typeof CHAT_ACTOR_CONFIG] ?? CHAT_ACTOR_CONFIG.User;
+  const { side, bubbleCls, artifactCls, avatarCls, nameCls, Icon } = config;
+  const isRight = side === "right";
+
+  return (
+    <li className={`flex items-end gap-2 ${isRight ? "flex-row-reverse" : "flex-row"}`}>
+      <span className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full ${avatarCls}`}>
+        <Icon className="h-4 w-4" aria-hidden />
+      </span>
+      <div className={`max-w-[78%] flex flex-col gap-1 ${isRight ? "items-end" : "items-start"}`}>
+        <span className={`px-1 text-xs font-bold uppercase tracking-[0.14em] ${nameCls}`}>{actor}</span>
+        <div className={`rounded-2xl px-4 py-3 text-sm leading-relaxed ${bubbleCls} ${isRight ? "rounded-br-sm" : "rounded-bl-sm"}`}>
+          {title && <p className="mb-1 text-xs font-bold uppercase tracking-[0.12em] opacity-70">{title}</p>}
+          <p className="font-medium">{body}</p>
+          {artifact && (
+            <p className={`mt-2 rounded-lg px-2 py-1 text-xs font-bold uppercase tracking-[0.1em] ${artifactCls}`}>
+              {artifact}
+            </p>
+          )}
+        </div>
+      </div>
+    </li>
+  );
 }
 
 const ACCENT_CLASSES = {
