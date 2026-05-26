@@ -12,6 +12,7 @@ import type { QuerySuggestionGroup } from "@/components/molecules/query-input";
 import { ActionCard } from "@/components/organisms/action-card";
 import { AnswerCard } from "@/components/organisms/answer-card";
 import {
+  getUserFacingQueryErrorMessage,
   getStatusHint,
   type QueryPanelStatus,
 } from "@/components/organisms/query-panel-status";
@@ -282,6 +283,15 @@ export function QueryPanel({ locale }: QueryPanelProps): React.JSX.Element {
     answerLoadError: isEn ? "Could not load answer." : "Antwort konnte nicht geladen werden.",
     llmOnlyLoadError: isEn ? "Could not load LLM-only answer." : "LLM-only Antwort konnte nicht geladen werden.",
     unexpectedError: isEn ? "Unexpected error while running the request." : "Unerwarteter Fehler während der Anfrage.",
+    graphUnavailable: isEn
+      ? "The knowledge graph is not available right now. Please try again in a moment."
+      : "Der Wissensgraph ist gerade nicht erreichbar. Bitte versuche es gleich noch einmal.",
+    rateLimit: isEn
+      ? "The demo is receiving many requests right now. Please try again shortly."
+      : "Die Demo erhält gerade viele Anfragen. Bitte versuche es in Kürze erneut.",
+    llmUnavailable: isEn
+      ? "The answer service is not available right now. Please try again in a moment."
+      : "Der Antwortdienst ist gerade nicht erreichbar. Bitte versuche es gleich noch einmal.",
     systemGraphLoadError: isEn ? "Could not load system graph." : "System-Graph konnte nicht geladen werden.",
     systemGraphCaption: (nodes: number, edges: number) =>
       isEn
@@ -502,7 +512,14 @@ export function QueryPanel({ locale }: QueryPanelProps): React.JSX.Element {
 
       if (!graphResponse.ok) {
         const remoteMessage = await graphResponse.text();
-        throw new Error(remoteMessage || copy.answerLoadError);
+        throw new Error(
+          getUserFacingQueryErrorMessage(remoteMessage, {
+            fallback: copy.answerLoadError,
+            graphUnavailable: copy.graphUnavailable,
+            rateLimit: copy.rateLimit,
+            llmUnavailable: copy.llmUnavailable,
+          }),
+        );
       }
 
       const payload = (await graphResponse.json()) as QuerySuccessResponse;
@@ -523,7 +540,12 @@ export function QueryPanel({ locale }: QueryPanelProps): React.JSX.Element {
         setLlmOnlyAnswer(llmOnlyPayload.answer);
       } else {
         const llmErrorText = await llmOnlyResponse.text();
-        llmOnlyErrorSnapshot = llmErrorText || copy.llmOnlyLoadError;
+        llmOnlyErrorSnapshot = getUserFacingQueryErrorMessage(llmErrorText, {
+          fallback: copy.llmOnlyLoadError,
+          graphUnavailable: copy.graphUnavailable,
+          rateLimit: copy.rateLimit,
+          llmUnavailable: copy.llmUnavailable,
+        });
         setLlmOnlyError(llmOnlyErrorSnapshot);
       }
 

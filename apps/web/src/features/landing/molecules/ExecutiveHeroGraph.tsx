@@ -1,10 +1,16 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import cytoscape, { type Core, type ElementDefinition } from "cytoscape";
+import cytoscapeImport, { type Core, type ElementDefinition, type EventObject } from "cytoscape";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 
 type QueryLocale = "de" | "en";
+
+const cytoscape = (
+  typeof cytoscapeImport === "function"
+    ? cytoscapeImport
+    : (cytoscapeImport as unknown as { default: typeof cytoscapeImport }).default
+);
 
 function getElements(locale: QueryLocale): ElementDefinition[] {
   const isEn = locale === "en";
@@ -303,7 +309,7 @@ export function ExecutiveHeroGraph({ locale }: ExecutiveHeroGraphProps): React.J
       }, 110);
     }
 
-    const handleNodeMouseOver = (event: cytoscape.EventObject) => {
+    const handleNodeMouseOver = (event: EventObject) => {
       if (!isCyActive(cy)) {
         return;
       }

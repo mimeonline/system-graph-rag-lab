@@ -1,6 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { getStatusHint } from "@/components/organisms/query-panel-status";
+import {
+  getStatusHint,
+  getUserFacingQueryErrorMessage,
+} from "@/components/organisms/query-panel-status";
 
 const copy = {
   idle: {
@@ -45,5 +48,40 @@ describe("getStatusHint", () => {
 
     expect(hint.statusText).toContain("zu wenig passenden Kontext");
     expect(hint.nextAction).toContain("einfacher oder konkreter");
+  });
+});
+
+describe("getUserFacingQueryErrorMessage", () => {
+  const errorCopy = {
+    fallback: "Antwort konnte nicht geladen werden.",
+    graphUnavailable: "Der Wissensgraph ist gerade nicht erreichbar. Bitte versuche es gleich noch einmal.",
+    rateLimit: "Die Demo erhält gerade viele Anfragen. Bitte versuche es in Kürze erneut.",
+    llmUnavailable: "Der Antwortdienst ist gerade nicht erreichbar. Bitte versuche es gleich noch einmal.",
+  };
+
+  it("maps graph backend downtime to a user-facing message", () => {
+    const message = getUserFacingQueryErrorMessage(
+      JSON.stringify({
+        status: "error",
+        error: {
+          code: "GRAPH_BACKEND_UNAVAILABLE",
+          message: "Der Graph-Backend-Service ist derzeit nicht erreichbar.",
+        },
+      }),
+      errorCopy,
+    );
+
+    expect(message).toBe(errorCopy.graphUnavailable);
+    expect(message).not.toContain("Backend");
+    expect(message).not.toContain("GRAPH_BACKEND_UNAVAILABLE");
+  });
+
+  it("hides unexpected JSON payloads behind the generic fallback", () => {
+    const message = getUserFacingQueryErrorMessage(
+      JSON.stringify({ status: "error", error: { code: "INTERNAL_ERROR" } }),
+      errorCopy,
+    );
+
+    expect(message).toBe(errorCopy.fallback);
   });
 });

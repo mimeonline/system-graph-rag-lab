@@ -18,6 +18,7 @@ import {
 } from "@/features/query/contracts";
 
 const OPENAI_EMBEDDINGS_ENDPOINT = "https://api.openai.com/v1/embeddings";
+const QUERY_EMBEDDING_DIMENSIONS = 4;
 const GRAPH_VECTOR_SEARCH_LIMIT = TOP_K * 2;
 const GRAPH_NEIGHBOR_LIMIT_PER_CANDIDATE = 3;
 const TOOL_LINK_LIMIT_PER_REFERENCE = 3;
@@ -47,8 +48,8 @@ const GRAPH_NEIGHBOR_QUERY = `
     WITH parentId
     MATCH (parent {id: parentId})-[rel]-(neighbor)
     WHERE neighbor.id IS NOT NULL AND neighbor.id <> parentId
-    RETURN parentId, neighbor.id AS neighborId
-    LIMIT $neighborLimit
+    RETURN neighbor.id AS neighborId
+    LIMIT toInteger($neighborLimit)
   }
   RETURN parentId, neighborId
 `;
@@ -578,6 +579,7 @@ async function fetchQueryEmbedding(options: {
       body: JSON.stringify({
         model,
         input: query,
+        dimensions: QUERY_EMBEDDING_DIMENSIONS,
       }),
     });
   } catch {

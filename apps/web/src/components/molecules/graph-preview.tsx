@@ -1,8 +1,10 @@
+"use client";
+
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import type { HomeGraphModel, HomeGraphNode } from "@/features/home/graph-view-model";
-import cytoscape, { type Core, type ElementDefinition } from "cytoscape";
+import cytoscapeImport, { type Core, type ElementDefinition, type Ext, type LayoutOptions } from "cytoscape";
 import dagre from "cytoscape-dagre";
 import { useEffect, useMemo, useRef, useState } from "react";
 
@@ -45,6 +47,11 @@ const NODE_SIZE_BY_KIND: Record<HomeGraphNode["kind"], { width: number; height: 
 };
 
 let dagreRegistered = false;
+const cytoscape = (
+  typeof cytoscapeImport === "function"
+    ? cytoscapeImport
+    : (cytoscapeImport as unknown as { default: typeof cytoscapeImport }).default
+);
 
 function isCyActive(cy: Core | null | undefined): cy is Core {
   if (!cy) {
@@ -89,7 +96,7 @@ function getNodeTypeLegend(locale: "de" | "en"): Array<{
 
 function ensureDagreRegistered(): void {
   if (!dagreRegistered) {
-    cytoscape.use(dagre);
+    cytoscape.use(dagre as unknown as Ext);
     dagreRegistered = true;
   }
 }
@@ -316,7 +323,7 @@ function buildMiniMapSnapshot(cy: Core): MiniMapSnapshot {
   return { nodes, edges };
 }
 
-function buildLayout(mode: GraphLayoutMode, nodeCount: number): cytoscape.LayoutOptions {
+function buildLayout(mode: GraphLayoutMode, nodeCount: number): LayoutOptions {
   if (mode === "force") {
     const denseGraph = nodeCount >= 40;
     return {
@@ -336,7 +343,7 @@ function buildLayout(mode: GraphLayoutMode, nodeCount: number): cytoscape.Layout
       numIter: denseGraph ? 3400 : 2400,
       coolingFactor: 0.95,
       minTemp: 1.0,
-    } as unknown as cytoscape.LayoutOptions;
+    } as unknown as LayoutOptions;
   }
 
   return {
@@ -348,7 +355,7 @@ function buildLayout(mode: GraphLayoutMode, nodeCount: number): cytoscape.Layout
     rankSep: 94,
     edgeSep: 20,
     padding: 20,
-  } as unknown as cytoscape.LayoutOptions;
+  } as unknown as LayoutOptions;
 }
 
 function computeForceSeedPositions(nodes: HomeGraphNode[]): Map<string, { x: number; y: number }> {
@@ -801,7 +808,7 @@ export function GraphPreview({
 
   useEffect(() => {
     const container = containerRef.current;
-    if (!container) {
+    if (!container || !interactive) {
       return;
     }
 
@@ -1131,7 +1138,7 @@ export function GraphPreview({
       });
       setTooltip(null);
     };
-  }, [elements, layoutMode, nodeCount, highlightNodeIds]);
+  }, [elements, interactive, layoutMode, nodeCount, highlightNodeIds]);
 
   const handleFit = () => {
     withCySafely(cyRef.current, (activeCy) => {
@@ -1380,7 +1387,11 @@ export function GraphPreview({
         className="relative overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-slate-50 via-sky-50/40 to-indigo-50/40"
         style={{ minHeight: `${graphHeightPx}px` }}
       >
-        <div ref={containerRef} className="w-full" style={{ height: `${graphHeightPx}px` }} />
+        {interactive ? (
+          <div ref={containerRef} className="w-full" style={{ height: `${graphHeightPx}px` }} />
+        ) : (
+          <StaticGraphView model={model} />
+        )}
         {tooltip ? (
           <div
             className="pointer-events-none absolute z-20 max-w-[220px] rounded-md border border-slate-200 bg-white px-3 py-1.5 text-xs leading-relaxed text-slate-700 shadow-md"
@@ -1612,6 +1623,111 @@ function getCollapsibleDescriptionText(text: string | undefined, expanded: boole
     return compact;
   }
   return truncateText(compact, 180);
+}
+
+function StaticGraphView({ model }: { model: HomeGraphModel }): React.JSX.Element {
+  const nodeById = new Map(model.nodes.map((node) => [node.id, node]));
+
+  return (
+    <svg
+      viewBox="0 0 100 100"
+      preserveAspectRatio="xMidYMid meet"
+      className="block h-full min-h-100 w-full"
+      role="img"
+      aria-label="Graph-Vorschau"
+    >
+      <defs>
+        <marker id="static-graph-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#94a3b8" />
+        </marker>
+      </defs>
+      {model.edges.map((edge) => {
+        const source = nodeById.get(edge.source);
+        const target = nodeById.get(edge.target);
+        if (!source || !target) {
+          return null;
+        }
+
+        const midX = (source.x + target.x) / 2;
+        const midY = (source.y + target.y) / 2;
+        return (
+          <g key={edge.id}>
+            <line
+              x1={source.x}
+              y1={source.y}
+              x2={target.x}
+              y2={target.y}
+              stroke="#94a3b8"
+              strokeWidth="0.8"
+              strokeDasharray="2 2"
+              markerEnd="url(#static-graph-arrow)"
+            />
+            <text
+              x={midX}
+              y={midY - 2}
+              textAnchor="middle"
+              className="fill-slate-500 text-[3px] font-semibold"
+            >
+              {truncateText(edge.label, 14)}
+            </text>
+          </g>
+        );
+      })}
+      {model.nodes.map((node) => {
+        const nodeType = normalizeNodeType(node);
+        const label = stripNodeTypePrefix(node.compactLabel ?? node.label, nodeType);
+        const width = Math.min(30, Math.max(17, label.length * 1.8 + 7));
+        const height = nodeType === "query" || nodeType === "answer" ? 10 : 12;
+        const x = Math.max(2, Math.min(98 - width, node.x - width / 2));
+        const y = Math.max(2, Math.min(98 - height, node.y - height / 2));
+        const colors = staticGraphNodeColors(nodeType);
+
+        return (
+          <g key={node.id}>
+            <rect
+              x={x}
+              y={y}
+              width={width}
+              height={height}
+              rx="2.5"
+              fill={colors.fill}
+              stroke={colors.stroke}
+              strokeWidth="0.7"
+            />
+            <text
+              x={x + width / 2}
+              y={y + height / 2 + 1}
+              textAnchor="middle"
+              className="fill-slate-800 text-[3.2px] font-bold"
+            >
+              {truncateText(label, 17)}
+            </text>
+          </g>
+        );
+      })}
+    </svg>
+  );
+}
+
+function staticGraphNodeColors(nodeType: string): { fill: string; stroke: string } {
+  switch (nodeType) {
+    case "tool":
+      return { fill: "#dcfce7", stroke: "#15803d" };
+    case "problem":
+      return { fill: "#ffedd5", stroke: "#c2410c" };
+    case "book":
+      return { fill: "#f3e8ff", stroke: "#7e22ce" };
+    case "author":
+      return { fill: "#fef3c7", stroke: "#b45309" };
+    case "query":
+      return { fill: "#dbeafe", stroke: "#1d4ed8" };
+    case "evidence":
+      return { fill: "#f1f5f9", stroke: "#64748b" };
+    case "answer":
+      return { fill: "#e0e7ff", stroke: "#4338ca" };
+    default:
+      return { fill: "#e0f2fe", stroke: "#0369a1" };
+  }
 }
 
 function MiniMapView({

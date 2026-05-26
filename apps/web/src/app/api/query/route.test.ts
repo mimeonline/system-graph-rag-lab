@@ -369,6 +369,15 @@ describe("POST /api/query", () => {
     expect(firstVectorCall).toEqual(
       expect.objectContaining({ vectorIndex: "node_embedding_index" }),
     );
+    const embeddingFetchCall = vi.mocked(fetch).mock.calls.find(([input]) => {
+      const url = input instanceof Request ? input.url : input.toString();
+      return url.includes("/embeddings");
+    });
+    expect(embeddingFetchCall).toBeDefined();
+    const embeddingRequest = JSON.parse(String(embeddingFetchCall?.[1]?.body)) as {
+      dimensions?: number;
+    };
+    expect(embeddingRequest.dimensions).toBe(4);
 
     expect(response.status).toBe(200);
     expect(body.status).toBe("ok");

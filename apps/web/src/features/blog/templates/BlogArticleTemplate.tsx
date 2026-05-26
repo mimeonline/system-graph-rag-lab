@@ -6,7 +6,7 @@ import { SiteHeader } from "@/components/organisms/site-header";
 import { withCanonical } from "@/config/site";
 import { Link } from "@/i18n/navigation";
 import type { BlogPostFrontmatter, BlogTocItem } from "@/features/blog/contracts";
-import { Linkedin } from "lucide-react";
+import { Share2 } from "lucide-react";
 import Image from "next/image";
 
 type BlogArticleTemplateProps = {
@@ -228,7 +228,7 @@ export function BlogArticleTemplate({
                 payload={{ channel: "linkedin", slug: frontmatter.slug }}
                 className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:bg-slate-50 hover:-translate-y-0.5 hover:shadow-md"
                 external
-                icon={<Linkedin className="h-4 w-4" aria-hidden />}
+                icon={<Share2 className="h-4 w-4" aria-hidden />}
               />
               <TrackedLink
                 href={xShare}

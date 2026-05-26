@@ -1,7 +1,12 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import cytoscape, { type Core, type ElementDefinition, type StylesheetCSS } from "cytoscape";
+import cytoscapeImport, {
+  type Core,
+  type ElementDefinition,
+  type EventObject,
+  type StylesheetCSS,
+} from "cytoscape";
 import { Focus, MousePointer2 } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { useRouter } from "@/i18n/navigation";
@@ -10,6 +15,12 @@ type EssayNodeKind = "cluster" | "essay";
 type GraphNodeKind = EssayNodeKind | "cluster-label";
 type FlowMode = "desktop" | "mobile";
 type TooltipSide = "top" | "bottom";
+
+const cytoscape = (
+  typeof cytoscapeImport === "function"
+    ? cytoscapeImport
+    : (cytoscapeImport as unknown as { default: typeof cytoscapeImport }).default
+);
 
 type EssayClusterData = {
   id: string;
@@ -616,7 +627,7 @@ export function GraphEssaysSurface({ locale }: GraphEssaysSurfaceProps): React.J
     resizeObserver.observe(container);
     resizeObserver.observe(graphBox);
 
-    const handleNodeMouseOver = (event: cytoscape.EventObject) => {
+    const handleNodeMouseOver = (event: EventObject) => {
       if (!isCyActive(cy)) {
         return;
       }
@@ -648,7 +659,7 @@ export function GraphEssaysSurface({ locale }: GraphEssaysSurfaceProps): React.J
       setTooltipState((current) => ({ ...current, open: false }));
     };
 
-    const handleTapNode = (event: cytoscape.EventObject) => {
+    const handleTapNode = (event: EventObject) => {
       const node = event.target;
       if (String(node.data("kind")) !== "essay") {
         return;
