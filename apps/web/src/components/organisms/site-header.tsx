@@ -1,46 +1,241 @@
 "use client";
 
-import { ChevronDown, Menu, X } from "lucide-react";
-import { useState } from "react";
+import { Menu, X } from "lucide-react";
+import { useCallback, useEffect, useState } from "react";
+
 import { TrackedLink } from "@/components/molecules/tracked-link";
-import { useLocale, useTranslations } from "next-intl";
+import { siteNavigation, type NavChild, type NavItem } from "@/components/organisms/siteNavigation";
+import {
+  NavigationMenu,
+  NavigationMenuContent,
+  NavigationMenuItem,
+  NavigationMenuLink,
+  NavigationMenuList,
+  NavigationMenuTrigger,
+} from "@/components/ui/navigation-menu";
 import type { AppLocale } from "@/i18n/config";
 import { usePathname } from "@/i18n/navigation";
-import { DEMO_GRAPH_TYPES } from "@/features/demo/graph-type-learning-model";
+import { cn } from "@/lib/utils";
+import { useLocale, useTranslations } from "next-intl";
 
-const NAV_LINKS = [
-  { labelKey: "home", href: "/" },
-  { labelKey: "demo", href: "/demo" },
-  { labelKey: "story", href: "/story/graphrag" },
-  { labelKey: "essay", href: "/essay" },
-] as const;
+function hrefPath(href: string): string {
+  return href.split("?")[0] ?? href;
+}
 
 function isActivePath(pathname: string, href: string): boolean {
-  if (href === "/") {
-    return pathname === href;
+  const path = hrefPath(href);
+
+  if (path === "/") {
+    return pathname === path;
   }
 
-  return pathname === href || pathname.startsWith(`${href}/`);
+  return pathname === path || pathname.startsWith(`${path}/`);
+}
+
+function navText(item: NavItem | NavChild, locale: AppLocale) {
+  return item.text[locale] ?? item.text.de;
+}
+
+function primaryLinkClass(isActive: boolean): string {
+  return cn(
+    "inline-flex h-9 items-center justify-center gap-2 rounded-md px-3 text-sm font-medium transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70",
+    isActive ? "bg-white/20 text-white" : "text-slate-100 hover:bg-white/10 hover:text-white",
+  );
+}
+
+function childLinkClass(isActive: boolean): string {
+  return cn(
+    "flex min-w-0 items-start gap-3 rounded-md px-3 py-2.5 text-left transition-colors",
+    isActive ? "bg-white/15 text-white" : "text-slate-100 hover:bg-white/10 hover:text-white",
+  );
+}
+
+function DesktopNavigationChild({
+  child,
+  locale,
+  pathname,
+}: {
+  child: NavChild;
+  locale: AppLocale;
+  pathname: string;
+}) {
+  const Icon = child.icon;
+  const text = navText(child, locale);
+  const active = isActivePath(pathname, child.href);
+
+  return (
+    <NavigationMenuLink asChild>
+      <TrackedLink
+        aria-current={active ? "page" : undefined}
+        href={child.href}
+        label={text.label}
+        eventName="nav_sub_click"
+        payload={{ href: child.href, surface: "desktop" }}
+        className={childLinkClass(active)}
+      >
+        <Icon className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+        <span className="min-w-0">
+          <span className="block text-sm font-semibold">{text.label}</span>
+          <span className="mt-0.5 block text-xs leading-relaxed text-slate-300">{text.description}</span>
+        </span>
+      </TrackedLink>
+    </NavigationMenuLink>
+  );
+}
+
+function DesktopNavigationItem({
+  item,
+  locale,
+  pathname,
+}: {
+  item: NavItem;
+  locale: AppLocale;
+  pathname: string;
+}) {
+  const Icon = item.icon;
+  const text = navText(item, locale);
+  const active = isActivePath(pathname, item.href);
+  const hasChildren = Boolean(item.children?.length);
+
+  if (!hasChildren) {
+    return (
+      <NavigationMenuItem>
+        <NavigationMenuLink asChild>
+          <TrackedLink
+            aria-current={active ? "page" : undefined}
+            href={item.href}
+            label={text.label}
+            eventName="nav_click"
+            payload={{ href: item.href, surface: "desktop" }}
+            className={primaryLinkClass(active)}
+          >
+            <Icon className="h-4 w-4" aria-hidden />
+            {text.label}
+          </TrackedLink>
+        </NavigationMenuLink>
+      </NavigationMenuItem>
+    );
+  }
+
+  return (
+    <NavigationMenuItem>
+      <div
+        className={cn(
+          "inline-flex items-center overflow-hidden rounded-md text-sm font-medium transition-colors",
+          active ? "bg-white/20 text-white" : "text-slate-100 hover:bg-white/10 hover:text-white",
+        )}
+      >
+        <NavigationMenuLink asChild>
+          <TrackedLink
+            aria-current={active ? "page" : undefined}
+            href={item.href}
+            label={text.label}
+            eventName="nav_click"
+            payload={{ href: item.href, surface: "desktop" }}
+            className="inline-flex h-9 items-center gap-2 py-1.5 pl-3 pr-1 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70"
+          >
+            <Icon className="h-4 w-4" aria-hidden />
+            {text.label}
+          </TrackedLink>
+        </NavigationMenuLink>
+        <NavigationMenuTrigger
+          aria-label={
+            locale === "en" ? `${text.label} sections` : `${text.label} Unterbereiche anzeigen`
+          }
+          className={cn(
+            "h-9 rounded-none px-1.5",
+            active
+              ? "text-white/80 hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white data-[state=open]:bg-white/10 data-[state=open]:text-white"
+              : "text-slate-300",
+          )}
+          title={locale === "en" ? `${text.label} sections` : `${text.label} Unterbereiche anzeigen`}
+        />
+      </div>
+      <NavigationMenuContent className="w-80">
+        <div className="mb-1 rounded-md border border-white/10 bg-white/5 px-3 py-2">
+          <p className="text-sm font-semibold text-white">{text.label}</p>
+          <p className="mt-0.5 text-xs leading-relaxed text-slate-300">{text.description}</p>
+        </div>
+        <div className="grid gap-1">
+          {item.children?.map((child) => (
+            <DesktopNavigationChild key={child.href} child={child} locale={locale} pathname={pathname} />
+          ))}
+        </div>
+      </NavigationMenuContent>
+    </NavigationMenuItem>
+  );
+}
+
+function MobileNavigationChild({
+  child,
+  locale,
+  pathname,
+  onNavigate,
+}: {
+  child: NavChild;
+  locale: AppLocale;
+  pathname: string;
+  onNavigate: () => void;
+}) {
+  const Icon = child.icon;
+  const text = navText(child, locale);
+  const active = isActivePath(pathname, child.href);
+
+  return (
+    <TrackedLink
+      href={child.href}
+      label={text.label}
+      eventName="nav_sub_click"
+      payload={{ href: child.href, surface: "mobile" }}
+      onClick={onNavigate}
+      className={childLinkClass(active)}
+    >
+      <Icon className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+      <span className="min-w-0">
+        <span className="block text-sm font-medium">{text.label}</span>
+        <span className="mt-0.5 block text-xs leading-relaxed text-slate-300">{text.description}</span>
+      </span>
+    </TrackedLink>
+  );
 }
 
 export function SiteHeader(): React.JSX.Element {
-  const tNav = useTranslations("Navigation");
   const tHeader = useTranslations("SiteHeader");
   const tLocale = useTranslations("LocaleSwitcher");
   const locale = useLocale() as AppLocale;
   const pathname = usePathname();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const localeItems: AppLocale[] = ["de", "en"];
+  const closeMobileMenu = useCallback(() => setIsMobileMenuOpen(false), []);
+
+  useEffect(() => {
+    if (!isMobileMenuOpen) return;
+
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsMobileMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", onKey);
+    return () => document.removeEventListener("keydown", onKey);
+  }, [isMobileMenuOpen]);
 
   return (
     <header className="sticky top-0 z-40 border-b border-[#173663] bg-[#0c2345]/95 text-white backdrop-blur">
       <div className="mx-auto flex min-h-16 w-full max-w-[1180px] items-center justify-between gap-3 px-4 py-3 sm:px-6 sm:py-2">
-        <div className="min-w-0 flex items-center gap-2.5 sm:gap-3">
-          <p className="truncate text-sm font-semibold tracking-[0.01em]">System GraphRAG Lab</p>
+        <TrackedLink
+          href="/"
+          label="System GraphRAG Lab"
+          eventName="nav_brand_click"
+          payload={{ href: "/", surface: "header" }}
+          className="min-w-0 flex items-center gap-2.5 text-white transition-opacity hover:opacity-85 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white/70 sm:gap-3"
+        >
+          <span className="truncate text-sm font-semibold tracking-[0.01em]">System GraphRAG Lab</span>
           <span className="hidden text-[11px] uppercase tracking-[0.16em] text-slate-300 sm:inline">
             {tHeader("productBadge")}
           </span>
-        </div>
+        </TrackedLink>
 
         <div className="flex items-center gap-2">
           <button
@@ -54,76 +249,14 @@ export function SiteHeader(): React.JSX.Element {
             {isMobileMenuOpen ? <X className="h-5 w-5" aria-hidden /> : <Menu className="h-5 w-5" aria-hidden />}
           </button>
 
-          <nav
-            className="hidden items-center gap-1.5 text-sm sm:flex sm:w-auto sm:flex-wrap sm:justify-end"
-            aria-label={tHeader("navigationLabel")}
-          >
-            {NAV_LINKS.map((link) => {
-              const isActive = isActivePath(pathname, link.href);
-              if (link.labelKey === "demo") {
-                return (
-                  <div key={link.href} className="group relative">
-                    <TrackedLink
-                      href={link.href}
-                      label={tNav(link.labelKey)}
-                      eventName="nav_click"
-                      payload={{ href: link.href }}
-                      className={`inline-flex items-center justify-center gap-1 rounded-md px-3 py-1.5 text-center transition ${
-                        isActive
-                          ? "bg-white/20 text-white"
-                          : "text-slate-100 hover:bg-white/10"
-                      }`}
-                    >
-                      <span>{tNav(link.labelKey)}</span>
-                      <ChevronDown className="h-3.5 w-3.5 text-white/70" aria-hidden />
-                    </TrackedLink>
-                    <div className="invisible absolute left-0 top-full z-50 w-72 pt-2 opacity-0 transition group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-                      <div className="rounded-2xl border border-white/10 bg-[#102b54] p-2 shadow-xl shadow-slate-950/25">
-                        <TrackedLink
-                          href="/demo"
-                          label={locale === "en" ? "Overview" : "Übersicht"}
-                          eventName="nav_demo_sub_click"
-                          payload={{ href: "/demo" }}
-                          className="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-100 transition hover:bg-white/10"
-                        />
-                        {DEMO_GRAPH_TYPES.map((type) => (
-                          <TrackedLink
-                            key={type.id}
-                            href={`/demo/${type.slug}`}
-                            label={type.title}
-                            eventName="nav_demo_sub_click"
-                            payload={{ href: `/demo/${type.slug}` }}
-                            className="block rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-100 transition hover:bg-white/10"
-                          />
-                        ))}
-                        <TrackedLink
-                          href="/demo/live"
-                          label={locale === "en" ? "Live mode" : "Live-Modus"}
-                          eventName="nav_demo_sub_click"
-                          payload={{ href: "/demo/live" }}
-                          className="mt-1 block rounded-xl border-t border-white/10 px-3 py-2.5 text-sm font-semibold text-slate-100 transition hover:bg-white/10"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                );
-              }
-
-              return (
-                <TrackedLink
-                  key={link.href}
-                  href={link.href}
-                  label={tNav(link.labelKey)}
-                  eventName="nav_click"
-                  payload={{ href: link.href }}
-                  className={`inline-flex items-center justify-center rounded-md px-3 py-1.5 text-center transition ${
-                    isActive
-                      ? "bg-white/20 text-white"
-                      : "text-slate-100 hover:bg-white/10"
-                  }`}
-                />
-              );
-            })}
+          <nav className="hidden items-center gap-1.5 text-sm sm:flex" aria-label={tHeader("navigationLabel")}>
+            <NavigationMenu className="contents" delayDuration={150} skipDelayDuration={250} viewport={false}>
+              <NavigationMenuList>
+                {siteNavigation.map((item) => (
+                  <DesktopNavigationItem key={item.href} item={item} locale={locale} pathname={pathname} />
+                ))}
+              </NavigationMenuList>
+            </NavigationMenu>
           </nav>
 
           <div
@@ -132,11 +265,7 @@ export function SiteHeader(): React.JSX.Element {
           >
             {localeItems.map((item) =>
               item === locale ? (
-                <span
-                  key={item}
-                  className="rounded bg-white/12 px-1.5 py-1 text-white"
-                  aria-current="true"
-                >
+                <span key={item} className="rounded bg-white/12 px-1.5 py-1 text-white" aria-current="true">
                   {item.toUpperCase()}
                 </span>
               ) : (
@@ -157,10 +286,7 @@ export function SiteHeader(): React.JSX.Element {
 
       {isMobileMenuOpen ? (
         <div id="mobile-nav" className="border-t border-white/10 bg-[#102b54] sm:hidden">
-          <nav
-            className="mx-auto grid w-full max-w-[1180px] gap-2 px-4 py-3"
-            aria-label={tHeader("mobileNavigationLabel")}
-          >
+          <nav className="mx-auto grid w-full max-w-[1180px] gap-2 px-4 py-3" aria-label={tHeader("mobileNavigationLabel")}>
             <div
               className="flex items-center justify-center gap-1 pb-1 text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-300"
               aria-label={tLocale("label")}
@@ -183,52 +309,45 @@ export function SiteHeader(): React.JSX.Element {
                 ),
               )}
             </div>
-            {NAV_LINKS.map((link) => {
-              const isActive = isActivePath(pathname, link.href);
-              const primaryLink = (
-                <TrackedLink
-                  key={link.href}
-                  href={link.href}
-                  label={tNav(link.labelKey)}
-                  eventName="nav_click"
-                  payload={{ href: link.href }}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={`inline-flex min-h-11 items-center justify-center rounded-md px-4 py-3 text-center text-sm font-medium transition ${
-                    isActive
-                      ? "bg-white/20 text-white"
-                      : "bg-white/5 text-slate-100 hover:bg-white/10"
-                  }`}
-                />
-              );
-
-              if (link.labelKey !== "demo") {
-                return primaryLink;
-              }
+            {siteNavigation.map((item) => {
+              const Icon = item.icon;
+              const text = navText(item, locale);
+              const active = isActivePath(pathname, item.href);
 
               return (
-                <div key={link.href} className="grid gap-2">
-                  {primaryLink}
-                  <div className="grid gap-1 rounded-xl bg-white/5 p-2">
-                    {DEMO_GRAPH_TYPES.map((type) => (
-                      <TrackedLink
-                        key={type.id}
-                        href={`/demo/${type.slug}`}
-                        label={type.title}
-                        eventName="nav_demo_sub_click"
-                        payload={{ href: `/demo/${type.slug}`, surface: "mobile" }}
-                        onClick={() => setIsMobileMenuOpen(false)}
-                        className="inline-flex min-h-10 items-center rounded-lg px-3 text-sm font-medium text-slate-100 transition hover:bg-white/10"
-                      />
-                    ))}
-                    <TrackedLink
-                      href="/demo/live"
-                      label={locale === "en" ? "Live mode" : "Live-Modus"}
-                      eventName="nav_demo_sub_click"
-                      payload={{ href: "/demo/live", surface: "mobile" }}
-                      onClick={() => setIsMobileMenuOpen(false)}
-                      className="inline-flex min-h-10 items-center rounded-lg px-3 text-sm font-medium text-slate-100 transition hover:bg-white/10"
-                    />
-                  </div>
+                <div key={item.href} className="grid gap-1">
+                  <TrackedLink
+                    href={item.href}
+                    label={text.label}
+                    eventName="nav_click"
+                    payload={{ href: item.href, surface: "mobile" }}
+                    onClick={closeMobileMenu}
+                    className={cn(
+                      "inline-flex min-h-11 items-start gap-3 rounded-md px-3 py-2.5 text-sm font-medium transition",
+                      active ? "bg-white/20 text-white" : "bg-white/5 text-slate-100 hover:bg-white/10",
+                    )}
+                  >
+                    <Icon className="mt-0.5 h-4 w-4 shrink-0" aria-hidden />
+                    <span className="min-w-0">
+                      <span className="block">{text.label}</span>
+                      <span className={active ? "block text-xs text-white/75" : "block text-xs text-slate-300"}>
+                        {text.description}
+                      </span>
+                    </span>
+                  </TrackedLink>
+                  {item.children ? (
+                    <div className="grid gap-1 border-l border-white/10 pl-3">
+                      {item.children.map((child) => (
+                        <MobileNavigationChild
+                          key={child.href}
+                          child={child}
+                          locale={locale}
+                          pathname={pathname}
+                          onNavigate={closeMobileMenu}
+                        />
+                      ))}
+                    </div>
+                  ) : null}
                 </div>
               );
             })}
