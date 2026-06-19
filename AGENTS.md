@@ -1,111 +1,55 @@
 # AGENTS
 
 ## Projektziel
-Ziel ist der Aufbau eines öffentlich erreichbaren, optisch hochwertigen GraphRAG-MVP im Bereich System Thinking.
+Dieses Repository enthält System GraphRAG Lab: eine öffentliche GraphRAG-Demo für System Thinking.
 
-Das Projekt dient als:
-- Technischer Showcase
-- Lernplattform für strukturierte Main-Agent-Workflows
-- Referenz für spec-first, iteratives Arbeiten
-- Basis für fachlichen Content
+Ziel ist ein technischer Showcase, der nachvollziehbar zeigt, wie eine Systemfrage in strukturierte Antwortlogik, sichtbare Referenzkonzepte und prüfbare Kontextpfade übersetzt wird.
 
 Repository-Dateien sind die Quelle der Wahrheit. Chat-Kontext ist nicht bindend.
 
-## Arbeitsmodell
-Das System arbeitet im Main-Agent-Thread.
+## Sprache und Stil
+- Hauptsprache: Deutsch
+- In deutschen Texten echte Umlaute verwenden
+- Technische Begriffe, API-Namen, Frameworks, IDs und Dateinamen dürfen Englisch bleiben
+- Ton: präzise, didaktisch, veröffentlichbar
+- Keine unnötigen Superlative
+- Keine Gedankenstriche als Stilmittel im deutschen Fließtext
 
-Der Main-Agent übernimmt:
-- Orchestrator
-- Reviewer
-- Umsetzer
-- Gatekeeper
+## Struktur
+- `docs/`: Company-artige Projektunterlagen für Product, Feature, Tech, Business, Marketing, Research und Discovery
+- `docs/product/PRD.md`: maßgebliche Produktreferenz
+- `docs/product/roadmap.md`: leichte Priorisierung nach Horizonten
+- `docs/product/ideas/`: frühe Ideen und explorative Produktgedanken, noch keine Umsetzungszusage
+- `docs/product/PDR/`: Produkt-, Scope- und Discovery-Entscheidungen
+- `docs/feature/`: aktive Feature-Notizen und Übergänge aus Roadmap oder Ideen in konkrete Umsetzung
+- `docs/tech/SPEC.md`: technischer Einstiegspunkt
+- `docs/tech/architecture/`: Architekturüberblick, C4-Sichten und Deployment-Sicht
+- `docs/tech/models/`: Daten- und Graphmodelle
+- `docs/tech/spec/`: API-Vertrag, OpenAPI-Datei und Retrieval Contract
+- `docs/tech/ADR/`: langfristige Architekturentscheidungen
+- `docs/tech/operations/`: lokale Entwicklung, Deployment, Environment, Observability und Betriebsnotizen
+- `docs/business/`: Business-, Markt-, Pricing- und Monetarisierungsnotizen
+- `docs/marketing/`: Launch Readiness, Positionierung, Kanalnotizen und Marketing-Artefakte
+- `docs/research/`: Quellen, externe Referenzen, Snapshots und Evidenz
+- `docs/discovery/`: frühe Discovery- und Kickoff-Artefakte
+- `evals/`: fachliche Eval-Fragen und Rubrics
+- `input/`: lokale Quellenbasis für Seed- und Graph-Kuration
+- `apps/web/`: Next.js App Router Anwendung
 
-Alle Artefakte werden direkt im Main-Agent-Thread erzeugt und gepflegt.
-
-## Rollen und Scope
-Rollen im Projekt:
-- PM
-- UX
-- Architect
-- Dev
-- QA
-- DevOps
-- Security
-
-Die Rollen dienen als Denkraster und Qualitäts-Scope innerhalb eines einzelnen Main-Agent-Runs.
-
-## Rollenlauf im Main-Agent
-Wenn eine Aufgabe einer Rolle zugeordnet ist:
-- Der Main-Agent bearbeitet sie direkt im selben Thread.
-- Die jeweiligen Rollen-Scope-Regeln bleiben inhaltlich verbindlich.
-
-Ein Rollenlauf ist nur vollständig, wenn:
-- relevante Inputs gelesen wurden
-- Artefakte in erlaubten Pfaden erzeugt oder aktualisiert wurden
-- `docs/memory/<rolle>.md` aktualisiert wurde
-- das Rollen-Handoff aktualisiert wurde
-
-## Memory-Policy
-Jede Rolle hat eine persistente Memory-Datei unter:
-- `docs/memory/<rolle>.md`
-
-Regeln:
-- Memory ist strategisch, kurz, nicht redundant.
-- Memory ersetzt kein PRD, kein Backlog und keine Specs.
-- Jede Rolle liest ihre Memory-Datei zu Run-Beginn.
-- Jede Rolle aktualisiert ihre Memory-Datei am Run-Ende.
-- Der Orchestrator prüft das Memory-Update als Gate.
-
-## Source of Truth Pfade
-- Kickoff: `docs/discovery/feature-kickoff.md`
-- Discovery: `docs/discovery/**`
-- UX: `docs/ux/**`
-- Architektur: `docs/architecture/**`, `docs/spec/**`
-- Backlog: `backlog/**`
-- QA: `docs/qa/**`, `evals/**`
-- Betrieb: `docs/ops/**`
-- Handoffs: `docs/handoff/**`
-- Memory: `docs/memory/**`
-
-Entscheidungen müssen in Dateien dokumentiert werden.
-
-## Review-Gates
-Nach jeder Rollen-Ausführung prüft der Orchestrator:
-- Wurden nur erlaubte Pfade geändert?
-- Ist das erwartete Handoff vorhanden?
-- Wurde die Memory-Datei aktualisiert?
-- Gibt es Scope-Verletzungen?
-- Gibt es unbeabsichtigte Architektur- oder Scope-Entscheidungen?
-
-Erst danach startet die nächste Rolle.
-
-Zusätzliche Gate-Taktung:
-- QA nach jeder Story.
-- Security pro Epic verpflichtend.
-- DevOps pro Epic verpflichtend.
-- Vor Public Demo oder Release zusätzlich vollständiger Gate-Run mit QA, Security und DevOps.
-
-## Story-Fortschritt und PM-Freigabe
-Nach jedem Story-Finish durch Dev gilt verbindlich:
-- `backlog/stories/<story>.md` wird aktualisiert mit Status und Test Notes.
-- `backlog/progress.md` wird im selben Run synchron aktualisiert.
-- Dev setzt zu Run-Beginn als ersten operativen Schritt den Story-Status auf `in_progress` und synchronisiert sofort `backlog/progress.md`.
-- Dev setzt den Story-Status nach Abschluss der Implementierung auf `qa` oder `blocked`, nicht auf `accepted`.
-- QA liefert ein Gate-Verdict `Pass` oder `Fail` in den QA-Artefakten.
-- QA setzt bei QA-`Pass` den Story-Status auf `pass` und synchronisiert `backlog/progress.md` im selben Run.
-- PM gibt das finale `accepted` erst nach PM-Review auf Basis von `pass` frei.
-- Erst nach PM-OK gilt eine Story als abgeschlossen.
-
-## Release und Changelog
-- Nach jedem erzeugten Git-Tag muss im selben Run ein entsprechender Eintrag in `CHANGELOG.md` angelegt oder ergänzt werden.
-- Der Changelog-Eintrag muss mindestens Version, Datum und die wichtigsten Änderungen enthalten.
-- Tag und `CHANGELOG.md` müssen inhaltlich konsistent sein.
+## Dokumentationsregeln
+- Neue lose Ideen zuerst unter `docs/product/ideas/` ablegen
+- Dauerhafte Produktentscheidungen als PDR unter `docs/product/PDR/` dokumentieren
+- Dauerhafte Architekturentscheidungen als ADR unter `docs/tech/ADR/` dokumentieren
+- Recherchematerial zuerst unter `docs/research/` sammeln
+- Feature-Schnitte unter `docs/feature/` dokumentieren, wenn eine Idee konkret genug für Umfang, Nutzerwert und Akzeptanzkriterien ist
+- Kein separates Backlog-, Rollen-Memory-, Handoff- oder Gate-Verzeichnis einführen, solange nicht ausdrücklich gewünscht
+- Historie liegt in Git, nicht in zusätzlichen Archivordnern
 
 ## Markdown-Regeln
-- Jede Markdown-Datei hat genau eine H1.
-- Weitere Struktur nur mit H2 und H3.
-- Keine Gedankenstriche als Stilmittel.
-- Inhalte klar, testbar, ohne Buzzwords.
+- Jede Markdown-Datei hat genau eine H1
+- Weitere Struktur nur mit H2 und H3
+- Inhalte klar, testbar und ohne Buzzwords formulieren
+- Interne Links nach Strukturänderungen direkt aktualisieren
 
 ## Betriebsrahmen Public MVP
 - GitHub als öffentliches Repository
@@ -116,50 +60,40 @@ Nach jedem Story-Finish durch Dev gilt verbindlich:
 - Basis-Rate-Limiting vor öffentlicher Freigabe aktiv
 
 ## Tech-Stack Invarianten
-- Next.js ist verbindlich in Version `16.1.6`.
-- API Layer wird in Next.js als Route Handler umgesetzt.
-- UI wird verbindlich mit Tailwind CSS und shadcn/ui umgesetzt.
-- UI-Architektur folgt dem Pattern Atomic Design.
-- Abweichungen sind nur über dokumentierte ADR-Entscheidung zulässig.
+- Next.js ist verbindlich in Version `16.1.6`
+- API Layer wird in Next.js als Route Handler umgesetzt
+- UI wird verbindlich mit Tailwind CSS und shadcn/ui umgesetzt
+- UI-Architektur folgt dem Pattern Atomic Design
+- Abweichungen sind nur über dokumentierte ADR-Entscheidung zulässig
 
 ## Next.js Frontend Regeln
-- `apps/web/src/app/**/page.tsx` bleibt orchestration-only.
-- `page.tsx` darf:
-  - `params` und `searchParams` lesen
-  - ein Feature-Template zusammensetzen
-- `page.tsx` darf nicht:
-  - Business-Logik enthalten
-  - umfangreiches Markup enthalten
-- Page-Templates liegen unter `apps/web/src/features/<feature>/templates/*Template.tsx`.
-- UI-Struktur pro Feature folgt Atomic Design unter `apps/web/src/features/<feature>/`:
-  - `templates/`
-  - `organisms/`
-  - `molecules/`
-  - `atoms/` nur falls feature-lokal nötig
+- `apps/web/src/app/**/page.tsx` bleibt orchestration-only
+- `page.tsx` darf `params` und `searchParams` lesen und ein Feature-Template zusammensetzen
+- `page.tsx` darf keine Business-Logik und kein umfangreiches Markup enthalten
+- Page-Templates liegen unter `apps/web/src/features/<feature>/templates/*Template.tsx`
+- UI-Struktur pro Feature folgt Atomic Design unter `apps/web/src/features/<feature>/`
+- Globale, featureübergreifende Komponenten liegen unter `apps/web/src/components`
+- shadcn/ui-Primitives liegen unter `apps/web/src/components/ui`
+- Globale Hilfslogik und Datenzugriffe gehören nach `apps/web/src/lib`
+- Globale Typen, Interfaces und DTOs gehören nach `apps/web/src/types`
 
 ## Architektur-Invarianten
-- C4 Kontext und C4 Container müssen Mermaid-Diagramme enthalten.
-- `docs/architecture/arc42.md` ist verpflichtender Architekturüberblick mit Mermaid Kontext-, Container- und Sequenzsicht.
-- `docs/architecture/deployment-view.md` ist verpflichtend inklusive Mermaid Deployment-Diagramm.
-- API-Vertrag liegt in `docs/spec/api.md` und maschinenlesbar in `docs/spec/api.openapi.yaml`.
+- C4 Kontext und C4 Container müssen Mermaid-Diagramme enthalten
+- `docs/tech/architecture/arc42.md` ist verpflichtender Architekturüberblick mit Mermaid Kontext-, Container- und Sequenzsicht
+- `docs/tech/architecture/deployment-view.md` ist verpflichtend inklusive Mermaid Deployment-Diagramm
+- API-Vertrag liegt in `docs/tech/spec/api.md` und maschinenlesbar in `docs/tech/spec/api.openapi.yaml`
 
-## Modusrahmen
-### Build Mode
-- Direktarbeit mit Main-Agent für schnelle Iteration
-- Fokus auf Momentum
-- Rollenpipeline kann verkürzt sein
+## Package Management und Workspace
+- Package Manager: `pnpm`
+- Keine Nutzung von `npm` oder `yarn` für Installationen oder Scripts
+- Alle Next.js-App-Kommandos aus `apps/web` ausführen
+- Beispiele:
+  - `cd apps/web && pnpm install`
+  - `cd apps/web && pnpm run typecheck`
+  - `cd apps/web && pnpm run dev`
 
-### Process Mode
-- Strikte Rollenpipeline im Main-Agent-Thread
-- Handoffs und Memory-Updates verpflichtend
-- QA nach jeder Story als Qualitätsgate
-- Security und DevOps pro Epic als Betriebs- und Risikogate
-
-## Package Management & Workspace
-- **Package Manager:** You MUST use `pnpm` for all dependency installations and script executions. Do not use `npm` or `yarn`.
-- **Working Directory:** All next.js application commands (e.g., `pnpm install`, `pnpm run dev`, `pnpm run typecheck`, `pnpm run build`) MUST be executed from within the `apps/web` directory. The root directory is not configured as the primary package root for the Next.js app in this setup.
-
-### Example Commands
-- **Install dependencies:** `cd apps/web && pnpm install`
-- **Run Typecheck:** `cd apps/web && pnpm run typecheck`
-- **Run Dev Server:** `cd apps/web && pnpm run dev`
+## Qualität
+- Nach App-Code-Änderungen mindestens `cd apps/web && pnpm run typecheck` und `cd apps/web && pnpm run lint` ausführen, sofern Abhängigkeiten installiert sind
+- Bei größeren UI-, Routing- oder Runtime-Änderungen zusätzlich `cd apps/web && pnpm run build`
+- Nach reinen Dokumentationsänderungen keinen Build ausführen
+- API Keys und `.env.local` niemals committen

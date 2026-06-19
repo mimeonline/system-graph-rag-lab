@@ -18,7 +18,7 @@
 
 1. Public URL: https://graphrag-lab.meierhoff-systems.de/
 
-![System GraphRAG Lab live homepage screenshot](docs/assets/graphrag-lab-live-home.png)
+![System GraphRAG Lab live homepage screenshot](docs/product/ideas/assets/graphrag-lab-live-home.png)
 
 ## Overview
 
@@ -54,9 +54,9 @@ You can inspect how a question is transformed into:
 ## Repository structure
 
 1. `apps/web` contains the Next.js app, API routes, UI and seed logic
-2. `docs` contains architecture, ops, QA, handoffs and process artifacts
+2. `docs` contains product, feature, tech, research, business, marketing and discovery artifacts
 3. `input` contains local, non-versioned source material for seed curation
-4. `.codex` and `AGENTS.md` contain process and collaboration setup used during development
+4. `AGENTS.md` contains project-specific collaboration and implementation rules
 
 ## Development context
 
@@ -65,7 +65,7 @@ This repository intentionally includes process artifacts, not only runtime code.
 1. Phase one used a multi-agent setup to structure scope, architecture and QA output.
 2. Later implementation continued in single-agent mode due token budget efficiency.
 3. Additional iteration support came from ChatGPT for content sparring and Antigravity for visual design direction.
-4. Therefore `.codex/**` and `docs/**` remain part of the project context by design.
+4. The current documentation structure keeps only active product, tech, research and business context. Historical process artifacts are recoverable through Git history.
 
 ## Requirements
 
@@ -120,7 +120,7 @@ RATE_LIMIT_IP_SALT=replace-with-random-string
 3. Start Neo4j:
 
 ```bash
-NEO4J_AUTH=neo4j/change-me docker compose -f docs/ops/docker-compose.local.yml up -d
+NEO4J_AUTH=neo4j/change-me docker compose -f docs/tech/operations/docker-compose.local.yml up -d
 ```
 
 4. Install dependencies:
