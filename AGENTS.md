@@ -97,3 +97,12 @@ Repository-Dateien sind die Quelle der Wahrheit. Chat-Kontext ist nicht bindend.
 - Bei größeren UI-, Routing- oder Runtime-Änderungen zusätzlich `cd apps/web && pnpm run build`
 - Nach reinen Dokumentationsänderungen keinen Build ausführen
 - API Keys und `.env.local` niemals committen
+
+## Sub-Agenten und Modellwahl
+
+- Sub-Agenten eigenständig für klar abgegrenzte Teilaufgaben einsetzen, wenn dadurch ein effizienteres Vorgehen zu erwarten ist. Kleine Aufgaben direkt erledigen, wenn Delegation mehr Aufwand erzeugt.
+- Das kleinste ausreichend leistungsfähige verfügbare Modell bevorzugen: Luna (`gpt-5.6-luna`) für einfache, mechanische Aufgaben, Terra (`gpt-5.6-terra`) für gewöhnliche Implementierung, Sol (`gpt-5.6-sol`) für anspruchsvollere Teilaufgaben. Bei unzureichenden Ergebnissen gezielt höher einstufen; aktuelle Modellverfügbarkeit beachten.
+- Nur benötigten Kontext übergeben, Aufträge und Rückgaben knapp halten, Doppelarbeit vermeiden. Den Gesamtaufwand einschließlich Koordination, Prüfung und Nacharbeit optimieren; Tokenzahl allein belegt keine Kosteneinsparung.
+- Zuständigkeiten und erlaubte Dateien eindeutig zuweisen. Unabhängige Teilaufgaben parallel bearbeiten, überlappende Schreibzugriffe vermeiden und vorhandene Agenten sinnvoll weiterverwenden.
+- Der Hauptagent verantwortet Entscheidungen, Zusammenführung, Prüfung und Ergebnisqualität. Die geltenden Prüfungen bleiben verbindlich.
+- Separate nutzereigene Tasks und Automationen nur auf ausdrücklichen Auftrag anlegen. Die Erlaubnis zur Delegation erweitert weder den fachlichen Auftrag noch sonstige Befugnisse.
