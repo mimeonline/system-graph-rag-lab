@@ -38,21 +38,26 @@ export default async function DatenschutzPage({ params }: PrivacyPageProps): Pro
           "This processing is used for secure operation, content delivery, and error analysis.",
         analytics: "3. Reach measurement with Rybbit",
         analyticsText1:
-          "Rybbit is used via the hosted endpoint stats.meierhoff-systems.de for anonymized reach measurement. In the current configuration, no tracking cookies are set on end devices.",
+          "Rybbit is used via stats.meierhoff-systems.de for reach measurement. IP address and browser information are processed to generate a pseudonymous identifier that can link visits across sessions. Rybbit does not set tracking cookies.",
         analyticsText2:
-          "Based on the current setup, this fully cookieless measurement does not require a cookie consent layer.",
-        localePref: "4. Language preference",
+          "Rybbit records page views, referrers, usage times and configured technical events. The IP address is used to generate the pseudonymous identifier.",
+        localEvents: "4. Events stored in this browser",
+        localEventsText1:
+          "The website also stores up to 100 events in your browser's local storage, including page views, selected link clicks and interactions with the technical presentation, together with timestamps. These events remain in this browser and are not sent to Rybbit.",
+        localEventsText2:
+          "Older events are replaced as new ones are added. You can remove the stored events by deleting this website's data in your browser.",
+        localePref: "5. Language preference",
         localeText1:
           "To support switching between the German and English interface, a language preference can be stored. This setting is used solely to provide your chosen language consistently across page visits.",
         localeText2:
           "This language cookie is not used for tracking or marketing purposes.",
-        externalLinks: "5. External links",
+        externalLinks: "6. External links",
         externalText:
           "This website links to external services such as GitHub and LinkedIn. When leaving this site, the privacy policies of the respective providers apply.",
-        retention: "6. Retention period",
+        retention: "7. Retention period",
         retentionText:
           "Log data is stored only as long as necessary for operations, security, and technical diagnostics.",
-        rights: "7. Rights of data subjects",
+        rights: "8. Rights of data subjects",
         rightsText:
           "Under the GDPR, you have rights in particular to access, rectification, deletion, restriction of processing, and objection to the processing of your personal data.",
       }
@@ -70,21 +75,26 @@ export default async function DatenschutzPage({ params }: PrivacyPageProps): Pro
           "Diese Verarbeitung dient dem sicheren Betrieb, der Auslieferung der Inhalte und der Fehleranalyse.",
         analytics: "3. Reichweitenmessung mit Rybbit",
         analyticsText1:
-          "Zur anonymisierten Reichweitenmessung wird Rybbit über den gehosteten Endpunkt stats.meierhoff-systems.de eingesetzt. In der aktuellen Konfiguration werden dabei keine Tracking-Cookies auf Endgeräten gesetzt.",
+          "Zur Reichweitenmessung wird Rybbit über stats.meierhoff-systems.de eingesetzt. IP-Adresse und Browserinformationen werden verarbeitet, um eine pseudonyme Kennung zu bilden, die Besuche über mehrere Sitzungen hinweg zuordnen kann. Rybbit setzt keine Tracking-Cookies.",
         analyticsText2:
-          "Für diese rein cookielose Messung ist daher nach aktuellem Stand kein Cookie-Consent-Layer erforderlich.",
-        localePref: "4. Sprachpräferenz",
+          "Rybbit erfasst Seitenaufrufe, Referrer, Nutzungszeitpunkte und konfigurierte technische Ereignisse. Die IP-Adresse wird zur Bildung der pseudonymen Kennung verwendet.",
+        localEvents: "4. Lokal gespeicherte Ereignisse",
+        localEventsText1:
+          "Die Website speichert zusätzlich bis zu 100 Ereignisse im lokalen Browser-Speicher, darunter Seitenaufrufe, ausgewählte Link-Klicks und Interaktionen mit der technischen Darstellung, jeweils mit Zeitstempel. Diese Ereignisse bleiben in diesem Browser und werden nicht an Rybbit übertragen.",
+        localEventsText2:
+          "Ältere Ereignisse werden durch neue ersetzt. Du kannst die gespeicherten Ereignisse entfernen, indem du die Website-Daten im Browser löschst.",
+        localePref: "5. Sprachpräferenz",
         localeText1:
           "Für die Auswahl zwischen deutscher und englischer Oberfläche kann eine Sprachpräferenz gespeichert werden. Diese Einstellung dient ausschließlich dazu, die gewünschte Sprache über Seitenaufrufe hinweg konsistent bereitzustellen.",
         localeText2:
           "Dieser Sprach-Cookie wird nicht zu Tracking- oder Marketingzwecken verwendet.",
-        externalLinks: "5. Externe Links",
+        externalLinks: "6. Externe Links",
         externalText:
           "Diese Website verlinkt auf externe Dienste (z. B. GitHub und LinkedIn). Beim Wechsel dorthin gelten die Datenschutzbestimmungen der jeweiligen Anbieter.",
-        retention: "6. Speicherdauer",
+        retention: "7. Speicherdauer",
         retentionText:
           "Protokolldaten werden nur so lange gespeichert, wie es für Betrieb, Sicherheit und technische Diagnose erforderlich ist.",
-        rights: "7. Rechte der betroffenen Personen",
+        rights: "8. Rechte der betroffenen Personen",
         rightsText:
           "Du hast nach DSGVO insbesondere das Recht auf Auskunft, Berichtigung, Löschung, Einschränkung der Verarbeitung sowie Widerspruch gegen die Verarbeitung deiner personenbezogenen Daten.",
       };
@@ -115,6 +125,11 @@ export default async function DatenschutzPage({ params }: PrivacyPageProps): Pro
         <h2 className="text-xl font-semibold text-slate-900">{text.analytics}</h2>
         <p>{text.analyticsText1}</p>
         <p>{text.analyticsText2}</p>
+      </section>
+      <section className="space-y-2">
+        <h2 className="text-xl font-semibold text-slate-900">{text.localEvents}</h2>
+        <p>{text.localEventsText1}</p>
+        <p>{text.localEventsText2}</p>
       </section>
       <section className="space-y-2">
         <h2 className="text-xl font-semibold text-slate-900">{text.localePref}</h2>
