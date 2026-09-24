@@ -2,6 +2,24 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.2.0] - 2026-09-24
+
+### Neu
+
+1. Interaktives Lernlabor für fünf Graph-Typen mit konkreten Dialogspuren und Einblicken in die Verarbeitungsschritte.
+2. Überarbeitete Graphsimulation mit animierten Phasen sowie eine kuratierte Hauptnavigation und eine eigene Live-Demo.
+
+### Geändert
+
+1. Die Demoinhalte und Beispiele zeigen die Unterschiede der Graph-Typen anhand realistischer Arbeitssituationen.
+2. Die Datenschutzhinweise beschreiben die pseudonyme Rybbit-Kennung und die lokal im Browser gespeicherten Ereignisse genauer.
+3. Die Projektdokumentation ist nach Produkt, Technik, Forschung und Marketing geordnet.
+
+### Behoben
+
+1. Kantenbeschriftungen und Abläufe der Graphsimulation werden stabiler dargestellt.
+2. Der Produktionsdeploy kann das Release-Image wieder authentifiziert aus GHCR abrufen.
+
 ## [1.1.0] - 2026-05-19
 
 ### Changed
