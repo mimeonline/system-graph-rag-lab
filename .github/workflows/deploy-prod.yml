@@ -49,6 +49,18 @@ jobs:
             "set -euo pipefail; \
              docker login ghcr.io -u '${GHCR_USERNAME}' --password-stdin >/dev/null; \
              cd '${STACK_PATH}'; \
-             APP_IMAGE='${APP_IMAGE}' APP_IMAGE_TAG='${APP_IMAGE_TAG}' docker compose -f '${COMPOSE_FILE}' pull '${SERVICE_NAME}'; \
-             APP_IMAGE='${APP_IMAGE}' APP_IMAGE_TAG='${APP_IMAGE_TAG}' docker compose -f '${COMPOSE_FILE}' up -d '${SERVICE_NAME}'; \
+             APP_IMAGE_TAG='${APP_IMAGE_TAG}'; \
+             IMAGE_REF='${APP_IMAGE}:${APP_IMAGE_TAG}'; \
+             docker pull \"\${IMAGE_REF}\"; \
+             IMAGE_DIGEST=\$(docker image inspect \"\${IMAGE_REF}\" --format '{{index .RepoDigests 0}}'); \
+             PINNED_REF=\"\${IMAGE_REF}@\${IMAGE_DIGEST##*@}\"; \
+             PREVIOUS_REF=\$(docker compose -f '${COMPOSE_FILE}' config --images); \
+             APP_IMAGE_REF=\"\${PINNED_REF}\" docker compose -f '${COMPOSE_FILE}' up -d '${SERVICE_NAME}'; \
+             if ! (for i in 1 2 3 4 5 6 7 8 9 10; do curl -fsS --max-time 3 http://127.0.0.1:4100/de/datenschutz >/dev/null && exit 0; sleep 2; done; exit 1); then \
+               APP_IMAGE_REF=\"\${PREVIOUS_REF}\" docker compose -f '${COMPOSE_FILE}' up -d '${SERVICE_NAME}'; \
+               echo 'GraphLab health check failed; previous image restored' >&2; \
+               exit 1; \
+             fi; \
+             cp -p .env .env.backup-before-\"\${APP_IMAGE_TAG}\"; \
+             sed -i -e \"s|^APP_IMAGE_TAG=.*|APP_IMAGE_TAG=\${APP_IMAGE_TAG}|\" -e \"s|^APP_IMAGE_REF=.*|APP_IMAGE_REF=\${PINNED_REF}|\" .env; \
              docker compose -f '${COMPOSE_FILE}' ps '${SERVICE_NAME}'"

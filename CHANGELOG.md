@@ -2,6 +2,13 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.2.1] - 2026-09-24
+
+### Behoben
+
+1. Das Produktionsimage startet den Next.js-Server am tatsächlichen Standalone-Pfad und liefert statische Dateien aus dem zugehörigen App-Verzeichnis.
+2. Der Deploy-Workflow aktiviert das neue Image anhand seines Digests, prüft den Start und stellt bei einem fehlgeschlagenen Start die vorherige Version wieder her.
+
 ## [1.2.0] - 2026-09-24
 
 ### Neu
