@@ -68,7 +68,15 @@ export default async function ImpressumPage({ params }: ImprintPageProps): Promi
     >
       <section className="space-y-2">
         <h2 className="text-xl font-semibold text-slate-900">{text.provider}</h2>
-        <p>Michael Meierhoff</p>
+        <address className="not-italic">
+          Michael Meierhoff
+          <br />
+          c/o IP-Management #12187
+          <br />
+          Ludwig-Erhard-Str. 18
+          <br />
+          20459 Hamburg
+        </address>
         <p>
           {text.projectPage}{" "}
           <a href="https://meierhoff-systems.de" target="_blank" rel="noreferrer noopener" className="underline decoration-slate-300 underline-offset-2">

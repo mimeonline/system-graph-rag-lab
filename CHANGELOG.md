@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.2.2] - 2026-09-30
+
+### Geändert
+
+1. Das Impressum enthält die vollständige ladungsfähige Anschrift.
+
 ## [1.2.1] - 2026-09-24
 
 ### Behoben
