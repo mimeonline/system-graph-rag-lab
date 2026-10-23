@@ -3,6 +3,7 @@ import type { NextConfig } from "next";
 import path from "node:path";
 
 const nextConfig: NextConfig = {
+  experimental: { agentUpgrade: "security" },
   output: "standalone",
   reactCompiler: true,
   turbopack: {
