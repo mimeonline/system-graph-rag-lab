@@ -2,6 +2,12 @@
 
 All notable changes to this project are documented in this file.
 
+## [1.2.3] - 2026-10-23
+
+### Sicherheit
+
+1. Next.js auf die vom Security-Upgrade empfohlene Version 16.4.2 aktualisiert.
+
 ## [1.2.2] - 2026-09-30
 
 ### Geändert

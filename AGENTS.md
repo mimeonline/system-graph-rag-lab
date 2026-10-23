@@ -60,7 +60,7 @@ Repository-Dateien sind die Quelle der Wahrheit. Chat-Kontext ist nicht bindend.
 - Basis-Rate-Limiting vor öffentlicher Freigabe aktiv
 
 ## Tech-Stack Invarianten
-- Next.js ist verbindlich in Version `16.1.6`
+- Next.js ist verbindlich in Version `16.4.2` (Security-Upgrade, siehe `docs/tech/ADR/adr-0007.md`)
 - API Layer wird in Next.js als Route Handler umgesetzt
 - UI wird verbindlich mit Tailwind CSS und shadcn/ui umgesetzt
 - UI-Architektur folgt dem Pattern Atomic Design
